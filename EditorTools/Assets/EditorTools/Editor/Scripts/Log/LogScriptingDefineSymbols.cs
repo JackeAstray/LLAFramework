@@ -56,7 +56,7 @@ namespace GameLogic.Editor
         /// <summary>
         /// 禁用所有日志脚本宏定义。
         /// </summary>
-        [MenuItem("工具箱/日志宏定义/禁用所有日志", false, 1)]
+        [MenuItem("工具箱/日志/禁用所有日志", false, 1)]
         public static void DisableAllLogs()
         {
             ScriptingDefineSymbols.RemoveScriptingDefineSymbol(EnableLogScriptingDefineSymbol);
@@ -75,7 +75,7 @@ namespace GameLogic.Editor
         /// <summary>
         /// 启用所有日志脚本宏定义。
         /// </summary>
-        [MenuItem("工具箱/日志宏定义/启用所有日志", false, 2)]
+        [MenuItem("工具箱/日志/启用所有日志", false, 2)]
         public static void EnableAllLogs()
         {
             DisableAllLogs();
@@ -85,7 +85,7 @@ namespace GameLogic.Editor
         /// <summary>
         /// 启用调试及以上级别的日志脚本宏定义。
         /// </summary>
-        [MenuItem("工具箱/日志宏定义/启用调试及以上级别的日志", false, 3)]
+        [MenuItem("工具箱/日志/启用调试及以上级别的日志", false, 3)]
         public static void EnableDebugAndAboveLogs()
         {
             SetAboveLogScriptingDefineSymbol(EnableDebugAndAboveLogScriptingDefineSymbol);
@@ -94,7 +94,7 @@ namespace GameLogic.Editor
         /// <summary>
         /// 启用信息及以上级别的日志脚本宏定义。
         /// </summary>
-        [MenuItem("工具箱/日志宏定义/启用信息及以上级别的日志", false, 4)]
+        [MenuItem("工具箱/日志/启用信息及以上级别的日志", false, 4)]
         public static void EnableInfoAndAboveLogs()
         {
             SetAboveLogScriptingDefineSymbol(EnableInfoAndAboveLogScriptingDefineSymbol);
@@ -103,7 +103,7 @@ namespace GameLogic.Editor
         /// <summary>
         /// 启用警告及以上级别的日志脚本宏定义。
         /// </summary>
-        [MenuItem("工具箱/日志宏定义/启用警告及以上级别的日志", false, 5)]
+        [MenuItem("工具箱/日志/启用警告及以上级别的日志", false, 5)]
         public static void EnableWarningAndAboveLogs()
         {
             SetAboveLogScriptingDefineSymbol(EnableWarningAndAboveLogScriptingDefineSymbol);
@@ -112,7 +112,7 @@ namespace GameLogic.Editor
         /// <summary>
         /// 启用错误及以上级别的日志脚本宏定义。
         /// </summary>
-        [MenuItem("工具箱/日志宏定义/启用错误及以上级别的日志", false, 6)]
+        [MenuItem("工具箱/日志/启用错误及以上级别的日志", false, 6)]
         public static void EnableErrorAndAboveLogs()
         {
             SetAboveLogScriptingDefineSymbol(EnableErrorAndAboveLogScriptingDefineSymbol);
@@ -121,7 +121,7 @@ namespace GameLogic.Editor
         /// <summary>
         /// 启用严重错误及以上级别的日志脚本宏定义。
         /// </summary>
-        [MenuItem("工具箱/日志宏定义/启用严重错误及以上级别的日志", false, 7)]
+        [MenuItem("工具箱/日志/启用严重错误及以上级别的日志", false, 7)]
         public static void EnableFatalAndAboveLogs()
         {
             SetAboveLogScriptingDefineSymbol(EnableFatalAndAboveLogScriptingDefineSymbol);
@@ -132,7 +132,7 @@ namespace GameLogic.Editor
         /// <summary>
         /// 启用调试日志。
         /// </summary>
-        [MenuItem("工具箱/日志宏定义/启用调试日志", false, 8)]
+        [MenuItem("工具箱/日志/启用调试日志", false, 8)]
         public static void EnableDebugLog()
         {
             SetAboveLogScriptingDefineSymbol(EnableDebugLogScriptingDefineSymbol);
@@ -141,7 +141,7 @@ namespace GameLogic.Editor
         /// <summary>
         /// 启用信息日志。
         /// </summary>
-        [MenuItem("工具箱/日志宏定义/启用信息日志", false, 9)]
+        [MenuItem("工具箱/日志/启用信息日志", false, 9)]
         public static void EnableInfoLog()
         {
             SetAboveLogScriptingDefineSymbol(EnableInfoLogScriptingDefineSymbol);
@@ -150,7 +150,7 @@ namespace GameLogic.Editor
         /// <summary>
         /// 启用警告及日志。
         /// </summary>
-        [MenuItem("工具箱/日志宏定义/启用警告日志", false, 10)]
+        [MenuItem("工具箱/日志/启用警告日志", false, 10)]
         public static void EnableWarningLog()
         {
             SetAboveLogScriptingDefineSymbol(EnableWarningLogScriptingDefineSymbol);
@@ -159,7 +159,7 @@ namespace GameLogic.Editor
         /// <summary>
         /// 启用错误及日志。
         /// </summary>
-        [MenuItem("工具箱/日志宏定义/启用错误及日志", false, 11)]
+        [MenuItem("工具箱/日志/启用错误及日志", false, 11)]
         public static void EnableErrorLog()
         {
             SetAboveLogScriptingDefineSymbol(EnableErrorLogScriptingDefineSymbol);
@@ -168,7 +168,7 @@ namespace GameLogic.Editor
         /// <summary>
         /// 启用严重错误日志。
         /// </summary>
-        [MenuItem("工具箱/日志宏定义/启用严重错误日志", false, 12)]
+        [MenuItem("工具箱/日志/启用严重错误日志", false, 12)]
         public static void EnableFatalLog()
         {
             SetAboveLogScriptingDefineSymbol(EnableFatalLogScriptingDefineSymbol);

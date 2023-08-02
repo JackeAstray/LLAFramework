@@ -781,11 +781,11 @@ PlayerSettings:
   webGLDecompressionFallback: 0
   webGLPowerPreference: 2
   scriptingDefineSymbols:
-    Android: 
-    Standalone: 
-    WebGL: 
-    Windows Store Apps: 
-    iPhone: 
+    Android: ENABLE_LOG
+    Standalone: ENABLE_LOG
+    WebGL: ENABLE_LOG
+    Windows Store Apps: ENABLE_LOG
+    iPhone: ENABLE_LOG
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend: {}
