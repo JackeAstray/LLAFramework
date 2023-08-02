@@ -1,0 +1,45 @@
+
+[
+    {
+        "Id" : 100001,
+        "Path" : "Audio/BGMs/",
+        "Name" : "Deus Ex Tempus",
+        "Type" : 1,
+        "Detailed" : ""
+    },
+    {
+        "Id" : 110009,
+        "Path" : "Audio/BattleBGMs/",
+        "Name" : "Boss_battle_#2_metal_opening",
+        "Type" : 2,
+        "Detailed" : ""
+    },
+    {
+        "Id" : 120012,
+        "Path" : "Audio/SoundEffects/",
+        "Name" : "TurboBlow1",
+        "Type" : 3,
+        "Detailed" : ""
+    },
+    {
+        "Id" : 120013,
+        "Path" : "Audio/SoundEffects/",
+        "Name" : "\u8B66\u62A5\u8702\u9E23\u5668",
+        "Type" : 3,
+        "Detailed" : ""
+    },
+    {
+        "Id" : 120014,
+        "Path" : "Audio/SoundEffects/",
+        "Name" : "\u6869\u8003",
+        "Type" : 3,
+        "Detailed" : ""
+    },
+    {
+        "Id" : 120015,
+        "Path" : "Audio/SoundEffects/",
+        "Name" : "\u4FA7\u65B9\u505C\u8F66",
+        "Type" : 3,
+        "Detailed" : ""
+    }
+]

@@ -1,0 +1,14 @@
+
+[
+    {
+        "Id" : 1,
+        "ThrottleMin" : 0,
+        "ThrottleMax" : -32768,
+        "BrakesMin"   : 0,
+        "BrakesMax"   : 32768,
+        "ClutchMin"   : 0,
+        "ClutchMax"   : 32768,
+        "SteeringMin" : -32768,
+        "SteeringMax" : 32768
+    }
+]

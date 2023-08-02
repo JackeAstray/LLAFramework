@@ -1,0 +1,68 @@
+
+[
+    {
+        "Id" : 100001,
+        "ZH" : "\u5F00\u59CB\u6E38\u620F",
+        "EN" : "Start Game"
+    },
+    {
+        "Id" : 100002,
+        "ZH" : "\u8BBE\u7F6E",
+        "EN" : "Options"
+    },
+    {
+        "Id" : 100003,
+        "ZH" : "\u9000\u51FA\u6E38\u620F",
+        "EN" : "Exit Game"
+    },
+    {
+        "Id" : 100004,
+        "ZH" : "\u7248\u672C\u53F7",
+        "EN" : "Version Number"
+    },
+    {
+        "Id" : 100005,
+        "ZH" : "\u5168\u5C4F",
+        "EN" : "Full Screen"
+    },
+    {
+        "Id" : 100006,
+        "ZH" : "\u5206\u8FA8\u7387",
+        "EN" : "Screen Resolution"
+    },
+    {
+        "Id" : 100007,
+        "ZH" : "\u8BED\u8A00\u5207\u6362",
+        "EN" : "Language Switch"
+    },
+    {
+        "Id" : 100008,
+        "ZH" : "\u80CC\u666F\u97F3\u4E50",
+        "EN" : "Background Music"
+    },
+    {
+        "Id" : 100009,
+        "ZH" : "\u80CC\u666F\u97F3\u4E50\u97F3\u91CF",
+        "EN" : "Background Music Volume"
+    },
+    {
+        "Id" : 100010,
+        "ZH" : "\u58F0\u97F3\u7279\u6548",
+        "EN" : "Sound Effects"
+    },
+    {
+        "Id" : 100011,
+        "ZH" : "\u58F0\u97F3\u7279\u6548\u97F3\u97F3\u91CF",
+        "EN" : "Sound Effect Volume"
+    },
+    {
+        "Id" : 100012,
+        "ZH" : "\u5F00\u542F",
+        "EN" : "ON"
+    },
+    {
+        "Id" : 100013,
+        "ZH" : "\u5173\u95ED",
+        "EN" : "OFF"
+    }
+]
