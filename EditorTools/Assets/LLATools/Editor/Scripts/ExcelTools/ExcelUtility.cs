@@ -8,9 +8,13 @@ using System.Reflection;
 using System.Text;
 using ExcelDataReader;
 using LitJson;
+using GameLogic;
 
 namespace GameLogic.Editor
 {
+    /// <summary>
+    /// Excel工具实用类
+    /// </summary>
     public class ExcelUtility
     {
         /// <summary>
@@ -36,7 +40,7 @@ namespace GameLogic.Editor
             if (!Tools.CheckClassName(className))
             {
                 string msg = string.Format("Excel文件“{0}”无效，因为xlsx文件的名称应为类名！", path);
-                Debug.Log(msg);
+                Log.Error(msg); 
                 return;
             }
 
@@ -55,7 +59,7 @@ namespace GameLogic.Editor
             {
                 File.Delete(tempExcel);
                 string msg = string.Format("由于共享冲突，无法打开“{0}”。也许您应该先关闭Excel应用程序！", path);
-                Debug.Log(msg);
+                Log.Error(msg);
                 return;
             }
 
@@ -214,7 +218,7 @@ namespace GameLogic.Editor
 
             if (skipRowCount == -1)
             {
-                Debug.LogError("表格数据可能有错,没发现Id字段,请检查!");
+                Log.Error("表格数据可能有错，没发现Id字段,请检查");
                 return "{}";
             }
 
@@ -243,7 +247,8 @@ namespace GameLogic.Editor
                     //根据null判断
                     if (rowdata == null)
                     {
-                        Debug.LogErrorFormat("表格数据为空：[{0},{1}]", i, j);
+                        string msg = string.Format("表格数据为空：[{0},{1}]", i, j);
+                        Log.Error(msg);
                         continue;
                     }
 
@@ -316,7 +321,8 @@ namespace GameLogic.Editor
                                 else
                                 {
                                     row[field] = 0;
-                                    Debug.LogErrorFormat("表格数据出错:{0}-{1}", i, j);
+                                    string msg = string.Format("表格数据出错：{0}-{1}", i, j);
+                                    Log.Error(msg);
                                 }
                             }
                             else if (fieldType == "float")
@@ -329,7 +335,8 @@ namespace GameLogic.Editor
                                 else
                                 {
                                     row[field] = 0;
-                                    Debug.LogErrorFormat("表格数据出错:{0}-{1}", i, j);
+                                    string msg = string.Format("表格数据出错：{0}-{1}", i, j);
+                                    Log.Error(msg);
                                 }
                             }
                             else if (fieldType == "double")
@@ -342,7 +349,8 @@ namespace GameLogic.Editor
                                 else
                                 {
                                     row[field] = 0;
-                                    Debug.LogErrorFormat("表格数据出错:{0}-{1}", i, j);
+                                    string msg = string.Format("表格数据出错：{0}-{1}", i, j);
+                                    Log.Error(msg);
                                 }
                             }
                         }

@@ -7,17 +7,11 @@ using UnityEngine;
 
 namespace GameLogic.Editor
 {
+    /// <summary>
+    /// 打开路径
+    /// </summary>
     public static class OpenPath
     {
-        ///// <summary>
-        ///// 打开 Data Path 文件夹。
-        ///// </summary>
-        //[MenuItem("工具箱/打开文件夹/Excel Tools", false, 10)]
-        //public static void OpenFolderExcelTools()
-        //{
-        //    Execute(Application.dataPath + "/../Config/ExcelTools");
-        //}
-
         /// <summary>
         /// 打开 Data Path 文件夹。
         /// </summary>

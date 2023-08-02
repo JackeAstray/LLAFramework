@@ -12,13 +12,11 @@ using System.Linq;
 
 namespace GameLogic.Editor
 {
+    /// <summary>
+    /// Excel工具类
+    /// </summary>
     public class ExcelTools
     {
-        /// <summary>
-        /// 当前编辑器窗口实例
-        /// </summary>
-        private static ExcelTools instance;
-
         static readonly string toDir = "Assets/LLATools/Editor/Resources/Config/ExcelTools";                                // 源文件路径
         static readonly string scriptOutPutPath = "Assets/Scripts/AutoScripts/";             // 脚本输出路径
         static readonly string dataOutPutPath = "Assets/Resources/AutoDatabase/";            // 数据表输出路径
@@ -38,8 +36,7 @@ namespace GameLogic.Editor
             {
                 ExcelToScripts(path);
             }
-
-            Debug.Log("表格转为脚本完成！");
+            Log.Debug("表格转为脚本完成！");
         }
         /// <summary>
         /// Excel到脚本
@@ -48,7 +45,6 @@ namespace GameLogic.Editor
         /// <returns></returns>
         static bool ExcelToScripts(string path)
         {
-
             //构造Excel工具类
             ExcelUtility excel = new ExcelUtility(path);
 
@@ -252,7 +248,7 @@ namespace GameLogic
 
             if (xlsxFiles.Count <= 0)
             {
-                Debug.Log("<color=#FF0040>未找到任何表格！</color>");
+                Log.Error("未找到任何表格！");
                 return; 
             }
 
@@ -261,7 +257,7 @@ namespace GameLogic
                 ExcelToJson(path);
             }
 
-            Debug.Log("<color=#80FF00>表格转为Json完成！</color>");
+            Log.Debug("表格转为Json完成！");
         }
 
         /// <summary>
@@ -289,7 +285,7 @@ namespace GameLogic
             if (excel.ResultSet == null)
             {
                 string msg = string.Format("文件“{0}”不是表格！", path);
-                Debug.Log("<color=#FF0040>" + msg + "</color>");
+                Log.Warning(msg);
                 return;
             }
 
@@ -315,7 +311,7 @@ namespace GameLogic
                 ExcelToXml(path);
             }
 
-            Debug.Log("<color=#80FF00>表格转为XML完成！</color>");
+            Log.Error("表格转为XML完成！");
         }
         /// <summary>
         /// Excel 转 Xml
@@ -342,7 +338,7 @@ namespace GameLogic
             if (excel.ResultSet == null)
             {
                 string msg = string.Format("文件“{0}”不是表格！", path);
-                Debug.Log("<color=#FF0040>" + msg + "</color>");
+                Log.Warning(msg);
                 return;
             }
 
@@ -369,7 +365,7 @@ namespace GameLogic
                 ExcelToLua(path);
             }
 
-            Debug.Log("<color=#80FF00>表格转为Lua完成！</color>");
+            Log.Debug("表格转为Lua完成！");
         }
         /// <summary>
         /// Excel 转 Xml
@@ -396,7 +392,7 @@ namespace GameLogic
             if (excel.ResultSet == null)
             {
                 string msg = string.Format("文件“{0}”不是表格！", path);
-                Debug.Log("<color=#FF0040>" + msg + "</color>");
+                Log.Warning(msg);
                 return;
             }
 
@@ -438,8 +434,7 @@ namespace GameLogic
                 if (suffix != ".xlsx" && suffix != ".xls")
                 {
                     string msg = string.Format("文件“{0}”不是表格！", path);
-                    Debug.Log("<color=#FF0040>"+ msg + "</color>");
-                    //EditorUtility.DisplayDialog("ExcelTools", msg, "OK");
+                    Log.Warning(msg);
                     continue;
                 }
                 tableList.Add(path);
@@ -447,7 +442,7 @@ namespace GameLogic
 
             if(tableList.Count <= 0)
             {
-                Debug.Log("<color=#FF0040>没有找到表格！</color>");
+                Log.Error("没有找到表格！");
             }
 
             return tableList;

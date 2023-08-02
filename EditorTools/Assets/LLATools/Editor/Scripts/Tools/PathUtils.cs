@@ -5,7 +5,10 @@ using UnityEngine;
 
 namespace GameLogic
 {
-    public class PathUtils
+    /// <summary>
+    /// 路径工具类
+    /// </summary>
+    public static class PathUtils
     {
         public static readonly string[] PathHeadDefine = { "jar://", "jar:file:///", "file:///", "http://", "https://" };
 
