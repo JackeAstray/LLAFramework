@@ -30,7 +30,7 @@ namespace GameLogic.Editor
         // 目标名称
         string targetName { get; set; }
 
-        [MenuItem("工具箱/脚本生成工具", false, 1)]
+        [MenuItem("工具箱/脚本生成工具", false, 4)]
         public static void ShowWindow()
         {
             //弹出编辑器
