@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 颜色扩展
+/// </summary>
 public static class ColorExtensions
 {
     /// <summary>

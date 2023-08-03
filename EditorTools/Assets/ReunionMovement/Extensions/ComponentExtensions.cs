@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
-/// Component的扩展方法
+/// Component的扩展
 /// </summary>
 public static class ComponentExtensions
 {

@@ -8,6 +8,9 @@ using UnityEngine.AI;
 
 namespace GameLogic
 {
+    /// <summary>
+    /// 碰撞器绘制
+    /// </summary>
     public class ColliderGizmo : MonoBehaviour
     {
 #if UNITY_EDITOR
