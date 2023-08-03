@@ -5,7 +5,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace GameLogic.Editor
+namespace GameLogic.EditorTools
 {
     /// <summary>
     /// 打开路径

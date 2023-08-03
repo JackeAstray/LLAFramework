@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GameLogic.Editor
+namespace GameLogic.EditorTools
 {
     /// <summary>
     /// 字段类型

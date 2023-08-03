@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 
-namespace GameLogic.Editor
+namespace GameLogic.EditorTools
 {
     /// <summary>
     /// 生成脚本

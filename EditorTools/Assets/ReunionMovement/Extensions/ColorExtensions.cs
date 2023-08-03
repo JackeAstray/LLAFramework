@@ -9,7 +9,7 @@ public static class ColorExtensions
     /// </summary>
     /// <param name="color"></param>
     /// <returns></returns>
-    public static string ColorToHex(this Color color, Color target)
+    public static string ColorToHex(Color target)
     {
         int r = Mathf.RoundToInt(target.r * 255.0f);
         int g = Mathf.RoundToInt(target.g * 255.0f);
@@ -24,7 +24,7 @@ public static class ColorExtensions
     /// </summary>
     /// <param name="hex"></param>
     /// <returns></returns>
-    public static Color HexToColor(this Color color, string hex)
+    public static Color HexToColor(string hex)
     {
         byte br = byte.Parse(hex.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
         byte bg = byte.Parse(hex.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);

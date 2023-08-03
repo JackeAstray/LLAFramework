@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace GameLogic.Editor
+namespace GameLogic.EditorTools
 {
     public class SmallFunctions : EditorWindow
     {

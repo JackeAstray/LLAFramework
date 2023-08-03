@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace GameLogic.Editor
+namespace GameLogic.EditorTools
 {
     /// <summary>
     /// 编辑器工具类

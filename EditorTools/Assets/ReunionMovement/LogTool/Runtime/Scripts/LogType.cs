@@ -34,6 +34,4 @@ namespace GameLogic
         /// </summary>
         Fatal
     }
-
-
 }

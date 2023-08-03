@@ -10,7 +10,7 @@ using ExcelDataReader;
 using LitJson;
 using GameLogic;
 
-namespace GameLogic.Editor
+namespace GameLogic.EditorTools
 {
     /// <summary>
     /// Excel工具实用类

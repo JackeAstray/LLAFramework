@@ -10,7 +10,7 @@ using UnityEditor;
 using UnityEngine;
 using System.Linq;
 
-namespace GameLogic.Editor
+namespace GameLogic.EditorTools
 {
     /// <summary>
     /// Excel工具类
