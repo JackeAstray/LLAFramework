@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using GameLogic;
+using GameLogic.Download;
 
 public class ExampleLoadImage : MonoBehaviour
 {
@@ -19,7 +19,7 @@ public class ExampleLoadImage : MonoBehaviour
 
     private void TestLoadImage()
     {
-        //LoadImageHelper helper = gameObject.AddComponent<LoadImageHelper>();
-        //helper.LoadImage(image, url);
+        LoadImageHelper helper = gameObject.AddComponent<LoadImageHelper>();
+        helper.LoadImage(image, url);
     }
 }
