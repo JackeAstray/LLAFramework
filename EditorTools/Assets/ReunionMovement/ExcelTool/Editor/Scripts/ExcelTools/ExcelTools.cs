@@ -73,7 +73,7 @@ namespace GameLogic.EditorTools
                 if (table.Rows.Count < tableRows_Max)
                 {
                     EditorUtility.ClearProgressBar();
-                    string msg = string.Format("无法分析“{0}”。Excel文件应至少包含三行（第一行：中文名称，第二行：英文名称，第三行：数据类型）!", path);
+                    string msg = string.Format("无法分析“{0}”。1、检查行数：Excel文件应至少包含三行（第一行：中文名称，第二行：数据类型，第三行：英文名称）!\n2、检查Sheet是否存在多个！", path);
                     EditorUtility.DisplayDialog("ExcelTools", msg, "OK");
                     return false;
                 }
@@ -164,7 +164,7 @@ namespace GameLogic.EditorTools
         /// <param name="sheet"></param>
         static async void GenerateScript(SheetData sheet)
         {
-            string ScriptTemplate = @"//此脚本为自动生成 <ExcelToScript>
+            string ScriptTemplate = @"//此脚本为自动生成 {_CREATE_TIME_} <ExcelTo>
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -237,6 +237,7 @@ namespace GameLogic
             str = str.Replace("{_1_}", privateType.ToString());
             str = str.Replace("{_2_}", "\"[" + toString_1 + "]\"");
             str = str.Replace("{_3_}", toString_2);
+            str = str.Replace("{_CREATE_TIME_}", DateTime.UtcNow.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
             return str;
         }
         #endregion
