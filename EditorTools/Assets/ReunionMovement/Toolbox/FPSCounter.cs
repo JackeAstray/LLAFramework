@@ -5,7 +5,7 @@ using UnityEngine;
 namespace GameLogic
 {
     /// <summary>
-    /// FPS计数器
+    /// FPS计数器工具
     /// </summary>
     public class FPSCounter : MonoBehaviour
     {
