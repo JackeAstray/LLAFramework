@@ -298,4 +298,30 @@ public static class EngineToolExtensions
 
         return false;
     }
+
+    /// <summary>
+    /// Base64转图片
+    /// </summary>
+    /// <param name="imageData"></param>
+    /// <param name="offset"></param>
+    /// <returns></returns>
+    public static Texture2D Base64ToTexture2D(string imageData, int offset = 0)
+    {
+        Texture2D tex2D = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+        imageData = imageData.Substring(offset);
+        byte[] data = Convert.FromBase64String(imageData);
+        tex2D.LoadImage(data);
+        return tex2D;
+    }
+
+    /// <summary>
+    /// 图片转Base64
+    /// </summary>
+    /// <param name="bytesArr"></param>
+    /// <returns></returns>
+    public static string Texture2DToBase64(byte[] bytesArr)
+    {
+        string strbaser64 = Convert.ToBase64String(bytesArr);
+        return strbaser64;
+    }
 }
