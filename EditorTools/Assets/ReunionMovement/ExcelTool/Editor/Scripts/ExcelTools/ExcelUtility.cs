@@ -354,7 +354,7 @@ namespace GameLogic.EditorTools
                                 }
                             }
                         }
-                        else if (field.Equals("string"))
+                        else if (fieldType == "string")
                         {
                             row[field] = rowdata.ToString();
                         }
