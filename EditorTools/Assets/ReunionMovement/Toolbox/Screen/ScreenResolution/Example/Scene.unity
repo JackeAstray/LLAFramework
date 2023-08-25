@@ -98,7 +98,8 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_LightingSettings: {fileID: 4890085278179872738, guid: 517b532ee5b58b340afee8d379fd599b, type: 2}
+  m_LightingSettings: {fileID: 4890085278179872738, guid: 517b532ee5b58b340afee8d379fd599b,
+    type: 2}
 --- !u!196 &5
 NavMeshSettings:
   serializedVersion: 2
@@ -1160,68 +1161,6 @@ Transform:
   - {fileID: 874162881}
   m_Father: {fileID: 0}
   m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2047098081
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2047098083}
-  - component: {fileID: 2047098082}
-  m_Layer: 0
-  m_Name: ScreenLogger
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &2047098082
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2047098081}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa0afa61f775305429a6c5930482c488, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  IsPersistent: 1
-  ShowInEditor: 1
-  Height: 0.5
-  Width: 1
-  Margin: 20
-  AnchorPosition: 2
-  FontSize: 14
-  BackgroundOpacity: 0.5
-  BackgroundColor: {r: 0, g: 0, b: 0, a: 1}
-  LogMessages: 1
-  LogWarnings: 1
-  LogErrors: 1
-  MessageColor: {r: 1, g: 1, b: 1, a: 1}
-  WarningColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  ErrorColor: {r: 1, g: 0.5, b: 0.5, a: 1}
-  StackTraceMessages: 0
-  StackTraceWarnings: 0
-  StackTraceErrors: 1
---- !u!4 &2047098083
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2047098081}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2059986137
 GameObject:

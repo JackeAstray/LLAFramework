@@ -22,11 +22,11 @@ namespace GameLogic.EditorTools
             public static readonly GUIStyle entryEven;
             public static readonly GUIStyle entryOdd;
 
-            public static readonly string proSkinHighlightColor = "eeeeee";
-            public static readonly string proSkinNormalColor = "cccccc";
+            public static readonly string proSkinHighlightColor = "";
+            public static readonly string proSkinNormalColor = "";
 
-            public static readonly string personalSkinHighlightColor = "eeeeee";
-            public static readonly string personalSkinNormalColor = "222222";
+            public static readonly string personalSkinHighlightColor = "";
+            public static readonly string personalSkinNormalColor = "";
 
             static Styles()
             {

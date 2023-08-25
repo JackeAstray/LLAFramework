@@ -176,7 +176,7 @@ namespace GameLogic
         /// </summary>
         /// <param name="t"></param>
         /// <returns></returns>
-        public static RectTransform rectTransform(this Transform t)
+        public static RectTransform RectTransform(this Transform t)
         {
             if (t && t.gameObject)
                 return t.gameObject.GetComponent<RectTransform>();

@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+/// <summary>
+/// 屏幕Log工具
+/// </summary>
 public class ScreenLogger : MonoBehaviour
 {
     public enum LogAnchor
@@ -14,11 +17,11 @@ public class ScreenLogger : MonoBehaviour
     public bool IsPersistent = true;
     public bool ShowInEditor = true;
 
-    [Tooltip("Height of the log area as a percentage of the screen height")]
+    [Tooltip("日志区域的高度占屏幕高度的百分比")]
     [Range(0.3f, 1.0f)]
     public float Height = 0.5f;
 
-    [Tooltip("Width of the log area as a percentage of the screen width")]
+    [Tooltip("日志区域的宽度占屏幕宽度的百分比")]
     [Range(0.3f, 1.0f)]
     public float Width = 0.5f;
 
