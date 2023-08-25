@@ -11,10 +11,9 @@ namespace GameLogic
             var modules = base.CreateModules();
 
             modules.Add(ResourcesModule.Instance);
-            //modules.Add(DatabaseModule.Instance);
-            //modules.Add(EventModule.Instance);
-            //modules.Add(VITSServiceModule.Instance);
-            //modules.Add(AliyunTYQWModule.Instance);
+            modules.Add(DatabaseModule.Instance);
+            modules.Add(EventModule.Instance);
+            modules.Add(LanguagesModule.Instance);
 
             return modules;
         }

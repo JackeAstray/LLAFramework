@@ -9,7 +9,7 @@ namespace GameLogic
     /// </summary>
     public static class AppConfig
     {
-        //public static string DatabasePath = "AutoDatabase/";
-        //public static string UIPath = "Prefabs/UIs/";
+        public static string DatabasePath = "AutoDatabase/";
+        public static string UIPath = "Prefabs/UIs/";
     }
 }
