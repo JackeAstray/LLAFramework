@@ -23,7 +23,7 @@ namespace GameLogic
         /// <summary>
         /// 事件监听池
         /// </summary>
-        private Dictionary<EventType, DelegateEvent> eventTypeListeners = new Dictionary<EventType, DelegateEvent>();
+        private Dictionary<EventModuleType, DelegateEvent> eventTypeListeners = new Dictionary<EventModuleType, DelegateEvent>();
         /// <summary>
         /// 初始化
         /// </summary>
@@ -54,7 +54,7 @@ namespace GameLogic
         /// </summary>
         /// <param name="type">事件类型</param>
         /// <param name="listenerFunc">监听函数</param>
-        public void AddEventListener(EventType type, DelegateEvent.EventHandler listenerFunc)
+        public void AddEventListener(EventModuleType type, DelegateEvent.EventHandler listenerFunc)
         {
             DelegateEvent delegateEvent;
             if (eventTypeListeners.ContainsKey(type))
@@ -74,7 +74,7 @@ namespace GameLogic
         /// </summary>
         /// <param name="type">事件类型</param>
         /// <param name="listenerFunc">监听函数</param>
-        public void RemoveEventListener(EventType type, DelegateEvent.EventHandler listenerFunc)
+        public void RemoveEventListener(EventModuleType type, DelegateEvent.EventHandler listenerFunc)
         {
             if (listenerFunc == null)
             {
@@ -93,7 +93,7 @@ namespace GameLogic
         /// </summary>
         /// <param name="type">事件类型</param>
         /// <param name="data">事件的数据(可为null)</param>
-        public void DispatchEvent(EventType type, object data)
+        public void DispatchEvent(EventModuleType type, object data)
         {
             if (!eventTypeListeners.ContainsKey(type))
             {

@@ -12,7 +12,7 @@ namespace GameLogic
         /// <summary>
         /// 事件类型
         /// </summary>
-        public EventType type;
+        public EventModuleType type;
         /// <summary>
         /// 事件传递的数据
         /// </summary>
