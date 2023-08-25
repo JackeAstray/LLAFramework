@@ -20,10 +20,6 @@ namespace GameLogic
         LanguageSubject subject = new LanguageSubject();
         Multilingual multilingual;
         
-
-        string filePath = AppConfig.DatabasePath;
-        string fileName = "Languages.json";
-        //------------------------------
         public IEnumerator Init()
         {
             Log.Debug("LanguagesModule 初始化");
