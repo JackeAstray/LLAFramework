@@ -31,7 +31,7 @@ namespace GameLogic
                 return;
             }
 
-            s_LogHelper.Log(GameFrameworkLogLevel.Debug, message);
+            s_LogHelper.Log(GameLogicLogLevel.Debug, message);
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace GameLogic
                 return;
             }
 
-            s_LogHelper.Log(GameFrameworkLogLevel.Info, message);
+            s_LogHelper.Log(GameLogicLogLevel.Info, message);
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace GameLogic
                 return;
             }
 
-            s_LogHelper.Log(GameFrameworkLogLevel.Warning, message);
+            s_LogHelper.Log(GameLogicLogLevel.Warning, message);
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace GameLogic
                 return;
             }
 
-            s_LogHelper.Log(GameFrameworkLogLevel.Error, message);
+            s_LogHelper.Log(GameLogicLogLevel.Error, message);
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace GameLogic
                 return;
             }
 
-            s_LogHelper.Log(GameFrameworkLogLevel.Fatal, message);
+            s_LogHelper.Log(GameLogicLogLevel.Fatal, message);
         }
     }
 }

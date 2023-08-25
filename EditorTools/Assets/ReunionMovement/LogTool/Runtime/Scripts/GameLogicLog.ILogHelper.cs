@@ -16,7 +16,7 @@ namespace GameLogic
             /// </summary>
             /// <param name="level">游戏框架日志等级。</param>
             /// <param name="message">日志内容。</param>
-            void Log(GameFrameworkLogLevel level, object message);
+            void Log(GameLogicLogLevel level, object message);
         }
     }
 }

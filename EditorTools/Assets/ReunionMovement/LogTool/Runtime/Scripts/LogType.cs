@@ -7,7 +7,7 @@ namespace GameLogic
     /// <summary>
     /// 日志等级。
     /// </summary>
-    public enum GameFrameworkLogLevel : byte
+    public enum GameLogicLogLevel : byte
     {
         /// <summary>
         /// 调试。

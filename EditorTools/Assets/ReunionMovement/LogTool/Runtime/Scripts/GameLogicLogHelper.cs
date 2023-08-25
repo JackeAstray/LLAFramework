@@ -14,26 +14,26 @@ namespace GameLogic
         /// </summary>
         /// <param name="level">日志等级。</param>
         /// <param name="message">日志内容。</param>
-        public void Log(GameFrameworkLogLevel level, object message)
+        public void Log(GameLogicLogLevel level, object message)
         {
             switch (level)
             {
-                case GameFrameworkLogLevel.Debug:
+                case GameLogicLogLevel.Debug:
                     string msg = string.Format("<color=#80FF00>{0}</color>", message);
                     Debug.Log(msg);
                     break;
 
-                case GameFrameworkLogLevel.Info:
+                case GameLogicLogLevel.Info:
                     msg = string.Format("<color=#80FF00>{0}</color>", message);
                     Debug.Log(msg);
                     break;
 
-                case GameFrameworkLogLevel.Warning:
+                case GameLogicLogLevel.Warning:
                     msg = string.Format("<color=#FFCC00>{0}</color>", message);
                     Debug.LogWarning(msg);
                     break;
 
-                case GameFrameworkLogLevel.Error:
+                case GameLogicLogLevel.Error:
                     msg = string.Format("<color=#FF0040>{0}</color>", message);
                     Debug.LogError(msg);
                     break;

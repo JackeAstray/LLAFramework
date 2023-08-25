@@ -10,7 +10,7 @@ namespace GameLogic
         {
             var modules = base.CreateModules();
 
-            //modules.Add(ResourcesModule.Instance);
+            modules.Add(ResourcesModule.Instance);
             //modules.Add(DatabaseModule.Instance);
             //modules.Add(EventModule.Instance);
             //modules.Add(VITSServiceModule.Instance);

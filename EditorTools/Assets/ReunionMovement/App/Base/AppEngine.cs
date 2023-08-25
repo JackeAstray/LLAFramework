@@ -163,6 +163,14 @@ namespace GameLogic
                 time_update_per300ms = time + 0.3f;
                 UpdatePer300msEvent?.Invoke();
             }
+
+            if (GameModules.Count > 0)
+            {
+                foreach (CustommModuleInitialize module in GameModules)
+                {
+                    module.Update(Time.deltaTime, Time.unscaledDeltaTime);
+                }
+            }
         }
 
         /// <summary>
