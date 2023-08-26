@@ -114,16 +114,6 @@ namespace GameLogic
 
             GameObject.DontDestroyOnLoad(EventSystem);
         }
-
-        //public Camera GetUICamera()
-        //{
-        //    return UICamera;
-        //}
-
-        //public void SetAudioListener(bool value)
-        //{
-        //    UICamera.GetComponent<AudioListener>().enabled = value;
-        //}
         #endregion
 
         #region UI操作
