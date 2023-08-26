@@ -29,7 +29,6 @@ namespace GameLogic
         private string strPreSceneName = null;      // 上一个场景名
         private bool bLoading = false;              // 是否正在加载中
         private const string strLoadSceneName = "LoadingScene";  // 加载场景名字
-        private GameObject objLoadProgress = null;               // 加载进度显示对象
 
         public delegate void OnProgress(float progress);
         public event OnProgress GetProgress;
@@ -66,6 +65,7 @@ namespace GameLogic
 
         }
 
+        #region Load
         /// <summary>
         /// 返回上一场景
         /// </summary>
@@ -78,7 +78,6 @@ namespace GameLogic
             LoadScene(strPreSceneName);
         }
 
-        #region Load
         /// <summary>
         /// 加载场景
         /// </summary>
@@ -114,7 +113,7 @@ namespace GameLogic
         }
 
         /// <summary>
-        /// 加载-加载场景
+        /// 加载过渡场景
         /// </summary>
         /// <param name="OnSecenLoaded"></param>
         /// <param name="OnSceneProgress"></param>
@@ -155,7 +154,6 @@ namespace GameLogic
             }
         }
 
-
         /// <summary>
         /// 过渡场景加载完成回调
         /// </summary>
@@ -183,7 +181,6 @@ namespace GameLogic
                     return;
                 }
 
-                //await async;
                 CallbackProgress(0.15f);
 
                 await Task.Delay(TimeSpan.FromSeconds(0.2f));
@@ -194,9 +191,13 @@ namespace GameLogic
                     float fProgressValue;
 
                     if (async.progress < 0.9f)
+                    {
                         fProgressValue = async.progress;
+                    }
                     else
+                    {
                         fProgressValue = 1.0f;
+                    }
 
                     CallbackProgress(fProgressValue);
 
@@ -231,6 +232,10 @@ namespace GameLogic
             onSceneLoaded?.Invoke();
         }
 
+        /// <summary>
+        /// 回调用于返回进度
+        /// </summary>
+        /// <param name="progress"></param>
         public void CallbackProgress(float progress)
         {
             Log.Debug(progress);
@@ -242,6 +247,9 @@ namespace GameLogic
         #endregion
     }
 
+    /// <summary>
+    /// 异步操作等待器
+    /// </summary>
     public class AsyncOperationAwaiter : INotifyCompletion
     {
         public Action Continuation;

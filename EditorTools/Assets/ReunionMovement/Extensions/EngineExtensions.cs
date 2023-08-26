@@ -3,10 +3,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Net.Sockets;
+using System.Net;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using UnityEditor;
 using UnityEngine;
 
 namespace GameLogic
@@ -16,90 +21,7 @@ namespace GameLogic
     /// </summary>
     public static class EngineExtensions
     {
-        /// <summary>
-        /// 字符串转byte
-        /// </summary>
-        /// <param name="val"></param>
-        /// <returns></returns>
-        public static byte ToByte(this string val)
-        {
-            byte ret = 0;
-            try
-            {
-                if (!String.IsNullOrEmpty(val))
-                {
-                    ret = Convert.ToByte(val);
-                }
-            }
-            catch (Exception)
-            {
-            }
 
-            return ret;
-        }
-        /// <summary>
-        /// 字符串转int64
-        /// </summary>
-        /// <param name="val"></param>
-        /// <returns></returns>
-        public static long ToInt64(this string val)
-        {
-            long ret = 0;
-            try
-            {
-                if (!String.IsNullOrEmpty(val))
-                {
-                    ret = Convert.ToInt64(val);
-                }
-            }
-            catch (Exception)
-            {
-            }
-
-            return ret;
-        }
-        /// <summary>
-        /// 字符串转float
-        /// </summary>
-        /// <param name="val"></param>
-        /// <returns></returns>
-        public static float ToFloat(this string val)
-        {
-            float ret = 0;
-            try
-            {
-                if (!String.IsNullOrEmpty(val))
-                {
-                    ret = Convert.ToSingle(val);
-                }
-            }
-            catch (Exception)
-            {
-            }
-
-            return ret;
-        }
-        /// <summary>
-        /// 字符串转int32
-        /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        static public Int32 ToInt32(this string str)
-        {
-            Int32 ret = 0;
-            try
-            {
-                if (!String.IsNullOrEmpty(str))
-                {
-                    ret = Convert.ToInt32(str);
-                }
-            }
-            catch (Exception)
-            {
-            }
-
-            return ret;
-        }
 
         /// <summary>
         /// 从对象数组中获取
@@ -143,6 +65,35 @@ namespace GameLogic
             }
             return ret;
         }
+
+        #region Find
+        /// <summary>
+        /// 查找类型
+        /// </summary>
+        /// <param name="qualifiedTypeName"></param>
+        /// <returns></returns>
+        public static Type FindType(string qualifiedTypeName)
+        {
+            Type t = Type.GetType(qualifiedTypeName);
+
+            if (t != null)
+            {
+                return t;
+            }
+            else
+            {
+                Assembly[] Assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                for (int n = 0; n < Assemblies.Length; n++)
+                {
+                    Assembly asm = Assemblies[n];
+                    t = asm.GetType(qualifiedTypeName);
+                    if (t != null)
+                        return t;
+                }
+                return null;
+            }
+        }
+        #endregion
 
         #region object转换
 
@@ -261,6 +212,98 @@ namespace GameLogic
         public static float Random(float min, float max)
         {
             return UnityEngine.Random.Range(min, max + 1);
+        }
+
+        /// <summary>
+        /// 从一个List中随机获取
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static T GetRandomItemFromList<T>(IList<T> list)
+        {
+            if (list.Count == 0)
+                return default(T);
+
+            return list[UnityEngine.Random.Range(0, list.Count)];
+        }
+
+        /// <summary>
+        /// 波浪随机数整数版
+        /// </summary>
+        /// <param name="waveNumberStr"></param>
+        /// <returns></returns>
+        public static int GetWaveRandomNumberInt(string waveNumberStr)
+        {
+            return Mathf.RoundToInt(GetWaveRandomNumber(waveNumberStr));
+        }
+
+        /// <summary>
+        /// 获取波浪随机数,   即填“1”或填“1~2”这样的字符串中返回一个数！
+        /// 如填"1"，直接返回1
+        /// 如果填"1~10"这样的，那么随机返回1~10中间一个数
+        /// </summary>
+        /// <param name="waveNumberStr"></param>
+        /// <returns></returns>
+        public static float GetWaveRandomNumber(string waveNumberStr)
+        {
+            if (string.IsNullOrEmpty(waveNumberStr))
+                return 0;
+
+            var strs = waveNumberStr.Split('-', '~');
+            if (strs.Length == 1)
+            {
+                return waveNumberStr.ToFloat();
+            }
+
+            return UnityEngine.Random.Range(strs[0].ToFloat(), strs[1].ToFloat());
+        }
+
+        public struct FromToNumber
+        {
+            public float From;
+            public float To;
+        }
+
+        /// <summary>
+        /// 获取波浪随机数的最大最小
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static FromToNumber ParseMinMaxNumber(string str)
+        {
+            var rangeArr = EngineExtensions.Split<float>(str, '~', '-');
+            var number = new FromToNumber();
+            if (rangeArr.Count > 0)
+            {
+                number.From = rangeArr[0];
+            }
+            if (rangeArr.Count > 1)
+            {
+                number.To = rangeArr[1];
+            }
+            return number;
+        }
+
+        /// <summary>
+        /// 是否在波浪数之间
+        /// </summary>
+        /// <param name="waveNumberStr"></param>
+        /// <param name="testNumber"></param>
+        /// <returns></returns>
+        public static bool IsBetweenWave(string waveNumberStr, int testNumber)
+        {
+            if (string.IsNullOrEmpty(waveNumberStr))
+                return false;
+
+            var strs = waveNumberStr.Split('~');
+            if (strs.Length == 1)
+            {
+                return strs[0].ToInt32() == testNumber;
+            }
+            var min = strs[0].ToInt32();
+            var max = strs[1].ToInt32();
+            return testNumber >= min && testNumber <= max;
         }
         #endregion
 
@@ -411,6 +454,91 @@ namespace GameLogic
 
         #region 字符串
         /// <summary>
+        /// 字符串转byte
+        /// </summary>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        public static byte ToByte(this string val)
+        {
+            byte ret = 0;
+            try
+            {
+                if (!String.IsNullOrEmpty(val))
+                {
+                    ret = Convert.ToByte(val);
+                }
+            }
+            catch (Exception)
+            {
+            }
+
+            return ret;
+        }
+        /// <summary>
+        /// 字符串转int64
+        /// </summary>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        public static long ToInt64(this string val)
+        {
+            long ret = 0;
+            try
+            {
+                if (!String.IsNullOrEmpty(val))
+                {
+                    ret = Convert.ToInt64(val);
+                }
+            }
+            catch (Exception)
+            {
+            }
+
+            return ret;
+        }
+        /// <summary>
+        /// 字符串转float
+        /// </summary>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        public static float ToFloat(this string val)
+        {
+            float ret = 0;
+            try
+            {
+                if (!String.IsNullOrEmpty(val))
+                {
+                    ret = Convert.ToSingle(val);
+                }
+            }
+            catch (Exception)
+            {
+            }
+
+            return ret;
+        }
+        /// <summary>
+        /// 字符串转int32
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        static public Int32 ToInt32(this string str)
+        {
+            Int32 ret = 0;
+            try
+            {
+                if (!String.IsNullOrEmpty(str))
+                {
+                    ret = Convert.ToInt32(str);
+                }
+            }
+            catch (Exception)
+            {
+            }
+
+            return ret;
+        }
+
+        /// <summary>
         /// 得到字符串长度，一个汉字长度为2
         /// </summary>
         /// <param name="inputString"></param>
@@ -479,6 +607,106 @@ namespace GameLogic
         public static string CapitalFirstChar(string str)
         {
             return str[0].ToString().ToUpper() + str.Substring(1);
+        }
+
+        /// <summary>
+        /// 首字母大写
+        /// </summary>
+        /// <param name="word"></param>
+        /// <returns></returns>
+        public static string ToTitleCase(string word)
+        {
+            return word.Substring(0, 1).ToUpper() + (word.Length > 1 ? word.Substring(1).ToLower() : "");
+        }
+
+        /// <summary>
+        /// 首字母大写变下划线
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static string ToSentenceCase(string str)
+        {
+            str = char.ToLower(str[0]) + str.Substring(1);
+            return Regex.Replace(str, "[a-z][A-Z]",
+                (m) => { return char.ToLower(m.Value[0]) + "_" + char.ToLower(m.Value[1]); });
+        }
+
+        /// <summary>
+        /// 截断字符串变成数组
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="str"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public static List<T> Split<T>(string str, params char[] args)
+        {
+            if (args.Length == 0)
+            {
+                args = new[] { '|' }; // 默认
+            }
+
+            var retList = new List<T>();
+            if (!string.IsNullOrEmpty(str))
+            {
+                string[] strs = str.Split(args);
+
+                foreach (string s in strs)
+                {
+                    string trimS = s.Trim();
+                    if (!string.IsNullOrEmpty(trimS))
+                    {
+                        T val = (T)Convert.ChangeType(trimS, typeof(T));
+                        if (val != null)
+                        {
+                            retList.Add(val);
+                        }
+                    }
+                }
+            }
+            return retList;
+        }
+
+        /// <summary>
+        /// 判断字符串是否是数字
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static bool IsNumber(string str)
+        {
+            if (string.IsNullOrEmpty(str))
+            {
+                Log.Warning("传入的值为空！请检查");
+                return false;
+            }
+            var pattern = @"^\d*$";
+            return Regex.IsMatch(str, pattern);
+        }
+
+        /// <summary>
+        /// 人性化数字显示，百万，千万，亿
+        /// </summary>
+        /// <param name="number"></param>
+        /// <returns></returns>
+        public static string HumanizeNumber(int number)
+        {
+            if (number > 100000000)
+            {
+                return string.Format("{0}{1}", number / 100000000, "亿");
+            }
+            else if (number > 10000000)
+            {
+                return string.Format("{0}{1}", number / 10000000, "千万");
+            }
+            else if (number > 1000000)
+            {
+                return string.Format("{0}{1}", number / 1000000, "百万");
+            }
+            else if (number > 10000)
+            {
+                return string.Format("{0}{1}", number / 10000, "万");
+            }
+
+            return number.ToString();
         }
         #endregion
 
@@ -636,6 +864,29 @@ namespace GameLogic
 
         #region 计算公式
         /// <summary>
+        /// 计算最大公约数
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static int GetGCD(int a, int b)
+        {
+            if (a < b)
+            {
+                int t = a;
+                a = b;
+                b = t;
+            }
+            while (b > 0)
+            {
+                int t = a % b;
+                a = b;
+                b = t;
+            }
+            return a;
+        }
+
+        /// <summary>
         /// 计算中心点
         /// </summary>
         /// <param name="Points"></param>
@@ -705,6 +956,43 @@ namespace GameLogic
         }
 
         /// <summary>
+        /// 两线交点（忽略长度）
+        /// </summary>
+        /// <param name="intersectPoint"></param>
+        /// <param name="ps1"></param>
+        /// <param name="pe1"></param>
+        /// <param name="ps2"></param>
+        /// <param name="pe2"></param>
+        /// <returns></returns>
+        public static bool LineIntersectionPoint(out Vector2 intersectPoint, Vector2 ps1, Vector2 pe1, Vector2 ps2,
+            Vector2 pe2)
+        {
+            intersectPoint = Vector2.zero;
+
+            // 获取第一行的A、B、C-点：ps1到pe1
+            float A1 = pe1.y - ps1.y;
+            float B1 = ps1.x - pe1.x;
+            float C1 = A1 * ps1.x + B1 * ps1.y;
+
+            // 获取第二行的A、B、C点：ps2到pe2
+            float A2 = pe2.y - ps2.y;
+            float B2 = ps2.x - pe2.x;
+            float C2 = A2 * ps2.x + B2 * ps2.y;
+
+            // 获取delta并检查直线是否平行
+            float delta = A1 * B2 - A2 * B1;
+            if (delta == 0)
+                return false;
+
+            // 现在返回Vector2的交点
+            intersectPoint = new Vector2(
+                (B2 * C1 - B1 * C2) / delta,
+                (A1 * C2 - A2 * C1) / delta
+                );
+            return true;
+        }
+
+        /// <summary>
         /// 获取两点之间距离一定百分比的一个点
         /// </summary>
         /// <param name="start">起始点</param>
@@ -745,6 +1033,24 @@ namespace GameLogic
         }
 
         /// <summary>
+        /// 获取椭圆上的某一点，相对坐标
+        /// </summary>
+        /// <param name="longHalfAxis">长半轴即目标距离</param>
+        /// <param name="shortHalfAxis">短半轴</param>
+        /// <param name="angle"></param>
+        /// <returns></returns>
+        public static Vector2 GetRelativePositionOfEllipse(float longHalfAxis, float shortHalfAxis, float angle)
+        {
+            var rad = angle * Mathf.Deg2Rad; // 弧度
+            var newPos = new Vector2(longHalfAxis * Mathf.Cos(rad), shortHalfAxis * Mathf.Sin(rad));
+            return newPos;
+        }
+        public static float Angle(Vector2 from, Vector2 to)
+        {
+            return Quaternion.FromToRotation(from.normalized, to.normalized).eulerAngles.z;
+        }
+
+        /// <summary>
         /// 判断物体左右转转
         /// </summary>
         /// <param name="var1"></param>
@@ -776,6 +1082,171 @@ namespace GameLogic
             }
 
             return direction;
+        }
+
+        /// <summary>
+        /// 文件大小格式化显示成KB，MB,GB
+        /// </summary>
+        /// <param name="size">字节</param>
+        public static String FormatFileSize(long size)
+        {
+            int GB = 1024 * 1024 * 1024;
+            int MB = 1024 * 1024;
+            int KB = 1024;
+
+            if (size / GB >= 1)
+            {
+                return Math.Round(size / (float)GB, 2) + "GB";
+            }
+
+            if (size / MB >= 1)
+            {
+                return Math.Round(size / (float)MB, 2) + "MB";
+            }
+
+            if (size / KB >= 1)
+            {
+                return Math.Round(size / (float)KB, 2) + "KB";
+            }
+
+            return size + "B";
+        }
+
+        /// <summary>
+        /// 數組值比較
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="a1"></param>
+        /// <param name="a2"></param>
+        /// <returns></returns>
+        public static bool ArraysEqual<T>(T[] a1, T[] a2)
+        {
+            if (ReferenceEquals(a1, a2))
+                return true;
+
+            if (a1 == null || a2 == null)
+                return false;
+
+            if (a1.Length != a2.Length)
+                return false;
+
+            EqualityComparer<T> comparer = EqualityComparer<T>.Default;
+            for (int i = 0; i < a1.Length; i++)
+            {
+                if (!comparer.Equals(a1[i], a2[i])) return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 概率，百分比 FLOAT
+        /// 注意，0的时候当是100%
+        /// </summary>
+        /// <param name="chancePercent"></param>
+        /// <returns></returns>
+        public static bool Probability(float chancePercent)
+        {
+            var chance = UnityEngine.Random.Range(0f, 100f);
+
+            if (chance <= chancePercent) // 概率
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 概率，百分比 BYTE
+        /// </summary>
+        /// <param name="chancePercent"></param>
+        /// <returns></returns>
+        public static bool Probability(byte chancePercent)
+        {
+            int chance = UnityEngine.Random.Range(1, 101);
+
+            if (chance <= chancePercent) // 概率
+            {
+                return true;
+            }
+
+            return false;
+        }
+        #endregion
+
+        #region 获取硬件信息
+        /// <summary>
+        /// 取本机主机ip
+        /// </summary>
+        /// <returns></returns>
+        public static string GetLocalIP()
+        {
+            try
+            {
+                string HostName = Dns.GetHostName(); //得到主机名
+                IPHostEntry IpEntry = Dns.GetHostEntry(HostName);
+                for (int i = 0; i < IpEntry.AddressList.Length; i++)
+                {
+                    //从IP地址列表中筛选出IPv4类型的IP地址
+                    //AddressFamily.InterNetwork表示此IP为IPv4,AddressFamily.InterNetworkV6表示此地址为IPv6类型
+                    if (IpEntry.AddressList[i].AddressFamily == AddressFamily.InterNetwork)
+                    {
+                        return IpEntry.AddressList[i].ToString();
+                    }
+                }
+                return "";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        /// <summary>
+        /// 从IpHostEntry获取IP地址，配合GetIpAddress
+        /// </summary>
+        /// <param name="ipHostEntry"></param>
+        /// <returns></returns>
+        public static IPAddress GetIpAddressFromIpHostEntry(IPHostEntry ipHostEntry)
+        {
+            var addresses = ipHostEntry.AddressList;
+
+            foreach (var item in addresses)
+            {
+                if (item.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return item;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 异步获取IP地址
+        /// </summary>
+        /// <param name="host"></param>
+        /// <param name="callback"></param>
+        public static void GetIpAddress(string host, Action<IPAddress> callback = null)
+        {
+            IPAddress ipAddress = null;
+            if (!IPAddress.TryParse(host, out ipAddress))
+            {
+                Dns.BeginGetHostAddresses(host, new AsyncCallback((asyncResult) =>
+                {
+                    IPAddress[] addrs = Dns.EndGetHostAddresses(asyncResult);
+                    if (callback != null)
+                    {
+                        if (addrs.Length > 0)
+                            ipAddress = addrs[0];
+                        callback(ipAddress);
+                    }
+                }), null);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(ipAddress);
+            }
         }
         #endregion
     }

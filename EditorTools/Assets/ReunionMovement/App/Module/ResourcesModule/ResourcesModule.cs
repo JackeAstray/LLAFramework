@@ -125,6 +125,9 @@ namespace GameLogic
         }
     }
 
+    /// <summary>
+    /// 资源请求等待器
+    /// </summary>
     public class ResourceRequestAwaiter : INotifyCompletion
     {
         public Action Continuation;

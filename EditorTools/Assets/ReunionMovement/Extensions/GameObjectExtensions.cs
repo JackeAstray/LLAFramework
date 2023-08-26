@@ -284,6 +284,22 @@ namespace GameLogic
             return null;
         }
 
+        /// <summary>
+        /// 递归设置游戏对象的层
+        /// </summary>
+        public static void SetLayer(GameObject go, int layer)
+        {
+            go.layer = layer;
+
+            var t = go.transform;
+
+            for (int i = 0, imax = t.childCount; i < imax; ++i)
+            {
+                var child = t.GetChild(i);
+                SetLayer(child.gameObject, layer);
+            }
+        }
+
         #region 查找子对象
         /// <summary>
         /// 查找子对象
