@@ -4,12 +4,9 @@ using UnityEngine;
 
 namespace GameLogic
 {
-    //加载状态
-    public enum LoadState
+    public enum LoaderMode
     {
-        Not,
-        Loading,
-        Successfully,
-        Failed,
+        Async,
+        Sync,
     }
 }

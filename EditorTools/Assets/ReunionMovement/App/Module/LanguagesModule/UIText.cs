@@ -13,7 +13,6 @@ namespace GameLogic
     {
         [SerializeField]
         private int key;
-        // Use this for initialization
 
         void Start()
         {
@@ -41,7 +40,7 @@ namespace GameLogic
             }
             else
             {
-                //Debug.Log("GetTextLanguage() "+ key + "是空的");
+                Log.Debug("GetTextLanguage() "+ key + "是空的");
             }
         }
 

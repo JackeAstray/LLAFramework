@@ -10,7 +10,7 @@ using UnityEngine.UIElements;
 namespace GameLogic.EditorTools
 {
     /// <summary>
-    /// 焦点搜索工具
+    /// 焦点工具
     /// </summary>
     public class EditorSpotlight : EditorWindow, IHasCustomMenu
     {

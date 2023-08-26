@@ -14,6 +14,7 @@ namespace GameLogic
             modules.Add(DatabaseModule.Instance);
             modules.Add(EventModule.Instance);
             modules.Add(LanguagesModule.Instance);
+            modules.Add(SceneModule.Instance);
 
             return modules;
         }

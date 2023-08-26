@@ -4,12 +4,14 @@ using log4net.Repository.Hierarchy;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Security.AccessControl;
 using UnityEditor;
 using UnityEditor.PackageManager.UI;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static UnityEditor.Progress;
 
 namespace GameLogic.EditorTools
 {
@@ -17,7 +19,6 @@ namespace GameLogic.EditorTools
     {
         public static List<string> scenesName = new List<string>();
         public static List<string> scenePaths = new List<string>();
-        public static int sceneIndex;
 
         public void OnEnable()
         {
@@ -38,7 +39,32 @@ namespace GameLogic.EditorTools
 
         void OnGUI()
         {
+
+            #region 屏幕日志
             GUILayout.Label("屏幕日志");
+            GUILayout.BeginHorizontal(); //开始水平布局
+            if (GUILayout.Button("生成屏幕日志控件", GUILayout.Width(195)))
+            {
+                CreateLogComponent();
+            }
+            if (GUILayout.Button("移除屏幕日志控件", GUILayout.Width(195)))
+            {
+                CloseLogComponent();
+            }
+            GUILayout.EndHorizontal(); //结束水平布局
+            #endregion
+
+            #region 语言
+            //GUILayout.BeginHorizontal(); //开始水平布局
+            //if (GUILayout.Button("给选择对象添加语言脚本", GUILayout.Width(195)))
+            //{
+                
+            //}
+            //GUILayout.EndHorizontal(); //结束水平布局
+            #endregion
+
+            GUILayout.Space(15);
+
             GUILayout.BeginHorizontal(); //开始水平布局
             if (GUILayout.Button("生成屏幕日志控件", GUILayout.Width(195)))
             {
@@ -52,18 +78,20 @@ namespace GameLogic.EditorTools
 
             GUILayout.Space(15);
 
+            #region 场景切换
             GUILayout.Label("场景切换");
-            GUILayout.BeginHorizontal(); //开始水平布局
+            GUILayout.BeginVertical(); //开始垂直布局
 
-            int index = EditorGUILayout.Popup(sceneIndex, scenesName.ToArray());
-
-            if (index != sceneIndex)
+            for (int i = 0; i < scenesName.Count; i++)
             {
-                sceneIndex = index;
-                LoadScene(sceneIndex);
+                if (GUILayout.Button(scenesName[i]))
+                {
+                    LoadScene(scenePaths[i]);
+                }
             }
 
-            GUILayout.EndHorizontal(); //结束水平布局
+            GUILayout.EndVertical(); //结束垂直布局
+            #endregion
         }
 
         /// <summary>
@@ -121,29 +149,30 @@ namespace GameLogic.EditorTools
             scenesName.Clear();
             scenePaths.Clear();
 
-            if (EditorSceneManager.sceneCountInBuildSettings > 0)
+            foreach (UnityEditor.EditorBuildSettingsScene scene in UnityEditor.EditorBuildSettings.scenes)
             {
-                for (int i = 0; i < EditorSceneManager.sceneCountInBuildSettings; i++)
+                string tempPath = scene.path;
+                scenePaths.Add(tempPath);
+
+                string[] Name = tempPath.Split('/');
+
+                foreach (var item in Name)
                 {
-                    string path = SceneUtility.GetScenePathByBuildIndex(i);
-                    
-                    if (!string.IsNullOrEmpty(path))
+                    if (item.Contains(".unity"))
                     {
-                        scenePaths.Add(path);
-                        scenesName.Add(path);
+                        scenesName.Add(item.Substring(0, item.IndexOf('.')));
                     }
                 }
             }
-            sceneIndex = 0;
         }
 
         /// <summary>
         /// 加载场景
         /// </summary>
         /// <param name="inedx"></param>
-        public void LoadScene(int inedx)
+        public void LoadScene(string scenePaths)
         {
-            EditorSceneManager.OpenScene(scenePaths[inedx],OpenSceneMode.Single);
+            EditorSceneManager.OpenScene(scenePaths, OpenSceneMode.Single);
         }
     }
 }
