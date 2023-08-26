@@ -94,19 +94,6 @@ namespace GameLogic
             HeadInfoUIRoot.transform.SetParent(UIRoot.transform, true);
             TipsUIRoot.transform.SetParent(UIRoot.transform, true);
 
-            ////create camera
-            //UICamera = new GameObject("UICamera").AddComponent<Camera>();
-            //UICamera.GetUniversalAdditionalCameraData().renderType = CameraRenderType.Overlay;
-            //UICamera.transform.SetParent(UIRoot.transform, true);
-            //UICamera.cullingMask = (1 << (int)UnityLayerDef.UI);
-            //UICamera.clearFlags = CameraClearFlags.Depth;
-            //UICamera.nearClipPlane = UIDefs.Camera_Near;
-            //UICamera.farClipPlane = UIDefs.Camera_Far;
-            //UICamera.orthographic = false;
-            //UICamera.orthographicSize = UIDefs.Camera_Size;
-            //UICamera.depth = UIDefs.Camera_Depth;
-            //UICamera.gameObject.AddComponent<AudioListener>();
-
             GameObject.DontDestroyOnLoad(UIRoot);
 
             EventSystem = new GameObject("EventSystem").AddComponent<EventSystem>();
@@ -149,11 +136,6 @@ namespace GameLogic
                     uiObj.transform.SetParent(UIRoot.transform);
                     break;
             }
-
-            //if (canvas.renderMode == RenderMode.ScreenSpaceCamera)
-            //{
-            //    canvas.worldCamera = UICamera;
-            //}
         }
 
         /// <summary>
