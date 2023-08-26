@@ -14,6 +14,8 @@ namespace GameLogic
             modules.Add(DatabaseModule.Instance);
             modules.Add(EventModule.Instance);
             modules.Add(LanguagesModule.Instance);
+            modules.Add(SoundModule.Instance);
+            modules.Add(UIModule.Instance);
             modules.Add(SceneModule.Instance);
 
             return modules;
@@ -45,6 +47,8 @@ namespace GameLogic
 
         public IEnumerator StartGameShow()
         {
+            UIModule.Instance.OpenWindow("StartAppUIPlane");
+
             yield return new WaitForSeconds(0f);
         }
 

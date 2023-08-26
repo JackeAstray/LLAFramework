@@ -34,7 +34,11 @@ namespace GameLogic.EditorTools
         public static void ShowWindow()
         {
             //弹出编辑器
-            GetWindow(typeof(GenerateScript), true, "生成新脚本", true);
+            GenerateScript generateScript = GetWindow<GenerateScript>(true, "生成新脚本", true);
+            // 窗口的尺寸
+            Vector2 windowSize = new Vector2(400, 600);
+            // 设置最小尺寸
+            generateScript.minSize = windowSize;
         }
 
         void OnGUI()

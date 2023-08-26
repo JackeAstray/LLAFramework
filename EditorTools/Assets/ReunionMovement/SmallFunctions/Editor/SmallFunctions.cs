@@ -25,7 +25,7 @@ namespace GameLogic.EditorTools
 
         }
 
-        [MenuItem("工具箱/小功能", false, 5)]
+        [MenuItem("工具箱/小功能", false, 6)]
         public static void SmallFunctionsWindow()
         {
             GetAllScene();

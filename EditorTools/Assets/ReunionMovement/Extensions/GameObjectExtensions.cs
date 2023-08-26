@@ -377,5 +377,31 @@ namespace GameLogic
                 }
             }
         }
+
+        /// <summary>
+        /// 清除所有子节点
+        /// </summary>
+        /// <param name="go"></param>
+        public static void ThisClearChild(this GameObject go)
+        {
+            var tran = go.transform;
+
+            while (tran.childCount > 0)
+            {
+                var child = tran.GetChild(0);
+
+                if (Application.isEditor && !Application.isPlaying)
+                {
+                    child.parent = null; // 清空父, 因为.Destroy非同步的
+                    GameObject.DestroyImmediate(child.gameObject);
+                }
+                else
+                {
+                    GameObject.Destroy(child.gameObject);
+                    // 预防触发对象的OnEnable，先Destroy
+                    child.parent = null; // 清空父, 因为.Destroy非同步的
+                }
+            }
+        }
     }
 }

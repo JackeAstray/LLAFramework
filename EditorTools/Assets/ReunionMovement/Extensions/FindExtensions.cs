@@ -29,9 +29,8 @@ public static class FindExtensions
         {
             if (raise_error)
             {
-                Debug.LogError("FindChild faild. go is null!");
+                Log.Error("查找失败，go是空的！");
             }
-
             return null;
         }
 
@@ -48,13 +47,10 @@ public static class FindExtensions
             var com = t.GetComponent<T>();
             if (com == null && raise_error)
             {
-                Debug.LogError(string.Format("FindChild<T> faild. {0} Not Have Component:{1}", t, typeof(T)));
+                Log.Error(string.Format("查找<T>失败. {0} 没有找到部件:{1}", t, typeof(T)));
             }
-
             return com;
         }
-
-        //        return null;
         return default(T);
     }
 
@@ -64,7 +60,7 @@ public static class FindExtensions
         {
             if (raise_error)
             {
-                Debug.LogError("FindChild faild. findTrans is null!");
+                Log.Error("查找失败. findTrans是空的!");
             }
 
             return null;
@@ -88,7 +84,7 @@ public static class FindExtensions
                 {
                     if (raise_error)
                     {
-                        Debug.LogError(string.Format("FindChild failed, id:{0} ,parent={1}", id, transform.name));
+                        Log.Error(string.Format("FindChild failed, id:{0} ,parent={1}", id, transform.name));
                         break;
                     }
 
@@ -101,7 +97,9 @@ public static class FindExtensions
 
         findTrans = FindChildDirect(findTrans, id, check_visible);
         if (findTrans == null && raise_error)
-            Debug.LogError(string.Format("FindChild failed, id:{0},parent={1}", id, transform));
+        {
+            Log.Error(string.Format("查找失败, id:{0},parent={1}", id, transform));
+        }
         return findTrans;
     }
 
@@ -110,6 +108,13 @@ public static class FindExtensions
         return FindChild(t, id, check_visible, raise_error);
     }
 
+    /// <summary>
+    /// 直接查找子项
+    /// </summary>
+    /// <param name="trans"></param>
+    /// <param name="id"></param>
+    /// <param name="check_visible"></param>
+    /// <returns></returns>
     private static Transform FindChildDirect(Transform trans, string id, bool check_visible)
     {
         Profiler.BeginSample("FindChildDirect");

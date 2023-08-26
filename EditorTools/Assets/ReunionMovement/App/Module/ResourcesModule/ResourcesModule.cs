@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.U2D;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
+using Object = UnityEngine.Object;
 
 namespace GameLogic
 {
@@ -112,6 +112,49 @@ namespace GameLogic
             }
 
             return sprite;
+        }
+
+        /// <summary>
+        /// 实例化资源
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public T InstantiateAsset<T>(string path) where T : Object
+        {
+            var obj = Load<T>(path);
+            var go = GameObject.Instantiate<T>(obj);
+            if (go == null)
+                Log.Error(string.Format("实例化 {0} 失败!", obj));
+            return go;
+        }
+
+        /// <summary>
+        /// 移除单个数据缓存
+        /// </summary>
+        /// <param name="path"></param>
+        public void DeleteAssetCache(string path)
+        {
+            if (_resourceTable.ContainsKey(path))
+            {
+                _resourceTable.Remove(path);
+            }
+        }
+
+        /// <summary>
+        /// 清除资源缓存
+        /// </summary>
+        public void ClearAssetsCache()
+        {
+            foreach (Object asset in _resourceTable)
+            {
+#if UNITY_EDITOR
+                GameObject.DestroyImmediate(asset, true);
+#else
+                GameObject.DestroyObject(asset);
+#endif
+            }
+            _resourceTable.Clear();
         }
 
         /// <summary>
