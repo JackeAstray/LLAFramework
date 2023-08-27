@@ -23,10 +23,13 @@ namespace GameLogic
         Dictionary<int, GameConfig> gameConfigs = new Dictionary<int, GameConfig>();
         // 语言配置表
         Dictionary<int, Languages> languages = new Dictionary<int, Languages>();
+        // 声音配置表
+        Dictionary<int, AudioConfig> audios = new Dictionary<int, AudioConfig>();
 
         string filePath = AppConfig.DatabasePath;
         string gameConfig_FileName = "GameConfig.json";
         string languages_FileName = "Languages.json";
+        string audios_FileName = "AudioConfig.json";
 
         public IEnumerator Init()
         {
@@ -52,6 +55,8 @@ namespace GameLogic
             LoadGameConfig();
             //------------------------------------
             LoadLanguages();
+            //------------------------------------
+            LoadAudioConfig();
 
             Log.Debug("初始化，加载Database");
         }
@@ -61,7 +66,7 @@ namespace GameLogic
         /// </summary>
         /// <param name="elapseSeconds">逻辑流逝时间，以秒为单位。</param>
         /// <param name="realElapseSeconds">真实流逝时间，以秒为单位。</param>
-        public void Update(float elapseSeconds, float realElapseSeconds)
+        public void UpdateTime(float elapseSeconds, float realElapseSeconds)
         {
 
         }
@@ -70,23 +75,23 @@ namespace GameLogic
 
         public void LoadGameConfig()
         {
-            List<GameConfig> gameConfigList = new List<GameConfig>();
+            List<GameConfig> configs = new List<GameConfig>();
             //获取完整路径
             string fullPath;
             bool exists = PathUtils.GetFullPath(filePath + gameConfig_FileName, out fullPath);
             if (exists)
             {
                 string content = PathUtils.ReadFile(filePath, gameConfig_FileName);
-                gameConfigList = JsonMapper.ToObject<List<GameConfig>>(content);
+                configs = JsonMapper.ToObject<List<GameConfig>>(content);
             }
             else
             {
                 TextAsset json = ResourcesModule.Instance.Load<TextAsset>("AutoDatabase/GameConfig");
                 PathUtils.WriteFile(json.text, filePath, gameConfig_FileName);
-                gameConfigList = JsonMapper.ToObject<List<GameConfig>>(json.text);
+                configs = JsonMapper.ToObject<List<GameConfig>>(json.text);
             }
 
-            foreach (GameConfig tempData in gameConfigList)
+            foreach (GameConfig tempData in configs)
             {
                 gameConfigs.Add(tempData.Id, tempData);
             }
@@ -94,13 +99,25 @@ namespace GameLogic
 
         public void LoadLanguages()
         {
-            List<Languages> languagesConfigs = new List<Languages>();
+            List<Languages> configs = new List<Languages>();
             TextAsset json = ResourcesModule.Instance.Load<TextAsset>("AutoDatabase/Languages");
-            languagesConfigs = JsonMapper.ToObject<List<Languages>>(json.text);
+            configs = JsonMapper.ToObject<List<Languages>>(json.text);
 
-            foreach (Languages tempData in languagesConfigs)
+            foreach (Languages tempData in configs)
             {
                 languages.Add(tempData.Id, tempData);
+            }
+        }
+
+        public void LoadAudioConfig()
+        {
+            List<AudioConfig> configs = new List<AudioConfig>();
+            TextAsset json = ResourcesModule.Instance.Load<TextAsset>("AutoDatabase/AudioConfig");
+            configs = JsonMapper.ToObject<List<AudioConfig>>(json.text);
+
+            foreach (AudioConfig tempData in configs)
+            {
+                audios.Add(tempData.Id, tempData);
             }
         }
         #endregion
@@ -138,6 +155,13 @@ namespace GameLogic
             List<Languages> tempList = languages.Values.ToList();
             string jsonStr = JsonMapper.ToJson(tempList, true);
             PathUtils.WriteFile(jsonStr, filePath, languages_FileName);
+        }
+
+        public void SaveAudioConfig()
+        {
+            List<AudioConfig> tempList = audios.Values.ToList();
+            string jsonStr = JsonMapper.ToJson(tempList, true);
+            PathUtils.WriteFile(jsonStr, filePath, audios_FileName);
         }
         #endregion
     }

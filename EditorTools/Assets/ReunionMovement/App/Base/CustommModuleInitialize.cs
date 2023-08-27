@@ -25,7 +25,7 @@ namespace GameLogic
         /// </summary>
         /// <param name="elapseSeconds">逻辑流逝时间，以秒为单位。</param>
         /// <param name="realElapseSeconds">真实流逝时间，以秒为单位。(timeScale从上一帧到当前帧的独立间隔（秒）)</param>
-        void Update(float elapseSeconds, float realElapseSeconds);
+        void UpdateTime(float elapseSeconds, float realElapseSeconds);
 
         /// <summary>
         /// 清除数据

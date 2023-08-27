@@ -168,7 +168,7 @@ namespace GameLogic
             {
                 foreach (CustommModuleInitialize module in GameModules)
                 {
-                    module.Update(Time.deltaTime, Time.unscaledDeltaTime);
+                    module.UpdateTime(Time.deltaTime, Time.unscaledDeltaTime);
                 }
             }
         }
