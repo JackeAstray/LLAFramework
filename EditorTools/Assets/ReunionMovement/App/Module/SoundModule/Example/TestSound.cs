@@ -21,4 +21,10 @@ public class TestSound : MonoBehaviour
     {
         SoundModule.Instance.PlaySound(120012);
     }
+
+
+    public void PlaySwitch()
+    {
+        SoundModule.Instance.PlaySwitch(100002);
+    }
 }

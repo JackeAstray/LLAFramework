@@ -24,8 +24,10 @@ namespace GameLogic
         public GameObject root { get; private set; }
 
         private SoundModuleSettings settings;
-        AudioSource sourceObj;
+        AudioSource sourceAS;
         int currentMusicIndex;
+        public float fadeDuration = 3.0f;
+        public float targetVolume = 1.0f;
 
         public IEnumerator Init()
         {
@@ -60,7 +62,7 @@ namespace GameLogic
         public void CreateAudioRootAndInit()
         {
             root = new GameObject("AudioRoot");
-            sourceObj = root.AddComponent<AudioSource>();
+            sourceAS = root.AddComponent<AudioSource>();
             GameObject.DontDestroyOnLoad(root);
 
             settings = new SoundModuleSettings();
@@ -72,20 +74,21 @@ namespace GameLogic
         /// 播放音乐
         /// </summary>
         /// <param name="name"></param>
-        public void PlayMusic(int index)
+        public void PlayMusic(int index, float volume = -1)
         {
-            if (sourceObj.clip == null || !sourceObj.isPlaying)
+            if (sourceAS.clip == null || !sourceAS.isPlaying)
             {
                 SoundConfig soundConfig = DatabaseModule.Instance.GetSoundConfig(index);
 
                 if (soundConfig != null)
                 {
+                    currentMusicIndex = index;
                     AudioClip audioClip = ResourcesModule.Instance.Load<AudioClip>(soundConfig.Path + soundConfig.Name);
-                    sourceObj.clip = audioClip;
-                    sourceObj.volume = settings.GetMusicVolume();
-                    sourceObj.loop = true;
-                    sourceObj.mute = settings.GetMusicMuted();
-                    sourceObj.Play();
+                    sourceAS.clip = audioClip;
+                    sourceAS.volume = volume == -1 ? settings.GetMusicVolume() : volume;
+                    sourceAS.loop = true;
+                    sourceAS.mute = settings.GetMusicMuted();
+                    sourceAS.Play();
                 }
             }
         }
@@ -95,9 +98,9 @@ namespace GameLogic
         /// </summary>
         public void PauseMusic()
         {
-            if (sourceObj != null)
+            if (sourceAS != null)
             {
-                sourceObj.Pause();
+                sourceAS.Pause();
             }
         }
 
@@ -106,11 +109,72 @@ namespace GameLogic
         /// </summary>
         public void StopMusic()
         {
-            if (sourceObj != null)
+            if (sourceAS != null)
             {
-                sourceObj.Stop();
+                sourceAS.Stop();
             }
         }
+
+        /// <summary>
+        /// 音乐切换-带渐入渐出效果
+        /// </summary>
+        /// <param name="index"></param>
+        public async void PlaySwitch(int index)
+        {
+            // 渐出音频
+            await FadeOut();
+
+            //播放音乐
+            PlayMusic(index, 0);
+
+            // 渐入音频
+            await FadeIn();
+        }
+
+        /// <summary>
+        /// 渐入
+        /// </summary>
+        /// <returns></returns>
+        private async Task FadeIn()
+        {
+            float startVolume = 0;
+            float startTime = Time.time;
+            targetVolume = settings.GetMusicVolume();
+
+            while (sourceAS.volume < targetVolume)
+            {
+                float elapsedTime = Time.time - startTime;
+                float t = Mathf.Clamp01(elapsedTime / fadeDuration);
+
+                sourceAS.volume = Mathf.Lerp(startVolume, targetVolume, t);
+
+                await Task.Yield();
+            }
+        }
+
+        /// <summary>
+        /// 渐出
+        /// </summary>
+        /// <returns></returns>
+        private async Task FadeOut()
+        {
+            float startVolume = sourceAS.volume;
+            float startTime = Time.time;
+
+            while (sourceAS.volume > 0.0f)
+            {
+                float elapsedTime = Time.time - startTime;
+                float t = Mathf.Clamp01(elapsedTime / fadeDuration);
+
+                sourceAS.volume = Mathf.Lerp(startVolume, 0.0f, t);
+
+                await Task.Yield();
+            }
+
+            sourceAS.Stop();
+        }
+
+        //--------------------------
 
         /// <summary>
         /// 播放声音

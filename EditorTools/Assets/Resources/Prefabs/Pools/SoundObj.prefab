@@ -46,9 +46,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clip: {fileID: 0}
-  emitter: {fileID: 0}
-  volume: 0
-  loop: 0
 --- !u!82 &7177582378226866920
 AudioSource:
   m_ObjectHideFlags: 0
