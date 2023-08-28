@@ -8,7 +8,7 @@ namespace GameLogic
     /// <summary>
     /// 声音管理器设置
     /// </summary>
-    public class SoundModuleSettings : ScriptableObject
+    public class SoundModuleSettings
     {
         //自动暂停
         public bool AutoPause = true;
@@ -24,8 +24,8 @@ namespace GameLogic
         public AudioMixerGroup MusicAudioMixerGroup;
         public AudioMixerGroup SoundAudioMixerGroup;
 
-        //预加载的AudioClip
-        public AudioClip[] PreloadedLoadedClips;
+        ////预加载的AudioClip
+        //public AudioClip[] PreloadedLoadedClips;
 
         //音量
         private float _volumeMusic;

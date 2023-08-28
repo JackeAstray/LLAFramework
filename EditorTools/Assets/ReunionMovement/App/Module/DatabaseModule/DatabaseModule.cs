@@ -24,12 +24,12 @@ namespace GameLogic
         // 语言配置表
         Dictionary<int, Languages> languages = new Dictionary<int, Languages>();
         // 声音配置表
-        Dictionary<int, AudioConfig> audios = new Dictionary<int, AudioConfig>();
+        Dictionary<int, SoundConfig> sounds = new Dictionary<int, SoundConfig>();
 
         string filePath = AppConfig.DatabasePath;
         string gameConfig_FileName = "GameConfig.json";
         string languages_FileName = "Languages.json";
-        string audios_FileName = "AudioConfig.json";
+        string audios_FileName = "SoundConfig.json";
 
         public IEnumerator Init()
         {
@@ -56,7 +56,7 @@ namespace GameLogic
             //------------------------------------
             LoadLanguages();
             //------------------------------------
-            LoadAudioConfig();
+            LoadSoundConfig();
 
             Log.Debug("初始化，加载Database");
         }
@@ -71,7 +71,7 @@ namespace GameLogic
 
         }
 
-        #region Load
+        #region 加载数据
 
         public void LoadGameConfig()
         {
@@ -109,25 +109,25 @@ namespace GameLogic
             }
         }
 
-        public void LoadAudioConfig()
+        public void LoadSoundConfig()
         {
-            List<AudioConfig> configs = new List<AudioConfig>();
-            TextAsset json = ResourcesModule.Instance.Load<TextAsset>("AutoDatabase/AudioConfig");
-            configs = JsonMapper.ToObject<List<AudioConfig>>(json.text);
+            List<SoundConfig> configs = new List<SoundConfig>();
+            TextAsset json = ResourcesModule.Instance.Load<TextAsset>("AutoDatabase/SoundConfig");
+            configs = JsonMapper.ToObject<List<SoundConfig>>(json.text);
 
-            foreach (AudioConfig tempData in configs)
+            foreach (SoundConfig tempData in configs)
             {
-                audios.Add(tempData.Id, tempData);
+                sounds.Add(tempData.Id, tempData);
             }
         }
         #endregion
 
-        #region GetData
+        #region 获取数据
         /// <summary>
         /// 获取游戏配置表数据
         /// </summary>
         /// <returns></returns>
-        public Dictionary<int, GameConfig> GetConfig()
+        public Dictionary<int, GameConfig> GetGameConfig()
         {
             return gameConfigs;
         }
@@ -140,9 +140,31 @@ namespace GameLogic
         {
             return languages;
         }
+
+        /// <summary>
+        /// 获取声音数据
+        /// </summary>
+        /// <returns></returns>
+        public Dictionary<int, SoundConfig> GetSoundConfig()
+        {
+            return sounds;
+        }
+        /// <summary>
+        /// 获取声音数据
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public SoundConfig GetSoundConfig(int index)
+        {
+            if (sounds.ContainsKey(index))
+            {
+                return sounds[index];
+            }
+            return null;
+        }
         #endregion
 
-        #region Save
+        #region 保存
         public void SaveGameConfig()
         {
             List<GameConfig> tempList = gameConfigs.Values.ToList();
@@ -159,7 +181,7 @@ namespace GameLogic
 
         public void SaveAudioConfig()
         {
-            List<AudioConfig> tempList = audios.Values.ToList();
+            List<SoundConfig> tempList = sounds.Values.ToList();
             string jsonStr = JsonMapper.ToJson(tempList, true);
             PathUtils.WriteFile(jsonStr, filePath, audios_FileName);
         }

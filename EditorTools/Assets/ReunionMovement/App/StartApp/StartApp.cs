@@ -50,6 +50,8 @@ namespace GameLogic
         {
             UIModule.Instance.OpenWindow("StartAppUIPlane");
 
+            SoundModule.Instance.PlayMusic(100001);
+
             yield return new WaitForSeconds(0f);
         }
 
