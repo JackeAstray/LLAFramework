@@ -61,7 +61,7 @@ namespace GameLogic.EditorTools
             #region 语言
             GUILayout.Label("给选中的对象添加语言文本");
             GUILayout.BeginHorizontal(); //开始水平布局
-            if (GUILayout.Button("添加Text语言文本", GUILayout.Width(195)))
+            if (GUILayout.Button("添加多语言脚本（Text）", GUILayout.Width(195)))
             {
                 GameObject selectedObject = Selection.activeGameObject;
                 var assetPath = EditorUtility.IsPersistent(selectedObject);
@@ -76,8 +76,12 @@ namespace GameLogic.EditorTools
                         Log.Warning("选中的对象缺少Text部件，不予添加！");
                     }
                 }
+                else
+                {
+                    Log.Warning("选中的对象必须在Hierachy视图！");
+                }
             }
-            if (GUILayout.Button("添加TextMesh语言文本", GUILayout.Width(195)))
+            if (GUILayout.Button("添加多语言脚本（TextMesh）", GUILayout.Width(195)))
             {
                 GameObject selectedObject = Selection.activeGameObject;
                 var assetPath = EditorUtility.IsPersistent(selectedObject);
@@ -91,6 +95,10 @@ namespace GameLogic.EditorTools
                     {
                         Log.Warning("选中的对象缺少TextMeshProUGUI部件，不予添加！");
                     }
+                }
+                else
+                {
+                    Log.Warning("选中的对象必须在Hierachy视图！");
                 }
             }
             GUILayout.EndHorizontal(); //结束水平布局
