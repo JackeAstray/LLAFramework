@@ -6,11 +6,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.AccessControl;
+using TMPro;
 using UnityEditor;
 using UnityEditor.PackageManager.UI;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using static UnityEditor.Progress;
 
 namespace GameLogic.EditorTools
@@ -54,27 +56,45 @@ namespace GameLogic.EditorTools
             GUILayout.EndHorizontal(); //结束水平布局
             #endregion
 
-            #region 语言
-            //GUILayout.BeginHorizontal(); //开始水平布局
-            //if (GUILayout.Button("给选择对象添加语言脚本", GUILayout.Width(195)))
-            //{
-                
-            //}
-            //GUILayout.EndHorizontal(); //结束水平布局
-            #endregion
-
             GUILayout.Space(15);
 
+            #region 语言
+            GUILayout.Label("给选中的对象添加语言文本");
             GUILayout.BeginHorizontal(); //开始水平布局
-            if (GUILayout.Button("生成屏幕日志控件", GUILayout.Width(195)))
+            if (GUILayout.Button("添加Text语言文本", GUILayout.Width(195)))
             {
-                CreateLogComponent();
+                GameObject selectedObject = Selection.activeGameObject;
+                var assetPath = EditorUtility.IsPersistent(selectedObject);
+                if (assetPath == false)
+                {
+                    if(selectedObject.GetComponent<Text>())
+                    {
+                        selectedObject.AddComponent<UIText>();
+                    }
+                    else
+                    {
+                        Log.Warning("选中的对象缺少Text部件，不予添加！");
+                    }
+                }
             }
-            if (GUILayout.Button("移除屏幕日志控件", GUILayout.Width(195)))
+            if (GUILayout.Button("添加TextMesh语言文本", GUILayout.Width(195)))
             {
-                CloseLogComponent();
+                GameObject selectedObject = Selection.activeGameObject;
+                var assetPath = EditorUtility.IsPersistent(selectedObject);
+                if (assetPath == false)
+                {
+                    if (selectedObject.GetComponent<TextMeshProUGUI>())
+                    {
+                        selectedObject.AddComponent<UIText_TMP>();
+                    }
+                    else
+                    {
+                        Log.Warning("选中的对象缺少TextMeshProUGUI部件，不予添加！");
+                    }
+                }
             }
             GUILayout.EndHorizontal(); //结束水平布局
+            #endregion
 
             GUILayout.Space(15);
 
