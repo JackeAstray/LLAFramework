@@ -41,7 +41,7 @@ namespace GameLogic.HttpModule.Service.Unity
 
 		public IHttpRequest Post(string uri, byte[] bytes, string contentType)
 		{
-			var unityWebRequest = new UnityWebRequest(uri, UnityWebRequest.kHttpVerbPOST)
+			using var unityWebRequest = new UnityWebRequest(uri, UnityWebRequest.kHttpVerbPOST)
 			{
 				uploadHandler = new UploadHandlerRaw(bytes)
 				{
@@ -86,7 +86,7 @@ namespace GameLogic.HttpModule.Service.Unity
 			Action<HttpResponse> onError = null, Action<HttpResponse> onNetworkError = null)
 		{
 			var unityHttpRequest = (UnityHttpRequest) request;
-			var unityWebRequest = unityHttpRequest.UnityWebRequest;
+            using var unityWebRequest = unityHttpRequest.UnityWebRequest;
 
 			yield return unityWebRequest.SendWebRequest();
 
@@ -108,7 +108,7 @@ namespace GameLogic.HttpModule.Service.Unity
 
 		public void Abort(IHttpRequest request)
 		{
-			var unityHttpRequest = request as UnityHttpRequest;
+            var unityHttpRequest = request as UnityHttpRequest;
 			if (unityHttpRequest?.UnityWebRequest != null && !unityHttpRequest.UnityWebRequest.isDone)
 			{
 				unityHttpRequest.UnityWebRequest.Abort();
