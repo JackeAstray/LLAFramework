@@ -46,8 +46,6 @@ namespace GameLogic
 
             TerminalModule.Instance.terminalRequest.RegisterCommands();
 
-            TerminalModule.Instance.terminalRequest.ParseCommand("TestTerminal 2 2");
-
             StartCoroutine(StartGameShow());
         }
 

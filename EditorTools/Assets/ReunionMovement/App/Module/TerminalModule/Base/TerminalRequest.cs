@@ -111,7 +111,6 @@ namespace GameLogic
         }
         #endregion
 
-
         #region 请求
         string request;
 

@@ -1,3 +1,4 @@
+using GameLogic.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -43,13 +44,27 @@ namespace GameLogic
         /// <param name="realElapseSeconds">真实流逝时间，以秒为单位。</param>
         public void UpdateTime(float elapseSeconds, float realElapseSeconds)
         {
-            //if (keyboard[Key.].wasUpdatedThisFrame)
-            //{
-
-            //}
-            if (UIModule.Instance != null)
+            if (keyboard[Key.Backquote].wasPressedThisFrame)
             {
+                if (UIModule.Instance != null)
+                {
+                    if (!UIModule.Instance.IsOpen("TerminalUIPlane"))
+                    {
+                        UIModule.Instance.OpenWindow("TerminalUIPlane");
+                    }
+                    else
+                    {
+                        UIModule.Instance.CloseWindow("TerminalUIPlane");
+                    }
+                }
+            }
 
+            if (keyboard[Key.Escape].wasPressedThisFrame)
+            {
+                if (UIModule.Instance.IsOpen("TerminalUIPlane"))
+                {
+                    UIModule.Instance.CloseWindow("TerminalUIPlane");
+                }
             }
         }
 
@@ -58,7 +73,14 @@ namespace GameLogic
         {
             if (args.Length >= 2)
             {
+                string str = "TestTerminal " + args[0].String + " | " + args[0].String;
+
                 Log.Debug("TestTerminal " + args[0].String + " | " + args[0].String);
+
+                if (UIModule.Instance.IsOpen("TerminalUIPlane"))
+                {
+                    UIModule.Instance.SetWindow("TerminalUIPlane", "CreateItem", str);
+                }
             }
         }
     }
