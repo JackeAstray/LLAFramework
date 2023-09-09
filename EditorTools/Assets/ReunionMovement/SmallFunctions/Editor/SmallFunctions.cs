@@ -7,12 +7,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.AccessControl;
 using TMPro;
+using Unity.VisualScripting.YamlDotNet.Core;
 using UnityEditor;
 using UnityEditor.PackageManager.UI;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static CodiceApp.EventTracking.EventModelSerialization;
 using static UnityEditor.Progress;
 
 namespace GameLogic.EditorTools
@@ -22,6 +24,9 @@ namespace GameLogic.EditorTools
         public static List<string> scenesName = new List<string>();
         public static List<string> scenePaths = new List<string>();
 
+        // 解析版本号
+        static System.Version version;
+        //static System.Version targetVersion;
         public void OnEnable()
         {
 
@@ -30,6 +35,8 @@ namespace GameLogic.EditorTools
         [MenuItem("工具箱/小功能", false, 6)]
         public static void SmallFunctionsWindow()
         {
+            version = new System.Version(PlayerSettings.bundleVersion);
+
             GetAllScene();
             //弹出编辑器
             SmallFunctions smallFunctions = GetWindow<SmallFunctions>(true, "小功能", true);
@@ -119,6 +126,54 @@ namespace GameLogic.EditorTools
             }
 
             GUILayout.EndVertical(); //结束垂直布局
+            #endregion
+
+            #region 修改版本号
+            GUILayout.Label("修改版本号");
+            GUILayout.BeginVertical(); //开始垂直布局
+            GUILayout.Space(5);
+            GUILayout.Label("当前版本" + version);
+
+            GUILayout.BeginHorizontal(); //开始水平布局
+            if (GUILayout.Button("主版本号+", GUILayout.Width(129)))
+            {
+                version = new System.Version(version.Major + 1, version.Minor, version.Build);
+                PlayerSettings.bundleVersion = version.ToString();
+                version = new System.Version(PlayerSettings.bundleVersion);
+            }
+            if (GUILayout.Button("副版本号+", GUILayout.Width(129)))
+            {
+                version = new System.Version(version.Major, version.Minor + 1, version.Build);
+                PlayerSettings.bundleVersion = version.ToString();
+            }
+            if (GUILayout.Button("构建版本号+", GUILayout.Width(129)))
+            {
+                version = new System.Version(version.Major, version.Minor, version.Build + 1);
+                PlayerSettings.bundleVersion = version.ToString();
+            }
+            GUILayout.EndHorizontal(); //结束水平布局
+
+            GUILayout.BeginHorizontal(); //开始水平布局
+            if (GUILayout.Button("主版本号-", GUILayout.Width(129)))
+            {
+                version = new System.Version(version.Major - 1, version.Minor, version.Build);
+                PlayerSettings.bundleVersion = version.ToString();
+            }
+            if (GUILayout.Button("副版本号-", GUILayout.Width(129)))
+            {
+                version = new System.Version(version.Major, version.Minor - 1, version.Build);
+                PlayerSettings.bundleVersion = version.ToString();
+            }
+            if (GUILayout.Button("构建版本号-", GUILayout.Width(129)))
+            {
+                version = new System.Version(version.Major, version.Minor, version.Build - 1);
+                PlayerSettings.bundleVersion = version.ToString();
+            }
+            GUILayout.EndHorizontal(); //结束水平布局
+
+            GUILayout.Space(5);
+
+            GUILayout.EndVertical(); //开始垂直布局
             #endregion
         }
 
