@@ -10,6 +10,7 @@ namespace GameLogic
         {
             var modules = base.CreateModules();
 
+            modules.Add(TerminalModule.Instance);
             modules.Add(ResourcesModule.Instance);
             modules.Add(DatabaseModule.Instance);
             modules.Add(EventModule.Instance);
@@ -42,6 +43,10 @@ namespace GameLogic
             Log.Debug("StartGame初始化后");
 
             yield return null;
+
+            TerminalModule.Instance.terminalRequest.RegisterCommands();
+
+            TerminalModule.Instance.terminalRequest.ParseCommand("TestTerminal 2 2");
 
             StartCoroutine(StartGameShow());
         }
