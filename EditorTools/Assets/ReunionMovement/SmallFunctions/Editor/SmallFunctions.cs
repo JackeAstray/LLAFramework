@@ -63,6 +63,21 @@ namespace GameLogic.EditorTools
             GUILayout.EndHorizontal(); //结束水平布局
             #endregion
 
+            #region FPS
+            GUILayout.Label("FPS");
+            GUILayout.BeginHorizontal(); //开始水平布局
+            if (GUILayout.Button("生成FPS控件", GUILayout.Width(195)))
+            {
+                CreateFPSComponent();
+            }
+
+            if (GUILayout.Button("移除FPS控件", GUILayout.Width(195)))
+            {
+                CloseFPSComponent();
+            }
+            GUILayout.EndHorizontal(); //结束水平布局
+            #endregion
+
             GUILayout.Space(15);
 
             #region 语言
@@ -218,6 +233,53 @@ namespace GameLogic.EditorTools
                 {
                     // 对同名对象进行操作
                     Log.Debug("删除了所有挂载<ScreenLogger>的对象");
+                    // 在编辑器中立即移除对象
+                    GameObject.DestroyImmediate(obj);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 创建log部件
+        /// </summary>
+        public static void CreateFPSComponent()
+        {
+            GameObject FPS = GameObject.Find("FPSCounter");
+
+            if (FPS)
+            {
+                if (!FPS.GetComponent<FPSCounter>())
+                {
+                    FPS.AddComponent<FPSCounter>();
+                }
+                else
+                {
+                    return;
+                }
+            }
+            else
+            {
+                FPS = new GameObject("FPSCounter");
+                Selection.activeGameObject = FPS;
+                // 添加脚本
+                FPS.AddComponent<FPSCounter>();
+            }
+        }
+
+        /// <summary>
+        /// 清除log部件
+        /// </summary>
+        public static void CloseFPSComponent()
+        {
+            // 获取场景中所有的GameObject
+            GameObject[] objects = GameObject.FindObjectsOfType<GameObject>();
+
+            foreach (GameObject obj in objects)
+            {
+                if (obj.GetComponent<FPSCounter>())
+                {
+                    // 对同名对象进行操作
+                    Log.Debug("删除了所有挂载<FPSCounter>的对象");
                     // 在编辑器中立即移除对象
                     GameObject.DestroyImmediate(obj);
                 }
