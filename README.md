@@ -37,7 +37,7 @@ Unity版本：2021.3.15f<br>
 
 <details>
 <summary>3 日志系统</summary>
-
+<br>
 ![inspector](https://github.com/JackeAstray/EditorTools/blob/main/Screenshot/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202023-09-11%20130502.png)<br>
 <br>
 开启宏之后输入以下代码就可以使用，关闭宏之后日志就不会输出<br>
