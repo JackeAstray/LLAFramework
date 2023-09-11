@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -30,6 +31,14 @@ namespace GameLogic
         public override IEnumerator OnBeforeInit()
         {
             Log.Debug("StartGame初始化前");
+
+            ////到期销毁
+            //DateTime minTime = Convert.ToDateTime("2023-8-25");
+            //DateTime maxTime = Convert.ToDateTime("2023-9-10");
+            //if (minTime > DateTime.Now || DateTime.Now > maxTime)
+            //{
+            //    Destroy(gameObject);
+            //}
 
             yield return null;
         }
