@@ -1,25 +1,91 @@
 ### Unity Editor Tools And Game Framework
-Unity编辑器工具<br>
+Unity编辑器工具和游戏框架，只在Windows中进行过测试<br>
 Unity版本：2021.3.15f<br>
 
 - [功能](#Function)
 - [文件夹结构](#FolderStructure)
 
 ## 功能：<a name="Function"></a>
-1）Excel导出为.cs|.xml|.json|.lua文件。<br>
-2）日志系统<br>
-3）打开指定路径文件夹<br>
-4）生成脚本工具<br>
-5）扩展功能<br>
-6）广告牌<br>
-7）编译器模式碰撞器绘制<br>
-8）FPS控制<br>
-9）焦点工具（查找资源并将该资源设为焦点 快捷键Control + L）<br>
-10）将图片空白区域切割工具 (在需要切割的图片上点击右键选中“切割图片空白区域”即可)<br>
-11）图片导入自动修改类型大小（指定目录下才有用Assets\Resources\Sprites）<br>
-12）UI工具<br>
-13）小功能（包含的功能有给场景添加屏幕日志、给场景添加FPS、给场景选中的对象添加多语言用脚本、场景切换、修改版本号）<br>
-14）App系统（该系统用于启动执行数据、事件、多语言、对象池、资源、场景、声音、终端、UI等模块）<br>
+<details>
+<summary>1 游戏框架</summary>
+其中包含了以下模块<br>
+- 数据模块<br>
+- 事件模块<br>
+- 多语言模块<br>
+- 对象池模块<br>
+- 资源模块<br>
+- 场景模块<br>
+- 声音模块<br>
+- 终端模块<br>
+- UI模块<br>
+</details>
+<details>
+  
+<summary>2 Excel导出</summary>
+在指定的表格中的数据可以保存为以下格式文件<br>
+- .cs<br>
+- .xml<br>
+- .json<br>
+- lua<br>
+</details>
+
+<details>
+<summary>3 日志系统</summary>
+
+![inspector](https://github.com/JackeAstray/EditorTools/blob/main/Screenshot/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202023-09-11%20130502.png)
+
+开启宏之后输入以下代码就可以使用，关闭宏之后日志就不会输出
+
+```csharp
+Log.Debug("Hello Word");
+Log.Info("Hello Word");
+Log.Warning("Hello Word");
+Log.Error("Hello Word");
+Log.Fatal("Hello Word");
+```
+</details>
+
+<details>
+<summary>4 打开指定路径文件夹</summary>
+
+![inspector](https://github.com/JackeAstray/EditorTools/blob/main/Screenshot/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202023-09-11%20130517.png)
+
+该功能用于打开Unity的一些路径
+</details>
+
+<details>
+<summary>5 生成脚本工具</summary>
+
+生成脚本工具使用说明<br>
+1、输入要生成类的名称<br>
+2、选择要生成的模板<br>
+3、点击创建脚本即可<br>
+【ReunionMovement\Editor\Resources\Txt】该路径用于存放模板<br>
+
+![inspector](https://github.com/JackeAstray/EditorTools/blob/main/Screenshot/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202023-09-11%20130428.png)
+
+</details>
+
+<details>
+<summary>6 编译器模式碰撞器绘制</summary>
+
+</details>
+
+<details>
+<summary>7 UI工具</summary>
+
+</details>
+
+<details>
+<summary>8 小功能</summary>
+包含的功能有给场景添加屏幕日志、给场景添加FPS、给场景选中的对象添加多语言用脚本、场景切换、修改版本号
+</details>
+
+<details>
+<summary>9 焦点工具</summary>
+查找资源并将该资源设为焦点 快捷键Control + L
+</details>
+
 
 ## 文件夹结构：<a name="FolderStructure"></a>
 - 3RD                   用于存放第三方库<br>
