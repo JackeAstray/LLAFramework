@@ -116,6 +116,30 @@ UI工具使用说明<br>
 ![inspector](https://github.com/JackeAstray/EditorTools/blob/main/Screenshot/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202023-09-11%20130454.png)
 </details>
 
+<details>
+<summary>10 其他功能</summary>
+1、广告牌<br>
+2、屏幕适配<br>
+3、屏幕LOG<br>
+4、计时器<br>
+5、FPS<br>
+6、震动（ios、android用）<br>
+7、图片首次导入到指定文件夹自动替换类型<br>
+8、图片自动裁剪留白<br>
+9、单例模式父类<br>
+10、扩展功能<br>
+ - AsyncOperationExtensions<br>
+ - ColorExtensions<br>
+ - ComponentExtensions<br>
+ - EngineExtensions<br> 
+ - EngineToolExtensions<br>
+ - FindExtensions<br>
+ - GameObjectExtensions<br>
+ - ResourcesExtensions<br>
+ - TransformExtensions<br>
+ - Vector3Extensions<br>
+</details>
+
 
 ## 文件夹结构：<a name="FolderStructure"></a>
 - 3RD                   用于存放第三方库<br>
