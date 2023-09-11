@@ -54,7 +54,7 @@ namespace GameLogic.EditorTools
         }
 
         /// <summary>
-        /// 启用AI宏。
+        /// 启用PHYSICS2D宏。
         /// </summary>
         [MenuItem("工具箱/碰撞器线框宏/启用PHYSICS2D宏", false, 2)]
         public static void EnableEnabledPHYSICS2D()
@@ -63,7 +63,7 @@ namespace GameLogic.EditorTools
         }
 
         /// <summary>
-        /// 启用AI宏。
+        /// 启用PHYSICS宏。
         /// </summary>
         [MenuItem("工具箱/碰撞器线框宏/启用PHYSICS宏", false, 3)]
         public static void EnableEnabledPHYSICS()
