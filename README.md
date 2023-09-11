@@ -118,7 +118,7 @@ UI工具使用说明<br>
 
 ## 文件夹结构：<a name="FolderStructure"></a>
 - 3RD                   用于存放第三方库<br>
-- Editor                用于存放第三方库<br>
+- Editor                编辑器文件夹<br>
   - Scenes              用于存放生成UI的场景<br>
 - Resources             资源文件夹<br>
 - ReunionMovement       模块化插件（每个单独的模块都会放入其中）<br>
