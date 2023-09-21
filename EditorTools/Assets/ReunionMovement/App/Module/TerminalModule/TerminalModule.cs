@@ -44,6 +44,11 @@ namespace GameLogic
         /// <param name="realElapseSeconds">真实流逝时间，以秒为单位。</param>
         public void UpdateTime(float elapseSeconds, float realElapseSeconds)
         {
+            if (keyboard == null)
+            {
+                return;
+            }
+
             if (keyboard[Key.Backquote].wasPressedThisFrame)
             {
                 if (UIModule.Instance != null)
