@@ -144,10 +144,8 @@ namespace GameLogic.EditorTools
             #endregion
 
             #region 修改版本号
-            GUILayout.Label("修改版本号");
+            GUILayout.Label("修改版本号" + "    " + "当前版本" + version);
             GUILayout.BeginVertical(); //开始垂直布局
-            GUILayout.Space(5);
-            GUILayout.Label("当前版本" + version);
 
             GUILayout.BeginHorizontal(); //开始水平布局
             if (GUILayout.Button("主版本号+", GUILayout.Width(129)))
@@ -189,6 +187,52 @@ namespace GameLogic.EditorTools
             GUILayout.Space(5);
 
             GUILayout.EndVertical(); //开始垂直布局
+            #endregion
+
+            #region UI波纹
+            GUILayout.Label("给选中的对象添加波纹效果");
+            GUILayout.BeginHorizontal(); //开始水平布局
+            if (GUILayout.Button("添加波纹效果（Image）", GUILayout.Width(195)))
+            {
+                GameObject selectedObject = Selection.activeGameObject;
+                var assetPath = EditorUtility.IsPersistent(selectedObject);
+                if (assetPath == false)
+                {
+                    if (selectedObject.GetComponent<Image>())
+                    {
+                        selectedObject.AddComponent<UIRipple>();
+                    }
+                    else
+                    {
+                        Log.Warning("选中的对象缺少Image部件，不予添加！");
+                    }
+                }
+                else
+                {
+                    Log.Warning("选中的对象必须在Hierachy视图！");
+                }
+            }
+            if (GUILayout.Button("移除波纹效果（UIRipple）", GUILayout.Width(195)))
+            {
+                GameObject selectedObject = Selection.activeGameObject;
+                var assetPath = EditorUtility.IsPersistent(selectedObject);
+                if (assetPath == false)
+                {
+                    if (selectedObject.GetComponent<UIRipple>())
+                    {
+                        DestroyImmediate(selectedObject.GetComponent<UIRipple>());
+                    }
+                    else
+                    {
+                        Log.Warning("选中的对象缺少UIRipple部件，无法移除！");
+                    }
+                }
+                else
+                {
+                    Log.Warning("选中的对象必须在Hierachy视图！");
+                }
+            }
+            GUILayout.EndHorizontal(); //结束水平布局
             #endregion
         }
 
