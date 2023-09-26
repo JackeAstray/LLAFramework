@@ -30,8 +30,11 @@ namespace GameLogic
         private bool bLoading = false;              // 是否正在加载中
         private const string strLoadSceneName = "LoadingScene";  // 加载场景名字
 
-        public delegate void OnProgress(float progress);
+        public delegate void OnProgress(float progress);    //委托 用于处理进度条
         public event OnProgress GetProgress;
+
+        public float startProgressWaitingTime;       //开始 - 等待时长
+        public float endProgressWaitingTime;         //结束 - 等待时长  
         #endregion
 
         #region Get
@@ -44,6 +47,9 @@ namespace GameLogic
             _initProgress = 0;
 
             strCurSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+
+            startProgressWaitingTime = 0;
+            endProgressWaitingTime = 0;
 
             yield return null;
             _initProgress = 100;
@@ -84,16 +90,15 @@ namespace GameLogic
         /// <param name="strLevelName"></param>
         public void LoadScene(string strLevelName, UnityAction unityAction = null)
         {
-            LoadLevel(strLevelName, unityAction);
+            LoadSceneAsync(strLevelName, unityAction);
         }
 
         /// <summary>
         /// 加载场景
         /// </summary>
         /// <param name="strLevelName"></param>
-        /// <param name="onSecenLoaded"></param>
-        /// <param name="isDestroyAuto"></param>
-        private async void LoadLevel(string strLevelName, UnityAction onSecenLoaded)
+        /// <param name="unityAction"></param>
+        private async void LoadSceneAsync(string strLevelName, UnityAction unityAction)
         {
             if (bLoading || strCurSceneName == strLevelName)
             {
@@ -103,7 +108,7 @@ namespace GameLogic
             // 锁屏
             bLoading = true;  
             // 开始加载
-            onSceneLoaded = onSecenLoaded;
+            onSceneLoaded = unityAction;
             strTargetSceneName = strLevelName;
             strPreSceneName = strCurSceneName;
             strCurSceneName = strLoadSceneName;
@@ -175,37 +180,30 @@ namespace GameLogic
             {
                 AsyncOperation async = SceneManager.LoadSceneAsync(strLevelName, loadSceneMode);
 
-                async.allowSceneActivation = false;
-                if (null == async)
+                if (async == null)
                 {
+                    Log.Error("加载场景失败：AsyncOperation 为 null");
                     return;
                 }
 
+                async.allowSceneActivation = false;
+
                 CallbackProgress(0.15f);
 
-                await Task.Delay(TimeSpan.FromSeconds(0.2f));
+                await Task.Delay(TimeSpan.FromSeconds(startProgressWaitingTime));
 
-                //*加载进度
+                //加载进度
                 while (!async.isDone)
                 {
-                    float fProgressValue;
-
-                    if (async.progress < 0.9f)
-                    {
-                        fProgressValue = async.progress;
-                    }
-                    else
-                    {
-                        fProgressValue = 1.0f;
-                    }
-
+                    float fProgressValue = async.progress < 0.9f ? async.progress : 1.0f;
+                    
                     CallbackProgress(fProgressValue);
 
-                    if (fProgressValue >= 0.9)
+                    if (fProgressValue >= 0.9f)
                     {
                         OnTargetSceneLoaded();
 
-                        await Task.Delay(TimeSpan.FromSeconds(0.2f));
+                        await Task.Delay(TimeSpan.FromSeconds(endProgressWaitingTime));
 
                         async.allowSceneActivation = true;
 
@@ -217,7 +215,7 @@ namespace GameLogic
             }
             catch (Exception ex)
             {
-                Log.Error(ex.ToString());
+                Log.Error("加载场景时发生异常：" + ex.ToString());
             }
         }
 
