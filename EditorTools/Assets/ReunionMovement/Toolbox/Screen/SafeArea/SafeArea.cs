@@ -12,39 +12,34 @@ namespace GameLogic
     /// </summary>
     public class SafeArea : MonoBehaviour
     {
-        private RectTransform rectTrans;
+        private RectTransform safeArea;
 
         private void Start()
         {
             Init();
-            AdaptAnchorsValue();
         }
 
         private void Init()
         {
-            rectTrans = GetComponent<RectTransform>();
+            safeArea = GetComponent<RectTransform>();
+        }
 
-            rectTrans.anchorMin = Vector2.zero;
-            rectTrans.anchorMax = Vector2.one;
-            rectTrans.anchoredPosition = Vector2.zero;
-            rectTrans.sizeDelta = Vector2.zero;
-
+        public void Update()
+        {
+            AdaptAnchorsValue();
         }
 
         private void AdaptAnchorsValue()
         {
-            var maxWidth = Display.main.systemWidth;
-            var maxHeight = Display.main.systemHeight;
-            var safeArea = Screen.safeArea;
-            var anchorMin = safeArea.position;
-            var anchorMax = safeArea.position + safeArea.size;
-            anchorMin.x /= maxWidth;
-            anchorMin.y /= maxHeight;
-            anchorMax.x /= maxWidth;
-            anchorMax.y /= maxHeight;
-
-            rectTrans.anchorMin = anchorMin;
-            rectTrans.anchorMax = anchorMax;
+            Rect safeAreaRect = Screen.safeArea;
+            Vector2 anchorMin = safeAreaRect.position;
+            Vector2 anchorMax = safeAreaRect.position + safeAreaRect.size;
+            anchorMin.x /= Screen.width;
+            anchorMin.y /= Screen.height;
+            anchorMax.x /= Screen.width;
+            anchorMax.y /= Screen.height;
+            safeArea.anchorMin = anchorMin;
+            safeArea.anchorMax = anchorMax;
         }
     }
 }
