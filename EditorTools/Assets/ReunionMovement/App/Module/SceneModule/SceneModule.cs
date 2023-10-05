@@ -30,8 +30,7 @@ namespace GameLogic
         private bool bLoading = false;              // 是否正在加载中
         private const string strLoadSceneName = "LoadingScene";  // 加载场景名字
 
-        public delegate void OnProgress(float progress);    //委托 用于处理进度条
-        public event OnProgress GetProgress;
+        public event Action<float> GetProgress;     //事件 用于处理进度条
 
         public float startProgressWaitingTime;       //开始 - 等待时长
         public float endProgressWaitingTime;         //结束 - 等待时长  
@@ -84,13 +83,23 @@ namespace GameLogic
             LoadScene(strPreSceneName);
         }
 
+
+        public void LoadPreScene_OpenLoad()
+        {
+            if (string.IsNullOrEmpty(strPreSceneName))
+            {
+                return;
+            }
+            LoadScene(strPreSceneName, true);
+        }
+
         /// <summary>
         /// 加载场景
         /// </summary>
         /// <param name="strLevelName"></param>
-        public void LoadScene(string strLevelName, UnityAction unityAction = null)
+        public void LoadScene(string strLevelName, bool openLoad = false, UnityAction unityAction = null)
         {
-            LoadSceneAsync(strLevelName, unityAction);
+            LoadSceneAsync(strLevelName, openLoad, unityAction);
         }
 
         /// <summary>
@@ -98,7 +107,7 @@ namespace GameLogic
         /// </summary>
         /// <param name="strLevelName"></param>
         /// <param name="unityAction"></param>
-        private async void LoadSceneAsync(string strLevelName, UnityAction unityAction)
+        private async void LoadSceneAsync(string strLevelName, bool openLoad, UnityAction unityAction)
         {
             if (bLoading || strCurSceneName == strLevelName)
             {
@@ -113,8 +122,15 @@ namespace GameLogic
             strPreSceneName = strCurSceneName;
             strCurSceneName = strLoadSceneName;
 
-            //先异步加载 Loading 界面
-            await OnLoadingScene(strLoadSceneName, OnLoadingSceneLoaded, LoadSceneMode.Single);
+            if (openLoad)
+            {
+                //先异步加载 Loading 界面
+                await OnLoadingScene(strLoadSceneName, OnLoadingSceneLoaded, LoadSceneMode.Single);
+            }
+            else
+            {
+                OnLoadingSceneLoaded();
+            }
         }
 
         /// <summary>
