@@ -33,7 +33,7 @@ namespace GameLogic
         public event Action<float> GetProgress;     //事件 用于处理进度条
 
         public float startProgressWaitingTime;       //开始 - 等待时长
-        public float endProgressWaitingTime;         //结束 - 等待时长  
+        public float endProgressWaitingTime;         //结束 - 等待时长
         #endregion
 
         #region Get

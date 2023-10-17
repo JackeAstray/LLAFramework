@@ -23,41 +23,40 @@ namespace GameLogic.Download
         /// <returns></returns>
         public IEnumerator LoadImage(string url, Action<Texture2D> loadEnd)
         {
-            Texture2D texture = null;
-            //先从内存加载
-            if (imageDic.TryGetValue(url,out texture))
+            // 先从内存加载
+            if (imageDic.TryGetValue(url, out Texture2D texture))
             {
                 loadEnd.Invoke(texture);
                 yield break;
             }
+
             string savePath = GetLocalPath();
-            string filePath = string.Format("file://{0}/{1}.png", savePath, EngineExtensions.MD5Encrypt(url));
-            //来自硬盘
-            bool hasLoad = false;
-            if (Directory.Exists(filePath))
-                yield return DownloadImage(filePath, (state, localTexture) =>
-                { 
-                    hasLoad = state;
+            string localFilePath = string.Format("{0}/{1}.png", savePath, EngineExtensions.MD5Encrypt(url));
+
+            //检查本地是否存在
+            if (File.Exists(localFilePath))
+            {
+                yield return DownloadImage(localFilePath, (state, localTexture) =>
+                {
                     if (state)
                     {
                         loadEnd.Invoke(localTexture);
-                        if (!imageDic.ContainsKey(url))
-                            imageDic.Add(url, localTexture);
+                        imageDic[url] = localTexture;
                     }
                 });
-            if (hasLoad) yield break; //loaded
-            //来自网络
-            yield return DownloadImage(url, (state, downloadTexture) =>
+            }
+            else
             {
-                hasLoad = state;
-                if (state)
+                yield return DownloadImage(url, (state, downloadTexture) =>
                 {
-                    loadEnd.Invoke(downloadTexture);
-                    if (!imageDic.ContainsKey(url))
-                        imageDic.Add(url, downloadTexture);
-                    Save2LocalPath(url, downloadTexture);
-                }
-            });
+                    if (state)
+                    {
+                        loadEnd.Invoke(downloadTexture);
+                        imageDic[url] = downloadTexture;
+                        SaveToLocalPath(url, downloadTexture);
+                    }
+                });
+            }
         }
 
         /// <summary>
@@ -68,36 +67,37 @@ namespace GameLogic.Download
         /// <returns></returns>
         public IEnumerator DownloadImage(string url, Action<bool, Texture2D> downloadEnd)
         {
-            using (UnityWebRequest request = new UnityWebRequest(url))
+            using (UnityWebRequest request = UnityWebRequestTexture.GetTexture(url))
             {
-                DownloadHandlerTexture downloadHandlerTexture = new DownloadHandlerTexture(true);
-                request.downloadHandler = downloadHandlerTexture;
-                yield return request.Send();
-                if (string.IsNullOrEmpty(request.error))
+                yield return request.SendWebRequest();
+
+                if (request.result != UnityWebRequest.Result.Success)
                 {
-                    Texture2D localTexture = downloadHandlerTexture.texture;
-                    downloadEnd.Invoke(true, localTexture);
-                    request.Dispose();
+                    downloadEnd.Invoke(false, null);
+                    Debug.LogError("下载失败: " + request.error);
                 }
                 else
                 {
-                    downloadEnd.Invoke(false, null);
-                    Debug.Log(request.error);
+                    Texture2D localTexture = DownloadHandlerTexture.GetContent(request);
+                    downloadEnd.Invoke(true, localTexture);
                 }
             }
         }
+
         /// <summary>
-        /// 保存图片
+        /// 保存图片到本地
         /// </summary>
         /// <param name="url"></param>
         /// <param name="texture"></param>
-        private void Save2LocalPath(string url, Texture2D texture)
+        private void SaveToLocalPath(string url, Texture2D texture)
         {
             byte[] bytes = texture.EncodeToPNG();
             string savePath = GetLocalPath();
+            string localFilePath = string.Format("{0}/{1}.png", savePath, EngineExtensions.MD5Encrypt(url));
+
             try
             {
-                File.WriteAllBytes( string.Format("{0}/{1}.png", savePath , EngineExtensions.MD5Encrypt(url)), bytes);
+                File.WriteAllBytes(localFilePath, bytes);
             }
             catch(Exception ex)
             {
@@ -121,6 +121,5 @@ namespace GameLogic.Download
             }
             return savePath;
         }
-
     }
 }
