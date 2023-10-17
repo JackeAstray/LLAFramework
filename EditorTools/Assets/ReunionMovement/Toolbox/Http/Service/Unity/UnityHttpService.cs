@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Policy;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -86,24 +87,25 @@ namespace GameLogic.HttpModule.Service.Unity
 			Action<HttpResponse> onError = null, Action<HttpResponse> onNetworkError = null)
 		{
 			var unityHttpRequest = (UnityHttpRequest) request;
-            using var unityWebRequest = unityHttpRequest.UnityWebRequest;
-
-			yield return unityWebRequest.SendWebRequest();
-
-			var response = CreateResponse(unityWebRequest);
-
-			if (unityWebRequest.isNetworkError)
+            using (UnityWebRequest unityWebRequest = unityHttpRequest.UnityWebRequest)
 			{
-				onNetworkError?.Invoke(response);
-			}
-			else if (unityWebRequest.isHttpError)
-			{
-				onError?.Invoke(response);
-			}
-			else
-			{
-				onSuccess?.Invoke(response);
-			}
+                yield return unityWebRequest.SendWebRequest();
+
+                var response = CreateResponse(unityWebRequest);
+
+                if (unityWebRequest.result == UnityWebRequest.Result.ConnectionError)
+                {
+                    onNetworkError?.Invoke(response);
+                }
+				else if (unityWebRequest.result != UnityWebRequest.Result.Success)
+				{
+                    onError?.Invoke(response);
+                }
+                else
+                {
+                    onSuccess?.Invoke(response);
+                }
+            }
 		}
 
 		public void Abort(IHttpRequest request)

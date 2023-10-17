@@ -12,10 +12,12 @@ namespace GameLogic
     {
         //目标对象
         public Transform targetPos;
+        //隐藏光标
+        public bool hideCursor = true;
 
         //初始角度
-        public float m_rotX = 0; // Camera's current rotation around the X axis (up/down)
-        public float m_rotY = 0; // Camera's current rotation around the Y axis (left/right)
+        public float rotX = 0;
+        public float rotY = 0;
 
         public float offsetHeight = 0f;
         public float lateralOffset = 0f;
@@ -41,6 +43,12 @@ namespace GameLogic
         {
             OrbitCamera(0, -0);
             UpdatePosition();
+
+            if (hideCursor)
+            {
+                Cursor.visible = false;
+                Cursor.lockState = CursorLockMode.Locked;
+            }
         }
 
         public void SetIsEnableTrue()
@@ -122,12 +130,12 @@ namespace GameLogic
         private void OrbitCamera(float horz, float vert)
         {
             float step = Time.deltaTime * rotateSpeed;
-            m_rotX += horz * step;
-            m_rotY += vert * step;
+            rotX += horz * step;
+            rotY += vert * step;
 
-            m_rotY = Mathf.Clamp(m_rotY, minRot, maxRot);
-            Quaternion addRot = Quaternion.Euler(0f, m_rotX, 0f);
-            destRot = addRot * Quaternion.Euler(m_rotY, 0f, 0f);
+            rotY = Mathf.Clamp(rotY, minRot, maxRot);
+            Quaternion addRot = Quaternion.Euler(0f, rotX, 0f);
+            destRot = addRot * Quaternion.Euler(rotY, 0f, 0f);
             transform.rotation = destRot;
             UpdatePosition();
         }
