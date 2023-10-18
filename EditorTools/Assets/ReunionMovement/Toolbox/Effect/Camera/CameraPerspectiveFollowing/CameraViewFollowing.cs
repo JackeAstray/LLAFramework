@@ -1,7 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
 using Unity.VisualScripting;
-using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -47,6 +45,8 @@ namespace GameLogic
 
         private Vector2 lastTouchPos0;
         private Vector2 lastTouchPos1;
+
+        public float zoomValue = 50f;
 
         void Start()
         {
@@ -231,6 +231,8 @@ namespace GameLogic
                 xRotation -= mouseY;
 
                 xRotation = Mathf.Clamp(xRotation, xClampBottom, xClampTop);
+
+                SetZoom();
             }
 
             if (Application.platform == RuntimePlatform.Android ||
@@ -260,7 +262,7 @@ namespace GameLogic
                         return;
                     }
 
-                    UnityEngine.Touch touch = Input.GetTouch(0);
+                    Touch touch = Input.GetTouch(0);
 
                     float rotationXInput = touch.deltaPosition.x;
                     float rotationYInput = touch.deltaPosition.y;
@@ -311,11 +313,24 @@ namespace GameLogic
         /// <summary>
         /// 设置摄像头远近
         /// </summary>
+        public void SetZoom()
+        {
+            float delta = Input.GetAxis("Mouse ScrollWheel") * -zoomValue;
+            CameraOrbits cameraOrbits = GetCameraOrbit();
+            cameraOrbits.height.up = Mathf.Clamp(cameraOrbits.height.up + delta, 3f, 8f);
+            cameraOrbits.height.down = Mathf.Clamp(cameraOrbits.height.down + delta, -3f, -8f);
+            cameraOrbits.radius.middle = Mathf.Clamp(cameraOrbits.radius.middle + delta, 3f, 8f);
+        }
+
+        /// <summary>
+        /// 设置摄像头远近
+        /// </summary>
         public void SetZoom(float delta)
         {
-            //distance += delta;
-            //distance = Mathf.Clamp(distance, minDistance, maxDistance);
-            //UpdatePosition();
+            CameraOrbits cameraOrbits = GetCameraOrbit();
+            cameraOrbits.height.up = Mathf.Clamp(cameraOrbits.height.up + delta, 3f, 8f);
+            cameraOrbits.height.down = Mathf.Clamp(cameraOrbits.height.down + delta, -3f, -8f);
+            cameraOrbits.radius.middle = Mathf.Clamp(cameraOrbits.radius.middle + delta, 3f, 8f);
         }
 
         /// <summary>

@@ -1219,7 +1219,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1282945668}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.15, y: -0.008251104, z: -4.84}
+  m_LocalPosition: {x: 0.15, y: -0.008251104, z: -2.76}
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1262,11 +1262,11 @@ MonoBehaviour:
   cameraOrbit:
     rigOffset: 0
     height:
-      up: 3
-      down: -3
+      up: 7
+      down: -7
     radius:
       top: 3
-      middle: 4
+      middle: 8
       bottom: 3
   xSensitivity: 50
   ySensitivity: 50
@@ -1314,8 +1314,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1834664100}
-  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -4, y: 0, z: 0.00000023841858}
+  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071067}
+  m_LocalPosition: {x: -8, y: 0, z: 0.00000071525574}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
