@@ -1263,9 +1263,9 @@ MonoBehaviour:
     rigOffset: 0
     height:
       up: 3
-      down: -1
+      down: -3
     radius:
-      top: 2
+      top: 3
       middle: 4
       bottom: 3
   xSensitivity: 50

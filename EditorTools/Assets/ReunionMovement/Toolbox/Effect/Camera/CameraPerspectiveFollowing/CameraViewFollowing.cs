@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor.Rendering;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 
 namespace GameLogic
 {
@@ -43,6 +44,9 @@ namespace GameLogic
         private float xClampTop;
         //X夹具下
         private float xClampBottom;
+
+        private Vector2 lastTouchPos0;
+        private Vector2 lastTouchPos1;
 
         void Start()
         {
@@ -205,21 +209,113 @@ namespace GameLogic
         /// </summary>
         private void GetViewInput()
         {
-            // get mouse input
-            float mouseX;
-            float mouseY;
+            float mouseX = 0;
+            float mouseY = 0;
 
-            float rotationXInput = Input.GetAxis("Mouse X");
-            float rotationYInput = Input.GetAxis("Mouse Y");
+            if (Application.platform == RuntimePlatform.WindowsPlayer ||
+                Application.platform == RuntimePlatform.WindowsEditor ||
+                Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                if (IsPointerOverUI())
+                {
+                    return;
+                }
 
-            mouseX = rotationXInput * Time.deltaTime * xSensitivity * 2;
-            mouseY = rotationYInput * Time.deltaTime * ySensitivity * 2;
+                float rotationXInput = Input.GetAxis("Mouse X");
+                float rotationYInput = Input.GetAxis("Mouse Y");
 
-            // set rotation & maximum up/down rotation
-            yRotation += mouseX;
-            xRotation -= mouseY;
+                mouseX = rotationXInput * Time.deltaTime * xSensitivity * 2;
+                mouseY = rotationYInput * Time.deltaTime * ySensitivity * 2;
 
-            xRotation = Mathf.Clamp(xRotation, xClampBottom, xClampTop);
+                yRotation += mouseX;
+                xRotation -= mouseY;
+
+                xRotation = Mathf.Clamp(xRotation, xClampBottom, xClampTop);
+            }
+
+            if (Application.platform == RuntimePlatform.Android ||
+                Application.platform == RuntimePlatform.IPhonePlayer)
+            {
+                if (IsPointerOverUI())
+                {
+                    return;
+                }
+
+                //没有触摸
+                if (Input.touchCount <= 0)
+                {
+                    return;
+                }
+
+                //触摸为1 开始触摸
+                if (1 == Input.touchCount && Input.GetTouch(0).phase == TouchPhase.Began)
+                {
+
+                }
+                //触摸为1 滑动
+                else if (1 == Input.touchCount)
+                {
+                    if (IsPointerOverUI())
+                    {
+                        return;
+                    }
+
+                    UnityEngine.Touch touch = Input.GetTouch(0);
+
+                    float rotationXInput = touch.deltaPosition.x;
+                    float rotationYInput = touch.deltaPosition.y;
+
+                    mouseX = rotationXInput * Time.deltaTime * xSensitivity * 2;
+                    mouseY = rotationYInput * Time.deltaTime * ySensitivity * 2;
+
+                    yRotation += mouseX;
+                    xRotation -= mouseY;
+
+                    xRotation = Mathf.Clamp(xRotation, xClampBottom, xClampTop);
+                }
+                else if (2 == Input.touchCount)
+                {
+                    HandleMultiTouch();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 多点触摸
+        /// </summary>
+        private void HandleMultiTouch()
+        {
+            var touch0 = Input.GetTouch(0);
+            var touch1 = Input.GetTouch(1);
+
+            if (touch1.phase == TouchPhase.Began)
+            {
+                lastTouchPos0 = touch0.position;
+                lastTouchPos1 = touch1.position;
+            }
+            else if (touch0.phase == TouchPhase.Moved || touch1.phase == TouchPhase.Moved)
+            {
+                var tempPos0 = touch0.position;
+                var tempPos1 = touch1.position;
+                var currDist = Vector2.Distance(tempPos0, tempPos1);
+                var lastDist = Vector2.Distance(lastTouchPos0, lastTouchPos1);
+                var delta = currDist - lastDist;
+
+                SetZoom(-delta);
+
+                lastTouchPos0 = tempPos0;
+                lastTouchPos1 = tempPos1;
+            }
+        }
+
+        /// <summary>
+        /// 设置摄像头远近
+        /// </summary>
+        public void SetZoom(float delta)
+        {
+            //distance += delta;
+            //distance = Mathf.Clamp(distance, minDistance, maxDistance);
+            //UpdatePosition();
         }
 
         /// <summary>
@@ -324,6 +420,26 @@ namespace GameLogic
             angle = angle * Mathf.Rad2Deg;
             return angle;
         }
+
+        /// <summary>
+        /// 判断是否在UI上
+        /// </summary>
+        /// <returns></returns>
+        private bool IsPointerOverUI()
+        {
+#if UNITY_EDITOR
+            if (EventSystem.current.IsPointerOverGameObject())
+#elif UNITY_ANDROID || UNITY_IPHONE
+            if (EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
+#else
+            if (EventSystem.current.IsPointerOverGameObject())
+#endif
+            {
+                return true;
+            }
+            return false;
+        }
+
 
         /// <summary>
         /// 获取相机位置
