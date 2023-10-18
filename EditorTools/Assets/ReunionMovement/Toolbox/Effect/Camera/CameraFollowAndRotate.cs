@@ -12,6 +12,9 @@ namespace GameLogic
     {
         //目标对象
         public Transform targetPos;
+        //摄像机
+        public Camera cfrCamera { get; private set; }
+
         //隐藏光标
         public bool hideCursor = true;
 
@@ -29,7 +32,7 @@ namespace GameLogic
         public float rotateSpeed = 15f;                     //转速
         public float maxRot = 90f;                          //最大旋转角度
         public float minRot = -90f;                         //最小旋转角度
-        public float defaualtDistance = 30f;                //默认距离
+        public float distance = 30f;                        //默认距离
 
         Quaternion destRot = Quaternion.identity;
         private Vector3 relativePosition = Vector3.zero;    //相对位置
@@ -43,26 +46,19 @@ namespace GameLogic
         {
             OrbitCamera(0, -0);
             UpdatePosition();
-
+            
             if (hideCursor)
             {
                 Cursor.visible = false;
                 Cursor.lockState = CursorLockMode.Locked;
             }
-        }
 
-        public void SetIsEnableTrue()
-        {
-            isEnable = true;
+            cfrCamera = GetComponent<Camera>();
         }
 
         public void Update()
         {
-            if (isEnable == false)
-            {
-
-            }
-            else
+            if (isEnable != false)
             {
                 if (Application.platform == RuntimePlatform.WindowsPlayer ||
                     Application.platform == RuntimePlatform.WindowsEditor ||
@@ -145,22 +141,15 @@ namespace GameLogic
         /// </summary>
         public void UpdatePosition()
         {
-            offsetDistance = Mathf.MoveTowards(offsetDistance, defaualtDistance, Time.deltaTime * zoomSpeed);
+            offsetDistance = Mathf.MoveTowards(offsetDistance, distance, Time.deltaTime * zoomSpeed);
             relativePosition = (targetPos.position + (Vector3.up * offsetHeight)) + (transform.rotation * (Vector3.forward * -offsetDistance)) + (transform.right * lateralOffset);
             transform.position = relativePosition;
         }
 
         /// <summary>
-        /// 滚轮
+        /// 判断是否在UI上
         /// </summary>
-        public void SetZoom()
-        {
-            float delta = Input.GetAxis("Mouse ScrollWheel") * -zoomValue;
-            defaualtDistance += delta;
-            defaualtDistance = Mathf.Clamp(defaualtDistance, minDistance, maxDistance);
-            UpdatePosition();
-        }
-
+        /// <returns></returns>
         private bool IsPointerOverUI()
         {
 #if UNITY_EDITOR
@@ -204,11 +193,56 @@ namespace GameLogic
             }
         }
 
-        public void SetZoom(float delta)
+        #region 设置摄像头远近
+        /// <summary>
+        /// 设置摄像头远近
+        /// </summary>
+        public void SetZoom()
         {
-            defaualtDistance += delta;
-            defaualtDistance = Mathf.Clamp(defaualtDistance, minDistance, maxDistance);
+            float delta = Input.GetAxis("Mouse ScrollWheel") * -zoomValue;
+            distance += delta;
+            distance = Mathf.Clamp(distance, minDistance, maxDistance);
             UpdatePosition();
         }
+
+        /// <summary>
+        /// 设置摄像头远近
+        /// </summary>
+        public void SetZoom(float delta)
+        {
+            distance += delta;
+            distance = Mathf.Clamp(distance, minDistance, maxDistance);
+            UpdatePosition();
+        }
+        #endregion
+
+        #region 距离
+        public float GetDistance()
+        {
+            return distance;
+        }
+
+        public void SetDistance(float distance)
+        {
+            this.distance = distance;
+        }
+        #endregion
+
+        #region Set Enable
+        /// <summary>
+        /// 设置Enable为True
+        /// </summary>
+        public void SetIsEnableTrue()
+        {
+            isEnable = true;
+        }
+        /// <summary>
+        /// 设置Enable为False
+        /// </summary>
+        public void SetIsEnableFalse()
+        {
+            isEnable = false;
+        }
+        #endregion
     }
 }
