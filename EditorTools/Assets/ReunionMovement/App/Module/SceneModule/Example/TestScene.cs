@@ -21,6 +21,6 @@ public class TestScene : MonoBehaviour
 
     public void LoadScene()
     {
-        SceneModule.Instance.LoadScene(SceneName);
+        SceneModule.Instance.LoadScene(SceneName/*, true*/);
     }
 }

@@ -7,7 +7,6 @@ namespace GameLogic.Download
 {
     public class LoadImageHelper : MonoBehaviour
     {
-        string defaultUrl = "http://avatar.csdnimg.cn/1/E/6/2_u013012420.jpg";
         /// <summary>
         /// 使用此加载图像
         /// </summary>
@@ -17,7 +16,8 @@ namespace GameLogic.Download
         {
             if (string.IsNullOrEmpty(url))
             {
-                url = defaultUrl;
+                Log.Error("Url不能为空！");
+                return;
             }
             StartCoroutine(LoadTeture(url, (tex) => 
             {

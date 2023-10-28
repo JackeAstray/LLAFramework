@@ -11,6 +11,8 @@ namespace GameLogic
     public enum EventModuleType
     {
         StartGame,
-        ClickBlock
+        ClickBlock,
+        Quit,
+        SendMessage,
     }
 }
