@@ -94,6 +94,17 @@ namespace GameLogic
         }
 
         /// <summary>
+        /// 播放BGM
+        /// </summary>
+        public void PlayMusic()
+        {
+            if (sourceAS != null)
+            {
+                sourceAS.Play();
+            }
+        }
+
+        /// <summary>
         /// 暂停BGM
         /// </summary>
         public void PauseMusic()
@@ -270,6 +281,7 @@ namespace GameLogic
         {
             if (settings != null)
             {
+                sourceAS.mute = value;
                 settings.SetMusicMuted(value);
             }
         }
@@ -287,6 +299,7 @@ namespace GameLogic
             if (settings != null)
             {
                 float tempValue = Mathf.Clamp(value, 0, 1);
+                sourceAS.volume = value;
                 settings.SetMusicVolume(tempValue);
             }
         }
