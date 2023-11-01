@@ -7,9 +7,9 @@ namespace GameLogic.Base
     /// <summary>
     /// 观察者
     /// </summary>
-    public abstract class Observer
+    public abstract class Observer : MonoBehaviour
     {
-        protected Observer subject;
+        protected Observed subject;
         public abstract void UpdateData();
     }
 }
