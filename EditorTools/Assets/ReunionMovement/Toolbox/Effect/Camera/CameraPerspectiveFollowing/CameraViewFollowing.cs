@@ -329,7 +329,7 @@ namespace GameLogic
         {
             CameraOrbits cameraOrbits = GetCameraOrbit();
             cameraOrbits.height.up = Mathf.Clamp(cameraOrbits.height.up + delta, 3f, 8f);
-            cameraOrbits.height.down = Mathf.Clamp(cameraOrbits.height.down + delta, -3f, -8f);
+            cameraOrbits.height.down = Mathf.Clamp(cameraOrbits.height.down + delta, -8f, -3f);
             cameraOrbits.radius.middle = Mathf.Clamp(cameraOrbits.radius.middle + delta, 3f, 8f);
         }
 
