@@ -16,8 +16,8 @@ namespace GameLogic
         //是否初始化完成
         public bool IsInited { get; private set; }
         //初始化进度
-        private double _initProgress = 0;
-        public double InitProgress { get { return _initProgress; } }
+        private double initProgress = 0;
+        public double InitProgress { get { return initProgress; } }
         #endregion
 
         /// <summary>
@@ -31,9 +31,9 @@ namespace GameLogic
         public IEnumerator Init()
         {
             Log.Debug("EventModule 初始化");
-            _initProgress = 0;
+            initProgress = 0;
             yield return null;
-            _initProgress = 100;
+            initProgress = 100;
             IsInited = true;
         }
 

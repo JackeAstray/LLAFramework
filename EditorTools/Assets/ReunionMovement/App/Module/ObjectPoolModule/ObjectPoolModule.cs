@@ -13,8 +13,8 @@ namespace GameLogic
         #region 实例与初始化
         public static ObjectPoolModule Instance = new ObjectPoolModule();
         public bool IsInited { get; private set; }
-        private double _initProgress = 0;
-        public double InitProgress { get { return _initProgress; } }
+        private double initProgress = 0;
+        public double InitProgress { get { return initProgress; } }
         #endregion
 
         string poolPath = "Prefabs/Pools/SoundObj";
@@ -32,13 +32,13 @@ namespace GameLogic
         public IEnumerator Init()
         {
             Log.Debug("ObjectPoolModule 初始化");
-            _initProgress = 0;
+            initProgress = 0;
 
             CreateRoot();
             CreatePools();
 
             yield return null;
-            _initProgress = 100;
+            initProgress = 100;
             IsInited = true;
         }
 

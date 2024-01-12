@@ -15,8 +15,8 @@ namespace GameLogic
         public static DatabaseModule Instance = new DatabaseModule();
 
         public bool IsInited { get; private set; }
-        private double _initProgress = 0;
-        public double InitProgress { get { return _initProgress; } }
+        private double initProgress = 0;
+        public double InitProgress { get { return initProgress; } }
         #endregion
 
         // 游戏配置表
@@ -34,10 +34,10 @@ namespace GameLogic
         public IEnumerator Init()
         {
             Log.Debug("DataBaseModule 初始化");
-            _initProgress = 0;
+            initProgress = 0;
             InitConfig();
             yield return null;
-            _initProgress = 100;
+            initProgress = 100;
             IsInited = true;
         }
 

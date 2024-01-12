@@ -18,8 +18,8 @@ namespace GameLogic
         #region 实例与初始化
         public static ResourcesModule Instance = new ResourcesModule();
         public bool IsInited { get; private set; }
-        private double _initProgress = 0;
-        public double InitProgress { get { return _initProgress; } }
+        private double initProgress = 0;
+        public double InitProgress { get { return initProgress; } }
         #endregion
 
         //缓存从Resource中加载的资源
@@ -28,10 +28,10 @@ namespace GameLogic
         public IEnumerator Init()
         {
             Log.Debug("ResourcesModule 初始化");
-            _initProgress = 0;
+            initProgress = 0;
             _resourceTable = new Hashtable();
             yield return null;
-            _initProgress = 100;
+            initProgress = 100;
             IsInited = true;
         }
 

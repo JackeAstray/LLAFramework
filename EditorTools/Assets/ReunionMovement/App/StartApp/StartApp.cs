@@ -91,5 +91,24 @@ namespace GameLogic
         {
 
         }
+
+        /// <summary>
+        /// 启动Coroutine
+        /// </summary>
+        /// <param name="coroutine"></param>
+        /// <returns></returns>
+        public override Coroutine StartMyCoroutine(IEnumerator coroutine)
+        {
+            return StartCoroutine(coroutine);
+        }
+
+        /// <summary>
+        /// 停止Coroutine
+        /// </summary>
+        /// <param name="coroutine"></param>
+        public override void StopMyCoroutine(Coroutine coroutine)
+        {
+            StopCoroutine(coroutine);
+        }
     }
 }

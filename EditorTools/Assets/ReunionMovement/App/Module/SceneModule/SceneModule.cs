@@ -13,17 +13,17 @@ namespace GameLogic
     /// <summary>
     /// 场景模块
     /// </summary>
-    public class SceneModule : CustommModuleInitialize 
+    public class SceneModule : CustommModuleInitialize
     {
         #region 实例与初始化
         public static SceneModule Instance = new SceneModule();
         public bool IsInited { get; private set; }
-        private double _initProgress = 0;
-        public double InitProgress { get { return _initProgress; } }
+        private double initProgress = 0;
+        public double InitProgress { get { return initProgress; } }
         #endregion
 
         #region 加载相关
-        private UnityAction onSceneLoaded = null;   // 场景加载完成回调
+        private UnityAction onAction = null;        // 场景加载完成回调
         private string strTargetSceneName = null;   // 将要加载的场景名
         private string strCurSceneName = null;      // 当前场景名，如若没有场景，则默认返回
         private string strPreSceneName = null;      // 上一个场景名
@@ -34,6 +34,9 @@ namespace GameLogic
 
         public float startProgressWaitingTime;       //开始 - 等待时长
         public float endProgressWaitingTime;         //结束 - 等待时长
+
+        private Coroutine onLoadingSceneCoroutine;
+        private Coroutine onLoadTargetSceneCoroutine;
         #endregion
 
         #region Get
@@ -43,15 +46,15 @@ namespace GameLogic
         public IEnumerator Init()
         {
             Log.Debug("SceneModule 初始化");
-            _initProgress = 0;
+            initProgress = 0;
 
             strCurSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
 
             startProgressWaitingTime = 0;
-            endProgressWaitingTime = 0;
+            endProgressWaitingTime = 0.1f;
 
             yield return null;
-            _initProgress = 100;
+            initProgress = 100;
             IsInited = true;
         }
 
@@ -96,7 +99,9 @@ namespace GameLogic
         /// <summary>
         /// 加载场景
         /// </summary>
-        /// <param name="strLevelName"></param>
+        /// <param name="strLevelName">场景名</param>
+        /// <param name="openLoad">异步加载load界面</param>
+        /// <param name="unityAction">加载成功后执行方法</param>
         public void LoadScene(string strLevelName, bool openLoad = false, UnityAction unityAction = null)
         {
             LoadSceneAsync(strLevelName, openLoad, unityAction);
@@ -107,17 +112,18 @@ namespace GameLogic
         /// </summary>
         /// <param name="strLevelName"></param>
         /// <param name="unityAction"></param>
-        private async void LoadSceneAsync(string strLevelName, bool openLoad, UnityAction unityAction)
+        private void LoadSceneAsync(string strLevelName, bool openLoad, UnityAction unityAction)
         {
             if (bLoading || strCurSceneName == strLevelName)
             {
+                unityAction?.Invoke();
                 return;
             }
 
             // 锁屏
-            bLoading = true;  
+            bLoading = true;
             // 开始加载
-            onSceneLoaded = unityAction;
+            onAction = unityAction;
             strTargetSceneName = strLevelName;
             strPreSceneName = strCurSceneName;
             strCurSceneName = strLoadSceneName;
@@ -125,7 +131,7 @@ namespace GameLogic
             if (openLoad)
             {
                 //先异步加载 Loading 界面
-                await OnLoadingScene(strLoadSceneName, OnLoadingSceneLoaded, LoadSceneMode.Single);
+                onLoadingSceneCoroutine = StartApp.Instance.StartMyCoroutine(OnLoadingScene(strLoadSceneName, OnLoadingSceneLoaded, LoadSceneMode.Single));
             }
             else
             {
@@ -140,98 +146,91 @@ namespace GameLogic
         /// <param name="OnSceneProgress"></param>
         /// <param name="loadSceneMode"></param>
         /// <returns></returns>
-        private async Task OnLoadingScene(string strLoadSceneName, UnityAction OnSecenLoaded, LoadSceneMode loadSceneMode)
+        private IEnumerator OnLoadingScene(string strLoadSceneName, UnityAction OnSecenLoaded, LoadSceneMode loadSceneMode)
         {
-            try
+            AsyncOperation async = SceneManager.LoadSceneAsync(strLoadSceneName, loadSceneMode);
+
+            if (async == null)
             {
-                AsyncOperation async = SceneManager.LoadSceneAsync(strLoadSceneName, loadSceneMode);
-
-                if (async == null)
-                {
-                    return;
-                }
-
-                await async;
-
-                while (!async.isDone)
-                {
-                    float fProgressValue;
-                    if (async.progress < 0.9f)
-                    {
-                        fProgressValue = async.progress;
-                    }
-                    else
-                    {
-                        fProgressValue = 1.0f;
-                    }
-                }
-
-                CallbackProgress(0);
-                OnSecenLoaded?.Invoke();
+                yield break;
             }
-            catch(Exception ex)
+
+            while (!async.isDone)
             {
-                Log.Error(ex.ToString());
+                float fProgressValue;
+                if (async.progress < 0.9f)
+                {
+                    fProgressValue = async.progress;
+                }
+                else
+                {
+                    fProgressValue = 1.0f;
+                }
             }
+
+            CallbackProgress(0);
+            OnSecenLoaded?.Invoke();
         }
 
         /// <summary>
         /// 过渡场景加载完成回调
         /// </summary>
-        private async void OnLoadingSceneLoaded()
+        private void OnLoadingSceneLoaded()
         {
             // 过渡场景加载完成后加载下一个场景
-            await OnLoadTargetScene(strTargetSceneName, LoadSceneMode.Single);
+            onLoadTargetSceneCoroutine = StartApp.Instance.StartMyCoroutine(OnLoadTargetScene(strTargetSceneName, LoadSceneMode.Single));
         }
-        
+
         /// <summary>
         /// 加载目标场景
         /// </summary>
         /// <param name="strLevelName"></param>
         /// <param name="loadSceneMode"></param>
         /// <returns></returns>
-        private async Task OnLoadTargetScene(string strLevelName, LoadSceneMode loadSceneMode)
+        private IEnumerator OnLoadTargetScene(string strLevelName, LoadSceneMode loadSceneMode)
         {
-            try
+            AsyncOperation async = SceneManager.LoadSceneAsync(strLevelName, loadSceneMode);
+
+            if (async == null)
             {
-                AsyncOperation async = SceneManager.LoadSceneAsync(strLevelName, loadSceneMode);
+                Log.Error("加载场景失败：AsyncOperation 为 null");
+                yield break;
+            }
 
-                if (async == null)
-                {
-                    Log.Error("加载场景失败：AsyncOperation 为 null");
-                    return;
-                }
-
+            if (Application.platform != RuntimePlatform.WebGLPlayer)
+            {
                 async.allowSceneActivation = false;
+            }
 
-                CallbackProgress(0.15f);
+            CallbackProgress(0.15f);
 
-                await Task.Delay(TimeSpan.FromSeconds(startProgressWaitingTime));
+            yield return new WaitForSeconds(startProgressWaitingTime);
 
-                //加载进度
-                while (!async.isDone)
+            //加载进度
+            while (!async.isDone)
+            {
+                float fProgressValue = async.progress < 0.9f ? async.progress : 1.0f;
+
+                CallbackProgress(fProgressValue);
+
+                if (fProgressValue >= 0.9f)
                 {
-                    float fProgressValue = async.progress < 0.9f ? async.progress : 1.0f;
-                    
-                    CallbackProgress(fProgressValue);
+                    OnTargetSceneLoaded();
 
-                    if (fProgressValue >= 0.9f)
+                    yield return new WaitForSeconds(endProgressWaitingTime);
+
+                    if (Application.platform != RuntimePlatform.WebGLPlayer)
                     {
-                        OnTargetSceneLoaded();
-
-                        await Task.Delay(TimeSpan.FromSeconds(endProgressWaitingTime));
-
                         async.allowSceneActivation = true;
-
-                        Log.Debug("场景加载完成！");
                     }
-
-                    await Task.Yield(); // 让出主线程
                 }
             }
-            catch (Exception ex)
+
+            if (async.isDone)
             {
-                Log.Error("加载场景时发生异常：" + ex.ToString());
+                Debug.LogError("--加载完成---调用ExecuteAction()");
+                ExecuteAction();
+                Debug.Log("场景加载完成！");
             }
         }
 
@@ -243,7 +242,14 @@ namespace GameLogic
             bLoading = false;
             strCurSceneName = strTargetSceneName;
             strTargetSceneName = null;
-            onSceneLoaded?.Invoke();
+        }
+
+        /// <summary>
+        /// 场景加载完成回调
+        /// </summary>
+        public void ExecuteAction()
+        {
+            onAction?.Invoke();
         }
 
         /// <summary>

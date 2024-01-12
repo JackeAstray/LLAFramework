@@ -30,5 +30,9 @@ namespace GameLogic
         public abstract IEnumerator OnBeforeInit();
 
         public abstract IEnumerator OnGameStart();
+
+        public abstract Coroutine StartMyCoroutine(IEnumerator coroutine);
+
+        public abstract void StopMyCoroutine(Coroutine coroutine);
     }
 }

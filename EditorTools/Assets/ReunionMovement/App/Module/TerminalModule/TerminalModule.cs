@@ -11,8 +11,8 @@ namespace GameLogic
         #region 实例与初始化
         public static TerminalModule Instance = new TerminalModule();
         public bool IsInited { get; private set; }
-        private double _initProgress = 0;
-        public double InitProgress { get { return _initProgress; } }
+        private double initProgress = 0;
+        public double InitProgress { get { return initProgress; } }
         #endregion
 
         Keyboard keyboard;
@@ -22,13 +22,13 @@ namespace GameLogic
         public IEnumerator Init()
         {
             Log.Debug("TerminalModule 初始化");
-            _initProgress = 0;
+            initProgress = 0;
 
             keyboard = Keyboard.current;
             terminalRequest = new TerminalRequest();
 
             yield return null;
-            _initProgress = 100;
+            initProgress = 100;
             IsInited = true;
         }
 
