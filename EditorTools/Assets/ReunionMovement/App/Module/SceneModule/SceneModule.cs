@@ -187,10 +187,6 @@ namespace GameLogic
         /// </summary>
         private void OnLoadingSceneLoaded()
         {
-            if (openLoad)
-            {
-                ExecuteBslcc();
-            }
             // 过渡场景加载完成后加载下一个场景
             onLoadTargetSceneCoroutine = StartApp.Instance.StartMyCoroutine(OnLoadTargetScene(strTargetSceneName, LoadSceneMode.Single));
         }
@@ -244,6 +240,10 @@ namespace GameLogic
             OnTargetSceneLoaded();
 
             Log.Debug("目标场景加载完成！");
+            if (!openLoad)
+            {
+                ExecuteBslcc();
+            }
             ExecuteSlcc();
         }
 
