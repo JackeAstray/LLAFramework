@@ -1,9 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -23,7 +19,9 @@ namespace GameLogic
         #endregion
 
         #region 加载相关
-        private UnityAction onAction = null;        // 场景加载完成回调
+        private UnityAction beforeSceneLoadingCompletionCallback = null;  // 场景加载前回调
+        private UnityAction sceneLoadingCompletionCallback = null;        // 场景加载完成回调
+
         private string strTargetSceneName = null;   // 将要加载的场景名
         private string strCurSceneName = null;      // 当前场景名，如若没有场景，则默认返回
         private string strPreSceneName = null;      // 上一个场景名
@@ -86,44 +84,51 @@ namespace GameLogic
             LoadScene(strPreSceneName);
         }
 
-
-        public void LoadPreScene_OpenLoad()
+        /// <summary>
+        /// 返回上一场景
+        /// </summary>
+        public void LoadPreScene_OpenLoad(UnityAction bslcc = null, UnityAction slcc = null)
         {
             if (string.IsNullOrEmpty(strPreSceneName))
             {
                 return;
             }
-            LoadScene(strPreSceneName, true);
+            LoadScene(strPreSceneName, true, bslcc, slcc);
         }
 
         /// <summary>
         /// 加载场景
         /// </summary>
-        /// <param name="strLevelName">场景名</param>
-        /// <param name="openLoad">异步加载load界面</param>
-        /// <param name="unityAction">加载成功后执行方法</param>
-        public void LoadScene(string strLevelName, bool openLoad = false, UnityAction unityAction = null)
+        /// <param name="strLevelName">要加载的场景名称</param>
+        /// <param name="openLoad">是否开启load场景</param>
+        /// <param name="bslcc">场景加载完成前回调</param>
+        /// <param name="slcc">场景加载完成回调</param>
+        public void LoadScene(string strLevelName, bool openLoad = false, UnityAction bslcc = null, UnityAction slcc = null)
         {
-            LoadSceneAsync(strLevelName, openLoad, unityAction);
+            LoadSceneAsync(strLevelName, openLoad, bslcc, slcc);
         }
 
         /// <summary>
         /// 加载场景
         /// </summary>
-        /// <param name="strLevelName"></param>
-        /// <param name="unityAction"></param>
-        private void LoadSceneAsync(string strLevelName, bool openLoad, UnityAction unityAction)
+        /// <param name="strLevelName">要加载的场景名称</param>
+        /// <param name="openLoad">是否开启load场景</param>
+        /// <param name="slcc">场景加载完成回调</param>
+        /// <param name="bslcc">场景加载完成前回调</param>
+        private void LoadSceneAsync(string strLevelName, bool openLoad, UnityAction bslcc, UnityAction slcc)
         {
             if (bLoading || strCurSceneName == strLevelName)
             {
-                unityAction?.Invoke();
+                bslcc?.Invoke();
+                slcc?.Invoke();
                 return;
             }
 
             // 锁屏
             bLoading = true;
             // 开始加载
-            onAction = unityAction;
+            sceneLoadingCompletionCallback = slcc;
+            beforeSceneLoadingCompletionCallback = bslcc;
             strTargetSceneName = strLevelName;
             strPreSceneName = strCurSceneName;
             strCurSceneName = strLoadSceneName;
@@ -166,8 +171,11 @@ namespace GameLogic
                 {
                     fProgressValue = 1.0f;
                 }
+                yield return null;
             }
 
+            Log.Debug("Loading场景加载完成！");
+            ExecuteBslcc();
             CallbackProgress(0);
             OnSecenLoaded?.Invoke();
         }
@@ -206,32 +214,33 @@ namespace GameLogic
 
             yield return new WaitForSeconds(startProgressWaitingTime);
 
+
             //加载进度
+            while (async.progress < 0.9f)
+            {
+                CallbackProgress(async.progress);
+                yield return null;
+            }
+
+            CallbackProgress(1f);
+
+
+            if (Application.platform != RuntimePlatform.WebGLPlayer)
+            {
+                async.allowSceneActivation = true;
+            }
+
             while (!async.isDone)
             {
-                float fProgressValue = async.progress < 0.9f ? async.progress : 1.0f;
-
-                CallbackProgress(fProgressValue);
-
-                if (fProgressValue >= 0.9f)
-                {
-                    OnTargetSceneLoaded();
-
-                    yield return new WaitForSeconds(endProgressWaitingTime);
-
-                    if (Application.platform != RuntimePlatform.WebGLPlayer)
-                    {
-                        async.allowSceneActivation = true;
-                    }
-                }
+                yield return null;
             }
 
-            if (async.isDone)
-            {
-                Debug.LogError("--加载完成---调用ExecuteAction()");
-                ExecuteAction();
-                Debug.Log("场景加载完成！");
-            }
+            OnTargetSceneLoaded();
+
+            yield return new WaitForSeconds(endProgressWaitingTime);
+
+            Log.Debug("目标场景加载完成！");
+            ExecuteSlcc();
         }
 
         /// <summary>
@@ -245,11 +254,18 @@ namespace GameLogic
         }
 
         /// <summary>
+        /// 场景加载完成前回调
+        /// </summary>
+        private void ExecuteBslcc()
+        {
+            beforeSceneLoadingCompletionCallback?.Invoke();
+        }
+        /// <summary>
         /// 场景加载完成回调
         /// </summary>
-        public void ExecuteAction()
+        private void ExecuteSlcc()
         {
-            onAction?.Invoke();
+            sceneLoadingCompletionCallback?.Invoke();
         }
 
         /// <summary>
@@ -265,29 +281,5 @@ namespace GameLogic
             }
         }
         #endregion
-    }
-
-    /// <summary>
-    /// 异步操作等待器
-    /// </summary>
-    public class AsyncOperationAwaiter : INotifyCompletion
-    {
-        public Action Continuation;
-        public AsyncOperation asyncOperation;
-        public bool IsCompleted => asyncOperation.isDone;
-        public AsyncOperationAwaiter(AsyncOperation resourceRequest)
-        {
-            this.asyncOperation = resourceRequest;
-
-            //注册完成时的回调
-            this.asyncOperation.completed += Accomplish;
-        }
-
-        //awati 后面的代码包装成 continuation ，保存在类中方便完成是调用
-        public void OnCompleted(Action continuation) => this.Continuation = continuation;
-
-        public void Accomplish(AsyncOperation asyncOperation) => Continuation?.Invoke();
-
-        public void GetResult() { }
     }
 }
