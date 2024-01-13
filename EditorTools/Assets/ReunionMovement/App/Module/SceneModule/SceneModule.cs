@@ -33,6 +33,8 @@ namespace GameLogic
         public float startProgressWaitingTime;       //开始 - 等待时长
         public float endProgressWaitingTime;         //结束 - 等待时长
 
+        public bool openLoad;
+
         private Coroutine onLoadingSceneCoroutine;
         private Coroutine onLoadTargetSceneCoroutine;
         #endregion
@@ -132,7 +134,7 @@ namespace GameLogic
             strTargetSceneName = strLevelName;
             strPreSceneName = strCurSceneName;
             strCurSceneName = strLoadSceneName;
-
+            this.openLoad = openLoad;
             if (openLoad)
             {
                 //先异步加载 Loading 界面
@@ -185,6 +187,10 @@ namespace GameLogic
         /// </summary>
         private void OnLoadingSceneLoaded()
         {
+            if (openLoad)
+            {
+                ExecuteBslcc();
+            }
             // 过渡场景加载完成后加载下一个场景
             onLoadTargetSceneCoroutine = StartApp.Instance.StartMyCoroutine(OnLoadTargetScene(strTargetSceneName, LoadSceneMode.Single));
         }
