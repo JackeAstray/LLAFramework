@@ -48,8 +48,8 @@ namespace GameLogic
 
             strCurSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
 
-            startProgressWaitingTime = 0;
-            endProgressWaitingTime = 0.1f;
+            startProgressWaitingTime = 0.5f;
+            endProgressWaitingTime = 0.5f;
 
             yield return null;
             initProgress = 100;
@@ -214,7 +214,6 @@ namespace GameLogic
 
             yield return new WaitForSeconds(startProgressWaitingTime);
 
-
             //加载进度
             while (async.progress < 0.9f)
             {
@@ -222,8 +221,9 @@ namespace GameLogic
                 yield return null;
             }
 
-            CallbackProgress(1f);
+            yield return new WaitForSeconds(endProgressWaitingTime);
 
+            CallbackProgress(1f);
 
             if (Application.platform != RuntimePlatform.WebGLPlayer)
             {
@@ -236,8 +236,6 @@ namespace GameLogic
             }
 
             OnTargetSceneLoaded();
-
-            yield return new WaitForSeconds(endProgressWaitingTime);
 
             Log.Debug("目标场景加载完成！");
             ExecuteSlcc();
