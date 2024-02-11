@@ -34,7 +34,7 @@ namespace GameLogic
             Version version = new Version(currentVersion);
 
             // 目标版本
-            Version targetVersion = new Version(1,1);
+            Version targetVersion = new Version(version.Major, version.Minor);
             
             // 增加版本号
             version = new Version(targetVersion.Major, targetVersion.Minor, version.Build + 1);
