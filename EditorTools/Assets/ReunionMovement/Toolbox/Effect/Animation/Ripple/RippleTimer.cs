@@ -38,17 +38,17 @@ namespace GameLogic.AnimationUI
             if (Time.time - T >= Rate)
             {
                 //创建波纹
-                GetComponent<UIRipple>().CreateRipple(Offset);
+                var ripple = GetComponent<UIRipple>();
+                ripple.CreateRipple(Offset);
                 //设置新的时间
                 T = Time.time;
-
                 //改变颜色
                 if (Colors.Count > 0)
                 {
-                    GetComponent<UIRipple>().StartColor = Colors[ColorIndex];
-                    GetComponent<UIRipple>().EndColor = Colors[ColorIndex];
+                    ripple.StartColor = Colors[ColorIndex];
+                    ripple.EndColor = Colors[ColorIndex];
 
-                    ColorIndex += 1;
+                    ColorIndex++;
 
                     //如果位于颜色列表末尾则循环返回
                     ColorIndex = ColorIndex % Colors.Count;

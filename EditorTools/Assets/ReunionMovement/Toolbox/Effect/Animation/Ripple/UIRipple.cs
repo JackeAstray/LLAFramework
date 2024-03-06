@@ -78,23 +78,14 @@ namespace GameLogic.AnimationUI
 
         void Update()
         {
-            if (Input.GetMouseButtonDown(0))
+            // 检测鼠标左键的点击或者手机屏幕的触摸
+            if ((Input.GetMouseButtonDown(0) ||
+                (Input.touchCount > 0 &&
+                Input.GetTouch(0).phase == TouchPhase.Began)) &&
+                (!OnUIOnly || IsOnUIElement(Input.mousePosition)))
             {
-                if (OnUIOnly)
-                {
-                    //鼠标位于 UIElement 上
-                    if (IsOnUIElement(Input.mousePosition))
-                    {
-                        //创建波纹
-                        CreateRipple(Input.mousePosition);
-                    }
-                }
-                else
-                {
-                    //创建波纹
-                    CreateRipple(Input.mousePosition);
-                }
-
+                //创建波纹
+                CreateRipple(Input.mousePosition);
             }
         }
 
@@ -105,7 +96,7 @@ namespace GameLogic.AnimationUI
         public void CreateRipple(Vector2 Position)
         {
             //创建游戏对象并添加组件
-            GameObject ThisRipple = new GameObject();
+            var ThisRipple = new GameObject();
             ThisRipple.AddComponent<Ripple>();
             ThisRipple.AddComponent<Image>();
             ThisRipple.GetComponent<Image>().sprite = ShapeSprite;
@@ -125,10 +116,11 @@ namespace GameLogic.AnimationUI
             { ThisRipple.transform.position = Position; }
 
             //在Ripple中设置参数
-            ThisRipple.GetComponent<Ripple>().Speed = Speed;
-            ThisRipple.GetComponent<Ripple>().MaxSize = MaxSize;
-            ThisRipple.GetComponent<Ripple>().StartColor = StartColor;
-            ThisRipple.GetComponent<Ripple>().EndColor = EndColor;
+            var ripple = ThisRipple.GetComponent<Ripple>();
+            ripple.Speed = Speed;
+            ripple.MaxSize = MaxSize;
+            ripple.StartColor = StartColor;
+            ripple.EndColor = EndColor;
         }
 
 
@@ -140,20 +132,10 @@ namespace GameLogic.AnimationUI
         public bool IsOnUIElement(Vector2 Position)
         {
             //如果该点位于 UIElement 的范围内
-            if (
-                gameObject.transform.position.x + (GetComponent<RectTransform>().rect.width / 2f) >= Position.x
+            return gameObject.transform.position.x + (GetComponent<RectTransform>().rect.width / 2f) >= Position.x
                 && gameObject.transform.position.x - (GetComponent<RectTransform>().rect.width / 2f) <= Position.x
                 && gameObject.transform.position.y + (GetComponent<RectTransform>().rect.height / 2f) >= Position.y
-                && gameObject.transform.position.y - (GetComponent<RectTransform>().rect.height / 2f) <= Position.y
-                )
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+                && gameObject.transform.position.y - (GetComponent<RectTransform>().rect.height / 2f) <= Position.y;
         }
-
     }
 }
