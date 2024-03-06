@@ -19,9 +19,7 @@ namespace GameLogic
         /// <param name="width"></param>
         public static void SetWidth(this RectTransform rectTrans, float width)
         {
-            var size = rectTrans.sizeDelta;
-            size.x = width;
-            rectTrans.sizeDelta = size;
+            rectTrans.sizeDelta = new Vector2(width, rectTrans.sizeDelta.y);
         }
 
         /// <summary>
@@ -31,9 +29,7 @@ namespace GameLogic
         /// <param name="height"></param>
         public static void SetHeight(this RectTransform rectTrans, float height)
         {
-            var size = rectTrans.sizeDelta;
-            size.y = height;
-            rectTrans.sizeDelta = size;
+            rectTrans.sizeDelta = new Vector2(rectTrans.sizeDelta.x, height);
         }
         /// <summary>
         /// 获取位置的X轴
@@ -167,9 +163,7 @@ namespace GameLogic
         /// <returns></returns>
         public static bool IsActive(this Transform t)
         {
-            if (t && t.gameObject)
-                return t.gameObject.activeInHierarchy;
-            return false;
+            return t?.gameObject.activeInHierarchy ?? false;
         }
         /// <summary>
         /// 变换转矩阵变换
@@ -178,9 +172,7 @@ namespace GameLogic
         /// <returns></returns>
         public static RectTransform RectTransform(this Transform t)
         {
-            if (t && t.gameObject)
-                return t.gameObject.GetComponent<RectTransform>();
-            return null;
+            return t?.gameObject.GetComponent<RectTransform>();
         }
         /// <summary>
         /// 判断刚体是否存在
@@ -189,7 +181,7 @@ namespace GameLogic
         /// <returns></returns>
         public static bool HasRigidbody(this GameObject gobj)
         {
-            return (gobj.GetComponent<Rigidbody>() != null);
+            return gobj.GetComponent<Rigidbody>() != null;
         }
         /// <summary>
         /// 判断动画是否存在
@@ -198,7 +190,7 @@ namespace GameLogic
         /// <returns></returns>
         public static bool HasAnimation(this GameObject gobj)
         {
-            return (gobj.GetComponent<Animation>() != null);
+            return gobj.GetComponent<Animation>() != null;
         }
         /// <summary>
         /// 设置动画速度
@@ -232,7 +224,7 @@ namespace GameLogic
         /// </summary>
         /// <param name="go"></param>
         /// <param name="visible"></param>
-        public static void SetActiveX(this GameObject go, bool visible)
+        public static void SetActiveReverse(this GameObject go, bool visible)
         {
             if (go && go.activeSelf != visible) go.SetActive(visible);
         }
@@ -291,11 +283,8 @@ namespace GameLogic
         {
             go.layer = layer;
 
-            var t = go.transform;
-
-            for (int i = 0, imax = t.childCount; i < imax; ++i)
+            foreach (Transform child in go.transform)
             {
-                var child = t.GetChild(i);
                 SetLayer(child.gameObject, layer);
             }
         }
@@ -321,8 +310,7 @@ namespace GameLogic
         public static GameObject Child(Transform go, string subnode)
         {
             Transform tran = go.Find(subnode);
-            if (tran == null) return null;
-            return tran.gameObject;
+            return tran?.gameObject;
         }
         #endregion
 
@@ -347,8 +335,7 @@ namespace GameLogic
         public static GameObject Peer(Transform go, string subnode)
         {
             Transform tran = go.parent.Find(subnode);
-            if (tran == null) return null;
-            return tran.gameObject;
+            return tran?.gameObject;
         }
         #endregion
 
@@ -366,15 +353,13 @@ namespace GameLogic
 
                 if (Application.isEditor && !Application.isPlaying)
                 {
-                    child.parent = null; // 清空父, 因为.Destroy非同步的
                     GameObject.DestroyImmediate(child.gameObject);
                 }
                 else
                 {
                     GameObject.Destroy(child.gameObject);
-                    // 预防触发对象的OnEnable，先Destroy
-                    child.parent = null; // 清空父, 因为.Destroy非同步的
                 }
+                child.parent = null;
             }
         }
 
@@ -384,24 +369,7 @@ namespace GameLogic
         /// <param name="go"></param>
         public static void ThisClearChild(this GameObject go)
         {
-            var tran = go.transform;
-
-            while (tran.childCount > 0)
-            {
-                var child = tran.GetChild(0);
-
-                if (Application.isEditor && !Application.isPlaying)
-                {
-                    child.parent = null; // 清空父, 因为.Destroy非同步的
-                    GameObject.DestroyImmediate(child.gameObject);
-                }
-                else
-                {
-                    GameObject.Destroy(child.gameObject);
-                    // 预防触发对象的OnEnable，先Destroy
-                    child.parent = null; // 清空父, 因为.Destroy非同步的
-                }
-            }
+            ClearChild(go);
         }
     }
 }

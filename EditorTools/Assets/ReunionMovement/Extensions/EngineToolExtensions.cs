@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 
@@ -38,43 +39,22 @@ public static class EngineToolExtensions
     /// <returns></returns>
     public static T FirstOrDefault<T>(this IEnumerable<T> source)
     {
-        if (source != null)
-        {
-            foreach (T item in source)
-            {
-                return item;
-            }
-        }
-
-        return default(T);
+        return source.FirstOrDefault();
     }
+
     /// <summary>
     /// 从序列中获取第一个元素
     /// </summary>
-    /// <param name="source"></param>
     /// <typeparam name="T"></typeparam>
+    /// <param name="source"></param>
+    /// <param name="num"></param>
     /// <returns></returns>
     public static List<T> First<T>(this IEnumerable<T> source, int num)
     {
-        var count = 0;
-        var items = new List<T>();
-        if (source != null)
-        {
-            foreach (T item in source)
-            {
-                if (++count > num)
-                {
-                    break;
-                }
-
-                items.Add(item);
-            }
-        }
-
-        return items;
+        return source.Take(num).ToList();
     }
 
-    public delegate bool FilterAction<T>(T t);
+    public delegate bool FilterAction<T, K>(T t, K k);
 
     /// <summary>
     /// 筛选(列表)
@@ -83,24 +63,10 @@ public static class EngineToolExtensions
     /// <param name="source"></param>
     /// <param name="testAction"></param>
     /// <returns></returns>
-    public static List<T> Filter<T>(this IEnumerable<T> source, FilterAction<T> testAction)
+    public static List<T> Filter<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
-        var items = new List<T>();
-        if (source != null)
-        {
-            foreach (T item in source)
-            {
-                if (testAction(item))
-                {
-                    items.Add(item);
-                }
-            }
-        }
-
-        return items;
+        return source?.Where(predicate).ToList() ?? new List<T>();
     }
-
-    public delegate bool FilterAction<T, K>(T t, K k);
 
     /// <summary>
     /// 筛选(字典)
@@ -112,20 +78,9 @@ public static class EngineToolExtensions
     /// <returns></returns>
     public static Dictionary<T, K> Filter<T, K>(this IEnumerable<KeyValuePair<T, K>> source, FilterAction<T, K> testAction)
     {
-        var items = new Dictionary<T, K>();
-        if (source != null)
-        {
-            foreach (KeyValuePair<T, K> pair in source)
-            {
-                if (testAction(pair.Key, pair.Value))
-                {
-                    items.Add(pair.Key, pair.Value);
-                }
-            }
-        }
-
-        return items;
+        return source.Where(pair => testAction(pair.Key, pair.Value)).ToDictionary(pair => pair.Key, pair => pair.Value);
     }
+
     /// <summary>
     /// 从序列中获取最后一个元素或者默认值
     /// </summary>
@@ -134,13 +89,7 @@ public static class EngineToolExtensions
     /// <returns></returns>
     public static T LastOrDefault<T>(this IEnumerable<T> source)
     {
-        var result = default(T);
-        foreach (T item in source)
-        {
-            result = item;
-        }
-
-        return result;
+        return source.LastOrDefault();
     }
 
     /// <summary>
@@ -152,24 +101,7 @@ public static class EngineToolExtensions
     /// <returns></returns>
     public static List<T> Last<T>(this IEnumerable<T> source, int num)
     {
-        // 开始读取的位置
-        var startIndex = Math.Max(0, source.ToList().Count - num);
-        var index = 0;
-        var items = new List<T>();
-        if (source != null)
-        {
-            foreach (T item in source)
-            {
-                if (index < startIndex)
-                {
-                    continue;
-                }
-
-                items.Add(item);
-            }
-        }
-
-        return items;
+        return source.Skip(Math.Max(0, source.Count() - num)).ToList();
     }
 
     /// <summary>
@@ -181,14 +113,9 @@ public static class EngineToolExtensions
     /// <returns></returns>
     public static bool AddRange<T>(this HashSet<T> @this, IEnumerable<T> items)
     {
-        bool allAdded = true;
-        foreach (T item in items)
-        {
-            allAdded &= @this.Add(item);
-        }
-
-        return allAdded;
+        return items.All(item => @this.Add(item));
     }
+
     /// <summary>
     /// 转成数组
     /// </summary>
@@ -197,14 +124,9 @@ public static class EngineToolExtensions
     /// <returns></returns>
     public static T[] ToArray<T>(this IEnumerable<T> source)
     {
-        var list = new List<T>();
-        foreach (T item in source)
-        {
-            list.Add(item);
-        }
-
-        return list.ToArray();
+        return source.ToArray();
     }
+
     /// <summary>
     /// 转成列表
     /// </summary>
@@ -213,14 +135,9 @@ public static class EngineToolExtensions
     /// <returns></returns>
     public static List<T> ToList<T>(this IEnumerable<T> source)
     {
-        var list = new List<T>();
-        foreach (T item in source)
-        {
-            list.Add(item);
-        }
-
-        return list;
+        return source.ToList();
     }
+
     /// <summary>
     /// 联合体
     /// </summary>
@@ -231,29 +148,9 @@ public static class EngineToolExtensions
     /// <returns></returns>
     public static List<T> Union<T>(this List<T> first, List<T> second, IEqualityComparer<T> comparer)
     {
-        var results = new List<T>();
-        var list = first.ToList();
-        list.AddRange(second);
-        foreach (T item in list)
-        {
-            var include = false;
-            foreach (T result in results)
-            {
-                if (comparer.Equals(result, item))
-                {
-                    include = true;
-                    break;
-                }
-            }
-
-            if (!include)
-            {
-                results.Add(item);
-            }
-        }
-
-        return results;
+        return first.Union(second, comparer).ToList();
     }
+
     /// <summary>
     /// 加入
     /// </summary>
@@ -263,20 +160,7 @@ public static class EngineToolExtensions
     /// <returns></returns>
     public static string Join<T>(this IEnumerable<T> source, string sp)
     {
-        var result = new StringBuilder();
-        foreach (T item in source)
-        {
-            if (result.Length == 0)
-            {
-                result.Append(item);
-            }
-            else
-            {
-                result.Append(sp).Append(item);
-            }
-        }
-
-        return result.ToString();
+        return string.Join(sp, source);
     }
 
     /// <summary>
@@ -288,15 +172,7 @@ public static class EngineToolExtensions
     /// <returns></returns>
     public static bool Contains<TSource>(this IEnumerable<TSource> source, TSource value)
     {
-        foreach (TSource item in source)
-        {
-            if (Equals(item, value))
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return source.Contains(value);
     }
 
     /// <summary>
@@ -307,7 +183,7 @@ public static class EngineToolExtensions
     /// <returns></returns>
     public static Texture2D Base64ToTexture2D(string imageData, int offset = 0)
     {
-        Texture2D tex2D = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+        Texture2D tex2D = new Texture2D(2, 2);
         imageData = imageData.Substring(offset);
         byte[] data = Convert.FromBase64String(imageData);
         tex2D.LoadImage(data);
@@ -321,7 +197,6 @@ public static class EngineToolExtensions
     /// <returns></returns>
     public static string Texture2DToBase64(byte[] bytesArr)
     {
-        string strbaser64 = Convert.ToBase64String(bytesArr);
-        return strbaser64;
+        return Convert.ToBase64String(bytesArr);
     }
 }

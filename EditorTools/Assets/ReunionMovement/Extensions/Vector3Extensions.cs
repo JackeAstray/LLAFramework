@@ -9,17 +9,19 @@ public static class VectorExtensions
     /// <summary>
     /// 在指定的容器中找到距离最近的位置
     /// </summary>
-    /// <param name="position">World position.</param>
-    /// <param name="otherPositions">Other world positions.</param>
-    /// <returns>Closest position.</returns>
+    /// <param name="position">自己的位置</param>
+    /// <param name="otherPositions">其他对象的位置</param>
+    /// <returns>最近的</returns>
     public static Vector3 GetClosest(this Vector3 position, IEnumerable<Vector3> otherPositions)
     {
-        var closest = Vector3.zero;
-        var shortestDistance = Mathf.Infinity;
+        Vector3 closest = Vector3.zero;
+        float shortestDistance = Mathf.Infinity;
+        Vector3 difference;
 
         foreach (var otherPosition in otherPositions)
         {
-            var distance = (position - otherPosition).sqrMagnitude;
+            difference = position - otherPosition;
+            float distance = difference.sqrMagnitude;
 
             if (distance < shortestDistance)
             {
@@ -31,71 +33,67 @@ public static class VectorExtensions
         return closest;
     }
 
-    //v3 -> v2(x,y)
+    /// <summary>
+    /// vector3转vector2
+    /// </summary>
+    /// <param name="v"></param>
+    /// <returns></returns>
     public static Vector2 XY(this Vector3 v) => new Vector2(v.x, v.y);
 
-    //根据新的x返回新的vector3
-    public static Vector3 WithX(this Vector3 v, float x) => new Vector3(x, v.y, v.z);
+    public static void WithX(this Vector3 v, float x) => v.x = x;
 
-    //根据新的y返回新的vector3
-    public static Vector3 WithY(this Vector3 v, float y) => new Vector3(v.x, y, v.z);
+    public static void WithY(this Vector3 v, float y) => v.y = y;
 
-    //根据新的z返回新的vector3
-    public static Vector3 WithZ(this Vector3 v, float z) => new Vector3(v.x, v.y, z);
+    public static void WithZ(this Vector3 v, float z) => v.z = z;
 
-    //根据新的x返回新的vector2
-    public static Vector2 WithX(this Vector2 v, float x) => new Vector2(x, v.y);
+    public static void WithX(this Vector2 v, float x) => v.x = x;
 
-    //根据新的y返回新的vector2
-    public static Vector2 WithY(this Vector2 v, float y) => new Vector2(v.x, y);
+    public static void WithY(this Vector2 v, float y) => v.y = y;
 
-    //根据新的z返回新的vector3
-    public static Vector3 WithZ(this Vector2 v, float z) => new Vector3(v.x, v.y, z);
+    public static void WithAddX(this Vector3 v, float x) => v.x += x;
 
-    //x相加并返回新的vector3
-    public static Vector3 WithAddX(this Vector3 v, float x) => new Vector3(v.x + x, v.y, v.z);
+    public static void WithAddY(this Vector3 v, float y) => v.y += y;
 
-    //y相加并返回新的vector3
-    public static Vector3 WithAddY(this Vector3 v, float y) => new Vector3(v.x, v.y + y, v.z);
+    public static void WithAddZ(this Vector3 v, float z) => v.z += z;
 
-    //z相加并返回新的vector3
-    public static Vector3 WithAddZ(this Vector3 v, float z) => new Vector3(v.x, v.y, v.z + z);
+    public static void WithAddX(this Vector2 v, float x) => v.x += x;
 
-    //x相加并返回新的vector2
-    public static Vector2 WithAddX(this Vector2 v, float x) => new Vector2(v.x + x, v.y);
-
-    //y相加并返回新的vector2
-    public static Vector2 WithAddY(this Vector2 v, float y) => new Vector2(v.x, v.y + y);
+    public static void WithAddY(this Vector2 v, float y) => v.y += y;
 
     /// <summary>
-    /// 
+    /// 计算一个点在给定轴上的最近点
     /// </summary>
-    /// <param name="axisDirection">轴方向上的单位向量（例如，定义穿过零的直线）</param>
-    /// <param name="point">在线查找最近的点</param>
-    /// <param name="isNormalized">是否归一化</param>
-    /// <returns></returns>
-    public static Vector3 NearestPointOnAxis(this Vector3 axisDirection, Vector3 point, bool isNormalized = false)
+    /// <param name="axisDirection">轴的方向</param>
+    /// <param name="point">要计算的点</param>
+    /// <returns>点在轴上的最近点</returns>
+    public static Vector3 NearestPointOnAxis(this Vector3 axisDirection, Vector3 point)
     {
-        if (!isNormalized)
-            axisDirection.Normalize();
+        // 确保轴的方向是单位向量
+        axisDirection.Normalize();
+
+        // 计算点和轴方向的点积，得到点在轴上的投影长度
         var d = Vector3.Dot(point, axisDirection);
+
+        // 将点积乘以轴的方向，得到点在轴上的最近点
         return axisDirection * d;
     }
 
     /// <summary>
-    /// 线上最近的点
+    /// 计算一个点在给定直线上的最近点
     /// </summary>
-    /// <param name="lineDirection">线方向的单位向量</param>
-    /// <param name="point">在线查找最近的点</param>
-    /// <param name="pointOnLine">线上的一个点（允许我们定义空间中的实际线）</param>
-    /// <param name="isNormalized">是否归一化</param>
-    /// <returns></returns>
-    public static Vector3 NearestPointOnLine(
-        this Vector3 lineDirection, Vector3 point, Vector3 pointOnLine, bool isNormalized = false)
+    /// <param name="lineDirection">直线的方向</param>
+    /// <param name="point">要计算的点</param>
+    /// <param name="pointOnLine">直线上的一个点</param>
+    /// <returns>点在直线上的最近点</returns>
+    public static Vector3 NearestPointOnLine(this Vector3 lineDirection, Vector3 point, Vector3 pointOnLine)
     {
-        if (!isNormalized)
-            lineDirection.Normalize();
+        // 确保直线的方向是单位向量
+        lineDirection.Normalize();
+
+        // 计算点和直线上的点的差，然后和直线方向的点积，得到点在直线上的投影长度
         var d = Vector3.Dot(point - pointOnLine, lineDirection);
+
+        // 将点积乘以直线的方向，然后加上直线上的点，得到点在直线上的最近点
         return pointOnLine + lineDirection * d;
     }
 }

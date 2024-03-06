@@ -10,18 +10,28 @@ public static class TransformExtensions
     /// <summary>
     /// 使指定的多个GameObject成为子节点
     /// </summary>
-    /// <param name="transform">Parent transform.</param>
-    /// <param name="children">Game objects to make children.</param>
-    public static void AddChildren(this Transform transform, GameObject[] children) =>
-        Array.ForEach(children, child => child.transform.parent = transform);
+    /// <param name="transform"></param>
+    /// <param name="children"></param>
+    public static void AddChildren(this Transform transform, GameObject[] children)
+    {
+        foreach (var child in children)
+        {
+            child.transform.parent = transform;
+        }
+    }
 
     /// <summary>
     /// 使指定的多个Component成为子节点
     /// </summary>
-    /// <param name="transform">Parent transform.</param>
-    /// <param name="children">Components of game objects to make children.</param>
-    public static void AddChildren(this Transform transform, Component[] children) =>
-        Array.ForEach(children, child => child.transform.parent = transform);
+    /// <param name="transform"></param>
+    /// <param name="children"></param>
+    public static void AddChildren(this Transform transform, Component[] children)
+    {
+        foreach (var child in children)
+        {
+            child.transform.parent = transform;
+        }
+    }
 
     /// <summary>
     /// 重置子节点位置
@@ -32,66 +42,76 @@ public static class TransformExtensions
     {
         foreach (Transform child in transform)
         {
-            child.position = Vector3.zero;
+            child.localPosition = Vector3.zero;
 
-            if (recursive) child.ResetChildPositions(recursive);
+            if (recursive)
+            {
+                child.ResetChildPositions(true);
+            }
         }
     }
 
     /// <summary>
     /// 设置子层级的layer
     /// </summary>
-    /// <param name="transform">Parent transform.</param>
-    /// <param name="layerName">Name of layer.</param>
-    /// <param name="recursive">Also set ancestor layers?</param>
+    /// <param name="transform"></param>
+    /// <param name="layerName"></param>
+    /// <param name="recursive"></param>
     public static void SetChildLayers(this Transform transform, string layerName, bool recursive = false)
     {
         var layer = LayerMask.NameToLayer(layerName);
-        SetChildLayersHelper(transform, layer, recursive);
-    }
 
-    static void SetChildLayersHelper(Transform transform, int layer, bool recursive)
-    {
         foreach (Transform child in transform)
         {
             child.gameObject.layer = layer;
 
-            if (recursive) SetChildLayersHelper(child, layer, recursive);
+            if (recursive)
+            {
+                child.SetChildLayers(layerName, true);
+            }
         }
     }
 
     /// <summary>
-    /// 设置position的x
+    /// 设置X轴位置
     /// </summary>
-    /// <param name="x">Value of x.</param>
-    public static void SetX(this Transform transform, float x) =>
+    /// <param name="transform"></param>
+    /// <param name="x"></param>
+    public static void SetX(this Transform transform, float x)
+    {
         transform.position = new Vector3(x, transform.position.y, transform.position.z);
+    }
 
     /// <summary>
-    /// 设置position的y
+    /// 设置Y轴位置
     /// </summary>
-    /// <param name="y">Value of y.</param>
-    public static void SetY(this Transform transform, float y) =>
+    /// <param name="transform"></param>
+    /// <param name="y"></param>
+    public static void SetY(this Transform transform, float y)
+    {
         transform.position = new Vector3(transform.position.x, y, transform.position.z);
+    }
 
     /// <summary>
-    /// 设置position的z
+    /// 设置Z轴位置
     /// </summary>
-    /// <param name="z">Value of z.</param>
-    public static void SetZ(this Transform transform, float z) =>
+    /// <param name="transform"></param>
+    /// <param name="z"></param>
+    public static void SetZ(this Transform transform, float z)
+    {
         transform.position = new Vector3(transform.position.x, transform.position.y, z);
+    }
 
     /// <summary>
-    /// 计算该物体的位置。 无论它位于顶部还是底部。 分别为-1和1。
+    /// 计算该物体的位置。无论它位于顶部还是底部。分别为-1和1。
     /// </summary>
     /// <returns></returns>
     public static int CloserEdge(this Transform transform, Camera camera, int width, int height)
     {
-        //根据屏幕/相机的边缘点
+        // 世界坐标转换为屏幕坐标
         var worldPointTop = camera.ScreenToWorldPoint(new Vector3(width / 2, height));
         var worldPointBot = camera.ScreenToWorldPoint(new Vector3(width / 2, 0));
-
-        //轴心点到屏幕边缘的距离
+        // 计算距离
         var deltaTop = Vector2.Distance(worldPointTop, transform.position);
         var deltaBottom = Vector2.Distance(worldPointBot, transform.position);
 
@@ -107,12 +127,8 @@ public static class TransformExtensions
     /// <returns></returns>
     public static T Get<T>(this Transform tf, string subnode) where T : Component
     {
-        if (tf != null)
-        {
-            Transform sub = tf.Find(subnode);
-            if (sub != null) return sub.GetComponent<T>();
-        }
-        return null;
+        var sub = tf?.Find(subnode);
+        return sub?.GetComponent<T>();
     }
 
     /// <summary>

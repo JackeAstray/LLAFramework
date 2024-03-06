@@ -26,7 +26,8 @@ public static class ComponentExtensions
     /// <returns>Previously or newly attached component.</returns>
     public static T GetOrAddComponent<T>(this Component component) where T : Component
     {
-        return component.GetComponent<T>() ?? component.AddComponent<T>();
+        var existingComponent = component.GetComponent<T>();
+        return existingComponent != null ? existingComponent : component.AddComponent<T>();
     }
 
     /// <summary>
@@ -46,8 +47,9 @@ public static class ComponentExtensions
     /// <param name="go"></param>
     /// <param name="subnode"></param>
     /// <returns></returns>
-    public static T Get<T>(Component go, string subnode) where T : Component
+    public static T Get<T>(this Component go, string subnode) where T : Component
     {
-        return go.transform.Find(subnode).GetComponent<T>();
+        var transform = go.transform.Find(subnode);
+        return transform != null ? transform.GetComponent<T>() : null;
     }
 }

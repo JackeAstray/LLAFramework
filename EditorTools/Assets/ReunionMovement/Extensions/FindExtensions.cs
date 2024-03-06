@@ -9,52 +9,86 @@ using UnityEngine.Profiling;
 /// </summary>
 public static class FindExtensions
 {
-    private static Queue<Transform> s_findchild_stack = new Queue<Transform>();
-
+    #region GO
     /// <summary>
-    /// 按名字查找
-    /// 出于性能考虑应避免节点太深，可优先查找他们共用的父节点
-    /// 经过多次测试和项目中使用此查找方法性能比递归调用耗时和gc都更少
-    /// 比如下面的层级，dst_name会忽略层级查找到节点
-    ///     ."dst_name" 单个名字
-    ///     ."name1/name2/.../dst_name" 多个名字组合的路径，越详细性能越好
+    /// 查找子项
     /// </summary>
-    /// <param name="go">父节点</param>
-    /// <param name="id">要查找的节点名字</param>
-    /// <param name="check_visible">是否只查找gameobject.active=true的节点</param>
-    /// <param name="raise_error">当查找失败时是否打印Error</param>
+    /// <param name="go"></param>
+    /// <param name="id"></param>
+    /// <param name="check_visible"></param>
+    /// <param name="raise_error"></param>
+    /// <returns></returns>
     public static GameObject FindChild(this GameObject go, string id, bool check_visible = false, bool raise_error = true)
     {
         if (!go)
         {
             if (raise_error)
             {
-                Log.Error("查找失败，go是空的！");
+                Log.Error("查找失败，GameObject是空的！");
             }
             return null;
         }
 
         var t = FindChild(go.transform, id, check_visible, raise_error);
-        if (t) return t.gameObject;
-        return null;
+        return t?.gameObject;
     }
+    #endregion
 
+    #region GetComponent
+    /// <summary>
+    /// 查找子项组件
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="go"></param>
+    /// <param name="id"></param>
+    /// <param name="check_visible"></param>
+    /// <param name="raise_error"></param>
+    /// <returns></returns>
     public static T FindChild<T>(this GameObject go, string id, bool check_visible = false, bool raise_error = true) where T : Component
     {
         var t = FindChild(go.transform, id, check_visible, raise_error);
-        if (t)
-        {
-            var com = t.GetComponent<T>();
-            if (com == null && raise_error)
-            {
-                Log.Error(string.Format("查找<T>失败. {0} 没有找到部件:{1}", t, typeof(T)));
-            }
-            return com;
-        }
-        return default(T);
+        return t?.GetComponent<T>();
     }
 
-    public static Transform FindChild(Transform findTrans, string id, bool check_visible, bool raise_error)
+    /// <summary>
+    /// 查找子项组件
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="go"></param>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public static T FindInChild<T>(this GameObject go, string name = "") where T : Component
+    {
+        if (!go)
+        {
+            return null;
+        }
+
+        if (!string.IsNullOrEmpty(name) && !go.name.Contains(name))
+        {
+            return null;
+        }
+
+        var comp = go.GetComponent<T>();
+        if (comp)
+        {
+            return comp;
+        }
+
+        return go.GetComponentsInChildren<T>().FirstOrDefault();
+    }
+    #endregion
+
+    #region Transform
+    /// <summary>
+    /// 查找子项
+    /// </summary>
+    /// <param name="findTrans"></param>
+    /// <param name="id"></param>
+    /// <param name="check_visible">检查可见性</param>
+    /// <param name="raise_error">抛出错误</param>
+    /// <returns></returns>
+    public static Transform FindChild(Transform findTrans, string id, bool check_visible = false, bool raise_error = true)
     {
         if (!findTrans)
         {
@@ -62,48 +96,51 @@ public static class FindExtensions
             {
                 Log.Error("查找失败. findTrans是空的!");
             }
-
             return null;
         }
 
-        Transform transform = findTrans;
         if (string.IsNullOrEmpty(id))
+        {
             return null;
-        if (check_visible && !findTrans.IsActive())
+        }
+        // 如果需要检查可见性，但是当前物体不可见
+        if (check_visible && !findTrans.gameObject.activeInHierarchy)
+        {
             return null;
+        }
         if (id == ".")
-            return findTrans;
-        if (id.IndexOf('/') >= 0)
         {
-            string str = id;
-            char[] chArray = new char[1] { '/' };
-            foreach (string id1 in str.Split(chArray))
+            return findTrans;
+        }
+
+        var ids = id.Split('/');
+
+        foreach (var id1 in ids)
+        {
+            findTrans = FindChildDirect(findTrans, id1, check_visible);
+            if (findTrans == null)
             {
-                findTrans = FindChildDirect(findTrans, id1, check_visible);
-                if (findTrans == null)
+                // 如果需要抛出错误
+                if (raise_error)
                 {
-                    if (raise_error)
-                    {
-                        Log.Error(string.Format("FindChild failed, id:{0} ,parent={1}", id, transform.name));
-                        break;
-                    }
-
-                    break;
+                    Log.Error($"查找子项失败, id:{id} ,parent={findTrans.name}");
                 }
+                break;
             }
-
-            return findTrans;
         }
 
-        findTrans = FindChildDirect(findTrans, id, check_visible);
-        if (findTrans == null && raise_error)
-        {
-            Log.Error(string.Format("查找失败, id:{0},parent={1}", id, transform));
-        }
         return findTrans;
     }
 
-    public static Transform FindChildX(this Transform t, string id, bool check_visible = false, bool raise_error = true)
+    /// <summary>
+    /// 查找子项
+    /// </summary>
+    /// <param name="t"></param>
+    /// <param name="id"></param>
+    /// <param name="check_visible"></param>
+    /// <param name="raise_error"></param>
+    /// <returns></returns>
+    public static Transform FindChildTF(this Transform t, string id, bool check_visible = false, bool raise_error = true)
     {
         return FindChild(t, id, check_visible, raise_error);
     }
@@ -117,62 +154,24 @@ public static class FindExtensions
     /// <returns></returns>
     private static Transform FindChildDirect(Transform trans, string id, bool check_visible)
     {
-        Profiler.BeginSample("FindChildDirect");
-        Queue<Transform> findchildStack = s_findchild_stack;
-        findchildStack.Enqueue(trans);
-        while (findchildStack.Count > 0)
+        var queue = new Queue<Transform>();
+        queue.Enqueue(trans);
+        while (queue.Count > 0)
         {
-            trans = findchildStack.Dequeue();
-            Transform t1 = trans.Find(id);
-            if (t1 != null && (!check_visible || t1.IsActive()))
+            trans = queue.Dequeue();
+            var t1 = trans.Find(id);
+            if (t1 != null && (!check_visible || t1.gameObject.activeInHierarchy))
             {
-                findchildStack.Clear();
-                Profiler.EndSample();
                 return t1;
             }
 
-            int num = trans.childCount;
-            for (int i = 0; i < num; i++)
+            foreach (Transform child in trans)
             {
-                t1 = trans.GetChild(i);
-                if (!check_visible || t1.IsActive())
-                    findchildStack.Enqueue(t1);
+                if (!check_visible || child.gameObject.activeInHierarchy)
+                    queue.Enqueue(child);
             }
         }
-
-        Profiler.EndSample();
         return null;
     }
-
-    /// <summary>
-    /// 搜索第一个匹配的
-    /// </summary>
-    public static T FindInChild<T>(this GameObject go, string name = "") where T : Component
-    {
-        if (!go)
-            return null;
-
-        T comp = null;
-        if (!string.IsNullOrEmpty(name) && !go.name.Contains(name))
-        {
-            comp = null;
-        }
-        else
-        {
-            comp = go.GetComponent<T>();
-        }
-
-        if (!comp)
-        {
-            for (int i = 0; i < go.transform.childCount; i++)
-            {
-                comp = FindInChild<T>(go.transform.GetChild(i).gameObject, name);
-                if (comp)
-                    return comp;
-            }
-        }
-
-        return comp;
-    }
-
+    #endregion
 }

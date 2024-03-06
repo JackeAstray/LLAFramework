@@ -13,25 +13,15 @@ namespace GameLogic
     {
         public static ResourceRequestAwaiter GetAwaiter(this ResourceRequest request) => new ResourceRequestAwaiter(request);
 
-        public static async Task<T> LoadAsync<T>(string assetPath, UnityAction callback) where T : UnityEngine.Object
+        public static async Task<T> LoadAsync<T>(string assetPath, UnityAction callback = null) where T : UnityEngine.Object
         {
             var request = Resources.LoadAsync<T>(assetPath);
 
             await request;
 
-            if (callback != null)
-            {
-                callback.Invoke();
-            }
+            callback?.Invoke();
 
-            if (request.asset != null)
-            {
-                return request.asset as T;
-            }
-            else
-            {
-                return null;
-            }
+            return request.asset as T;
         }
     }
 }

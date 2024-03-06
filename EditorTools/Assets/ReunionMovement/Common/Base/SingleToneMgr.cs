@@ -29,7 +29,14 @@ namespace GameLogic.Base
 
         void Awake()
         {
-            Instance = this as T;
+            if (instance != null && instance != this)
+            {
+                Destroy(this.gameObject);
+            }
+            else
+            {
+                Instance = this as T;
+            }
         }
     }
 }

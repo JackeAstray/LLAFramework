@@ -3,7 +3,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Sockets;
 using System.Net;
 using System.Reflection;
@@ -11,8 +10,10 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using UnityEditor;
 using UnityEngine;
+using System.Collections.Concurrent;
+using System.Linq;
+using System.Globalization;
 
 namespace GameLogic
 {
@@ -21,8 +22,6 @@ namespace GameLogic
     /// </summary>
     public static class EngineExtensions
     {
-
-
         /// <summary>
         /// 从对象数组中获取
         /// </summary>
@@ -31,42 +30,47 @@ namespace GameLogic
         /// <param name="offset"></param>
         /// <param name="isLog"></param>
         /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public static T Get<T>(this object[] openArgs, int offset, bool isLog = true)
         {
-            T ret;
-            if ((openArgs.Length - 1) >= offset)
+            if (offset < 0 || offset >= openArgs.Length)
             {
-                var arrElement = openArgs[offset];
-                if (arrElement == null)
-                    ret = default(T);
-                else
+                if (isLog)
                 {
-                    try
+                    Log.Error($"[获取错误<object[]>],  越界: {offset}  {openArgs.Length}");
+                }
+                return default(T);
+            }
+
+            var arrElement = openArgs[offset];
+            if (arrElement == null)
+            {
+                return default(T);
+            }
+
+            try
+            {
+                return (T)arrElement;
+            }
+            catch (InvalidCastException)
+            {
+                try
+                {
+                    return (T)Convert.ChangeType(arrElement, typeof(T));
+                }
+                catch (Exception ex)
+                {
+                    if (isLog)
                     {
-                        ret = (T)Convert.ChangeType(arrElement, typeof(T));
+                        Log.Error($"[获取错误<object[]>],  '{arrElement}' 无法转换为类型<{typeof(T)}>: {ex}");
                     }
-                    catch (Exception)
-                    {
-                        if (arrElement is string && string.IsNullOrEmpty(arrElement as string))
-                            ret = default(T);
-                        else
-                        {
-                            Debug.LogError(string.Format("[Error get from object[],  '{0}' change to type {1}", arrElement, typeof(T)));
-                            ret = default(T);
-                        }
-                    }
+                    return default(T);
                 }
             }
-            else
-            {
-                ret = default(T);
-
-                Debug.LogError(string.Format("[GetArg] {0} args - offset: {1}", openArgs, offset));
-            }
-            return ret;
         }
 
         #region Find
+        private static ConcurrentDictionary<string, Type> typeCache = new ConcurrentDictionary<string, Type>();
         /// <summary>
         /// 查找类型
         /// </summary>
@@ -74,29 +78,32 @@ namespace GameLogic
         /// <returns></returns>
         public static Type FindType(string qualifiedTypeName)
         {
-            Type t = Type.GetType(qualifiedTypeName);
-
-            if (t != null)
+            if (typeCache.TryGetValue(qualifiedTypeName, out Type t))
             {
                 return t;
             }
-            else
+
+            t = Type.GetType(qualifiedTypeName);
+
+            if (t != null)
             {
-                Assembly[] Assemblies = AppDomain.CurrentDomain.GetAssemblies();
-                for (int n = 0; n < Assemblies.Length; n++)
-                {
-                    Assembly asm = Assemblies[n];
-                    t = asm.GetType(qualifiedTypeName);
-                    if (t != null)
-                        return t;
-                }
-                return null;
+                typeCache[qualifiedTypeName] = t;
+                return t;
             }
+
+            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            t = assemblies.AsParallel().Select(asm => asm.GetType(qualifiedTypeName)).FirstOrDefault(t => t != null);
+
+            if (t != null)
+            {
+                typeCache[qualifiedTypeName] = t;
+            }
+
+            return t;
         }
         #endregion
 
         #region object转换
-
         /// <summary>
         /// object转int32
         /// </summary>
@@ -104,114 +111,119 @@ namespace GameLogic
         /// <returns></returns>
         public static int ObjToInt32(this object obj)
         {
-            Int32 ret = 0;
+            if (obj is int i)
+            {
+                return i;
+            }
+
             try
             {
-                if (obj != null)
-                {
-                    ret = Convert.ToInt32(obj);
-                }
+                return Convert.ToInt32(obj);
             }
             catch (Exception ex)
             {
-                Debug.LogError("ToInt32 : " + ex);
+                Log.Error("ToInt32 : " + ex);
+                return 0;
             }
-
-            return ret;
         }
 
         /// <summary>
         /// object转int64 | long
         /// </summary>
-        /// <param name="o"></param>
-        /// <returns>int</returns>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public static long ObjToInt64(this object obj)
         {
-            Int64 ret = 0;
+            if (obj is long l)
+            {
+                return l;
+            }
+
             try
             {
-                if (obj != null)
-                {
-                    ret = Convert.ToInt64(obj);
-                }
+                return Convert.ToInt64(obj);
             }
             catch (Exception ex)
             {
-                Debug.LogError("ToInt64 : " + ex);
+                Log.Error("ToInt64 : " + ex);
+                return 0;
             }
-
-            return ret;
         }
 
         /// <summary>
         /// object转float
         /// </summary>
-        /// <param name="o"></param>
-        /// <returns>float</returns>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public static float ObjToFloat(this object obj)
         {
-            float ret = 0;
+            if (obj is float f)
+            {
+                return f;
+            }
 
             try
             {
-                if (obj != null)
-                {
-                    ret = (float)Math.Round(Convert.ToSingle(obj), 2);
-                }
+                return (float)Math.Round(Convert.ToSingle(obj), 2);
             }
             catch (Exception ex)
             {
-                Debug.LogError("ObjToFloat : " + ex);
+                Log.Error("object转float失败 : " + ex);
+                return 0;
             }
-
-            return ret;
         }
 
         /// <summary>
         /// object转string
         /// </summary>
-        /// <param name="o"></param>
-        /// <returns>string</returns>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public static string ObjToString(this object obj)
         {
-            string ret = null;
+            if (obj is string s)
+            {
+                return s;
+            }
 
             try
             {
-                if (obj != null)
-                {
-                    ret = Convert.ToString(obj);
-                }
+                return Convert.ToString(obj);
             }
             catch (Exception ex)
             {
-                Debug.LogError("ObjToString : " + ex);
+                Log.Error("object转string失败 : " + ex);
+                return null;
             }
-
-            return ret;
         }
         #endregion
 
         #region 随机
         /// <summary>
-        /// 随机数（int）
+        /// 随机数
         /// </summary>
-        /// <param name="min">最小数</param>
-        /// <param name="max">最大数</param>
-        /// <returns>随机数</returns>
-        public static int Random(int min, int max)
+        /// <typeparam name="T"></typeparam>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        public static T Random<T>(T min, T max) where T : IComparable<T>
         {
-            return UnityEngine.Random.Range(min, max + 1);
-        }
-        /// <summary>
-        /// 随机数（float）
-        /// </summary>
-        /// <param name="min">最小数</param>
-        /// <param name="max">最大数</param>
-        /// <returns>随机数</returns>
-        public static float Random(float min, float max)
-        {
-            return UnityEngine.Random.Range(min, max + 1);
+            if (typeof(T) == typeof(int))
+            {
+                int imin = Convert.ToInt32(min);
+                int imax = Convert.ToInt32(max);
+                return (T)(object)UnityEngine.Random.Range(imin, imax + 1);
+            }
+            else if (typeof(T) == typeof(float))
+            {
+                float fmin = Convert.ToSingle(min);
+                float fmax = Convert.ToSingle(max);
+                return (T)(object)UnityEngine.Random.Range(fmin, fmax);
+            }
+            else
+            {
+                throw new ArgumentException("不支持的类型");
+            }
         }
 
         /// <summary>
@@ -222,12 +234,21 @@ namespace GameLogic
         /// <returns></returns>
         public static T GetRandomItemFromList<T>(IList<T> list)
         {
+            if (list == null)
+            {
+                throw new ArgumentNullException(nameof(list));
+            }
+
             if (list.Count == 0)
+            {
                 return default(T);
+            }
 
             return list[UnityEngine.Random.Range(0, list.Count)];
         }
+        #endregion
 
+        #region 波浪数
         /// <summary>
         /// 波浪随机数整数版
         /// </summary>
@@ -235,7 +256,8 @@ namespace GameLogic
         /// <returns></returns>
         public static int GetWaveRandomNumberInt(string waveNumberStr)
         {
-            return Mathf.RoundToInt(GetWaveRandomNumber(waveNumberStr));
+            FromToNumber from = ParseMinMaxNumber(waveNumberStr);
+            return (int)UnityEngine.Random.Range(from.From, from.To + 1);
         }
 
         /// <summary>
@@ -247,16 +269,8 @@ namespace GameLogic
         /// <returns></returns>
         public static float GetWaveRandomNumber(string waveNumberStr)
         {
-            if (string.IsNullOrEmpty(waveNumberStr))
-                return 0;
-
-            var strs = waveNumberStr.Split('-', '~');
-            if (strs.Length == 1)
-            {
-                return waveNumberStr.ToFloat();
-            }
-
-            return UnityEngine.Random.Range(strs[0].ToFloat(), strs[1].ToFloat());
+            FromToNumber from = ParseMinMaxNumber(waveNumberStr);
+            return UnityEngine.Random.Range(from.From, from.To);
         }
 
         public struct FromToNumber
@@ -272,15 +286,15 @@ namespace GameLogic
         /// <returns></returns>
         public static FromToNumber ParseMinMaxNumber(string str)
         {
-            var rangeArr = EngineExtensions.Split<float>(str, '~', '-');
+            var strs = str.Split('-', '~');
             var number = new FromToNumber();
-            if (rangeArr.Count > 0)
+            if (strs.Length > 0)
             {
-                number.From = rangeArr[0];
+                number.From = strs[0].ToInt32();
             }
-            if (rangeArr.Count > 1)
+            if (strs.Length > 1)
             {
-                number.To = rangeArr[1];
+                number.To = strs[1].ToInt32();
             }
             return number;
         }
@@ -293,21 +307,20 @@ namespace GameLogic
         /// <returns></returns>
         public static bool IsBetweenWave(string waveNumberStr, int testNumber)
         {
-            if (string.IsNullOrEmpty(waveNumberStr))
-                return false;
-
-            var strs = waveNumberStr.Split('~');
-            if (strs.Length == 1)
-            {
-                return strs[0].ToInt32() == testNumber;
-            }
-            var min = strs[0].ToInt32();
-            var max = strs[1].ToInt32();
-            return testNumber >= min && testNumber <= max;
+            FromToNumber from = ParseMinMaxNumber(waveNumberStr);
+            return testNumber >= from.From && testNumber <= from.To;
         }
         #endregion
 
         #region 时间
+        public enum TimeType
+        {
+            Seconds = 1,
+            Minutes = 2,
+            Hours = 3,
+            Days = 4
+        }
+
         /// <summary>
         /// 获取当前时间
         /// </summary>
@@ -323,28 +336,24 @@ namespace GameLogic
         /// <param name="type">1、秒 2、分钟 3、小时 4、天</param>
         /// <param name="value">索要添加的数值</param>
         /// <returns></returns>
-        public static DateTime GetAddTime(int type, int value)
+        public static DateTime GetAddTime(TimeType type, int value)
         {
             DateTime time = DateTime.Now;
             DateTime result = DateTime.Now;
 
             switch (type)
             {
-                case 1:
-                    result = time.AddSeconds(value);
-                    break;
-                case 2:
-                    result = time.AddMinutes(value);
-                    break;
-                case 3:
-                    result = time.AddHours(value);
-                    break;
-                case 4:
-                    result = time.AddDays(value);
-                    break;
+                case TimeType.Seconds:
+                    return time.AddSeconds(value);
+                case TimeType.Minutes:
+                    return time.AddMinutes(value);
+                case TimeType.Hours:
+                    return time.AddHours(value);
+                case TimeType.Days:
+                    return time.AddDays(value);
+                default:
+                    throw new ArgumentException("无效的时间类型.");
             }
-
-            return result;
         }
 
         /// <summary>
@@ -354,88 +363,62 @@ namespace GameLogic
         /// <returns></returns>
         public static TimeSpan GetTime(DateTime target)
         {
-            //timeA 表示需要计算
-            DateTime current = DateTime.Now;    //获取当前时间
-            TimeSpan ts = current - target; //计算时间差
-            return ts;
+            //当前时间减去目标时间
+            return DateTimeOffset.Now - target;
         }
-
+        private static readonly DateTimeOffset UnixEpoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        
         /// <summary>
         /// 秒数据换算为日期
         /// </summary>
         /// <param name="tick"></param>
+        /// <param name="totalMilliseconds"></param>
         /// <returns></returns>
         public static DateTime GetDateTime(long tick, bool totalMilliseconds = false)
         {
-            if (totalMilliseconds == false)
-            {
-                //秒
-                return new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(tick).ToLocalTime();
-            }
-            else
-            {
-                //毫秒
-                return new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(tick).ToLocalTime();
-            }
+            var dateTimeOffset = totalMilliseconds ? UnixEpoch.AddMilliseconds(tick) : UnixEpoch.AddSeconds(tick);
+            return dateTimeOffset.LocalDateTime;
         }
 
         /// <summary>
-        /// 获取1970-01-01至dateTime0 - 毫秒
+        /// 获取时间戳
         /// </summary>
+        /// <param name="dateTime"></param>
+        /// <param name="totalMilliseconds"></param>
+        /// <returns></returns>
         public static long GetTimestamp(DateTime dateTime, bool totalMilliseconds = false)
         {
-            if (totalMilliseconds == false)
-            {
-                //秒
-                DateTime dt1970 = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).ToLocalTime();
-                return (dateTime.Ticks - dt1970.Ticks) / 10000000;
-            }
-            else
-            {
-                //毫秒
-                DateTime dt1970 = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).ToLocalTime();
-                return (dateTime.Ticks - dt1970.Ticks) / 10000;
-            }
+            var dateTimeOffset = new DateTimeOffset(dateTime);
+            return totalMilliseconds ? dateTimeOffset.ToUnixTimeMilliseconds() : dateTimeOffset.ToUnixTimeSeconds();
         }
 
         /// <summary>
         /// 获取当前时间戳
         /// </summary>
+        /// <param name="totalMilliseconds"></param>
         /// <returns></returns>
         public static long GetCurrentTimestamp(bool totalMilliseconds = false)
         {
-            if (totalMilliseconds == false)
-            {
-                //秒
-                DateTime dt1970 = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).ToLocalTime();
-                return (DateTime.Now.Ticks - dt1970.Ticks) / 10000000;
-            }
-            else
-            {
-                //毫秒
-                DateTime dt1970 = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).ToLocalTime();
-                return (DateTime.Now.Ticks - dt1970.Ticks) / 10000;
-            }
+            var now = DateTimeOffset.Now;
+            return totalMilliseconds ? now.ToUnixTimeMilliseconds() : now.ToUnixTimeSeconds();
         }
 
         /// <summary>
-        /// yyyy-MM-dd HH:MM:SS 格式的日期string 转换为 DateTime
+        /// 格式的日期string 转换为 DateTime
         /// </summary>
         /// <param name="dateTime"></param>
         /// <returns></returns>
+        /// <exception cref="FormatException"></exception>
         public static DateTime GetDateTimeByString(string dateTime)
         {
-            string[] tmp = dateTime.Split(' ');
-            string[] tmpDate = tmp[0].Split('-');
-            string[] tmpTime = tmp[1].Split(':');
-            int year = int.Parse(tmpDate[0]);
-            int month = int.Parse(tmpDate[1]);
-            int date = int.Parse(tmpDate[2]);
-            int hours = int.Parse(tmpTime[0]);
-            int minutes = int.Parse(tmpTime[1]);
-            int seconds = int.Parse(tmpTime[2]);
-
-            return new DateTime(year, month, date, hours, minutes, seconds, 0, DateTimeKind.Utc);
+            if (DateTime.TryParseExact(dateTime, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out DateTime result))
+            {
+                return result;
+            }
+            else
+            {
+                throw new FormatException("无效的日期时间格式。");
+            }
         }
         #endregion
 
@@ -443,12 +426,12 @@ namespace GameLogic
         /// <summary>
         /// 设置屏幕分辨率
         /// </summary>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        /// <param name="fullScreen"></param>
+        /// <param name="width">屏幕宽度</param>
+        /// <param name="height">屏幕高度</param>
+        /// <param name="fullScreen">是否全屏显示</param>
         public static void SetScreen(int width, int height, bool fullScreen)
         {
-            Screen.SetResolution(/*屏幕宽度*/ width,/*屏幕高度*/ height, /*是否全屏显示*/fullScreen);
+            Screen.SetResolution(width, height, fullScreen);
         }
         #endregion
 
@@ -460,19 +443,14 @@ namespace GameLogic
         /// <returns></returns>
         public static byte ToByte(this string val)
         {
-            byte ret = 0;
-            try
+            if (byte.TryParse(val, out byte result))
             {
-                if (!String.IsNullOrEmpty(val))
-                {
-                    ret = Convert.ToByte(val);
-                }
+                return result;
             }
-            catch (Exception)
+            else
             {
+                return 0;
             }
-
-            return ret;
         }
         /// <summary>
         /// 字符串转int64
@@ -481,19 +459,14 @@ namespace GameLogic
         /// <returns></returns>
         public static long ToInt64(this string val)
         {
-            long ret = 0;
-            try
+            if (long.TryParse(val, out long result))
             {
-                if (!String.IsNullOrEmpty(val))
-                {
-                    ret = Convert.ToInt64(val);
-                }
+                return result;
             }
-            catch (Exception)
+            else
             {
+                return 0;
             }
-
-            return ret;
         }
         /// <summary>
         /// 字符串转float
@@ -502,19 +475,14 @@ namespace GameLogic
         /// <returns></returns>
         public static float ToFloat(this string val)
         {
-            float ret = 0;
-            try
+            if (float.TryParse(val, out float result))
             {
-                if (!String.IsNullOrEmpty(val))
-                {
-                    ret = Convert.ToSingle(val);
-                }
+                return result;
             }
-            catch (Exception)
+            else
             {
+                return 0;
             }
-
-            return ret;
         }
         /// <summary>
         /// 字符串转int32
@@ -523,19 +491,14 @@ namespace GameLogic
         /// <returns></returns>
         static public Int32 ToInt32(this string str)
         {
-            Int32 ret = 0;
-            try
+            if (Int32.TryParse(str, out Int32 result))
             {
-                if (!String.IsNullOrEmpty(str))
-                {
-                    ret = Convert.ToInt32(str);
-                }
+                return result;
             }
-            catch (Exception)
+            else
             {
+                return 0;
             }
-
-            return ret;
         }
 
         /// <summary>
@@ -545,15 +508,11 @@ namespace GameLogic
         /// <returns></returns>
         public static int StrLength(string inputString)
         {
-            System.Text.ASCIIEncoding ascii = new System.Text.ASCIIEncoding();
             int tempLen = 0;
-            byte[] s = ascii.GetBytes(inputString);
-            for (int i = 0; i < s.Length; i++)
+            byte[] s = Encoding.ASCII.GetBytes(inputString);
+            foreach (byte b in s)
             {
-                if ((int)s[i] == 63)
-                    tempLen += 2;
-                else
-                    tempLen += 1;
+                tempLen += (b == 63) ? 2 : 1;
             }
             return tempLen;
         }
@@ -565,18 +524,18 @@ namespace GameLogic
         /// <returns></returns>
         public static string MD5(string source)
         {
-            MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
-            byte[] data = System.Text.Encoding.UTF8.GetBytes(source);
-            byte[] md5Data = md5.ComputeHash(data, 0, data.Length);
-            md5.Clear();
-
-            string destString = "";
-            for (int i = 0; i < md5Data.Length; i++)
+            using (MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider())
             {
-                destString += System.Convert.ToString(md5Data[i], 16).PadLeft(2, '0');
+                byte[] data = Encoding.UTF8.GetBytes(source);
+                byte[] md5Data = md5.ComputeHash(data, 0, data.Length);
+
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < md5Data.Length; i++)
+                {
+                    sb.Append(md5Data[i].ToString("x2"));
+                }
+                return sb.ToString();
             }
-            destString = destString.PadLeft(32, '0');
-            return destString;
         }
 
         /// <summary>
@@ -600,35 +559,49 @@ namespace GameLogic
         }
 
         /// <summary>
-        /// 第一个字符大写
+        /// 第一个字符大写，不改变其他字符
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
         public static string CapitalFirstChar(string str)
         {
-            return str[0].ToString().ToUpper() + str.Substring(1);
+            if (string.IsNullOrEmpty(str))
+            {
+                return str;
+            }
+
+            return char.ToUpper(str[0]) + str.Substring(1);
         }
 
         /// <summary>
-        /// 首字母大写
+        /// 首字母大写，其他小写
         /// </summary>
         /// <param name="word"></param>
         /// <returns></returns>
         public static string ToTitleCase(string word)
         {
-            return word.Substring(0, 1).ToUpper() + (word.Length > 1 ? word.Substring(1).ToLower() : "");
+            if (string.IsNullOrEmpty(word))
+            {
+                return word;
+            }
+
+            return char.ToUpper(word[0]) + (word.Length > 1 ? word.Substring(1).ToLower() : "");
         }
 
         /// <summary>
-        /// 首字母大写变下划线
+        /// 驼峰命名转下划线命名
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
         public static string ToSentenceCase(string str)
         {
+            if (string.IsNullOrEmpty(str))
+            {
+                return str;
+            }
+
             str = char.ToLower(str[0]) + str.Substring(1);
-            return Regex.Replace(str, "[a-z][A-Z]",
-                (m) => { return char.ToLower(m.Value[0]) + "_" + char.ToLower(m.Value[1]); });
+            return Regex.Replace(str, "[a-z][A-Z]", m => char.ToLower(m.Value[0]) + "_" + char.ToLower(m.Value[1]));
         }
 
         /// <summary>
@@ -645,25 +618,15 @@ namespace GameLogic
                 args = new[] { '|' }; // 默认
             }
 
-            var retList = new List<T>();
-            if (!string.IsNullOrEmpty(str))
+            if (string.IsNullOrEmpty(str))
             {
-                string[] strs = str.Split(args);
-
-                foreach (string s in strs)
-                {
-                    string trimS = s.Trim();
-                    if (!string.IsNullOrEmpty(trimS))
-                    {
-                        T val = (T)Convert.ChangeType(trimS, typeof(T));
-                        if (val != null)
-                        {
-                            retList.Add(val);
-                        }
-                    }
-                }
+                return new List<T>();
             }
-            return retList;
+
+            return str.Split(args)
+                    .Where(s => !string.IsNullOrWhiteSpace(s))
+                    .Select(s => (T)Convert.ChangeType(s.Trim(), typeof(T)))
+                    .ToList();
         }
 
         /// <summary>
@@ -673,13 +636,7 @@ namespace GameLogic
         /// <returns></returns>
         public static bool IsNumber(string str)
         {
-            if (string.IsNullOrEmpty(str))
-            {
-                Log.Warning("传入的值为空！请检查");
-                return false;
-            }
-            var pattern = @"^\d*$";
-            return Regex.IsMatch(str, pattern);
+            return double.TryParse(str, out _);
         }
 
         /// <summary>
@@ -691,19 +648,19 @@ namespace GameLogic
         {
             if (number > 100000000)
             {
-                return string.Format("{0}{1}", number / 100000000, "亿");
+                return $"{number / 100000000}亿";
             }
             else if (number > 10000000)
             {
-                return string.Format("{0}{1}", number / 10000000, "千万");
+                return $"{number / 10000000}千万";
             }
             else if (number > 1000000)
             {
-                return string.Format("{0}{1}", number / 1000000, "百万");
+                return $"{number / 1000000}百万";
             }
             else if (number > 10000)
             {
-                return string.Format("{0}{1}", number / 10000, "万");
+                return $"{number / 10000}万";
             }
 
             return number.ToString();
@@ -718,15 +675,16 @@ namespace GameLogic
         /// <returns></returns>
         public static string MD5Encrypt(string str)
         {
-            MD5CryptoServiceProvider md5Hasher = new MD5CryptoServiceProvider();
-            byte[] hashedDataBytes;
-            hashedDataBytes = md5Hasher.ComputeHash(Encoding.GetEncoding("gb2312").GetBytes(str));
-            StringBuilder tmp = new StringBuilder();
-            foreach (byte i in hashedDataBytes)
+            using (MD5CryptoServiceProvider md5Hasher = new MD5CryptoServiceProvider())
             {
-                tmp.Append(i.ToString("x2"));
+                byte[] hashedDataBytes = md5Hasher.ComputeHash(Encoding.GetEncoding("gb2312").GetBytes(str));
+                StringBuilder tmp = new StringBuilder();
+                foreach (byte i in hashedDataBytes)
+                {
+                    tmp.Append(i.ToString("x2"));
+                }
+                return tmp.ToString();
             }
-            return tmp.ToString();
         }
         /// <summary>
         /// 无视锁文件，直接读bytes  读取（加载）数据
@@ -735,13 +693,12 @@ namespace GameLogic
         /// <returns></returns>
         public static byte[] ReadAllBytes(string resPath)
         {
-            byte[] bytes;
             using (FileStream fs = File.Open(resPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
-                bytes = new byte[fs.Length];
+                byte[] bytes = new byte[fs.Length];
                 fs.Read(bytes, 0, (int)fs.Length);
+                return bytes;
             }
-            return bytes;
         }
 
         /// <summary>
@@ -773,41 +730,20 @@ namespace GameLogic
                         content = new byte[0];
                     }
 
-                    string dir = PathUtils.GetParentDir(fullpath);
+                    string dir = Path.GetDirectoryName(fullpath);
 
                     if (!Directory.Exists(dir))
                     {
-                        try
-                        {
-                            Directory.CreateDirectory(dir);
-                        }
-                        catch (Exception e)
-                        {
-                            Debug.LogError(string.Format("SaveFile() CreateDirectory Error! Dir:{0}, Error:{1}", dir, e.Message));
-                            return -1;
-                        }
+                        Directory.CreateDirectory(dir);
                     }
 
-                    FileStream fs = null;
-                    try
-                    {
-                        fs = new FileStream(fullpath, FileMode.Create, FileAccess.Write);
-                        fs.Write(content, 0, content.Length);
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.LogError(string.Format("SaveFile() Path:{0}, Error:{1}", fullpath, e.Message));
-                        fs.Close();
-                        return -1;
-                    }
-
-                    fs.Close();
+                    File.WriteAllBytes(fullpath, content);
                     return content.Length;
                 });
             }
             catch (Exception ex)
             {
-                Debug.LogError(ex + " SaveFile");
+                Log.Error(ex + " SaveFile");
                 throw;
             }
         }
@@ -820,23 +756,14 @@ namespace GameLogic
         /// <returns></returns>
         public static T LoadJson<T>(string fileName)
         {
-            string fileAbslutePath = Application.persistentDataPath + "/Json/" + fileName + ".json";
-            object value = null;
+            string fileAbslutePath = Path.Combine(Application.persistentDataPath, "Json", fileName + ".json");
             if (File.Exists(fileAbslutePath))
             {
-                FileStream fs = new FileStream(fileAbslutePath, FileMode.Open);
-                StreamReader sr = new StreamReader(fs);
-                string tempStr = sr.ReadToEnd();
-                value = JsonMapper.ToObject<T>(tempStr);
-
-                sr.Close();
-                if (fs != null)
-                {
-                    fs.Close();
-                }
+                string tempStr = File.ReadAllText(fileAbslutePath);
+                return JsonMapper.ToObject<T>(tempStr);
             }
 
-            return (T)value;
+            return default(T);
         }
 
         /// <summary>
@@ -845,20 +772,17 @@ namespace GameLogic
         /// <param name="jsonStr"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public static IEnumerator SaveJson(string jsonStr, string fileName)
+        public static async Task SaveJson(string jsonStr, string fileName)
         {
-            string filePath = Application.persistentDataPath + "/Json";
+            string filePath = Path.Combine(Application.persistentDataPath, "Json");
             if (!Directory.Exists(filePath))
             {
                 Directory.CreateDirectory(filePath);
             }
 
-            string fileAbslutePath = filePath + "/" + fileName + ".json";
+            string fileAbslutePath = Path.Combine(filePath, fileName + ".json");
 
-            byte[] bts = System.Text.Encoding.UTF8.GetBytes(jsonStr);
-            File.WriteAllBytes(fileAbslutePath, bts);
-
-            yield return null;
+            await File.WriteAllTextAsync(fileAbslutePath, jsonStr);
         }
         #endregion
 
@@ -869,19 +793,15 @@ namespace GameLogic
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-        public static int GetGCD(int a, int b)
+        public static int CalculateMaximumCommonDivisor(int a, int b)
         {
-            if (a < b)
+            a = Math.Abs(a);
+            b = Math.Abs(b);
+            while (b != 0)
             {
-                int t = a;
-                a = b;
-                b = t;
-            }
-            while (b > 0)
-            {
-                int t = a % b;
-                a = b;
-                b = t;
+                int t = b;
+                b = a % b;
+                a = t;
             }
             return a;
         }
@@ -893,13 +813,7 @@ namespace GameLogic
         /// <returns></returns>
         public static Vector3 CalculateCenterPoint(List<Transform> Points)
         {
-            Vector3 centerPoint = Vector3.zero;
-            foreach (Transform p in Points)
-            {
-                centerPoint += p.position;
-            }
-            centerPoint /= Points.Count;
-            return centerPoint;
+            return Points.Aggregate(Vector3.zero, (acc, p) => acc + p.position) / Points.Count;
         }
 
         /// <summary>
@@ -909,12 +823,13 @@ namespace GameLogic
         /// <param name="b">B点</param>
         /// <param name="c">C点</param>
         /// <param name="d">D点</param>
-        /// <param name="intersectPos">AB与CD的交点</param>
-        /// <returns>是否相交 true:相交 false:未相交</returns>
-        public static bool TryGetIntersectPoint(Vector3 a, Vector3 b, Vector3 c, Vector3 d, out Vector3 intersectPos)
+        /// <returns>是否相交 true:相交 false:未相交 | AB与CD的交点</returns>
+        public static (bool, Vector3) CalculateIntersectionPoint_AB_And_CD_LineSegments(
+            Vector3 a,
+            Vector3 b,
+            Vector3 c,
+            Vector3 d)
         {
-            intersectPos = Vector3.zero;
-
             Vector3 ab = b - a;
             Vector3 ca = a - c;
             Vector3 cd = d - c;
@@ -924,23 +839,23 @@ namespace GameLogic
             if (Mathf.Abs(Vector3.Dot(v1, ab)) > 1e-6)
             {
                 // 不共面
-                return false;
+                return (false, Vector3.zero);
             }
 
             if (Vector3.Cross(ab, cd).sqrMagnitude <= 1e-6)
             {
                 // 平行
-                return false;
+                return (false, Vector3.zero);
             }
 
             Vector3 ad = d - a;
             Vector3 cb = b - c;
             // 快速排斥
             if (Mathf.Min(a.x, b.x) > Mathf.Max(c.x, d.x) || Mathf.Max(a.x, b.x) < Mathf.Min(c.x, d.x)
-               || Mathf.Min(a.y, b.y) > Mathf.Max(c.y, d.y) || Mathf.Max(a.y, b.y) < Mathf.Min(c.y, d.y)
-               || Mathf.Min(a.z, b.z) > Mathf.Max(c.z, d.z) || Mathf.Max(a.z, b.z) < Mathf.Min(c.z, d.z)
+            || Mathf.Min(a.y, b.y) > Mathf.Max(c.y, d.y) || Mathf.Max(a.y, b.y) < Mathf.Min(c.y, d.y)
+            || Mathf.Min(a.z, b.z) > Mathf.Max(c.z, d.z) || Mathf.Max(a.z, b.z) < Mathf.Min(c.z, d.z)
             )
-                return false;
+                return (false, Vector3.zero);
 
             // 跨立试验
             if (Vector3.Dot(Vector3.Cross(-ca, ab), Vector3.Cross(ab, ad)) > 0
@@ -948,27 +863,23 @@ namespace GameLogic
             {
                 Vector3 v2 = Vector3.Cross(cd, ab);
                 float ratio = Vector3.Dot(v1, v2) / v2.sqrMagnitude;
-                intersectPos = a + ab * ratio;
-                return true;
+                Vector3 intersectPos = a + ab * ratio;
+                return (true, intersectPos);
             }
 
-            return false;
+            return (false, Vector3.zero);
         }
 
         /// <summary>
-        /// 两线交点（忽略长度）
+        /// 计算两条线段的交点
         /// </summary>
-        /// <param name="intersectPoint"></param>
         /// <param name="ps1"></param>
         /// <param name="pe1"></param>
         /// <param name="ps2"></param>
         /// <param name="pe2"></param>
         /// <returns></returns>
-        public static bool LineIntersectionPoint(out Vector2 intersectPoint, Vector2 ps1, Vector2 pe1, Vector2 ps2,
-            Vector2 pe2)
+        public static (bool, Vector2) LineIntersectionPoint(Vector2 ps1, Vector2 pe1, Vector2 ps2, Vector2 pe2)
         {
-            intersectPoint = Vector2.zero;
-
             // 获取第一行的A、B、C-点：ps1到pe1
             float A1 = pe1.y - ps1.y;
             float B1 = ps1.x - pe1.x;
@@ -982,14 +893,16 @@ namespace GameLogic
             // 获取delta并检查直线是否平行
             float delta = A1 * B2 - A2 * B1;
             if (delta == 0)
-                return false;
+            {
+                return (false, Vector2.zero);
+            }
 
             // 现在返回Vector2的交点
-            intersectPoint = new Vector2(
+            Vector2 intersectPoint = new Vector2(
                 (B2 * C1 - B1 * C2) / delta,
                 (A1 * C2 - A2 * C1) / delta
-                );
-            return true;
+            );
+            return (true, intersectPoint);
         }
 
         /// <summary>
@@ -1001,9 +914,12 @@ namespace GameLogic
         /// <returns></returns>
         public static Vector3 GetBetweenPoint1(Vector3 start, Vector3 end, float percent)
         {
-            Vector3 normal = (end - start).normalized;
-            float distance = Vector3.Distance(start, end);
-            return normal * (distance * percent) + start;
+            // old
+            // Vector3 normal = (end - start).normalized;
+            // float distance = Vector3.Distance(start, end);
+            // return normal * (distance * percent) + start;
+            // new
+            return Vector3.Lerp(start, end, percent);
         }
 
         /// <summary>
@@ -1015,21 +931,7 @@ namespace GameLogic
         /// <returns></returns>
         public static Vector3 GetBetweenPoint2(Vector3 start, Vector3 end, float distance)
         {
-            Vector3 normal = (end - start).normalized;
-            return normal * distance + start;
-        }
-
-        /// <summary>
-        /// 获取角度
-        /// </summary>
-        /// <param name="var1"></param>
-        /// <param name="var2"></param>
-        /// <returns></returns>
-        public static float GetAngel(Transform var1, Transform var2)
-        {
-            //注意角度测量一定要用对象的正方向
-            float angel = Vector3.Angle(var1.forward, var2.forward);
-            return angel;
+            return start + (end - start).normalized * distance;
         }
 
         /// <summary>
@@ -1042,46 +944,63 @@ namespace GameLogic
         public static Vector2 GetRelativePositionOfEllipse(float longHalfAxis, float shortHalfAxis, float angle)
         {
             var rad = angle * Mathf.Deg2Rad; // 弧度
-            var newPos = new Vector2(longHalfAxis * Mathf.Cos(rad), shortHalfAxis * Mathf.Sin(rad));
+            var newPos = Vector2.right * longHalfAxis * Mathf.Cos(rad) + Vector2.up * shortHalfAxis * Mathf.Sin(rad);
             return newPos;
-        }
-        public static float Angle(Vector2 from, Vector2 to)
-        {
-            return Quaternion.FromToRotation(from.normalized, to.normalized).eulerAngles.z;
         }
 
         /// <summary>
+        /// 计算两个向量之间的角度 3D
+        /// </summary>
+        /// <param name="value1"></param>
+        /// <param name="value2"></param>
+        /// <returns></returns>
+        public static float Angel(Transform value1, Transform value2)
+        {
+            return Vector3.Angle(value1.forward, value2.forward);
+        }
+
+        /// <summary>
+        /// 计算两个向量之间的角度 2D
+        /// </summary>
+        /// <param name="value1"></param>
+        /// <param name="value2"></param>
+        /// <returns></returns>
+        public static float Angle(Vector2 value1, Vector2 value2)
+        {
+            return Vector2.Angle(value1, value2);
+        }
+
+        public enum RotationDirection
+        {
+            None,
+            Right,
+            Left
+        }
+        /// <summary>
         /// 判断物体左右转转
         /// </summary>
-        /// <param name="var1"></param>
-        /// <param name="var2"></param>
+        /// <param name="value1"></param>
+        /// <param name="value2"></param>
         /// <returns></returns>
-        public static int RotationDirection(Transform var1, Transform var2)
+        public static RotationDirection GetRotationDirection(Transform value1, Transform value2)
         {
-            int direction = 0;
-
-            Vector2 v1 = new Vector2(var1.forward.x, var1.forward.z); //旋转前的前方
-            Vector2 v2 = new Vector2(var2.forward.x, var2.forward.z); //旋转后的前方
+            Vector2 v1 = new Vector2(value1.forward.x, value1.forward.z); //旋转前的前方
+            Vector2 v2 = new Vector2(value2.forward.x, value2.forward.z); //旋转后的前方
 
             float rightFloat = v1.x * v2.y - v2.x * v1.y;
 
             if (rightFloat < 0)
             {
-                direction = 1;
-                //Debug.Log("向右转了");
+                return RotationDirection.Right;
             }
             else if (rightFloat > 0)
             {
-                direction = -1;
-                //Debug.Log("向左转了");
+                return RotationDirection.Left;
             }
             else
             {
-                direction = 0;
-                //Debug.Log("没转");
+                return RotationDirection.None;
             }
-
-            return direction;
         }
 
         /// <summary>
@@ -1090,30 +1009,18 @@ namespace GameLogic
         /// <param name="size">字节</param>
         public static String FormatFileSize(long size)
         {
-            int GB = 1024 * 1024 * 1024;
-            int MB = 1024 * 1024;
-            int KB = 1024;
-
-            if (size / GB >= 1)
+            string[] sizes = { "B", "KB", "MB", "GB", "TB" };
+            int order = 0;
+            while (size >= 1024 && order < sizes.Length - 1)
             {
-                return Math.Round(size / (float)GB, 2) + "GB";
+                order++;
+                size = size / 1024;
             }
-
-            if (size / MB >= 1)
-            {
-                return Math.Round(size / (float)MB, 2) + "MB";
-            }
-
-            if (size / KB >= 1)
-            {
-                return Math.Round(size / (float)KB, 2) + "KB";
-            }
-
-            return size + "B";
+            return String.Format("{0:0.##} {1}", size, sizes[order]);
         }
 
         /// <summary>
-        /// 數組值比較
+        /// 数组值比较
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="a1"></param>
@@ -1121,21 +1028,7 @@ namespace GameLogic
         /// <returns></returns>
         public static bool ArraysEqual<T>(T[] a1, T[] a2)
         {
-            if (ReferenceEquals(a1, a2))
-                return true;
-
-            if (a1 == null || a2 == null)
-                return false;
-
-            if (a1.Length != a2.Length)
-                return false;
-
-            EqualityComparer<T> comparer = EqualityComparer<T>.Default;
-            for (int i = 0; i < a1.Length; i++)
-            {
-                if (!comparer.Equals(a1[i], a2[i])) return false;
-            }
-            return true;
+            return Enumerable.SequenceEqual(a1, a2);
         }
 
         /// <summary>
@@ -1146,14 +1039,7 @@ namespace GameLogic
         /// <returns></returns>
         public static bool Probability(float chancePercent)
         {
-            var chance = UnityEngine.Random.Range(0f, 100f);
-
-            if (chance <= chancePercent) // 概率
-            {
-                return true;
-            }
-
-            return false;
+            return UnityEngine.Random.Range(0f, 100f) <= chancePercent;
         }
 
         /// <summary>
@@ -1163,38 +1049,25 @@ namespace GameLogic
         /// <returns></returns>
         public static bool Probability(byte chancePercent)
         {
-            int chance = UnityEngine.Random.Range(1, 101);
-
-            if (chance <= chancePercent) // 概率
-            {
-                return true;
-            }
-
-            return false;
+            return UnityEngine.Random.Range(1, 101) <= chancePercent;
         }
         #endregion
 
         #region 获取硬件信息
         /// <summary>
-        /// 取本机主机ip
+        /// 获取本机IP
         /// </summary>
         /// <returns></returns>
         public static string GetLocalIP()
         {
             try
             {
-                string HostName = Dns.GetHostName(); //得到主机名
-                IPHostEntry IpEntry = Dns.GetHostEntry(HostName);
-                for (int i = 0; i < IpEntry.AddressList.Length; i++)
-                {
-                    //从IP地址列表中筛选出IPv4类型的IP地址
-                    //AddressFamily.InterNetwork表示此IP为IPv4,AddressFamily.InterNetworkV6表示此地址为IPv6类型
-                    if (IpEntry.AddressList[i].AddressFamily == AddressFamily.InterNetwork)
-                    {
-                        return IpEntry.AddressList[i].ToString();
-                    }
-                }
-                return "";
+                //获取本机名
+                string hostName = Dns.GetHostName();
+                //获取本机IP
+                IPHostEntry ipEntry = Dns.GetHostEntry(hostName);
+                var ipAddress = ipEntry.AddressList.FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
+                return ipAddress?.ToString() ?? "";
             }
             catch (Exception ex)
             {
@@ -1203,49 +1076,20 @@ namespace GameLogic
         }
 
         /// <summary>
-        /// 从IpHostEntry获取IP地址，配合GetIpAddress
-        /// </summary>
-        /// <param name="ipHostEntry"></param>
-        /// <returns></returns>
-        public static IPAddress GetIpAddressFromIpHostEntry(IPHostEntry ipHostEntry)
-        {
-            var addresses = ipHostEntry.AddressList;
-
-            foreach (var item in addresses)
-            {
-                if (item.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    return item;
-                }
-            }
-            return null;
-        }
-
-        /// <summary>
         /// 异步获取IP地址
         /// </summary>
         /// <param name="host"></param>
         /// <param name="callback"></param>
-        public static void GetIpAddress(string host, Action<IPAddress> callback = null)
+        public static async Task<IPAddress> GetIpAddress(string host, Action<IPAddress> callback = null)
         {
-            IPAddress ipAddress = null;
-            if (!IPAddress.TryParse(host, out ipAddress))
+            if (IPAddress.TryParse(host, out IPAddress ipAddress))
             {
-                Dns.BeginGetHostAddresses(host, new AsyncCallback((asyncResult) =>
-                {
-                    IPAddress[] addrs = Dns.EndGetHostAddresses(asyncResult);
-                    if (callback != null)
-                    {
-                        if (addrs.Length > 0)
-                            ipAddress = addrs[0];
-                        callback(ipAddress);
-                    }
-                }), null);
+                return ipAddress;
             }
             else
             {
-                if (callback != null)
-                    callback(ipAddress);
+                var addresses = await Dns.GetHostAddressesAsync(host);
+                return addresses.FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
             }
         }
         #endregion
