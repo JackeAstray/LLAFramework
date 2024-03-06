@@ -7,7 +7,7 @@ namespace GameLogic.Example
 {
     public class DownloadFileExample : MonoBehaviour
     {
-        private DownloadFile _downloadFile;
+        private DownloadFile downloadFile;
         // Start is called before the first frame update
 
         void Start()
@@ -18,9 +18,9 @@ namespace GameLogic.Example
             // var url = "https://down.sandai.net/thunder11/XunLeiWebSetup11.2.4.1750dl.exe";
             var url = "http://127.0.0.1/Download/111.exe";
 
-            _downloadFile = new DownloadFile(url);
+            downloadFile = new DownloadFile(url);
 
-            _downloadFile.OnError += (ex) =>
+            downloadFile.OnError += (ex) =>
             {
                 UnityEngine.Debug.Log("捕获异常 >>> " + ex);
             };
@@ -50,7 +50,7 @@ namespace GameLogic.Example
 
             // 多线程下载文件至本地 支持断点续传
             filePath = System.IO.Path.Combine(savePath, "./多线程下载至本地.exe");
-            _downloadFile.DownloadToFile(
+            downloadFile.DownloadToFile(
                 4,
                 filePath,
                 (size, count) =>
@@ -67,7 +67,7 @@ namespace GameLogic.Example
 
         private void OnDestroy()
         {
-            _downloadFile.Close();
+            downloadFile.Close();
         }
     }
 }

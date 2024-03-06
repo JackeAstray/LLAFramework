@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace GameLogic.Download
@@ -13,7 +15,7 @@ namespace GameLogic.Download
         /// <summary>
         /// 主线程
         /// </summary>
-        private SynchronizationContext _mainThreadSynContext;
+        private SynchronizationContext mainThreadSynContext;
 
         /// <summary>
         /// 下载网址
@@ -27,57 +29,53 @@ namespace GameLogic.Download
         /// <summary>
         /// 主要用于关闭线程
         /// </summary>
-        private bool _isDownload = false;
+        private bool isDownload = false;
         public DownloadFile(string url)
         {
             // 主线程赋值
-            _mainThreadSynContext = SynchronizationContext.Current;
+            mainThreadSynContext = SynchronizationContext.Current;
             // 突破Http协议的并发连接数限制
             System.Net.ServicePointManager.DefaultConnectionLimit = 512;
 
             Url = url;
         }
+
         /// <summary>
         /// 查询文件大小
         /// </summary>
         /// <returns></returns>
         public long GetFileSize()
         {
-            HttpWebRequest request;
-            HttpWebResponse response;
             try
             {
-                request = (HttpWebRequest)HttpWebRequest.CreateHttp(new Uri(Url));
+                HttpWebRequest request = HttpWebRequest.CreateHttp(new Uri(Url));
                 request.Method = "HEAD";
-                response = (HttpWebResponse)request.GetResponse();
-                // 获得文件长度
-                long contentLength = response.ContentLength;
-
-                response.Close();
-                request.Abort();
-
-                return contentLength;
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    // 获得文件长度
+                    long contentLength = response.ContentLength;
+                    return contentLength;
+                }
             }
             catch (Exception ex)
             {
-                onError(ex);
-                // throw;
+                OnErrorEX(ex);
                 return -1;
             }
         }
+
         /// <summary>
         /// 异步查询文件大小
         /// </summary>
         /// <param name="onTrigger"></param>
         public void GetFileSizeAsyn(Action<long> onTrigger = null)
         {
-            ThreadStart threadStart = new ThreadStart(() =>
+            Task.Run(() =>
             {
                 PostMainThreadAction<long>(onTrigger, GetFileSize());
             });
-            Thread thread = new Thread(threadStart);
-            thread.Start();
         }
+
         /// <summary>
         /// 多线程下载文件至本地
         /// </summary>
@@ -87,7 +85,7 @@ namespace GameLogic.Download
         /// <param name="onTrigger">下载完毕回调（下载文件数据）</param>
         public void DownloadToFile(int threadCount, string filePath, Action<long, long> onDownloading = null, Action<byte[]> onTrigger = null)
         {
-            _isDownload = true;
+            isDownload = true;
 
             long csize = 0; //已下载大小
             int ocnt = 0;   //完成线程数
@@ -168,21 +166,21 @@ namespace GameLogic.Download
                 };
                 // 分割文件尺寸，多线程下载
                 long[] sizes = SplitFileSize(size, threadCount);
-                for (int i = 0; i < sizes.Length; i = i + 2)
+                Parallel.For(0, sizes.Length / 2, i =>
                 {
-                    long from = sizes[i];
-                    long to = sizes[i + 1];
+                    long from = sizes[i * 2];
+                    long to = sizes[i * 2 + 1];
 
                     // 断点续传
-                    from += tempFileFileStreams[i / 2].Length;
+                    from += tempFileFileStreams[i].Length;
                     if (from >= to)
                     {
-                        t_onTrigger(i / 2, null);
-                        continue;
+                        t_onTrigger(i, null);
+                        return;
                     }
 
-                    _threadDownload(i / 2, from, to, t_onDownloading, t_onTrigger);
-                }
+                    ThreadDownload(i, from, to, t_onDownloading, t_onTrigger);
+                });
             });
         }
         /// <summary>
@@ -193,21 +191,23 @@ namespace GameLogic.Download
         /// <param name="onTrigger">下载完毕回调（下载文件数据）</param>
         public void DownloadToMemory(int threadCount, Action<long, long> onDownloading = null, Action<byte[]> onTrigger = null)
         {
-            _isDownload = true;
+            isDownload = true;
 
             long csize = 0; // 已下载大小
             int ocnt = 0;   // 完成线程数
             byte[] cdata;  // 已下载数据
-                           // 下载逻辑
+            // 下载逻辑
             GetFileSizeAsyn((size) =>
             {
                 cdata = new byte[size];
+
                 // 单线程下载过程回调函数
                 Action<int, long, byte[], byte[]> t_onDownloading = (index, rsize, rbytes, data) =>
                 {
                     csize += rsize;
                     PostMainThreadAction<long, long>(onDownloading, csize, size);
                 };
+
                 // 单线程下载完毕回调函数
                 Action<int, byte[]> t_onTrigger = (index, data) =>
                 {
@@ -220,16 +220,23 @@ namespace GameLogic.Download
                         PostMainThreadAction<byte[]>(onTrigger, cdata);
                     }
                 };
+
                 // 分割文件尺寸，多线程下载
                 long[] sizes = SplitFileSize(size, threadCount);
-                for (int i = 0; i < sizes.Length; i = i + 2)
+                ConcurrentDictionary<int, byte[]> dataDict = new ConcurrentDictionary<int, byte[]>();
+                Parallel.For(0, sizes.Length / 2, i =>
                 {
-                    long from = sizes[i];
-                    long to = sizes[i + 1];
-                    _threadDownload(i / 2, from, to, t_onDownloading, t_onTrigger);
-                }
+                    long from = sizes[i * 2];
+                    long to = sizes[i * 2 + 1];
+                    ThreadDownload(i, from, to, t_onDownloading, (index, data) =>
+                    {
+                        dataDict[index] = data;
+                        t_onTrigger(index, data);
+                    });
+                });
             });
         }
+
         /// <summary>
         /// 单线程下载
         /// </summary>
@@ -238,33 +245,27 @@ namespace GameLogic.Download
         /// <param name="to">下载结束位置</param>
         /// <param name="onDownloading">下载过程回调（线程ID、单次下载数据大小、单次下载数据缓存区、已下载文件数据）</param>
         /// <param name="onTrigger">下载完毕回调（线程ID、下载文件数据）</param>
-        private void _threadDownload(int index, long from, long to, Action<int, long, byte[], byte[]> onDownloading = null, Action<int, byte[]> onTrigger = null)
+        private void ThreadDownload(int index, long from, long to, Action<int, long, byte[], byte[]> onDownloading = null, Action<int, byte[]> onTrigger = null)
         {
-            Thread thread = new Thread(new ThreadStart(() =>
+            try
             {
-                try
+                var request = (HttpWebRequest)HttpWebRequest.Create(new Uri(Url));
+                request.AddRange(from, to);
+
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (Stream ns = response.GetResponseStream())
+                using (MemoryStream ms = new MemoryStream())
                 {
-                    var request = (HttpWebRequest)HttpWebRequest.Create(new Uri(Url));
-                    request.AddRange(from, to);
-
-                    HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                    Stream ns = response.GetResponseStream();
-
                     byte[] rbytes = new byte[8 * 1024];
                     int rSize = 0;
-                    MemoryStream ms = new MemoryStream();
                     while (true)
                     {
-                        if (!_isDownload) return;
+                        if (!isDownload) return;
                         rSize = ns.Read(rbytes, 0, rbytes.Length);
                         if (rSize <= 0) break;
                         ms.Write(rbytes, 0, rSize);
                         if (onDownloading != null) onDownloading(index, rSize, rbytes, ms.ToArray());
                     }
-
-                    ns.Close();
-                    response.Close();
-                    request.Abort();
 
                     if (ms.Length == (to - from) + 1)
                     {
@@ -274,27 +275,23 @@ namespace GameLogic.Download
                     {
                         lock (errorlock)
                         {
-                            if (_isDownload)
+                            if (isDownload)
                             {
-                                onError(new Exception("文件大小校验不通过"));
+                                OnErrorEX(new Exception("文件大小校验不通过"));
                             }
                         }
                     }
-
                 }
-                catch (Exception ex)
-                {
-                    onError(ex);
-                }
-
-
-            }));
-            thread.Start();
+            }
+            catch (Exception ex)
+            {
+                OnErrorEX(ex);
+            }
         }
 
         public void Close()
         {
-            _isDownload = false;
+            isDownload = false;
         }
 
         /// <summary>
@@ -315,7 +312,11 @@ namespace GameLogic.Download
             return result;
         }
 
-        private void onError(Exception ex)
+        /// <summary>
+        /// 异常通知
+        /// </summary>
+        /// <param name="ex"></param>
+        private void OnErrorEX(Exception ex)
         {
             Close();
             PostMainThreadAction<Exception>(OnError, ex);
@@ -326,53 +327,43 @@ namespace GameLogic.Download
         /// </summary>
         private void PostMainThreadAction(Action action)
         {
-            _mainThreadSynContext.Post(new SendOrPostCallback((o) =>
+            mainThreadSynContext.Post(new SendOrPostCallback((o) =>
             {
-                Action e = (Action)o.GetType().GetProperty("action").GetValue(o);
+                Action e = o as Action;
                 if (e != null) e();
-            }), new { action = action });
+            }), action);
         }
+
         private void PostMainThreadAction<T>(Action<T> action, T arg1)
         {
-            _mainThreadSynContext.Post(new SendOrPostCallback((o) =>
-            {
-                Action<T> e = (Action<T>)o.GetType().GetProperty("action").GetValue(o);
-                T t1 = (T)o.GetType().GetProperty("arg1").GetValue(o);
-                if (e != null) e(t1);
-            }), new { action = action, arg1 = arg1 });
+            mainThreadSynContext.Post(o => action((T)o), arg1);
         }
+
         public void PostMainThreadAction<T1, T2>(Action<T1, T2> action, T1 arg1, T2 arg2)
         {
-            _mainThreadSynContext.Post(new SendOrPostCallback((o) =>
+            mainThreadSynContext.Post(o =>
             {
-                Action<T1, T2> e = (Action<T1, T2>)o.GetType().GetProperty("action").GetValue(o);
-                T1 t1 = (T1)o.GetType().GetProperty("arg1").GetValue(o);
-                T2 t2 = (T2)o.GetType().GetProperty("arg2").GetValue(o);
-                if (e != null) e(t1, t2);
-            }), new { action = action, arg1 = arg1, arg2 = arg2 });
+                var tuple = (Tuple<T1, T2>)o;
+                action(tuple.Item1, tuple.Item2);
+            }, Tuple.Create(arg1, arg2));
         }
+
         public void PostMainThreadAction<T1, T2, T3>(Action<T1, T2, T3> action, T1 arg1, T2 arg2, T3 arg3)
         {
-            _mainThreadSynContext.Post(new SendOrPostCallback((o) =>
+            mainThreadSynContext.Post(o =>
             {
-                Action<T1, T2, T3> e = (Action<T1, T2, T3>)o.GetType().GetProperty("action").GetValue(o);
-                T1 t1 = (T1)o.GetType().GetProperty("arg1").GetValue(o);
-                T2 t2 = (T2)o.GetType().GetProperty("arg2").GetValue(o);
-                T3 t3 = (T3)o.GetType().GetProperty("arg3").GetValue(o);
-                if (e != null) e(t1, t2, t3);
-            }), new { action = action, arg1 = arg1, arg2 = arg2, arg3 = arg3 });
+                var tuple = (Tuple<T1, T2, T3>)o;
+                action(tuple.Item1, tuple.Item2, tuple.Item3);
+            }, Tuple.Create(arg1, arg2, arg3));
         }
+
         public void PostMainThreadAction<T1, T2, T3, T4>(Action<T1, T2, T3, T4> action, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
         {
-            _mainThreadSynContext.Post(new SendOrPostCallback((o) =>
+            mainThreadSynContext.Post(o =>
             {
-                Action<T1, T2, T3, T4> e = (Action<T1, T2, T3, T4>)o.GetType().GetProperty("action").GetValue(o);
-                T1 t1 = (T1)o.GetType().GetProperty("arg1").GetValue(o);
-                T2 t2 = (T2)o.GetType().GetProperty("arg2").GetValue(o);
-                T3 t3 = (T3)o.GetType().GetProperty("arg3").GetValue(o);
-                T4 t4 = (T4)o.GetType().GetProperty("arg4").GetValue(o);
-                if (e != null) e(t1, t2, t3, t4);
-            }), new { action = action, arg1 = arg1, arg2 = arg2, arg3 = arg3, arg4 = arg4 });
+                var tuple = (Tuple<T1, T2, T3, T4>)o;
+                action(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4);
+            }, Tuple.Create(arg1, arg2, arg3, arg4));
         }
     }
 }

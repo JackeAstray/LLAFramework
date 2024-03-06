@@ -5,12 +5,17 @@ using UnityEngine.UI;
 
 namespace GameLogic.Download
 {
+    /// <summary>
+    /// 加载图片
+    /// </summary>
     public class LoadImageHelper : MonoBehaviour
     {
+        private Coroutine loadTextureCoroutine;
+
         /// <summary>
-        /// 使用此加载图像
+        /// 加载图片
         /// </summary>
-        /// <param name="texture"></param>
+        /// <param name="rawImage"></param>
         /// <param name="url"></param>
         public void LoadImage(RawImage rawImage, string url)
         {
@@ -19,13 +24,22 @@ namespace GameLogic.Download
                 Log.Error("Url不能为空！");
                 return;
             }
-            StartCoroutine(LoadTeture(url, (tex) => 
+
+            if (loadTextureCoroutine != null)
             {
-                rawImage.texture = tex;
-            }));
+                StopCoroutine(loadTextureCoroutine);
+            }
+
+            loadTextureCoroutine = StartCoroutine(LoadImage(url, tex => rawImage.texture = tex));
         }
 
-        IEnumerator LoadTeture(string url, Action<Texture2D> cb)
+        /// <summary>
+        /// 加载图片
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="cb"></param>
+        /// <returns></returns>
+        private IEnumerator LoadImage(string url, Action<Texture2D> cb)
         {
             yield return LoadImageMgr.instance.LoadImage(url, cb);
         }

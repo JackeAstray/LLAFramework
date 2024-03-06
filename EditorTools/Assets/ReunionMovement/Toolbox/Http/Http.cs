@@ -26,6 +26,10 @@ namespace GameLogic.HttpModule
         private Dictionary<string, string> superHeaders;
         private Dictionary<IHttpRequest, Coroutine> httpRequests;
 
+        /// <summary>
+        /// 初始化Http
+        /// </summary>
+        /// <param name="service"></param>
         public static void Init(IHttpService service)
         {
             if (instance) return;
@@ -41,7 +45,7 @@ namespace GameLogic.HttpModule
         #region Super Headers
 
         /// <summary>
-        /// Super headers are key value pairs that will be added to every subsequent HttpRequest.
+        /// SuperHeaders是键值对，将被添加到每个后续的HttpRequest中。
         /// </summary>
         /// <returns>A dictionary of super-headers.</returns>
         public static Dictionary<string, string> GetSuperHeaders()
@@ -50,35 +54,35 @@ namespace GameLogic.HttpModule
         }
 
         /// <summary>
-        /// Sets a header to the SuperHeaders key value pair, if the header key already exists, the value will be replaced.
+        /// 将标头设置为SuperHeaders键值对，如果标头键已存在，则该值将被替换。
         /// </summary>
-        /// <param name="key">The header key to be set.</param>
-        /// <param name="value">The header value to be assigned.</param>
+        /// <param name="key">要设置的标题键</param>
+        /// <param name="value">要分配的标头值</param>
         public static void SetSuperHeader(string key, string value)
         {
             if (string.IsNullOrEmpty(key))
             {
-                throw new ArgumentException("Key cannot be null or empty.");
+                throw new ArgumentException("密钥不能为null或为空");
             }
 
             if (string.IsNullOrEmpty(value))
             {
-                throw new ArgumentException("Value cannot be null or empty, if you are intending to remove the value, use the RemoveSuperHeader() method.");
+                throw new ArgumentException("值不能为null或空，如果要删除该值，请使用RemoveSuperHeader（）方法。");
             }
 
             Instance.superHeaders[key] = value;
         }
 
         /// <summary>
-        /// Removes a header from the SuperHeaders list.
+        /// 从“SuperHeaders”列表中删除标头
         /// </summary>
-        /// <param name="key">The header key to be removed.</param>
-        /// <returns>If the removal of the element was successful</returns>
+        /// <param name="key">要删除的标题键</param>
+        /// <returns>如果元素移除成功</returns>
         public static bool RemoveSuperHeader(string key)
         {
             if (string.IsNullOrEmpty(key))
             {
-                throw new ArgumentException("Key cannot be null or empty.");
+                throw new ArgumentException("密钥不能为null或为空");
             }
 
             return Instance.superHeaders.Remove(key);
@@ -86,7 +90,7 @@ namespace GameLogic.HttpModule
 
         #endregion
 
-        #region Static Requests
+        #region 静态请求
 
         /// <see cref="GameLogic.HttpModule.Service.IHttpService.Get"/>
         public static IHttpRequest Get(string uri)
@@ -167,7 +171,13 @@ namespace GameLogic.HttpModule
         }
 
         #endregion
-
+        /// <summary>
+        /// 发送请求并处理响应
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="onSuccess"></param>
+        /// <param name="onError"></param>
+        /// <param name="onNetworkError"></param>
         internal void Send(IHttpRequest request, Action<HttpResponse> onSuccess = null,
             Action<HttpResponse> onError = null, Action<HttpResponse> onNetworkError = null)
         {
@@ -176,6 +186,14 @@ namespace GameLogic.HttpModule
             httpRequests.Add(request, coroutine);
         }
 
+        /// <summary>
+        /// 用于发送请求和处理响应的协程
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="onSuccess"></param>
+        /// <param name="onError"></param>
+        /// <param name="onNetworkError"></param>
+        /// <returns></returns>
         private IEnumerator SendCoroutine(IHttpRequest request, Action<HttpResponse> onSuccess = null,
             Action<HttpResponse> onError = null, Action<HttpResponse> onNetworkError = null)
         {
@@ -183,21 +201,25 @@ namespace GameLogic.HttpModule
             Instance.httpRequests.Remove(request);
         }
 
+        /// <summary>
+        /// 中止请求并将其从活动请求列表中删除
+        /// </summary>
+        /// <param name="request"></param>
         internal void Abort(IHttpRequest request)
         {
             Instance.service.Abort(request);
 
-            if (httpRequests.ContainsKey(request))
+            if (httpRequests.TryGetValue(request, out Coroutine coroutine))
             {
-                StopCoroutine(httpRequests[request]);
+                StopCoroutine(coroutine);
+                Instance.httpRequests.Remove(request);
             }
-
-            Instance.httpRequests.Remove(request);
         }
 
         private void Update()
         {
-            foreach (var httpRequest in httpRequests.Keys)
+            var keys = new List<IHttpRequest>(httpRequests.Keys);
+            foreach (var httpRequest in keys)
             {
                 (httpRequest as IUpdateProgress)?.UpdateProgress();
             }

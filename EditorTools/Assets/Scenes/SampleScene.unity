@@ -232,16 +232,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bd0339cb1281c145a788a3877e8115e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Preset: 1
-  CustomWireColor: {r: 0.5411765, g: 0.5411765, b: 0.91764706, a: 0.5019608}
-  CustomFillColor: {r: 0.6784314, g: 0.69803923, b: 1, a: 0.101960786}
-  CustomCenterColor: {r: 0.6, g: 0.69803923, b: 1, a: 0.6745098}
-  Alpha: 1
-  WireColor: {r: 0.56078434, g: 0, b: 0.08235294, a: 0.7921569}
-  FillColor: {r: 0.85490197, g: 0, b: 0, a: 0.14509805}
-  CenterColor: {r: 0.5294118, g: 0.14117648, b: 0.14117648, a: 0.6745098}
-  DrawFill: 1
-  DrawWire: 1
+  Preset: 0
+  CustomWireColor: {r: 0, g: 0, b: 0, a: 0}
+  CustomFillColor: {r: 0, g: 0, b: 0, a: 0}
+  CustomCenterColor: {r: 0, g: 0, b: 0, a: 0}
+  alpha: 1
+  WireColor: {r: 0.6, g: 0.6, b: 1, a: 0.5}
+  FillColor: {r: 0.6, g: 0.7, b: 1, a: 0.1}
+  CenterColor: {r: 0.6, g: 0.7, b: 1, a: 0.7}
+  drawFill: 1
+  drawWire: 1
   DrawCenter: 0
   CenterMarkerRadius: 1
   IncludeChildColliders: 0
@@ -265,7 +265,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 159429107}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -1272,6 +1272,7 @@ MonoBehaviour:
   ySensitivity: 50
   rotationOffset: -180
   collisionOffset: 0.2
+  zoomValue: 50
 --- !u!4 &1463224911
 Transform:
   m_ObjectHideFlags: 0

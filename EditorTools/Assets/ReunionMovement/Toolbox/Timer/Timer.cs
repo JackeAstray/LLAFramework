@@ -7,7 +7,6 @@ using Object = UnityEngine.Object;
 
 /// <summary>
 /// 允许您在不使用<see cref=“Coroutine”/>或<see cref=“MonoBehavior”/>的情况下延迟运行事件。
-///
 /// 要创建并启动计时器，请使用<see-cref=“Register”/>方法。
 /// </summary>
 namespace GameLogic
@@ -413,7 +412,8 @@ namespace GameLogic
         #region Manager类（实现细节，自动生成并更新所有注册的定时器）
 
         /// <summary>
-        /// 管理更新应用程序中运行的所有<see cref=“Timer”/>。这将在您第一次创建计时器时实例化——您不需要手动将其添加到场景中。
+        /// 管理更新应用程序中运行的所有<see cref=“Timer”/>。
+        /// 这将在您第一次创建计时器时实例化——您不需要手动将其添加到场景中。
         /// </summary>
         private class TimerManager : MonoBehaviour
         {
@@ -441,8 +441,8 @@ namespace GameLogic
                     timer.Cancel();
                 }
 
-                this._timers = new List<Timer>();
-                this._timersToAdd = new List<Timer>();
+                this._timers.Clear();
+                this._timersToAdd.Clear();
             }
 
             /// <summary>
@@ -457,7 +457,7 @@ namespace GameLogic
             }
 
             /// <summary>
-            /// 回复全部计时器
+            /// 恢复全部计时器
             /// </summary>
             public void ResumeAllTimers()
             {
@@ -467,7 +467,9 @@ namespace GameLogic
                 }
             }
 
-            // 更新每帧上所有注册的定时器
+            /// <summary>
+            /// 更新每帧上所有注册的定时器
+            /// </summary>
             [UsedImplicitly]
             private void Update()
             {

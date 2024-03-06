@@ -13,7 +13,13 @@ namespace GameLogic.Download
     public class LoadImageMgr
     {
         private Dictionary<string, Texture2D> imageDic = new Dictionary<string, Texture2D>();
+        private string savePath;
         public static LoadImageMgr instance { get; private set; } = new LoadImageMgr();
+
+        public LoadImageMgr()
+        {
+            savePath = GetLocalPath();
+        }
 
         /// <summary>
         /// 从网络或硬盘下载
@@ -23,17 +29,15 @@ namespace GameLogic.Download
         /// <returns></returns>
         public IEnumerator LoadImage(string url, Action<Texture2D> loadEnd)
         {
-            // 先从内存加载
             if (imageDic.TryGetValue(url, out Texture2D texture))
             {
                 loadEnd.Invoke(texture);
                 yield break;
             }
 
-            string savePath = GetLocalPath();
-            string localFilePath = string.Format("{0}/{1}.png", savePath, EngineExtensions.MD5Encrypt(url));
+            string urlHash = EngineExtensions.MD5Encrypt(url);
+            string localFilePath = string.Format("{0}/{1}.png", savePath, urlHash);
 
-            //检查本地是否存在
             if (File.Exists(localFilePath))
             {
                 yield return DownloadImage(localFilePath, (state, localTexture) =>
@@ -53,7 +57,7 @@ namespace GameLogic.Download
                     {
                         loadEnd.Invoke(downloadTexture);
                         imageDic[url] = downloadTexture;
-                        SaveToLocalPath(url, downloadTexture);
+                        SaveToLocalPath(urlHash, downloadTexture);
                     }
                 });
             }
@@ -89,17 +93,16 @@ namespace GameLogic.Download
         /// </summary>
         /// <param name="url"></param>
         /// <param name="texture"></param>
-        private void SaveToLocalPath(string url, Texture2D texture)
+        private void SaveToLocalPath(string urlHash, Texture2D texture)
         {
             byte[] bytes = texture.EncodeToPNG();
-            string savePath = GetLocalPath();
-            string localFilePath = string.Format("{0}/{1}.png", savePath, EngineExtensions.MD5Encrypt(url));
+            string localFilePath = string.Format("{0}/{1}.png", savePath, urlHash);
 
             try
             {
                 File.WriteAllBytes(localFilePath, bytes);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Debug.LogError(ex.ToString());
             }
@@ -112,9 +115,7 @@ namespace GameLogic.Download
         private string GetLocalPath()
         {
             string savePath = Application.persistentDataPath + "/Picture";
-    #if UNITY_EDITOR
-            savePath = Application.dataPath + "/Picture";
-    #endif
+
             if (!Directory.Exists(savePath))
             {
                 Directory.CreateDirectory(savePath);

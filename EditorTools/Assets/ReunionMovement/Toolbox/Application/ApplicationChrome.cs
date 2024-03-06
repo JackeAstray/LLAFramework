@@ -5,6 +5,7 @@ using UnityEngine;
 class ApplicationChrome
 {
     private static AndroidJavaObject activity;
+    private static AndroidJavaClass colorClass = new AndroidJavaClass("android.graphics.Color");
 
     private static AndroidJavaObject Activity
     {
@@ -35,109 +36,77 @@ class ApplicationChrome
         }
     }
     /// <summary>
-    /// ²âÊÔ
+    /// æµ‹è¯•
     /// </summary>
     public static void TestCall()
     {
         if (Activity != null)
         {
-            Debug.Log("Activity ²»Îª¿Õ");
+            Debug.Log("Activity ä¸ä¸ºç©º");
         }
         else
         {
-            Debug.Log("Activity Îª¿Õ");
+            Debug.Log("Activity ä¸ºç©º");
         }
 
 
         if (Window != null)
         {
-            Debug.Log("Window ²»Îª¿Õ");
+            Debug.Log("Window ä¸ä¸ºç©º");
         }
         else
         {
-            Debug.Log("Window Îª¿Õ");
+            Debug.Log("Window ä¸ºç©º");
         }
 
 
         if (View != null)
         {
-            Debug.Log("View ²»Îª¿Õ");
+            Debug.Log("View ä¸ä¸ºç©º");
         }
         else
         {
-            Debug.Log("View Îª¿Õ");
+            Debug.Log("View ä¸ºç©º");
         }
     }
     /// <summary>
-    /// ÉèÖÃÊÇ·ñÏÔÊ¾×´Ì¬À¸
+    /// è®¾ç½®æ˜¯å¦æ˜¾ç¤ºçŠ¶æ€æ 
     /// </summary>
     /// <param name="isShow"></param>
     public static void SetStatusBar(bool isShow)
     {
-        if (isShow)
+        RunOnAndroidUiThread(() =>
         {
-            RunOnAndroidUiThread(()=> 
+            if (Window != null)
             {
-                if (Window != null)
-                {
-                    Window.Call("clearFlags", 1024);
-                }
-            });
-        }
-        else
-        {
-            RunOnAndroidUiThread(() =>
-            {
-                if (Window != null)
-                {
-                    Window.Call("addFlags", 1024);
-                }
-            });
-        }
+                Window.Call(isShow ? "clearFlags" : "addFlags", 1024);
+            }
+        });
     }
 
     /// <summary>
-    /// ÉèÖÃ×´Ì¬À¸ÑÕÉ«&×´Ì¬À¸×ÖÌåÑÕÉ«
+    /// è®¾ç½®çŠ¶æ€æ é¢œè‰²&çŠ¶æ€æ å­—ä½“é¢œè‰²
     /// </summary>
     /// <param name="color"></param>
     /// <param name="isBlack"></param>
     public static void SetStatusBarColor(int color, bool isBlack)
     {
-        if (Window != null)
+        RunOnAndroidUiThread(() =>
         {
-            RunOnAndroidUiThread(() =>
+            if (Window != null)
             {
-                if (Window != null)
-                {
-                    Window.Call("setStatusBarColor", color);
-                }
-            });
-        }
+                Window.Call("setStatusBarColor", color);
+            }
 
-        if (isBlack)
-        {
-            RunOnAndroidUiThread(() =>
+            if (View != null)
             {
-                if (View != null)
-                {
-                    View.Call("setSystemUiVisibility", 8192);
-                }
-            });
-        }
-        else
-        {
-            RunOnAndroidUiThread(() =>
-            {
-                if (View != null)
-                {
-                    View.Call("setSystemUiVisibility", 256);
-                }
-            });
-        }
+                View.Call("setSystemUiVisibility", isBlack ? 8192 : 256);
+            }
+        });
     }
 
     /// <summary>
-    /// ÔËĞĞ
+    /// è¿è¡Œ
     /// </summary>
     /// <param name="target"></param>
     private static void RunOnAndroidUiThread(Action target)
@@ -150,21 +119,17 @@ class ApplicationChrome
     }
 
     /// <summary>
-    /// ½«ÑÕÉ«×ªÎªint
+    /// å°†é¢œè‰²è½¬ä¸ºint
     /// </summary>
     /// <param name="color"></param>
     /// <returns></returns>
     public static int ConvertColorToAndroidColor(Color color)
     {
-        Color32 color32 = color;
-        int alpha = color32.a;
-        int red = color32.r;
-        int green = color32.g;
-        int blue = color32.b;
-        using (var colorClass = new AndroidJavaClass("android.graphics.Color"))
-        {
-            int androidColor = colorClass.CallStatic<int>("argb", alpha, red, green, blue);
-            return androidColor;
-        }
+        int alpha = (int)(color.a * 255);
+        int red = (int)(color.r * 255);
+        int green = (int)(color.g * 255);
+        int blue = (int)(color.b * 255);
+        int androidColor = colorClass.CallStatic<int>("argb", alpha, red, green, blue);
+        return androidColor;
     }
 }

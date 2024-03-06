@@ -59,7 +59,8 @@ namespace GameLogic.HttpModule.Service.Unity
 
 		public IHttpRequest PostJson<T>(string uri, T payload) where T : class
 		{
-			return PostJson(uri, JsonUtility.ToJson(payload));
+            var json = JsonUtility.ToJson(payload);
+            return PostJson(uri, json);
 		}
 
 		public IHttpRequest Put(string uri, byte[] bodyData)
@@ -85,19 +86,31 @@ namespace GameLogic.HttpModule.Service.Unity
 		public IEnumerator Send(IHttpRequest request, Action<HttpResponse> onSuccess = null,
 			Action<HttpResponse> onError = null, Action<HttpResponse> onNetworkError = null)
 		{
-			var unityHttpRequest = (UnityHttpRequest) request;
+            var unityHttpRequest = (UnityHttpRequest)request;
             using (UnityWebRequest unityWebRequest = unityHttpRequest.UnityWebRequest)
-			{
+            {
                 yield return unityWebRequest.SendWebRequest();
 
-                var response = CreateResponse(unityWebRequest);
+                var response = new HttpResponse
+                {
+                    Url = unityWebRequest.url,
+                    Bytes = unityWebRequest.downloadHandler?.data,
+                    Text = unityWebRequest.downloadHandler?.text,
+                    IsSuccessful = !unityWebRequest.isHttpError && !unityWebRequest.isNetworkError,
+                    IsHttpError = unityWebRequest.isHttpError,
+                    IsNetworkError = unityWebRequest.isNetworkError,
+                    Error = unityWebRequest.error,
+                    StatusCode = unityWebRequest.responseCode,
+                    ResponseHeaders = unityWebRequest.GetResponseHeaders(),
+                    Texture = (unityWebRequest.downloadHandler as DownloadHandlerTexture)?.texture
+                };
 
                 if (unityWebRequest.result == UnityWebRequest.Result.ConnectionError)
                 {
                     onNetworkError?.Invoke(response);
                 }
-				else if (unityWebRequest.result != UnityWebRequest.Result.Success)
-				{
+                else if (unityWebRequest.result != UnityWebRequest.Result.Success)
+                {
                     onError?.Invoke(response);
                 }
                 else
@@ -105,7 +118,7 @@ namespace GameLogic.HttpModule.Service.Unity
                     onSuccess?.Invoke(response);
                 }
             }
-		}
+        }
 
 		public void Abort(IHttpRequest request)
 		{
@@ -114,23 +127,6 @@ namespace GameLogic.HttpModule.Service.Unity
 			{
 				unityHttpRequest.UnityWebRequest.Abort();
 			}
-		}
-
-		private static HttpResponse CreateResponse(UnityWebRequest unityWebRequest)
-		{
-			return new HttpResponse
-			{
-				Url = unityWebRequest.url,
-				Bytes = unityWebRequest.downloadHandler?.data,
-				Text = unityWebRequest.downloadHandler?.text,
-				IsSuccessful = !unityWebRequest.isHttpError && !unityWebRequest.isNetworkError,
-				IsHttpError = unityWebRequest.isHttpError,
-				IsNetworkError = unityWebRequest.isNetworkError,
-				Error = unityWebRequest.error,
-				StatusCode = unityWebRequest.responseCode,
-				ResponseHeaders = unityWebRequest.GetResponseHeaders(),
-				Texture = (unityWebRequest.downloadHandler as DownloadHandlerTexture)?.texture
-			};
 		}
 	}
 }

@@ -9,105 +9,105 @@ namespace GameLogic.HttpModule.Service
 	public interface IHttpService
 	{
 		/// <summary>
-		/// Creates a HttpRequest configured for HTTP GET.
+		///  创建一个配置为HTTP GET的HttpRequest
 		/// </summary>
-		/// <param name="uri">The URI of the resource to retrieve via HTTP GET.</param>
-		/// <returns>A HttpRequest object configured to retrieve data from uri.</returns>
+		/// <param name="uri">通过HTTP GET检索资源的URI</param>
+		/// <returns>配置为从uri检索数据的HttpRequest对象</returns>
 		IHttpRequest Get(string uri);
 
 		/// <summary>
-		/// Creates a HttpRequest configured for HTTP GET.
+		/// 创建一个配置为HTTP GET的HttpRequest
 		/// </summary>
-		/// <param name="uri">The URI of the resource to retrieve via HTTP GET.</param>
-		/// <returns>A HttpRequest object configured to retrieve data from uri.</returns>
+		/// <param name="uri">通过HTTP GET检索资源的URI</param>
+		/// <returns>配置为从uri检索数据的HttpRequest对象</returns>
 		IHttpRequest GetTexture(string uri);
 
 		/// <summary>
-		/// Creates a HttpRequest configured to send form data to a server via HTTP POST.
+		/// 创建一个配置为通过HTTP POST向服务器发送表单数据的HttpRequest
 		/// </summary>
-		/// <param name="uri">The target URI to which form data will be transmitted.</param>
-		/// <param name="postData">Form body data. Will be URLEncoded via WWWTranscoder.URLEncode prior to transmission.</param>
-		/// <returns>A HttpRequest configured to send form data to uri via POST.</returns>
+		/// <param name="uri">将表单数据传输到的目标URI</param>
+		/// <param name="postData">表单主体数据将在传输之前通过WWWTranscoder.URLEncode进行URL编码</param>
+		/// <returns>配置为通过POST将表单数据发送到uri的HttpRequest</returns>
 		IHttpRequest Post(string uri, string postData);
 
 		/// <summary>
-		/// Creates a HttpRequest configured to send form data to a server via HTTP POST.
+		/// 创建一个配置为通过HTTP POST向服务器发送表单数据的HttpRequest
 		/// </summary>
-		/// <param name="uri">The target URI to which form data will be transmitted.</param>
-		/// <param name="formData">Form fields or files encapsulated in a WWWForm object, for formatting and transmission to the remote server.</param>
-		/// <returns> A HttpRequest configured to send form data to uri via POST. </returns>
+		/// <param name="uri">将表单数据传输到的目标URI</param>
+		/// <param name="formData">以WWWForm对象封装的表单字段或文件，用于格式化和传输到远程服务器</param>
+		/// <returns>配置为通过POST将表单数据发送到uri的HttpRequest</returns>
 		IHttpRequest Post(string uri, WWWForm formData);
 
 		/// <summary>
-		/// Creates a HttpRequest configured to send form data to a server via HTTP POST.
+		/// 创建一个配置为通过HTTP POST向服务器发送表单数据的HttpRequest
 		/// </summary>
-		/// <param name="uri">The target URI to which form data will be transmitted.</param>
-		/// <param name="formData">Form fields in the form of a Key Value Pair, for formatting and transmission to the remote server.</param>
-		/// <returns>A HttpRequest configured to send form data to uri via POST.</returns>
+		/// <param name="uri">将表单数据传输到的目标URI</param>
+		/// <param name="formData">以键值对形式的表单字段，用于格式化和传输到远程服务器</param>
+		/// <returns>配置为通过POST将表单数据发送到uri的HttpRequest</returns>
 		IHttpRequest Post(string uri, Dictionary<string, string> formData);
 
 		/// <summary>
-		/// Creates a HttpRequest configured to send form multipart form to a server via HTTP POST.
+		/// 创建一个配置为通过HTTP POST向服务器发送多部分表单数据的HttpRequest
 		/// </summary>
-		/// <param name="uri">The target URI to which form data will be transmitted.</param>
-		/// <param name="multipartForm">MultipartForm data for formatting and transmission to the remote server.</param>
-		/// <returns>A HttpRequest configured to send form data to uri via POST.</returns>
+		/// <param name="uri">将表单数据传输到的目标URI</param>
+		/// <param name="multipartForm">用于格式化和传输到远程服务器的MultipartForm数据</param>
+		/// <returns>配置为通过POST将表单数据发送到uri的HttpRequest</returns>
 		IHttpRequest Post(string uri, List<IMultipartFormSection> multipartForm);
 
 		/// <summary>
-		/// Creates a HttpRequest configured to send raw bytes to a server via HTTP POST.
+		/// 创建一个配置为通过HTTP POST向服务器发送原始字节的HttpRequest
 		/// </summary>
-		/// <param name="uri">The target URI to which bytes will be transmitted.</param>
-		/// <param name="bytes">Byte array data.</param>
-		/// <param name="contentType">String representing the MIME type of the data (e.g. image/jpeg).</param>
-		/// <returns>A HttpRequest configured to send raw bytes to a server via POST.</returns>
+		/// <param name="uri">将字节发送到的目标URI</param>
+		/// <param name="bytes">字节数组数据</param>
+		/// <param name="contentType">表示数据的MIME类型的字符串（例如image/jpeg）</param>
+		/// <returns>配置为通过POST将原始字节发送到服务器的HttpRequest</returns>
 		IHttpRequest Post(string uri, byte[] bytes, string contentType);
 
 		/// <summary>
-		/// Creates a HttpRequest configured to send json data to a server via HTTP POST.
+		/// 创建一个配置为通过HTTP POST向服务器发送JSON数据的HttpRequest
 		/// </summary>
-		/// <param name="uri">The target URI to which json data will be transmitted.</param>
-		/// <param name="json">Json body data.</param>
-		/// <returns>A HttpRequest configured to send json data to uri via POST.</returns>
+		/// <param name="uri">将JSON数据发送到的目标URI</param>
+		/// <param name="json">JSON主体数据</param>
+		/// <returns>配置为通过POST将JSON数据发送到uri的HttpRequest</returns>
 		IHttpRequest PostJson(string uri, string json);
 
 		/// <summary>
-		/// Creates a HttpRequest configured to send json data to a server via HTTP POST.
+		/// 创建一个配置为通过HTTP POST向服务器发送JSON数据的HttpRequest
 		/// </summary>
-		/// <param name="uri">The target URI to which json data will be transmitted.</param>
-		/// <param name="payload">The object to be parsed to json data.</param>
-		/// <returns>A HttpRequest configured to send json data to uri via POST.</returns>
+		/// <param name="uri">将JSON数据发送到的目标URI</param>
+		/// <param name="payload">要解析为JSON数据的对象</param>
+		/// <returns>配置为通过POST将JSON数据发送到uri的HttpRequest</returns>
 		IHttpRequest PostJson<T>(string uri, T payload) where T : class;
 
 		/// <summary>
-		/// Creates a HttpRequest configured to upload raw data to a remote server via HTTP PUT.
+		/// 创建一个配置为通过HTTP PUT向远程服务器上传原始数据的HttpRequest
 		/// </summary>
-		/// <param name="uri">The URI to which the data will be sent.</param>
-		/// <param name="bodyData">The data to transmit to the remote server.</param>
-		/// <returns>A HttpRequest configured to transmit bodyData to uri via HTTP PUT.</returns>
+		/// <param name="uri">将数据发送到的URI</param>
+		/// <param name="bodyData">要传输到远程服务器的数据</param>
+		/// <returns>配置为通过HTTP PUT将bodyData传输到uri的HttpRequest</returns>
 		IHttpRequest Put(string uri, byte[] bodyData);
 
 		/// <summary>
-		/// Creates a HttpRequest configured to upload raw data to a remote server via HTTP PUT.
+		/// 创建一个配置为通过HTTP PUT向远程服务器上传原始数据的HttpRequest
 		/// </summary>
-		/// <param name="uri">The URI to which the data will be sent.</param>
-		/// <param name="bodyData">The data to transmit to the remote server.
-		/// The string will be converted to raw bytes via &lt;a href="http:msdn.microsoft.comen-uslibrarysystem.text.encoding.utf8"&gt;System.Text.Encoding.UTF8&lt;a&gt;.</param>
-		/// <returns>A HttpRequest configured to transmit bodyData to uri via HTTP PUT.</returns>
+		/// <param name="uri">将数据发送到的URI</param>
+		/// <param name="bodyData">要传输到远程服务器的数据
+		/// 字符串将通过System.Text.Encoding.UTF8转换为原始字节</param>
+		/// <returns>配置为通过HTTP PUT将bodyData传输到uri的HttpRequest</returns>
 		IHttpRequest Put(string uri, string bodyData);
 
 		/// <summary>
-		/// Creates a HttpRequest configured for HTTP DELETE.
+		/// 创建一个配置为HTTP DELETE的HttpRequest
 		/// </summary>
-		/// <param name="uri">The URI to which a DELETE request should be sent.</param>
-		/// <returns>A HttpRequest configured to send an HTTP DELETE request.</returns>
+		/// <param name="uri">应发送DELETE请求的URI</param>
+		/// <returns>配置为发送HTTP DELETE请求的HttpRequest</returns>
 		IHttpRequest Delete(string uri);
 
 		/// <summary>
-		/// Creates a HttpRequest configured to send a HTTP HEAD request.
+		/// 创建一个配置为发送HTTP HEAD请求的HttpRequest
 		/// </summary>
-		/// <param name="uri">The URI to which to send a HTTP HEAD request.</param>
-		/// <returns>A HttpRequest configured to transmit a HTTP HEAD request.</returns>
+		/// <param name="uri">要发送HTTP HEAD请求的URI</param>
+		/// <returns>配置为发送HTTP HEAD请求的HttpRequest</returns>
 		IHttpRequest Head(string uri);
 
 		IEnumerator Send(IHttpRequest request, Action<HttpResponse> onSuccess = null, Action<HttpResponse> onError = null, Action<HttpResponse> onNetworkError = null);
