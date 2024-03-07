@@ -23,12 +23,6 @@ namespace GameLogic.EditorTools
 
         // 脚本名称
         string scriptName { get; set; }
-        // 预制体名称
-        string prefabsName { get; set; }
-        // 场景名称
-        string sceneName { get; set; }
-        // 目标名称
-        string targetName { get; set; }
 
         [MenuItem("工具箱/脚本生成工具", false, 4)]
         public static void ShowWindow()
@@ -69,6 +63,13 @@ namespace GameLogic.EditorTools
         public async void CreateScript(string path)
         {
             scriptName = className;
+            if (!Tools.CheckClassName(scriptName))
+            {
+                string msg = $"创建脚本无效，因为脚本名异常：{scriptName}";
+                Log.Error(msg);
+                return;
+            }
+
             await CreateScript(path, scriptName);
             AssetDatabase.Refresh();
         }

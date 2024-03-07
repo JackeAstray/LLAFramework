@@ -164,7 +164,7 @@ namespace GameLogic.EditorTools
         /// <param name="sheet"></param>
         static async void GenerateScript(SheetData sheet)
         {
-            string ScriptTemplate = @"//此脚本为自动生成 {_CREATE_TIME_} <ExcelTo>
+            string ScriptTemplate = @"//此脚本为工具生成，请勿手动创建 {_CREATE_TIME_} <ExcelTo>
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -313,7 +313,7 @@ namespace GameLogic
                 ExcelToXml(path);
             }
 
-            Log.Error("表格转为XML完成！");
+            Log.Debug("表格转为XML完成！");
         }
         /// <summary>
         /// Excel 转 Xml

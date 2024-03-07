@@ -27,20 +27,29 @@ namespace GameLogic
             Log.Debug("构建结果 - " + report.summary.result);
             Log.Debug("构建总大小 - " + report.summary.totalSize);
             Log.Debug("构建总时长 - " + report.summary.totalTime);
-            Log.Debug("构建总时长 - " + report.summary.totalTime);
             Log.Debug("当前版本 - " + currentVersion);
 
+            // 将新的版本号设置为Bundle版本号
+            PlayerSettings.bundleVersion = IncreaseVersion(currentVersion);
+        }
+
+        /// <summary>
+        /// 增加版本号
+        /// </summary>
+        /// <param name="currentVersion"></param>
+        /// <returns></returns>
+        private string IncreaseVersion(string currentVersion)
+        {
             // 解析版本号
             Version version = new Version(currentVersion);
 
             // 目标版本
             Version targetVersion = new Version(version.Major, version.Minor);
-            
+
             // 增加版本号
             version = new Version(targetVersion.Major, targetVersion.Minor, version.Build + 1);
 
-            // 将新的版本号设置为Bundle版本号
-            PlayerSettings.bundleVersion = version.ToString();
+            return version.ToString();
         }
     }
 }

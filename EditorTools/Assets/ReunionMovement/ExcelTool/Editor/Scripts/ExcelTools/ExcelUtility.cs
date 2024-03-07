@@ -9,6 +9,7 @@ using System.Text;
 using ExcelDataReader;
 using LitJson;
 using GameLogic;
+using System.Linq.Expressions;
 
 namespace GameLogic.EditorTools
 {
@@ -76,39 +77,25 @@ namespace GameLogic.EditorTools
         /// </summary>
         public List<T> ConvertToList<T>()
         {
-            //判断Excel文件中是否存在数据表
-            if (mResultSet.Tables.Count < 1) return null;
-            //默认读取第一个数据表
-            DataTable mSheet = mResultSet.Tables[0];
+            List<T> list = new List<T>();
+            Type type = typeof(T);
 
-            //判断数据表内是否存在数据
+            if (mResultSet.Tables.Count < 1) return null;
+            DataTable mSheet = mResultSet.Tables[0];
             if (mSheet.Rows.Count < 1) return null;
 
-            //读取数据表行数和列数
-            int rowCount = mSheet.Rows.Count;
-            int colCount = mSheet.Columns.Count;
-
-            //准备一个列表以保存全部数据
-            List<T> list = new List<T>();
-
-            //读取数据
-            for (int i = 1; i < rowCount; i++)
+            foreach (DataRow row in mSheet.Rows)
             {
-                //创建实例
-                Type t = typeof(T);
-                ConstructorInfo ct = t.GetConstructor(System.Type.EmptyTypes);
-                T target = (T)ct.Invoke(null);
-                for (int j = 0; j < colCount; j++)
+                T item = Activator.CreateInstance<T>();
+                foreach (DataColumn column in mSheet.Columns)
                 {
-                    //读取第1行数据作为表头字段
-                    string field = mSheet.Rows[1][j].ToString();
-                    object value = mSheet.Rows[i][j];
-                    //设置属性值
-                    SetTargetProperty(target, field, value);
+                    PropertyInfo property = type.GetProperty(column.ColumnName);
+                    if (property != null && property.CanWrite)
+                    {
+                        property.SetValue(item, Convert.ChangeType(row[column], property.PropertyType));
+                    }
                 }
-
-                //添加至列表
-                list.Add(target);
+                list.Add(item);
             }
 
             return list;
@@ -119,7 +106,7 @@ namespace GameLogic.EditorTools
         /// </summary>
         /// <param name="JsonPath">Json文件路径</param>
         /// <param name="Header">表头行数</param>
-        public async void ConvertToJson(string JsonPath/*, Encoding encoding*/)
+        public async void ConvertToJson(string JsonPath)
         {
             var json = GetJson();
             //写入文件
@@ -137,8 +124,7 @@ namespace GameLogic.EditorTools
         {
             int x = -1;
             int y = -1;
-            //var list = new List<object>();
-            var json = GetJson(ref x, ref y/*, ref list*/);
+            var json = GetJson(ref x, ref y);
             return json;
         }
 
@@ -146,7 +132,7 @@ namespace GameLogic.EditorTools
         /// 获取json
         /// </summary>
         /// <returns></returns>
-        public string GetJson(ref int IdX, ref int IdY/*, ref List<object> keepFieldList*/)
+        public string GetJson(ref int IdX, ref int IdY)
         {
             IdX = -1;
             IdY = -1;
@@ -209,7 +195,6 @@ namespace GameLogic.EditorTools
                         //获取字段类型
                         var rowtype = this.GetRowDatas(i - 1);
                         fieldTypeRowDatas = rowtype;
-                        //
                         break;
                     }
                 }

@@ -1,4 +1,5 @@
 using GameLogic.EditorTools;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -7,6 +8,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Tools = GameLogic.EditorTools.Tools;
 
@@ -75,6 +77,9 @@ namespace GameLogic.Editor
             }
         }
 
+        /// <summary>
+        /// 创建UI
+        /// </summary>
         public void CreateUI()
         {
             var currentScene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects);
@@ -84,10 +89,37 @@ namespace GameLogic.Editor
             GameObject mainCamera = GameObject.Find("Main Camera");
 
             if (mainCamera != null)
+            {
                 GameObject.DestroyImmediate(mainCamera);
+            }
 
             scriptName = className + "UIPlane";
 
+            //创建UI对象
+            CreateUIObject();
+            //创建相机
+            CreateCamera();
+            //创建事件系统
+            CreateEventSystem();
+
+            var dir = sceneOutPutPath;
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+
+            //保存场景
+            SaveScene(currentScene, Path.Combine(sceneOutPutPath, sceneName + ".unity"));
+
+            Selection.activeGameObject = uiObj;
+            AssetDatabase.Refresh();
+        }
+
+        /// <summary>
+        /// 创建UI对象
+        /// </summary>
+        private void CreateUIObject()
+        {
             uiObj = new GameObject(scriptName);
             uiObj.layer = (int)UnityLayerDef.UI;
             uiObj.AddComponent<UIWindowAsset>().stringArgument = scriptName;
@@ -125,14 +157,13 @@ namespace GameLogic.Editor
             canvasScaler.referenceResolution = uiSize;
             canvasScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
             canvasScaler.matchWidthOrHeight = 1;
+        }
 
-            if (GameObject.Find("EventSystem") == null)
-            {
-                var evtSystemObj = new GameObject("EventSystem");
-                evtSystemObj.AddComponent<EventSystem>();
-                evtSystemObj.AddComponent<StandaloneInputModule>();
-            }
-
+        /// <summary>
+        /// 创建相机
+        /// </summary>
+        private void CreateCamera()
+        {
             if (GameObject.Find("Camera") == null)
             {
                 GameObject cameraObj = new GameObject("Camera");
@@ -150,16 +181,23 @@ namespace GameLogic.Editor
 
                 camera.gameObject.AddComponent<AudioListener>();
             }
+        }
 
-            var dir = sceneOutPutPath;
-            if (!Directory.Exists(dir))
-                Directory.CreateDirectory(dir);
-
-            EditorSceneManager.SaveScene(currentScene, sceneOutPutPath + sceneName + ".unity");
-
-            Selection.activeGameObject = uiObj;
-
-            AssetDatabase.Refresh();
+        /// <summary>
+        /// 创建事件系统
+        /// </summary>
+        private void CreateEventSystem()
+        {
+            if (GameObject.Find("EventSystem") == null)
+            {
+                var evtSystemObj = new GameObject("EventSystem");
+                evtSystemObj.AddComponent<EventSystem>();
+                evtSystemObj.AddComponent<StandaloneInputModule>();
+            }
+        }
+        private void SaveScene(Scene scene, string path)
+        {
+            EditorSceneManager.SaveScene(scene, path);
         }
 
         /// <summary>
@@ -178,16 +216,9 @@ namespace GameLogic.Editor
         public void BindingSpriptRoot()
         {
             scriptName = className + "UIPlane";
-            var type = System.Type.GetType("GameLogic.UI." + scriptName + ", Assembly-CSharp");
-
+            var type = Type.GetType("GameLogic.UI." + scriptName + ", Assembly-CSharp");
             SetUIObj();
-
-            if (!uiObj.TryGetComponent(type, out Component component))
-            {
-                uiObj.AddComponent(type);
-                uiObj.GetComponent<UIController>().UIName = scriptName;
-                AssetDatabase.Refresh();
-            }
+            BindScript(uiObj, type);
         }
 
         /// <summary>
@@ -196,17 +227,18 @@ namespace GameLogic.Editor
         public void BindingSpriptToTarget()
         {
             scriptName = className + "UIPlane";
-            var type = System.Type.GetType(scriptName + ", Assembly-CSharp");
-
+            var type = Type.GetType("GameLogic.UI." + scriptName + ", Assembly-CSharp");
             SetUIObj();
-
             GameObject @object = uiObj.transform.Find(targetName).gameObject;
+            BindScript(@object, type);
+        }
 
-            if (!@object.TryGetComponent(type, out Component component))
+        private void BindScript(GameObject obj, Type type)
+        {
+            if (!obj.TryGetComponent(type, out Component component))
             {
-                @object.AddComponent(type);
-                @object.AddComponent<UIWindowAsset>();
-                @object.GetComponent<UIWindowAsset>().stringArgument = scriptName;
+                obj.AddComponent(type);
+                obj.GetComponent<UIController>().UIName = scriptName;
                 AssetDatabase.Refresh();
             }
         }
@@ -241,18 +273,31 @@ namespace GameLogic.Editor
 
             foreach (var windowAsset in windowAssets)
             {
-                var uiPrefabPath = uiPrefabDir + windowAsset.name + ".prefab";
-                //var prefab = PrefabUtility.CreatePrefab(uiPrefabPath, windowAsset.gameObject, ReplacePrefabOptions.Default);
-                var prefab = PrefabUtility.SaveAsPrefabAsset(windowAsset.gameObject, uiPrefabPath);
-                EditorUtility.SetDirty(prefab);
-
-                AssetDatabase.ImportAsset(uiPrefabPath, ImportAssetOptions.ForceSynchronousImport);
-                Debug.Log("Create UIWindowAsset to prfab: " + uiPrefabPath);
+                ExportPrefab(windowAsset, uiPrefabDir);
             }
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
 
+        /// <summary>
+        /// 导出预制体
+        /// </summary>
+        /// <param name="windowAsset"></param>
+        /// <param name="dir"></param>
+        private void ExportPrefab(UIWindowAsset windowAsset, string dir)
+        {
+            var uiPrefabPath = Path.Combine(dir, windowAsset.name + ".prefab");
+            var prefab = PrefabUtility.SaveAsPrefabAsset(windowAsset.gameObject, uiPrefabPath);
+            EditorUtility.SetDirty(prefab);
+
+            AssetDatabase.ImportAsset(uiPrefabPath, ImportAssetOptions.ForceSynchronousImport);
+            Debug.Log("Create UIWindowAsset to prfab: " + uiPrefabPath);
+        }
+
+        /// <summary>
+        /// 获取当前场景中的UIWindowAsset
+        /// </summary>
+        /// <returns></returns>
         static UIWindowAsset[] GetUIWIndoeAssetsFromCurrentScene()
         {
             var windowAssets = GameObject.FindObjectsOfType<UIWindowAsset>();
@@ -272,7 +317,7 @@ namespace GameLogic.Editor
         /// <returns></returns>
         static async Task GenerateScript(string name)
         {
-            string ScriptTemplate = @"//此脚本为自动生成
+            string ScriptTemplate = @"//此脚本是由工具自动生成，请勿手动创建
 
 using System.Collections;
 using System.Collections.Generic;
@@ -320,6 +365,10 @@ namespace GameLogic.UI
             AssetDatabase.Refresh();
         }
 
+        /// <summary>
+        /// 重置本地坐标
+        /// </summary>
+        /// <param name="t"></param>
         public static void ResetLocalTransform(Transform t)
         {
             t.localPosition = Vector3.zero;

@@ -25,13 +25,7 @@ namespace GameLogic.EditorTools
         public static List<string> scenesName = new List<string>();
         public static List<string> scenePaths = new List<string>();
 
-        // 解析版本号
         static System.Version version;
-        //static System.Version targetVersion;
-        public void OnEnable()
-        {
-
-        }
 
         [MenuItem("工具箱/小功能", false, 6)]
         public static void SmallFunctionsWindow()
@@ -39,100 +33,19 @@ namespace GameLogic.EditorTools
             version = new System.Version(PlayerSettings.bundleVersion);
 
             GetAllScene();
-            //弹出编辑器
             SmallFunctions smallFunctions = GetWindow<SmallFunctions>(true, "小功能", true);
-            // 窗口的尺寸
-            Vector2 windowSize = new Vector2(400, 600);
-            // 设置最小尺寸
-            smallFunctions.minSize = windowSize; 
+            smallFunctions.minSize = new Vector2(400, 600);
         }
 
         void OnGUI()
         {
+            CreateButtonGroup("屏幕日志", "生成屏幕日志控件", "移除屏幕日志控件", CreateLogComponent, CloseLogComponent);
+            CreateButtonGroup("FPS", "生成FPS控件", "移除FPS控件", CreateFPSComponent, CloseFPSComponent);
+            CreateButtonGroup("语言", "添加多语言脚本（Text）", "添加多语言脚本（TextMesh）", AddLanguageScript<Text, UIText>, AddLanguageScript<TextMeshProUGUI, UIText_TMP>);
+            CreateButtonGroup("UI波纹", "添加波纹效果（Image）", "移除波纹效果（UIRipple）", AddRippleEffect<Image, UIRipple>, RemoveRippleEffect<UIRipple>);
 
-            #region 屏幕日志
-            GUILayout.Label("屏幕日志");
-            GUILayout.BeginHorizontal(); //开始水平布局
-            if (GUILayout.Button("生成屏幕日志控件", GUILayout.Width(195)))
-            {
-                CreateLogComponent();
-            }
-            if (GUILayout.Button("移除屏幕日志控件", GUILayout.Width(195)))
-            {
-                CloseLogComponent();
-            }
-            GUILayout.EndHorizontal(); //结束水平布局
-            #endregion
-
-            #region FPS
-            GUILayout.Label("FPS");
-            GUILayout.BeginHorizontal(); //开始水平布局
-            if (GUILayout.Button("生成FPS控件", GUILayout.Width(195)))
-            {
-                CreateFPSComponent();
-            }
-
-            if (GUILayout.Button("移除FPS控件", GUILayout.Width(195)))
-            {
-                CloseFPSComponent();
-            }
-            GUILayout.EndHorizontal(); //结束水平布局
-            #endregion
-
-            GUILayout.Space(15);
-
-            #region 语言
-            GUILayout.Label("给选中的对象添加语言文本");
-            GUILayout.BeginHorizontal(); //开始水平布局
-            if (GUILayout.Button("添加多语言脚本（Text）", GUILayout.Width(195)))
-            {
-                GameObject selectedObject = Selection.activeGameObject;
-                var assetPath = EditorUtility.IsPersistent(selectedObject);
-                if (assetPath == false)
-                {
-                    if(selectedObject.GetComponent<Text>())
-                    {
-                        selectedObject.AddComponent<UIText>();
-                    }
-                    else
-                    {
-                        Log.Warning("选中的对象缺少Text部件，不予添加！");
-                    }
-                }
-                else
-                {
-                    Log.Warning("选中的对象必须在Hierachy视图！");
-                }
-            }
-            if (GUILayout.Button("添加多语言脚本（TextMesh）", GUILayout.Width(195)))
-            {
-                GameObject selectedObject = Selection.activeGameObject;
-                var assetPath = EditorUtility.IsPersistent(selectedObject);
-                if (assetPath == false)
-                {
-                    if (selectedObject.GetComponent<TextMeshProUGUI>())
-                    {
-                        selectedObject.AddComponent<UIText_TMP>();
-                    }
-                    else
-                    {
-                        Log.Warning("选中的对象缺少TextMeshProUGUI部件，不予添加！");
-                    }
-                }
-                else
-                {
-                    Log.Warning("选中的对象必须在Hierachy视图！");
-                }
-            }
-            GUILayout.EndHorizontal(); //结束水平布局
-            #endregion
-
-            GUILayout.Space(15);
-
-            #region 场景切换
             GUILayout.Label("场景切换");
-            GUILayout.BeginVertical(); //开始垂直布局
-
+            GUILayout.BeginVertical();
             for (int i = 0; i < scenesName.Count; i++)
             {
                 if (GUILayout.Button(scenesName[i]))
@@ -140,200 +53,167 @@ namespace GameLogic.EditorTools
                     LoadScene(scenePaths[i]);
                 }
             }
+            GUILayout.EndVertical();
 
-            GUILayout.EndVertical(); //结束垂直布局
-            #endregion
-
-            #region 修改版本号
             GUILayout.Label("修改版本号" + "    " + "当前版本" + version);
-            GUILayout.BeginVertical(); //开始垂直布局
-
-            GUILayout.BeginHorizontal(); //开始水平布局
-            if (GUILayout.Button("主版本号+", GUILayout.Width(129)))
-            {
-                version = new System.Version(version.Major + 1, version.Minor, version.Build);
-                PlayerSettings.bundleVersion = version.ToString();
-                version = new System.Version(PlayerSettings.bundleVersion);
-            }
-            if (GUILayout.Button("副版本号+", GUILayout.Width(129)))
-            {
-                version = new System.Version(version.Major, version.Minor + 1, version.Build);
-                PlayerSettings.bundleVersion = version.ToString();
-            }
-            if (GUILayout.Button("构建版本号+", GUILayout.Width(129)))
-            {
-                version = new System.Version(version.Major, version.Minor, version.Build + 1);
-                PlayerSettings.bundleVersion = version.ToString();
-            }
-            GUILayout.EndHorizontal(); //结束水平布局
-
-            GUILayout.BeginHorizontal(); //开始水平布局
-            if (GUILayout.Button("主版本号-", GUILayout.Width(129)))
-            {
-                version = new System.Version(version.Major - 1, version.Minor, version.Build);
-                PlayerSettings.bundleVersion = version.ToString();
-            }
-            if (GUILayout.Button("副版本号-", GUILayout.Width(129)))
-            {
-                version = new System.Version(version.Major, version.Minor - 1, version.Build);
-                PlayerSettings.bundleVersion = version.ToString();
-            }
-            if (GUILayout.Button("构建版本号-", GUILayout.Width(129)))
-            {
-                version = new System.Version(version.Major, version.Minor, version.Build - 1);
-                PlayerSettings.bundleVersion = version.ToString();
-            }
-            GUILayout.EndHorizontal(); //结束水平布局
-
-            GUILayout.Space(5);
-
-            GUILayout.EndVertical(); //开始垂直布局
-            #endregion
-
-            #region UI波纹
-            GUILayout.Label("给选中的对象添加波纹效果");
-            GUILayout.BeginHorizontal(); //开始水平布局
-            if (GUILayout.Button("添加波纹效果（Image）", GUILayout.Width(195)))
-            {
-                GameObject selectedObject = Selection.activeGameObject;
-                var assetPath = EditorUtility.IsPersistent(selectedObject);
-                if (assetPath == false)
-                {
-                    if (selectedObject.GetComponent<Image>())
-                    {
-                        selectedObject.AddComponent<UIRipple>();
-                    }
-                    else
-                    {
-                        Log.Warning("选中的对象缺少Image部件，不予添加！");
-                    }
-                }
-                else
-                {
-                    Log.Warning("选中的对象必须在Hierachy视图！");
-                }
-            }
-            if (GUILayout.Button("移除波纹效果（UIRipple）", GUILayout.Width(195)))
-            {
-                GameObject selectedObject = Selection.activeGameObject;
-                var assetPath = EditorUtility.IsPersistent(selectedObject);
-                if (assetPath == false)
-                {
-                    if (selectedObject.GetComponent<UIRipple>())
-                    {
-                        DestroyImmediate(selectedObject.GetComponent<UIRipple>());
-                    }
-                    else
-                    {
-                        Log.Warning("选中的对象缺少UIRipple部件，无法移除！");
-                    }
-                }
-                else
-                {
-                    Log.Warning("选中的对象必须在Hierachy视图！");
-                }
-            }
-            GUILayout.EndHorizontal(); //结束水平布局
-            #endregion
+            GUILayout.BeginVertical();
+            CreateVersionButtonGroup("主版本号", (v) => new System.Version(v.Major + 1, v.Minor, 1),
+                                                 (v) => new System.Version(v.Major - 1, v.Minor, 1));
+            CreateVersionButtonGroup("副版本号", (v) => new System.Version(v.Major, v.Minor + 1, 1),
+                                                 (v) => new System.Version(v.Major , v.Minor - 1, 1));
+            CreateVersionButtonGroup("构建版本号", (v) => new System.Version(v.Major, v.Minor, v.Build + 1),
+                                                   (v) => new System.Version(v.Major, v.Minor, v.Build - 1));
+            GUILayout.EndVertical();
         }
 
-        /// <summary>
-        /// 创建log部件
-        /// </summary>
+        void CreateButtonGroup(string label, string button1Text, string button2Text, Action button1Action, Action button2Action)
+        {
+            GUILayout.Label(label);
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button(button1Text, GUILayout.Width(195)))
+            {
+                button1Action();
+            }
+            if (GUILayout.Button(button2Text, GUILayout.Width(195)))
+            {
+                button2Action();
+            }
+            GUILayout.EndHorizontal();
+        }
+
+        void CreateVersionButtonGroup(string label, 
+                                      Func<System.Version, System.Version> versionChangeFunc1,
+                                      Func<System.Version, System.Version> versionChangeFunc2)
+        {
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button(label + "+", GUILayout.Width(129)))
+            {
+                version = versionChangeFunc1(version);
+                PlayerSettings.bundleVersion = version.ToString();
+            }
+            if (GUILayout.Button(label + "-", GUILayout.Width(129)))
+            {
+                version = versionChangeFunc2(version);
+                PlayerSettings.bundleVersion = version.ToString();
+            }
+            GUILayout.EndHorizontal();
+        }
+
+        void AddLanguageScript<T, U>() where T : Component where U : Component
+        {
+            GameObject selectedObject = Selection.activeGameObject;
+            var assetPath = EditorUtility.IsPersistent(selectedObject);
+            if (assetPath == false)
+            {
+                if (selectedObject.GetComponent<T>())
+                {
+                    selectedObject.AddComponent<U>();
+                }
+                else
+                {
+                    Log.Warning("选中的对象缺少" + typeof(T).Name + "部件，不予添加！");
+                }
+            }
+            else
+            {
+                Log.Warning("选中的对象必须在Hierachy视图！");
+            }
+        }
+
+        void AddRippleEffect<T, U>() where T : Component where U : Component
+        {
+            GameObject selectedObject = Selection.activeGameObject;
+            var assetPath = EditorUtility.IsPersistent(selectedObject);
+            if (assetPath == false)
+            {
+                if (selectedObject.GetComponent<T>())
+                {
+                    selectedObject.AddComponent<U>();
+                }
+                else
+                {
+                    Log.Warning("选中的对象缺少" + typeof(T).Name + "部件，不予添加！");
+                }
+            }
+            else
+            {
+                Log.Warning("选中的对象必须在Hierachy视图！");
+            }
+        }
+
+        void RemoveRippleEffect<T>() where T : Component
+        {
+            GameObject selectedObject = Selection.activeGameObject;
+            var assetPath = EditorUtility.IsPersistent(selectedObject);
+            if (assetPath == false)
+            {
+                if (selectedObject.GetComponent<T>())
+                {
+                    DestroyImmediate(selectedObject.GetComponent<T>());
+                }
+                else
+                {
+                    Log.Warning("选中的对象缺少" + typeof(T).Name + "部件，无法移除！");
+                }
+            }
+            else
+            {
+                Log.Warning("选中的对象必须在Hierachy视图！");
+            }
+        }
+
         public static void CreateLogComponent()
         {
-            GameObject log = GameObject.Find("ScreenLogger");
-
-            if (log)
-            {
-                if (!log.GetComponent<ScreenLogger>())
-                {
-                    log.AddComponent<ScreenLogger>();
-                }
-                else
-                {
-                    return;
-                }
-            }
-            else
-            {
-                log = new GameObject("ScreenLogger");
-                Selection.activeGameObject = log;
-                // 添加脚本
-                log.AddComponent<ScreenLogger>();
-            }
+            CreateComponent<ScreenLogger>("ScreenLogger");
         }
 
-        /// <summary>
-        /// 清除log部件
-        /// </summary>
         public static void CloseLogComponent()
         {
-            // 获取场景中所有的GameObject
-            GameObject[] objects = GameObject.FindObjectsOfType<GameObject>();
-
-            foreach (GameObject obj in objects)
-            {
-                if (obj.GetComponent<ScreenLogger>())
-                {
-                    // 对同名对象进行操作
-                    Log.Debug("删除了所有挂载<ScreenLogger>的对象");
-                    // 在编辑器中立即移除对象
-                    GameObject.DestroyImmediate(obj);
-                }
-            }
+            CloseComponent<ScreenLogger>();
         }
 
-        /// <summary>
-        /// 创建log部件
-        /// </summary>
         public static void CreateFPSComponent()
         {
-            GameObject FPS = GameObject.Find("FPSCounter");
+            CreateComponent<FPSCounter>("FPSCounter");
+        }
 
-            if (FPS)
+        public static void CloseFPSComponent()
+        {
+            CloseComponent<FPSCounter>();
+        }
+
+        public static void CreateComponent<T>(string name) where T : Component
+        {
+            GameObject obj = GameObject.Find(name);
+
+            if (obj)
             {
-                if (!FPS.GetComponent<FPSCounter>())
+                if (!obj.GetComponent<T>())
                 {
-                    FPS.AddComponent<FPSCounter>();
-                }
-                else
-                {
-                    return;
+                    obj.AddComponent<T>();
                 }
             }
             else
             {
-                FPS = new GameObject("FPSCounter");
-                Selection.activeGameObject = FPS;
-                // 添加脚本
-                FPS.AddComponent<FPSCounter>();
+                obj = new GameObject(name);
+                Selection.activeGameObject = obj;
+                obj.AddComponent<T>();
             }
         }
 
-        /// <summary>
-        /// 清除log部件
-        /// </summary>
-        public static void CloseFPSComponent()
+        public static void CloseComponent<T>() where T : Component
         {
-            // 获取场景中所有的GameObject
             GameObject[] objects = GameObject.FindObjectsOfType<GameObject>();
 
             foreach (GameObject obj in objects)
             {
-                if (obj.GetComponent<FPSCounter>())
+                if (obj.GetComponent<T>())
                 {
-                    // 对同名对象进行操作
-                    Log.Debug("删除了所有挂载<FPSCounter>的对象");
-                    // 在编辑器中立即移除对象
                     GameObject.DestroyImmediate(obj);
                 }
             }
         }
 
-        /// <summary>
-        /// 获取全部场景
-        /// </summary>
         public static void GetAllScene()
         {
             scenesName.Clear();
@@ -356,10 +236,6 @@ namespace GameLogic.EditorTools
             }
         }
 
-        /// <summary>
-        /// 加载场景
-        /// </summary>
-        /// <param name="inedx"></param>
         public void LoadScene(string scenePaths)
         {
             EditorSceneManager.OpenScene(scenePaths, OpenSceneMode.Single);
