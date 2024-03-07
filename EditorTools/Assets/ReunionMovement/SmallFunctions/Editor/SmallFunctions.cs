@@ -1,22 +1,12 @@
-using ExcelDataReader.Log;
 using GameLogic.AnimationUI;
-using JetBrains.Annotations;
-using log4net.Repository.Hierarchy;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Security.AccessControl;
 using TMPro;
-using Unity.VisualScripting.YamlDotNet.Core;
 using UnityEditor;
-using UnityEditor.PackageManager.UI;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static CodiceApp.EventTracking.EventModelSerialization;
-using static UnityEditor.Progress;
+
 
 namespace GameLogic.EditorTools
 {
@@ -150,6 +140,7 @@ namespace GameLogic.EditorTools
                 if (selectedObject.GetComponent<T>())
                 {
                     DestroyImmediate(selectedObject.GetComponent<T>());
+                    DestroyImmediate(selectedObject.GetComponent<Mask>());
                 }
                 else
                 {
