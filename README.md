@@ -179,6 +179,7 @@ UI工具使用说明<br>
     - ColliderGizmo       编辑器下碰撞器显示绘制边框<br>
     - DownloadFile        下载文件<br>
     - Effect              效果<br>
+      - Arrow             箭头工具<br>
       - Billboard         广告牌<br>
       - Camera            摄像机（旋转、漫游）<br>
       - FPS               FPS计数器<br>
