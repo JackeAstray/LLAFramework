@@ -9,9 +9,12 @@ namespace GameLogic
     /// </summary>
     public class FPSCounter : MonoBehaviour
     {
-        public bool EditorOnly;
+        // 仅在编辑器中显示
+        public bool editorOnly;
 
+        // 更新间隔
         [SerializeField] private float updateInterval = 1f;
+        // 目标帧率
         [SerializeField] private int targetFrameRate = 30;
 
         [SerializeField] private Anchor anchor;
@@ -29,18 +32,13 @@ namespace GameLogic
             RightBottom
         }
 
-        /// <summary>
-        /// 在开始时跳过一些时间，以跳过游戏开始时的性能下降，并产生更准确的平均FPS
-        /// </summary>
         private float idleTime = 2f;
 
         private float elapsed;
         private int frames;
-        private int quantity;
         private float fps;
         private float averageFps;
 
-        //FPS文字颜色
         private Color goodColor;
         private Color okColor;
         private Color badColor;
@@ -53,17 +51,15 @@ namespace GameLogic
 
         private void Awake()
         {
-            if (EditorOnly && !Application.isEditor) return;
+            if (editorOnly && !Application.isEditor) return;
 
             goodColor = new Color(0.5f, 1f, 0f);
             okColor = new Color(1f, 0.8f, 0f);
             badColor = new Color(1f, 0f, 0.25f);
 
-            var percent = targetFrameRate / 100;
-            var percent10 = percent * 10;
-            var percent40 = percent * 40;
-            okFps = targetFrameRate - percent10;
-            badFps = targetFrameRate - percent40;
+            var percent = targetFrameRate / 100f;
+            okFps = targetFrameRate - percent * 10;
+            badFps = targetFrameRate - percent * 40;
 
             var xPos = 0;
             var yPos = 0;
@@ -73,16 +69,15 @@ namespace GameLogic
             if (anchor == Anchor.RightTop || anchor == Anchor.RightBottom) xPos = Screen.width - linesWidth;
             xPos += xOffset;
             yPos += yOffset;
-            var yPos2 = yPos + 18;
             rect1 = new Rect(xPos, yPos, linesWidth, linesHeight);
-            rect2 = new Rect(xPos, yPos2, linesWidth, linesHeight);
+            rect2 = new Rect(xPos, yPos + 18, linesWidth, linesHeight);
 
             elapsed = updateInterval;
         }
 
         private void Update()
         {
-            if (EditorOnly && !Application.isEditor) return;
+            if (editorOnly && !Application.isEditor) return;
 
             if (idleTime > 0)
             {
@@ -98,20 +93,16 @@ namespace GameLogic
                 fps = frames / elapsed;
                 elapsed = 0;
                 frames = 0;
+                averageFps = (averageFps * (frames - 1) + fps) / frames;
             }
-
-            quantity++;
-            averageFps += (fps - averageFps) / quantity;
         }
 
         private void OnGUI()
         {
-            if (EditorOnly && !Application.isEditor) return;
+            if (editorOnly && !Application.isEditor) return;
 
             var defaultColor = GUI.color;
-            var color = goodColor;
-            if (fps <= okFps || averageFps <= okFps) color = okColor;
-            if (fps <= badFps || averageFps <= badFps) color = badColor;
+            var color = fps <= badFps || averageFps <= badFps ? badColor : fps <= okFps || averageFps <= okFps ? okColor : goodColor;
             GUI.color = color;
             GUI.Label(rect1, "FPS: " + (int)fps);
             GUI.Label(rect2, "平均值FPS: " + (int)averageFps);

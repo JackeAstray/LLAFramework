@@ -43,7 +43,7 @@ namespace GameLogic
         /// </summary>
         public virtual void TriggerDefault()
         {
-            if (PlayerPrefs.GetInt(VIBRATION_PREFS, 2) == 1)
+            if (IsVibrationDisabled())
             {
                 return;
             }
@@ -57,7 +57,7 @@ namespace GameLogic
         /// </summary>
         public virtual void TriggerVibrate()
         {
-            if (PlayerPrefs.GetInt(VIBRATION_PREFS, 2) == 1)
+            if (IsVibrationDisabled())
             {
                 return;
             }
@@ -70,7 +70,7 @@ namespace GameLogic
         /// </summary>
         public virtual void TriggerSelection()
         {
-            if (PlayerPrefs.GetInt(VIBRATION_PREFS, 2) == 1)
+            if (IsVibrationDisabled())
             {
                 return;
             }
@@ -83,7 +83,7 @@ namespace GameLogic
         /// </summary>
         public virtual void TriggerSuccess()
         {
-            if (PlayerPrefs.GetInt(VIBRATION_PREFS, 2) == 1)
+            if (IsVibrationDisabled())
             {
                 return;
             }
@@ -96,7 +96,7 @@ namespace GameLogic
         /// </summary>
         public virtual void TriggerWarning()
         {
-            if (PlayerPrefs.GetInt(VIBRATION_PREFS, 2) == 1)
+            if (IsVibrationDisabled())
             {
                 return;
             }
@@ -109,7 +109,7 @@ namespace GameLogic
         /// </summary>
         public virtual void TriggerFailure()
         {
-            if (PlayerPrefs.GetInt(VIBRATION_PREFS, 2) == 1)
+            if (IsVibrationDisabled())
             {
                 return;
             }
@@ -122,7 +122,7 @@ namespace GameLogic
         /// </summary>
         public virtual void TriggerLightImpact()
         {
-            if (PlayerPrefs.GetInt(VIBRATION_PREFS, 2) == 1)
+            if (IsVibrationDisabled())
             {
                 return;
             }
@@ -135,7 +135,7 @@ namespace GameLogic
         /// </summary>
         public virtual void TriggerMediumImpact()
         {
-            if (PlayerPrefs.GetInt(VIBRATION_PREFS, 2) == 1)
+            if (IsVibrationDisabled())
             {
                 return;
             }
@@ -148,7 +148,7 @@ namespace GameLogic
         /// </summary>
         public virtual void TriggerHeavyImpact()
         {
-            if (PlayerPrefs.GetInt(VIBRATION_PREFS, 2) == 1)
+            if (IsVibrationDisabled())
             {
                 return;
             }
@@ -156,6 +156,10 @@ namespace GameLogic
             Haptic(HapticTypes.HeavyImpact);
         }
 
+        private bool IsVibrationDisabled()
+        {
+            return PlayerPrefs.GetInt(VIBRATION_PREFS, 2) == 1;
+        }
         // INTERFACE ---------------------------------------------------------------------------------------------------------
         private static long LightDuration = 20;
         private static long MediumDuration = 40;
@@ -164,17 +168,17 @@ namespace GameLogic
         private static int MediumAmplitude = 120;
         private static int HeavyAmplitude = 255;
         private static int _sdkVersion = -1;
-        private static long[] _successPattern = { 0, LightDuration, LightDuration, HeavyDuration };
-        private static int[] _successPatternAmplitude = { 0, LightAmplitude, 0, HeavyAmplitude };
-        private static long[] _warningPattern = { 0, HeavyDuration, LightDuration, MediumDuration };
-        private static int[] _warningPatternAmplitude = { 0, HeavyAmplitude, 0, MediumAmplitude };
+        private static long[] successPattern = { 0, LightDuration, LightDuration, HeavyDuration };
+        private static int[] successPatternAmplitude = { 0, LightAmplitude, 0, HeavyAmplitude };
+        private static long[] warningPattern = { 0, HeavyDuration, LightDuration, MediumDuration };
+        private static int[] warningPatternAmplitude = { 0, HeavyAmplitude, 0, MediumAmplitude };
 
-        private static long[] _failurePattern =
+        private static long[] failurePattern =
         {
-        0, MediumDuration, LightDuration, MediumDuration, LightDuration, HeavyDuration, LightDuration, LightDuration
-    };
+            0, MediumDuration, LightDuration, MediumDuration, LightDuration, HeavyDuration, LightDuration, LightDuration
+        };
 
-        private static int[] _failurePatternAmplitude = { 0, MediumAmplitude, 0, MediumAmplitude, 0, HeavyAmplitude, 0, LightAmplitude };
+        private static int[] failurePatternAmplitude = { 0, MediumAmplitude, 0, MediumAmplitude, 0, HeavyAmplitude, 0, LightAmplitude };
 
         /// <summary>
         /// 如果当前平台是 Android，则返回 true，否则返回 false。
@@ -183,7 +187,7 @@ namespace GameLogic
         private static bool Android()
         {
 #if UNITY_ANDROID && !UNITY_EDITOR
-				return true;
+			return true;
 #else
             return false;
 #endif
@@ -196,7 +200,7 @@ namespace GameLogic
         private static bool iOS()
         {
 #if UNITY_IOS && !UNITY_EDITOR
-				return true;
+			return true;
 #else
             return false;
 #endif
@@ -232,15 +236,15 @@ namespace GameLogic
                         break;
 
                     case HapticTypes.Success:
-                        AndroidVibrate(_successPattern, _successPatternAmplitude, -1);
+                        AndroidVibrate(successPattern, successPatternAmplitude, -1);
                         break;
 
                     case HapticTypes.Warning:
-                        AndroidVibrate(_warningPattern, _warningPatternAmplitude, -1);
+                        AndroidVibrate(warningPattern, warningPatternAmplitude, -1);
                         break;
 
                     case HapticTypes.Failure:
-                        AndroidVibrate(_failurePattern, _failurePatternAmplitude, -1);
+                        AndroidVibrate(failurePattern, failurePatternAmplitude, -1);
                         break;
 
                     case HapticTypes.LightImpact:
@@ -265,12 +269,12 @@ namespace GameLogic
 
         // Android ---------------------------------------------------------------------------------------------------------
 #if UNITY_ANDROID && !UNITY_EDITOR
-			private static AndroidJavaClass UnityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-			private static AndroidJavaObject CurrentActivity = UnityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
-			private static AndroidJavaObject AndroidVibrator = CurrentActivity.Call<AndroidJavaObject>("getSystemService", "vibrator");
-			private static AndroidJavaClass VibrationEffectClass;
-			private static AndroidJavaObject VibrationEffect;
-			private static int DefaultAmplitude;
+		private static AndroidJavaClass UnityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+		private static AndroidJavaObject CurrentActivity = UnityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+		private static AndroidJavaObject AndroidVibrator = CurrentActivity.Call<AndroidJavaObject>("getSystemService", "vibrator");
+		private static AndroidJavaClass VibrationEffectClass;
+		private static AndroidJavaObject VibrationEffect;
+		private static int DefaultAmplitude;
 #else
         private static AndroidJavaClass UnityPlayer;
         private static AndroidJavaObject CurrentActivity;
@@ -319,6 +323,11 @@ namespace GameLogic
             }
         }
 
+        /// <summary>
+        /// 在 Android 上请求振动以指定模式和可选重复
+        /// </summary>
+        /// <param name="pattern"></param>
+        /// <param name="repeat"></param>
         private static void AndroidVibrate(long[] pattern, int repeat)
         {
             if (!Android())
@@ -408,24 +417,24 @@ namespace GameLogic
 
         // iOS ----------------------------------------------------------------------------------------------------------------
 #if UNITY_IOS && !UNITY_EDITOR
-			[DllImport ("__Internal")]
-			private static extern void InstantiateFeedbackGenerators();
-			[DllImport ("__Internal")]
-			private static extern void ReleaseFeedbackGenerators();
-			[DllImport ("__Internal")]
-			private static extern void SelectionHaptic();
-			[DllImport ("__Internal")]
-			private static extern void SuccessHaptic();
-			[DllImport ("__Internal")]
-			private static extern void WarningHaptic();
-			[DllImport ("__Internal")]
-			private static extern void FailureHaptic();
-			[DllImport ("__Internal")]
-			private static extern void LightImpactHaptic();
-			[DllImport ("__Internal")]
-			private static extern void MediumImpactHaptic();
-			[DllImport ("__Internal")]
-			private static extern void HeavyImpactHaptic();
+		[DllImport ("__Internal")]
+		private static extern void InstantiateFeedbackGenerators();
+		[DllImport ("__Internal")]
+		private static extern void ReleaseFeedbackGenerators();
+		[DllImport ("__Internal")]
+		private static extern void SelectionHaptic();
+		[DllImport ("__Internal")]
+		private static extern void SuccessHaptic();
+		[DllImport ("__Internal")]
+		private static extern void WarningHaptic();
+		[DllImport ("__Internal")]
+		private static extern void FailureHaptic();
+		[DllImport ("__Internal")]
+		private static extern void LightImpactHaptic();
+		[DllImport ("__Internal")]
+		private static extern void MediumImpactHaptic();
+		[DllImport ("__Internal")]
+		private static extern void HeavyImpactHaptic();
 #else
         private static void InstantiateFeedbackGenerators()
         {
@@ -584,7 +593,7 @@ namespace GameLogic
         private static string iOSSDKVersion()
         {
 #if UNITY_IOS && !UNITY_EDITOR
-				return Device.systemVersion;
+			return Device.systemVersion;
 #else
             return null;
 #endif

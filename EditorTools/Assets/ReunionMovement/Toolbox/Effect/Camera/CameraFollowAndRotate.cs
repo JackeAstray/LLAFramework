@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 
 namespace GameLogic
 {
@@ -41,6 +43,11 @@ namespace GameLogic
         private Vector2 lastTouchPos1;
 
         public bool isEnable = true;
+        private bool isMobilePlatform;
+
+        Mouse mouse;
+        Touchscreen touchscreen;
+        Keyboard keyboard;
 
         public void Start()
         {
@@ -49,68 +56,82 @@ namespace GameLogic
             
             if (hideCursor)
             {
-                Cursor.visible = false;
-                Cursor.lockState = CursorLockMode.Locked;
+                HideCursor();
             }
 
             cfrCamera = GetComponent<Camera>();
+
+            mouse = Mouse.current;
+            touchscreen = Touchscreen.current;
+            keyboard = Keyboard.current;
+
+            isMobilePlatform = Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer;
         }
 
         public void Update()
         {
-            if (isEnable != false)
-            {
-                if (Application.platform == RuntimePlatform.WindowsPlayer ||
-                    Application.platform == RuntimePlatform.WindowsEditor ||
-                    Application.platform == RuntimePlatform.WebGLPlayer)
-                {
-                    if (IsPointerOverUI())
-                    {
-                        return;
-                    }
+            bool isPointerOverUI = IsPointerOverUI();
 
+            // 检查是否按下了Alt键
+            if (keyboard[Key.LeftAlt].wasPressedThisFrame)
+            {
+                DisplayCursor();
+            }
+            else if (keyboard[Key.LeftAlt].wasReleasedThisFrame)
+            {
+                if (hideCursor)
+                {
+                    HideCursor();
+                }
+            }
+
+            if (!isPointerOverUI)
+            {
+                GetViewInput();
+            }
+        }
+
+        private void GetViewInput()
+        {
+            if (isEnable)
+            {
+                if (!isMobilePlatform)
+                {
                     //鼠标左键拖拽
-                    if (Input.GetMouseButton(0))
+                    if (mouse.leftButton.isPressed)
                     {
-                        float horz = Input.GetAxis("Mouse X");
-                        float vert = Input.GetAxis("Mouse Y");
+                        float horz = mouse.delta.x.ReadValue();
+                        float vert = mouse.delta.y.ReadValue();
                         OrbitCamera(horz, -vert);
                     }
 
                     //滚轮
                     SetZoom();
                 }
-
-                if (Application.platform == RuntimePlatform.Android ||
-                   Application.platform == RuntimePlatform.IPhonePlayer)
+                else
                 {
                     //没有触摸
-                    if (Input.touchCount <= 0)
+                    if (touchscreen.touches.Count <= 0)
                     {
                         return;
                     }
 
                     //触摸为1 开始触摸
-                    if (1 == Input.touchCount && Input.GetTouch(0).phase == TouchPhase.Began)
+                    if (touchscreen.touches.Count == 1 && touchscreen.touches[0].phase.ReadValue() == UnityEngine.InputSystem.TouchPhase.Began)
                     {
 
                     }
                     //触摸为1 滑动
-                    else if (1 == Input.touchCount)
+                    else if (touchscreen.touches.Count == 1)
                     {
-                        if (IsPointerOverUI())
-                        {
-                            return;
-                        }
+                        TouchControl touch = touchscreen.touches[0];
 
-                        Touch touch = Input.GetTouch(0);
-
-                        float horz = touch.deltaPosition.x;
-                        float vert = touch.deltaPosition.y;
+                        float horz = touch.delta.x.ReadValue();
+                        float vert = touch.delta.y.ReadValue();
 
                         OrbitCamera(horz, -vert);
                     }
-                    else if (2 == Input.touchCount)
+                    else if (touchscreen.touches.Count == 2)
                     {
                         HandleMultiTouch();
                     }
@@ -153,16 +174,24 @@ namespace GameLogic
         private bool IsPointerOverUI()
         {
 #if UNITY_EDITOR
-            if (EventSystem.current.IsPointerOverGameObject())
+            return EventSystem.current.IsPointerOverGameObject();
 #elif UNITY_ANDROID || UNITY_IPHONE
-            if (EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
+            return EventSystem.current.IsPointerOverGameObject(touchscreen.touches[0].touchId.ReadValue());
 #else
-            if (EventSystem.current.IsPointerOverGameObject())
+            return EventSystem.current.IsPointerOverGameObject();
 #endif
-            {
-                return true;
-            }
-            return false;
+        }
+
+        public void DisplayCursor()
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
+
+        public void HideCursor()
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
         }
 
         /// <summary>
@@ -170,18 +199,19 @@ namespace GameLogic
         /// </summary>
         private void HandleMultiTouch()
         {
-            var touch0 = Input.GetTouch(0);
-            var touch1 = Input.GetTouch(1);
+            TouchControl touch0 = touchscreen.touches[0];
+            TouchControl touch1 = touchscreen.touches[1];
 
-            if (touch1.phase == TouchPhase.Began)
+            if (touch1.phase.ReadValue() == UnityEngine.InputSystem.TouchPhase.Began)
             {
-                lastTouchPos0 = touch0.position;
-                lastTouchPos1 = touch1.position;
+                lastTouchPos0 = touch0.position.ReadValue();
+                lastTouchPos1 = touch1.position.ReadValue();
             }
-            else if (touch0.phase == TouchPhase.Moved || touch1.phase == TouchPhase.Moved)
+            else if (touch0.phase.ReadValue() == UnityEngine.InputSystem.TouchPhase.Moved ||
+                     touch1.phase.ReadValue() == UnityEngine.InputSystem.TouchPhase.Moved)
             {
-                var tempPos0 = touch0.position;
-                var tempPos1 = touch1.position;
+                var tempPos0 = touch0.position.ReadValue();
+                var tempPos1 = touch1.position.ReadValue();
                 var currDist = Vector2.Distance(tempPos0, tempPos1);
                 var lastDist = Vector2.Distance(lastTouchPos0, lastTouchPos1);
                 var delta = currDist - lastDist;
@@ -199,10 +229,8 @@ namespace GameLogic
         /// </summary>
         public void SetZoom()
         {
-            float delta = Input.GetAxis("Mouse ScrollWheel") * -zoomValue;
-            distance += delta;
-            distance = Mathf.Clamp(distance, minDistance, maxDistance);
-            UpdatePosition();
+            float delta = mouse.scroll.ReadValue().y * -zoomValue;
+            SetZoom(delta);
         }
 
         /// <summary>

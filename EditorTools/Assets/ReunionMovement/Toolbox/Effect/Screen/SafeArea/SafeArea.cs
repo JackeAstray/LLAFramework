@@ -15,8 +15,7 @@ namespace GameLogic
         private RectTransform rectTf;
 
         private Rect lastSafeArea;
-        private int lastScreenWidth;
-        private int lastScreenHeight;
+        private Vector2 lastScreenSize;
 
         private void Awake()
         {
@@ -35,58 +34,37 @@ namespace GameLogic
         private void UpdateRect()
         {
             var safeArea = Screen.safeArea;
-            var screenWidth = Screen.width;
-            var screenHeight = Screen.height;
+            var screenSize = new Vector2(Screen.width, Screen.height);
 
-            // is same values
-            if (safeArea.Equals(lastSafeArea) && lastScreenWidth == screenWidth && lastScreenHeight == screenHeight)
+            if (safeArea.Equals(lastSafeArea) && screenSize.Equals(lastScreenSize))
             {
                 return;
             }
 
-            ApplySafeArea(safeArea, screenWidth, screenHeight);
+            ApplySafeArea(safeArea, screenSize);
 
             lastSafeArea = safeArea;
-            lastScreenWidth = screenWidth;
-            lastScreenHeight = screenHeight;
+            lastScreenSize = screenSize;
         }
 
         /// <summary>
         /// 应用安全区域
         /// </summary>
         /// <param name="safeArea"></param>
-        /// <param name="screenWidth"></param>
-        /// <param name="screenHeight"></param>
-        private void ApplySafeArea(Rect safeArea, int screenWidth, int screenHeight)
+        /// <param name="screenSize"></param>
+        private void ApplySafeArea(Rect safeArea, Vector2 screenSize)
         {
             var anchorMin = safeArea.position;
             var anchorMax = safeArea.position + safeArea.size;
-            anchorMin.x /= screenWidth;
-            anchorMin.y /= screenHeight;
-            anchorMax.x /= screenWidth;
-            anchorMax.y /= screenHeight;
+            anchorMin.x /= screenSize.x;
+            anchorMin.y /= screenSize.y;
+            anchorMax.x /= screenSize.x;
+            anchorMax.y /= screenSize.y;
 
             rectTf.anchoredPosition = Vector2.zero;
             rectTf.sizeDelta = Vector2.zero;
             rectTf.anchorMin = anchorMin.IsFinite() ? anchorMin : Vector2.zero;
             rectTf.anchorMax = anchorMax.IsFinite() ? anchorMax : Vector2.one;
-        }
-    }
-
-
-    /// <summary>
-    /// Vector2扩展
-    /// </summary>
-    public static class Vector2Extensions
-    {
-        public static bool IsFinite(this Vector2 v)
-        {
-            return v.x.IsFinite() && v.y.IsFinite();
-        }
-
-        private static bool IsFinite(this float f)
-        {
-            return !float.IsNaN(f) && !float.IsInfinity(f);
         }
     }
 }

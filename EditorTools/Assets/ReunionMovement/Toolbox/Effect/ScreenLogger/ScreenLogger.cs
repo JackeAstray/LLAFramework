@@ -70,7 +70,9 @@ namespace GameLogic
             styleText.fontSize = FontSize;
 
             if (IsPersistent)
+            {
                 DontDestroyOnLoad(this);
+            }
         }
 
         void OnEnable()
@@ -79,22 +81,14 @@ namespace GameLogic
 
             queue = new Queue<LogMessage>();
 
-#if UNITY_4_5 || UNITY_4_6
-        Application.RegisterLogCallback(HandleLog);
-#else
             Application.logMessageReceived += HandleLog;
-#endif
         }
 
         void OnDisable()
         {
             if (!ShowInEditor && Application.isEditor) return;
 
-#if UNITY_4_5 || UNITY_4_6
-        Application.RegisterLogCallback(null);
-#else
             Application.logMessageReceived -= HandleLog;
-#endif
         }
 
         void Update()
@@ -102,7 +96,9 @@ namespace GameLogic
             if (!ShowInEditor && Application.isEditor) return;
 
             while (queue.Count > ((Screen.height - 2 * Margin) * Height - 2 * padding) / styleText.lineHeight)
+            {
                 queue.Dequeue();
+            }
         }
 
         void OnGUI()
@@ -160,33 +156,68 @@ namespace GameLogic
                         styleText.normal.textColor = MessageColor;
                         break;
                 }
-
                 GUILayout.Label(m.Message, styleText);
             }
-
             GUILayout.EndArea();
         }
 
         void HandleLog(string message, string stackTrace, LogType type)
         {
-            if (type == LogType.Assert && !LogErrors) return;
-            if (type == LogType.Error && !LogErrors) return;
-            if (type == LogType.Exception && !LogErrors) return;
-            if (type == LogType.Log && !LogMessages) return;
-            if (type == LogType.Warning && !LogWarnings) return;
+            if (!ShouldLog(type)) return;
 
             queue.Enqueue(new LogMessage(message, type));
 
-            if (type == LogType.Assert && !StackTraceErrors) return;
-            if (type == LogType.Error && !StackTraceErrors) return;
-            if (type == LogType.Exception && !StackTraceErrors) return;
-            if (type == LogType.Log && !StackTraceMessages) return;
-            if (type == LogType.Warning && !StackTraceWarnings) return;
+            if (!ShouldStackTrace(type)) return;
 
             string[] trace = stackTrace.Split(new char[] { '\n' });
 
             foreach (string t in trace)
-                if (t.Length != 0) queue.Enqueue(new LogMessage("  " + t, type));
+            {
+                if (t.Length != 0)
+                {
+                    queue.Enqueue(new LogMessage("  " + t, type));
+                }
+            }
+        }
+
+        bool ShouldLog(LogType type)
+        {
+            switch (type)
+            {
+                case LogType.Assert:
+                case LogType.Error:
+                case LogType.Exception:
+                    return LogErrors;
+
+                case LogType.Log:
+                    return LogMessages;
+
+                case LogType.Warning:
+                    return LogWarnings;
+
+                default:
+                    return false;
+            }
+        }
+
+        bool ShouldStackTrace(LogType type)
+        {
+            switch (type)
+            {
+                case LogType.Assert:
+                case LogType.Error:
+                case LogType.Exception:
+                    return StackTraceErrors;
+
+                case LogType.Log:
+                    return StackTraceMessages;
+
+                case LogType.Warning:
+                    return StackTraceWarnings;
+
+                default:
+                    return false;
+            }
         }
     }
 

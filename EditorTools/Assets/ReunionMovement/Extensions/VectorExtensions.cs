@@ -96,4 +96,24 @@ public static class VectorExtensions
         // 将点积乘以直线的方向，然后加上直线上的点，得到点在直线上的最近点
         return pointOnLine + lineDirection * d;
     }
+
+    /// <summary>
+    /// 计算一个点在给定平面上的最近点
+    /// </summary>
+    /// <param name="v"></param>
+    /// <returns></returns>
+    public static bool IsFinite(this Vector2 v)
+    {
+        return v.x.IsFinite() && v.y.IsFinite();
+    }
+
+    /// <summary>
+    /// 计算一个点在给定平面上的最近点
+    /// </summary>
+    /// <param name="f"></param>
+    /// <returns></returns>
+    private static bool IsFinite(this float f)
+    {
+        return !float.IsNaN(f) && !float.IsInfinity(f);
+    }
 }

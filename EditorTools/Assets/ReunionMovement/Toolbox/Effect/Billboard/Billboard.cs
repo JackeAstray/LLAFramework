@@ -26,7 +26,7 @@ namespace GameLogic
         {
             if (targetTF == null)
             {
-                targetTF = FindObjectOfType<Camera>().transform;
+                targetTF = Camera.main.transform;
             }
             originalRotation = transform.rotation;
         }
@@ -50,7 +50,7 @@ namespace GameLogic
                     transform.LookAt(targetTF.position - v);
                     break;
                 case BillboardType.Mode3:
-                    transform.LookAt(targetTF.transform.position);
+                    transform.LookAt(targetTF.position);
                     break;
             }
         }

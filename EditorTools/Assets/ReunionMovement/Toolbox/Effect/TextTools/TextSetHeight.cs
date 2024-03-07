@@ -10,28 +10,29 @@ namespace GameLogic
     /// </summary>
     public class TextSetHeight : MonoBehaviour
     {
-        public Text text;
-        public RectTransform rect;
+        private Text text;
+        private RectTransform rect;
+        private Vector2 previousSize;
 
         void Start()
         {
             text = GetComponent<Text>();
             rect = GetComponent<RectTransform>();
+            previousSize = rect.rect.size;
         }
 
-        // Update is called once per frame
         void Update()
         {
-            SetSize();
+            Vector2 currentSize = rect.rect.size;
+            if (currentSize != previousSize)
+            {
+                SetSize();
+                previousSize = currentSize;
+            }
         }
 
-        /// <summary>
-        /// 设置Text高度
-        /// </summary>
         public void SetSize()
         {
-            Vector2 v2 = rect.rect.size;
-            rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, v2.x);
             rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, text.preferredHeight);
         }
     }

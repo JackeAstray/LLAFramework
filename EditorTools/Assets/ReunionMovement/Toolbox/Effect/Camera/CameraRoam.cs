@@ -1,5 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace GameLogic
 {
@@ -26,22 +27,46 @@ namespace GameLogic
         private float targetRotationX = 0f;
         private float targetRotationY = 0f;
 
+        private Transform thisTransform;
+
+        Mouse mouse;
+        Touchscreen touchscreen;
+        Keyboard keyboard;
+
         public void Start()
         {
             if (hideCursor)
             {
-                Cursor.visible = false;
-                Cursor.lockState = CursorLockMode.Locked;
+                HideCursor();
             }
+
+            thisTransform = transform;
+
+            mouse = Mouse.current;
+            touchscreen = Touchscreen.current;
+            keyboard = Keyboard.current;
         }
 
         private void Update()
         {
+            // 检查是否按下了Alt键
+            if (keyboard[Key.LeftAlt].wasPressedThisFrame)
+            {
+                DisplayCursor();
+            }
+            else if (keyboard[Key.LeftAlt].wasReleasedThisFrame)
+            {
+                if (hideCursor)
+                {
+                    HideCursor();
+                }
+            }
+
             UpdateCameraRotation();
 
             Vector3 cameraVelocity = GetBaseInput();
 
-            if (Input.GetKey(KeyCode.LeftShift))
+            if (keyboard.leftShiftKey.isPressed)
             {
                 HandleShiftMovement(ref cameraVelocity);
             }
@@ -58,8 +83,8 @@ namespace GameLogic
         private void UpdateCameraRotation()
         {
             // 获取鼠标输入的旋转增量
-            float rotationXInput = -Input.GetAxis("Mouse Y");
-            float rotationYInput = Input.GetAxis("Mouse X");
+            float rotationXInput = -mouse.delta.y.ReadValue() * cameraSensitivity;
+            float rotationYInput = mouse.delta.x.ReadValue() * cameraSensitivity;
             // 根据旋转速度进行摄像机的旋转
             targetRotationX += rotationXInput * rotationSpeed;
             targetRotationY += rotationYInput * rotationSpeed;
@@ -81,15 +106,27 @@ namespace GameLogic
 
         private Vector3 GetBaseInput()
         {
-            float horizontalInput = Input.GetAxis("Horizontal");
-            float verticalInput = Input.GetAxis("Vertical");
+            float horizontalInput = keyboard.dKey.isPressed ? 1 : keyboard.aKey.isPressed ? -1 : 0;
+            float verticalInput = keyboard.wKey.isPressed ? 1 : keyboard.sKey.isPressed ? -1 : 0;
 
             return new Vector3(horizontalInput, 0, verticalInput);
         }
 
         private void UpdateCameraPosition(Vector3 cameraVelocity)
         {
-            transform.Translate(cameraVelocity);
+            thisTransform.Translate(cameraVelocity);
+        }
+
+        public void DisplayCursor()
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
+
+        public void HideCursor()
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
         }
     }
 }

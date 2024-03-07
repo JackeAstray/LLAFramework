@@ -5,28 +5,29 @@ using UnityEngine.UI;
 
 public class TextSetWidth : MonoBehaviour
 {
-    public Text text;
-    public RectTransform rect;
+    private Text text;
+    private RectTransform rect;
+    private Vector2 previousSize;
 
     void Start()
     {
         text = GetComponent<Text>();
         rect = GetComponent<RectTransform>();
+        previousSize = rect.rect.size;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        SetSize();
+        Vector2 currentSize = rect.rect.size;
+        if (currentSize != previousSize)
+        {
+            SetSize();
+            previousSize = currentSize;
+        }
     }
 
-    /// <summary>
-    /// 设置Text高度
-    /// </summary>
     public void SetSize()
     {
-        Vector2 v2 = rect.rect.size;
         rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, text.preferredHeight);
-        rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, v2.y);
     }
 }
