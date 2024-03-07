@@ -11,38 +11,35 @@ namespace GameLogic
     public class SoundModuleSettings
     {
         //自动暂停
-        public bool AutoPause = true;
+        public bool autoPause = true;
 
         //音量校正
-        public float MusicVolumeCorrection = 1f;
-        public float SoundVolumeCorrection = 1f;
+        public float musicVolumeCorrection = 1f;
+        public float soundVolumeCorrection = 1f;
 
         //淡入淡出时间
-        public float MusicFadeTime = 2f;
+        public float musicFadeTime = 2f;
 
         //混音器组
-        public AudioMixerGroup MusicAudioMixerGroup;
-        public AudioMixerGroup SoundAudioMixerGroup;
-
-        ////预加载的AudioClip
-        //public AudioClip[] PreloadedLoadedClips;
+        public AudioMixerGroup musicAudioMixerGroup;
+        public AudioMixerGroup soundAudioMixerGroup;
 
         //音量
-        private float _volumeMusic;
-        private float _volumeSound;
+        private float volumeMusic;
+        private float volumeSound;
 
         //静音
-        private bool _mutedMusic;
-        private bool _mutedSound;
+        private bool mutedMusic;
+        private bool mutedSound;
 
 
         public void SaveSettings()
         {
-            PlayerPrefs.SetFloat("SM_MusicVolume", _volumeMusic);
-            PlayerPrefs.SetFloat("SM_SoundVolume", _volumeSound);
+            PlayerPrefs.SetFloat("SM_MusicVolume", volumeMusic);
+            PlayerPrefs.SetFloat("SM_SoundVolume", volumeSound);
 
-            PlayerPrefs.SetInt("SM_MusicMute", _mutedMusic ? 1 : 0);
-            PlayerPrefs.SetInt("SM_SoundMute", _mutedSound ? 1 : 0);
+            PlayerPrefs.SetInt("SM_MusicMute", mutedMusic ? 1 : 0);
+            PlayerPrefs.SetInt("SM_SoundMute", mutedSound ? 1 : 0);
         }
 
         /// <summary>
@@ -50,11 +47,11 @@ namespace GameLogic
         /// </summary>
         public void LoadSettings()
         {
-            _volumeMusic = PlayerPrefs.GetFloat("SM_MusicVolume", 1);
-            _volumeSound = PlayerPrefs.GetFloat("SM_SoundVolume", 1);
+            volumeMusic = PlayerPrefs.GetFloat("SM_MusicVolume", 1);
+            volumeSound = PlayerPrefs.GetFloat("SM_SoundVolume", 1);
 
-            _mutedMusic = PlayerPrefs.GetInt("SM_MusicMute", 0) == 1;
-            _mutedSound = PlayerPrefs.GetInt("SM_SoundMute", 0) == 1;
+            mutedMusic = PlayerPrefs.GetInt("SM_MusicMute", 0) == 1;
+            mutedSound = PlayerPrefs.GetInt("SM_SoundMute", 0) == 1;
         }
 
         /// <summary>
@@ -63,7 +60,7 @@ namespace GameLogic
         /// <param name="volume"></param>
         public void SetMusicVolume(float volume)
         {
-            _volumeMusic = volume;
+            volumeMusic = volume;
             SaveSettings();
         }
 
@@ -73,7 +70,7 @@ namespace GameLogic
         /// <returns></returns>
         public float GetMusicVolume()
         {
-            return _volumeMusic;
+            return volumeMusic;
         }
 
         /// <summary>
@@ -82,7 +79,7 @@ namespace GameLogic
         /// <param name="volume"></param>
         public void SetSoundVolume(float volume)
         {
-            _volumeSound = volume;
+            volumeSound = volume;
             SaveSettings();
         }
 
@@ -92,7 +89,7 @@ namespace GameLogic
         /// <returns></returns>
         public float GetSoundVolume()
         {
-            return _volumeSound;
+            return volumeSound;
         }
 
         /// <summary>
@@ -101,7 +98,7 @@ namespace GameLogic
         /// <param name="mute"></param>
         public void SetMusicMuted(bool mute)
         {
-            _mutedMusic = mute;
+            mutedMusic = mute;
             SaveSettings();
         }
 
@@ -111,7 +108,7 @@ namespace GameLogic
         /// <returns></returns>
         public bool GetMusicMuted()
         {
-            return _mutedMusic;
+            return mutedMusic;
         }
 
         /// <summary>
@@ -120,7 +117,7 @@ namespace GameLogic
         /// <param name="mute"></param>
         public void SetSoundMuted(bool mute)
         {
-            _mutedSound = mute;
+            mutedSound = mute;
             SaveSettings();
         }
 
@@ -130,7 +127,7 @@ namespace GameLogic
         /// <returns></returns>
         public bool GetSoundMuted()
         {
-            return _mutedSound;
+            return mutedSound;
         }
 
         /// <summary>
@@ -139,7 +136,7 @@ namespace GameLogic
         /// <returns></returns>
         public float GetSoundVolumeCorrected()
         {
-            return _volumeSound * SoundVolumeCorrection;
+            return volumeSound * soundVolumeCorrection;
         }
 
         /// <summary>
@@ -148,19 +145,7 @@ namespace GameLogic
         /// <returns></returns>
         public float GetMusicVolumeCorrected()
         {
-            return _volumeMusic * MusicVolumeCorrection;
+            return volumeMusic * musicVolumeCorrection;
         }
-
-        //[MenuItem("SoundModule/Create SoundModuleSettings")]
-        //public static void CreateAsset()
-        //{
-        //    SoundModuleSettings asset = ScriptableObject.CreateInstance<SoundModuleSettings>();
-        //    string assetPathAndName = "Assets/SoundModule/Resources/SoundModuleSettings.asset";
-        //    AssetDatabase.CreateAsset(asset, assetPathAndName);
-        //    AssetDatabase.SaveAssets();
-        //    AssetDatabase.Refresh();
-        //    EditorUtility.FocusProjectWindow();
-        //    Selection.activeObject = asset;
-        //}
     }
 }

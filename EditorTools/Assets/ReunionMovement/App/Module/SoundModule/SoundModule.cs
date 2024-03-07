@@ -64,7 +64,6 @@ namespace GameLogic
             root = new GameObject("AudioRoot");
             sourceAS = root.AddComponent<AudioSource>();
             GameObject.DontDestroyOnLoad(root);
-
             settings = new SoundModuleSettings();
             settings.LoadSettings();
         }
@@ -98,10 +97,7 @@ namespace GameLogic
         /// </summary>
         public void PlayMusic()
         {
-            if (sourceAS != null)
-            {
-                sourceAS.Play();
-            }
+            sourceAS?.Play();
         }
 
         /// <summary>
@@ -109,10 +105,7 @@ namespace GameLogic
         /// </summary>
         public void PauseMusic()
         {
-            if (sourceAS != null)
-            {
-                sourceAS.Pause();
-            }
+            sourceAS?.Pause();
         }
 
         /// <summary>
@@ -120,10 +113,7 @@ namespace GameLogic
         /// </summary>
         public void StopMusic()
         {
-            if (sourceAS != null)
-            {
-                sourceAS.Stop();
-            }
+            sourceAS?.Stop();
         }
 
         /// <summary>
@@ -134,10 +124,8 @@ namespace GameLogic
         {
             // 渐出音频
             await FadeOut();
-
             //播放音乐
             PlayMusic(index, 0);
-
             // 渐入音频
             await FadeIn();
         }
@@ -216,7 +204,7 @@ namespace GameLogic
         {
             ObjectProcessing(index, emitter, loop);
         }
-        void ObjectProcessing(int index , Transform emitter, bool loop)
+        void ObjectProcessing(int index, Transform emitter, bool loop)
         {
             SoundConfig soundConfig = DatabaseModule.Instance.GetSoundConfig(index);
             if (soundConfig != null)
@@ -240,38 +228,22 @@ namespace GameLogic
         #region 获取
         public float GetMusicVolume()
         {
-            if (settings != null)
-            {
-                return settings.GetMusicVolume();
-            }
-            return 0;
+            return settings?.GetMusicVolume() ?? 0;
         }
 
         public float GetSoundVolume() 
         {
-            if (settings != null)
-            {
-                return settings.GetSoundVolume();
-            }
-            return 0;
+            return settings?.GetSoundVolume() ?? 0;
         }
 
         public bool GetMusicMuted()
         {
-            if (settings != null)
-            {
-                return settings.GetMusicMuted();
-            }
-            return false;
+            return settings?.GetMusicMuted() ?? false;
         }
 
         public bool GetSoundMuted()
         {
-            if (settings != null)
-            {
-                return settings.GetSoundMuted();
-            }
-            return false;
+            return settings?.GetSoundMuted() ?? false;
         }
         #endregion
 
@@ -288,10 +260,7 @@ namespace GameLogic
         //声音静音
         public void SetSoundMuted(bool value)
         {
-            if (settings != null)
-            {
-                settings.SetSoundMuted(value);
-            }
+            settings?.SetSoundMuted(value);
         }
         //音乐音量
         public void SetMusicVolume(float value)

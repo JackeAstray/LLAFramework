@@ -15,33 +15,33 @@ namespace GameLogic
         public string UIName = "";
 
         #region 每个界面都有一个Canvas
-        private Canvas _canvas;
+        private Canvas canvas;
         public Canvas Canvas
         {
             get
             {
-                if (_canvas == null && gameObject)
+                if (canvas == null && gameObject)
                 {
-                    _canvas = gameObject.GetComponent<Canvas>();
+                    canvas = gameObject.GetComponent<Canvas>();
                 }
 
-                return _canvas;
+                return canvas;
             }
         }
         #endregion
 
         #region 每个界面都有一个UIWindowAsset
-        private UIWindowAsset _windowAsset;
+        private UIWindowAsset windowAsset;
         public UIWindowAsset WindowAsset
         {
             get
             {
-                if (_windowAsset == null && gameObject)
+                if (windowAsset == null && gameObject)
                 {
-                    _windowAsset = gameObject.GetComponent<UIWindowAsset>();
+                    windowAsset = gameObject.GetComponent<UIWindowAsset>();
                 }
 
-                return _windowAsset;
+                return windowAsset;
             }
         }
         #endregion
@@ -89,23 +89,27 @@ namespace GameLogic
         public object GetControl(Type type, string uri, Transform findTrans = null, bool isLog = true)
         {
             if (findTrans == null)
+            {
                 findTrans = transform;
+            }
 
             Transform trans = findTrans.Find(uri);
             if (trans == null)
             {
                 if (isLog)
+                {
                     Log.Error(string.Format("Get UI<{0}> Control Error: " + uri, this));
+                }
                 return null;
             }
 
             if (type == typeof(GameObject))
+            {
                 return trans.gameObject;
+            }
 
             return trans.GetComponent(type);
         }
-
-
 
         /// <summary>
         /// UIModule打开窗口的快捷方式
@@ -124,8 +128,6 @@ namespace GameLogic
             UIModule.Instance.CloseWindow(uiName ?? UIName);
         }
 
-
-
         [Obsolete("使用字符串UI名称代替更灵活!")]
         public static void CallUI<T>(Action<T> callback) where T : UIController
         {
@@ -141,8 +143,7 @@ namespace GameLogic
         /// <returns></returns>
         public T FindControl<T>(string name) where T : Component
         {
-            var t = FindExtensions.FindChild<T>(gameObject, name);
-            return t;
+            return FindExtensions.FindChild<T>(gameObject, name);
         }
 
         /// <summary>
@@ -152,8 +153,7 @@ namespace GameLogic
         /// <returns></returns>
         public GameObject FindGameObject(string name)
         {
-            var @object = FindExtensions.FindChild(gameObject, name);
-            return @object;
+            return FindExtensions.FindChild(gameObject, name);
         }
 
         /// <summary>

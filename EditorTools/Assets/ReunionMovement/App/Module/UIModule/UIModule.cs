@@ -1,10 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
+using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.SceneManagement;
 
 namespace GameLogic
 {
@@ -15,16 +16,31 @@ namespace GameLogic
         public bool IsInited { get; private set; }
         private double initProgress = 0;
         public double InitProgress { get { return initProgress; } }
+
+        private Dictionary<string, GameObject> uiPool = new Dictionary<string, GameObject>();
+        private Dictionary<string, UILoadState> uiStateCache = new Dictionary<string, UILoadState>();
         #endregion
+        //----------------------------------
+
+        public static Action<UIController> onInitEvent;
+        public static Action<UIController> onOpenEvent;
+        public static Action<UIController> onCloseEvent;
+
+        public EventSystem EventSystem;
+        public GameObject uiRoot { get; private set; }
+        public GameObject mainUIRoot { get; private set; }
+        public GameObject normalUIRoot { get; private set; }
+        public GameObject headInfoUIRoot { get; private set; }
+        public GameObject tipsUIRoot { get; private set; }
+
 
         public IEnumerator Init()
         {
             Log.Debug("UIModule 初始化");
             initProgress = 0;
 
-            CreateRoot();
+            yield return StartApp.Instance.StartMyCoroutine(CreateRoot());
 
-            yield return null;
             initProgress = 100;
             IsInited = true;
         }
@@ -47,59 +63,48 @@ namespace GameLogic
         /// <summary>
         /// 正在加载的UI统计
         /// </summary>
-        private int _loadingUICount = 0;
+        private int loadingUICount = 0;
 
         public int LoadingUICount
         {
-            get { return _loadingUICount; }
+            get { return loadingUICount; }
             set
             {
-                _loadingUICount = value;
-                if (_loadingUICount < 0)
+                loadingUICount = value;
+                if (loadingUICount < 0)
                 {
-                    Debug.LogError("Error ---- LoadingUICount < 0");
+                    Log.Error("Error ---- LoadingUICount < 0");
                 }
             }
         }
 
-        //----------------------------------
-        public Dictionary<string, UILoadState> UIWindows = new Dictionary<string, UILoadState>();
-
-        public static Action<UIController> OnInitEvent;
-        public static Action<UIController> OnOpenEvent;
-        public static Action<UIController> OnCloseEvent;
-
-        public EventSystem EventSystem;
-
         #region 创建根路径
 
-        public GameObject UIRoot { get; private set; }
-        //public Camera UICamera { get; private set; }
-        public GameObject MainUIRoot { get; private set; }
-        public GameObject NormalUIRoot { get; private set; }
-        public GameObject HeadInfoUIRoot { get; private set; }
-        public GameObject TipsUIRoot { get; private set; }
         /// <summary>
         /// 创建根节点
         /// </summary>
-        private void CreateRoot()
+        private IEnumerator CreateRoot()
         {
-            UIRoot = new GameObject("UIRoot");
-            MainUIRoot = new GameObject("MainUIRoot");
-            NormalUIRoot = new GameObject("NormalUIRoot");
-            HeadInfoUIRoot = new GameObject("HeadInfoUIRoot");
-            TipsUIRoot = new GameObject("TipsUIRoot");
-            MainUIRoot.transform.SetParent(UIRoot.transform, true);
-            NormalUIRoot.transform.SetParent(UIRoot.transform, true);
-            HeadInfoUIRoot.transform.SetParent(UIRoot.transform, true);
-            TipsUIRoot.transform.SetParent(UIRoot.transform, true);
+            uiRoot = new GameObject("UIRoot");
+            mainUIRoot = new GameObject("MainUIRoot");
+            normalUIRoot = new GameObject("NormalUIRoot");
+            headInfoUIRoot = new GameObject("HeadInfoUIRoot");
+            tipsUIRoot = new GameObject("TipsUIRoot");
+            mainUIRoot.transform.SetParent(uiRoot.transform, true);
+            normalUIRoot.transform.SetParent(uiRoot.transform, true);
+            headInfoUIRoot.transform.SetParent(uiRoot.transform, true);
+            tipsUIRoot.transform.SetParent(uiRoot.transform, true);
 
-            GameObject.DontDestroyOnLoad(UIRoot);
+            GameObject.DontDestroyOnLoad(uiRoot);
 
             EventSystem = new GameObject("EventSystem").AddComponent<EventSystem>();
             EventSystem.gameObject.AddComponent<StandaloneInputModule>();
 
             GameObject.DontDestroyOnLoad(EventSystem);
+
+            initProgress = 50;
+
+            yield return null;
         }
         #endregion
 
@@ -120,20 +125,20 @@ namespace GameLogic
             switch (windowAsset.panelType)
             {
                 case PanelType.MainUI:
-                    uiObj.transform.SetParent(MainUIRoot.transform);
+                    uiObj.transform.SetParent(mainUIRoot.transform);
                     break;
                 case PanelType.NormalUI:
-                    uiObj.transform.SetParent(NormalUIRoot.transform);
+                    uiObj.transform.SetParent(normalUIRoot.transform);
                     break;
                 case PanelType.HeadInfoUI:
-                    uiObj.transform.SetParent(HeadInfoUIRoot.transform);
+                    uiObj.transform.SetParent(headInfoUIRoot.transform);
                     break;
                 case PanelType.TipsUI:
-                    uiObj.transform.SetParent(TipsUIRoot.transform);
+                    uiObj.transform.SetParent(tipsUIRoot.transform);
                     break;
                 default:
                     Log.Error(string.Format("没有默认PanelType", windowAsset.panelType));
-                    uiObj.transform.SetParent(UIRoot.transform);
+                    uiObj.transform.SetParent(uiRoot.transform);
                     break;
             }
         }
@@ -148,39 +153,31 @@ namespace GameLogic
         public UILoadState LoadWindow(string name, bool openWhenFinish, params object[] args)
         {
             GameObject uiObj = ResourcesModule.Instance.InstantiateAsset<GameObject>(AppConfig.UIPath + name);
-
-            if (uiObj != null)
+            if (uiObj == null)
             {
-                InitUIAsset(uiObj);
-                uiObj.SetActive(false);
-                uiObj.name = name;
-                uiObj.transform.localRotation = Quaternion.identity;
-                uiObj.transform.localScale = Vector3.one;
-
-                var uiController = uiObj.GetComponent<UIController>();
-
-                UILoadState uiLoadState = new UILoadState(name);
-                if (uiController == null)
-                {
-                    var uiBase = CreateUIController(uiObj, name);
-                    uiLoadState.UIWindow = uiBase;
-                }
-                else
-                {
-                    uiLoadState.UIWindow = uiController;
-                }
-                uiLoadState.UIWindow.UIName = name;
-                uiLoadState.IsLoading = false;
-                uiLoadState.OpenWhenFinish = openWhenFinish;
-                uiLoadState.OpenArgs = args;
-                uiLoadState.isOnInit = true;
-                InitWindow(uiLoadState, uiLoadState.UIWindow, uiLoadState.OpenWhenFinish, uiLoadState.OpenArgs);
-
-                UIWindows.Add(name, uiLoadState);
-
-                return uiLoadState;
+                return null;
             }
-            return null;
+
+            InitUIAsset(uiObj);
+            uiObj.SetActive(false);
+            uiObj.name = name;
+            uiObj.transform.localRotation = Quaternion.identity;
+            uiObj.transform.localScale = Vector3.one;
+
+            var uiController = uiObj.GetComponent<UIController>();
+
+            UILoadState uiLoadState = new UILoadState(name);
+            uiLoadState.uiWindow = uiController ?? CreateUIController(uiObj, name);
+            uiLoadState.uiWindow.UIName = name;
+            uiLoadState.isLoading = false;
+            uiLoadState.openWhenFinish = openWhenFinish;
+            uiLoadState.openArgs = args;
+            uiLoadState.isOnInit = true;
+            InitWindow(uiLoadState, uiLoadState.uiWindow, uiLoadState.openWhenFinish, uiLoadState.openArgs);
+
+            uiStateCache.Add(name, uiLoadState);
+
+            return uiLoadState;
         }
 
         /// <summary>
@@ -192,16 +189,14 @@ namespace GameLogic
         /// <param name="args"></param>
         private void InitWindow(UILoadState uiState, UIController uiBase, bool open, params object[] args)
         {
-            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             uiBase.OnInit();
             stopwatch.Stop();
 
-            Log.Debug(string.Format("OnInit UI {0}, cost {1}", uiBase.gameObject.name, stopwatch.Elapsed.TotalMilliseconds * 0.001f));
+            Log.Debug($"OnInit UI {uiBase.gameObject.name}, cost {stopwatch.ElapsedMilliseconds * 0.001f}");
 
-
-            if (OnInitEvent != null)
-                OnInitEvent(uiBase);
+            onInitEvent?.Invoke(uiBase);
 
             if (open)
             {
@@ -210,7 +205,7 @@ namespace GameLogic
 
             if (!open)
             {
-                if (!uiState.IsStaticUI)
+                if (!uiState.isStaticUI)
                 {
                     CloseWindow(uiBase.UIName); // Destroy
                     return;
@@ -254,15 +249,16 @@ namespace GameLogic
         /// 源起Loadindg UI， 在加载过程中，进度条设置方法会失效
         /// 如果是DynamicWindow,，使用前务必先要Open!
         /// </summary>
-        /// <param name="uiTemplateName"></param>
+        /// <param name="uiName"></param>
         /// <param name="callback"></param>
         /// <param name="args"></param>
         public void CallUI(string uiName, Action<UIController, object[]> callback, params object[] args)
         {
-            UILoadState uiState;
-            if (!UIWindows.TryGetValue(uiName, out uiState))
+            if (uiStateCache.TryGetValue(uiName, out UILoadState uiState))
             {
-                uiState = LoadWindow(uiName, false); // 加载，这样就有UIState了, 但注意因为没参数，不要随意执行OnOpen
+                // 加载，这样就有UIState了, 但注意因为没参数，不要随意执行OnOpen
+                uiState = LoadWindow(uiName, false); 
+                uiStateCache[uiName] = uiState;
             }
 
             uiState.DoCallback(callback, args);
@@ -275,35 +271,31 @@ namespace GameLogic
         /// <param name="args"></param>
         private void OnOpen(UILoadState uiState, params object[] args)
         {
-            if (uiState.IsLoading)
+            if (uiState.isLoading)
             {
-                uiState.OpenWhenFinish = true;
-                uiState.OpenArgs = args;
+                uiState.openWhenFinish = true;
+                uiState.openArgs = args;
                 return;
             }
 
-            UIController uiBase = uiState.UIWindow;
+            UIController uiBase = uiState.uiWindow;
 
             if (uiBase.gameObject.activeSelf)
             {
                 uiBase.OnClose();
-
-                if (OnCloseEvent != null)
-                    OnCloseEvent(uiBase);
+                onCloseEvent?.Invoke(uiBase);
             }
 
             uiBase.BeforeOpen(args, () =>
             {
                 uiBase.gameObject.SetActive(true);
-                System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
-                stopwatch.Start();
-                uiBase.OnOpen(args);
-                stopwatch.Stop();
 
-                Log.Debug(string.Format("OnOpen UI {0}, cost {1}", uiBase.gameObject.name, stopwatch.Elapsed.TotalMilliseconds * 0.001f));
+                LogElapsedTime(() =>
+                {
+                    uiBase.OnOpen(args);
+                }, $"OnOpen UI {uiBase.gameObject.name}");
 
-                if (OnOpenEvent != null)
-                    OnOpenEvent(uiBase);
+                onOpenEvent?.Invoke(uiBase);
             });
         }
 
@@ -317,7 +309,7 @@ namespace GameLogic
         {
             //TOD需要先创建脚本对象，再根据脚本中的值进行加载资源
             UILoadState uiState;
-            if (!UIWindows.TryGetValue(uiName, out uiState))
+            if (!uiStateCache.TryGetValue(uiName, out uiState))
             {
                 uiState = LoadWindow(uiName, true, args);
                 return uiState;
@@ -326,7 +318,7 @@ namespace GameLogic
             if (!uiState.isOnInit)
             {
                 uiState.isOnInit = true;
-                if (uiState.UIWindow != null) uiState.UIWindow.OnInit();
+                if (uiState.uiWindow != null) uiState.uiWindow.OnInit();
             }
             OnOpen(uiState, args);
             return uiState;
@@ -341,7 +333,7 @@ namespace GameLogic
         public UILoadState SetWindow(string uiName, params object[] args)
         {
             UILoadState uiState;
-            if (!UIWindows.TryGetValue(uiName, out uiState))
+            if (!uiStateCache.TryGetValue(uiName, out uiState))
             {
                 uiState = LoadWindow(uiName, true, args);
                 return uiState;
@@ -350,7 +342,7 @@ namespace GameLogic
             if (!uiState.isOnInit)
             {
                 uiState.isOnInit = true;
-                if (uiState.UIWindow != null) uiState.UIWindow.OnInit();
+                if (uiState.uiWindow != null) uiState.uiWindow.OnInit();
             }
             OnSet(uiState, args);
             return uiState;
@@ -363,14 +355,14 @@ namespace GameLogic
         /// <param name="args"></param>
         private void OnSet(UILoadState uiState, params object[] args)
         {
-            if (uiState.IsLoading)
+            if (uiState.isLoading)
             {
-                uiState.OpenWhenFinish = true;
-                uiState.OpenArgs = args;
+                uiState.openWhenFinish = true;
+                uiState.openArgs = args;
                 return;
             }
 
-            UIController uiBase = uiState.UIWindow;
+            UIController uiBase = uiState.uiWindow;
 
             if (uiBase.gameObject.activeSelf)
             {
@@ -384,8 +376,8 @@ namespace GameLogic
 
                     Log.Debug(string.Format("OnOpen UI {0}, cost {1}", uiBase.gameObject.name, stopwatch.Elapsed.TotalMilliseconds * 0.001f));
 
-                    if (OnOpenEvent != null)
-                        OnOpenEvent(uiBase);
+                    if (onOpenEvent != null)
+                        onOpenEvent(uiBase);
                 });
             }
 
@@ -416,27 +408,29 @@ namespace GameLogic
         public void CloseWindow(string name)
         {
             UILoadState uiState;
-            if (!UIWindows.TryGetValue(name, out uiState))
+
+            // 未开始Load
+            if (!uiStateCache.TryGetValue(name, out uiState))
             {
-                Log.Error(string.Format("[CloseWindow]没有加载的UIWindow: {0}", name));
-                return; // 未开始Load
+                Log.Error($"[CloseWindow]没有加载的UIWindow: {name}");
+                return; 
             }
 
-            if (uiState.IsLoading) // Loading中
+            // Loading中
+            if (uiState.isLoading) 
             {
-                Log.Error(string.Format("[CloseWindow]是加载中的{0}", name));
-                uiState.OpenWhenFinish = false;
+                Log.Error($"[CloseWindow]是加载中的{name}");
+                uiState.openWhenFinish = false;
                 return;
             }
 
-            uiState.UIWindow.gameObject.SetActive(false);
+            uiState.uiWindow.gameObject.SetActive(false);
 
-            uiState.UIWindow.OnClose();
+            uiState.uiWindow.OnClose();
 
-            if (OnCloseEvent != null)
-                OnCloseEvent(uiState.UIWindow);
+            onCloseEvent?.Invoke(uiState.uiWindow);
 
-            if (!uiState.IsStaticUI)
+            if (!uiState.isStaticUI)
             {
                 DestroyWindow(name);
             }
@@ -449,7 +443,7 @@ namespace GameLogic
         {
             List<string> LoadList = new List<string>();
 
-            foreach (KeyValuePair<string, UILoadState> uiWindow in UIWindows)
+            foreach (KeyValuePair<string, UILoadState> uiWindow in uiStateCache)
             {
                 if (IsLoad(uiWindow.Key))
                 {
@@ -468,7 +462,7 @@ namespace GameLogic
         {
             List<string> toCloses = new List<string>();
 
-            foreach (KeyValuePair<string, UILoadState> uiWindow in UIWindows)
+            foreach (KeyValuePair<string, UILoadState> uiWindow in uiStateCache)
             {
                 if (IsOpen(uiWindow.Key))
                 {
@@ -490,24 +484,24 @@ namespace GameLogic
         public void DestroyWindow(string uiName, bool destroyImmediate = false)
         {
             UILoadState uiState;
-            UIWindows.TryGetValue(uiName, out uiState);
-            if (uiState == null || uiState.UIWindow == null)
+            uiStateCache.TryGetValue(uiName, out uiState);
+            if (uiState == null || uiState.uiWindow == null)
             {
-                Debug.Log(string.Format("{0} 已被销毁", uiName));
+                Log.Warning($"{uiName} 已被销毁");
                 return;
             }
             if (destroyImmediate)
             {
-                UnityEngine.Object.DestroyImmediate(uiState.UIWindow.gameObject);
+                UnityEngine.Object.DestroyImmediate(uiState.uiWindow.gameObject);
             }
             else
             {
-                UnityEngine.Object.Destroy(uiState.UIWindow.gameObject);
+                UnityEngine.Object.Destroy(uiState.uiWindow.gameObject);
             }
 
-            uiState.UIWindow = null;
+            uiState.uiWindow = null;
 
-            UIWindows.Remove(uiName);
+            uiStateCache.Remove(uiName);
         }
         #endregion
 
@@ -547,7 +541,7 @@ namespace GameLogic
         /// <returns></returns>
         public bool IsLoad(string name)
         {
-            if (UIWindows.ContainsKey(name))
+            if (uiStateCache.ContainsKey(name))
                 return true;
             return false;
         }
@@ -572,9 +566,9 @@ namespace GameLogic
         private UIController GetUIBase(string name)
         {
             UILoadState uiState;
-            UIWindows.TryGetValue(name, out uiState);
-            if (uiState != null && uiState.UIWindow != null)
-                return uiState.UIWindow;
+            uiStateCache.TryGetValue(name, out uiState);
+            if (uiState != null && uiState.uiWindow != null)
+                return uiState.uiWindow;
 
             return null;
         }
@@ -591,40 +585,50 @@ namespace GameLogic
             UIController uiBase = uiObj.AddComponent(System.Type.GetType("GameLogic.UI." + uiTemplateName + ", Assembly-CSharp")) as UIController;
             return uiBase;
         }
+
+        private void LogElapsedTime(Action action, string message)
+        {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            action();
+            stopwatch.Stop();
+
+            Log.Debug($"{message}, cost {stopwatch.ElapsedMilliseconds * 0.001f}");
+        }
         #endregion
     }
 
     public class UILoadState
     {
-        public string UIName;
-        public UIController UIWindow;
-        public Type UIType;
-        public bool IsLoading;
+        public string uiName;
+        public UIController uiWindow;
+        public Type uiType;
+        public bool isLoading;
         //非复制出来的, 静态UI
-        public bool IsStaticUI;
+        public bool isStaticUI;
         //是否初始化
         public bool isOnInit = false;
         //完成后是否打开
-        public bool OpenWhenFinish;
-        public object[] OpenArgs;
+        public bool openWhenFinish;
+        public object[] openArgs;
         //回调
-        internal Queue<Action<UIController, object[]>> CallbacksWhenFinish;
-        internal Queue<object[]> CallbacksArgsWhenFinish;
+        internal Queue<Action<UIController, object[]>> callbacksWhenFinish;
+        internal Queue<object[]> callbacksArgsWhenFinish;
 
         public UILoadState(string uiName, Type uiControllerType = default(Type))
         {
             if (uiControllerType == default(Type)) uiControllerType = typeof(UIController);
 
-            UIName = uiName;
-            UIWindow = null;
-            UIType = uiControllerType;
+            this.uiName = uiName;
+            uiWindow = null;
+            uiType = uiControllerType;
 
-            IsLoading = true;
-            OpenWhenFinish = false;
-            OpenArgs = null;
+            isLoading = true;
+            openWhenFinish = false;
+            openArgs = null;
 
-            CallbacksWhenFinish = new Queue<Action<UIController, object[]>>();
-            CallbacksArgsWhenFinish = new Queue<object[]>();
+            callbacksWhenFinish = new Queue<Action<UIController, object[]>>();
+            callbacksArgsWhenFinish = new Queue<object[]>();
         }
 
         /// <summary>
@@ -637,23 +641,23 @@ namespace GameLogic
             if (args == null)
                 args = new object[0];
 
-            if (IsLoading) // Loading
+            if (isLoading) // Loading
             {
-                CallbacksWhenFinish.Enqueue(callback);
-                CallbacksArgsWhenFinish.Enqueue(args);
+                callbacksWhenFinish.Enqueue(callback);
+                callbacksArgsWhenFinish.Enqueue(args);
                 return;
             }
 
             // 立即执行即可
-            callback(UIWindow, args);
+            callback(uiWindow, args);
         }
 
         internal void OnUIWindowLoadedCallbacks(UILoadState uiState)
         {
-            while (uiState.CallbacksWhenFinish.Count > 0)
+            while (uiState.callbacksWhenFinish.Count > 0)
             {
-                Action<UIController, object[]> callback = uiState.CallbacksWhenFinish.Dequeue();
-                object[] _args = uiState.CallbacksArgsWhenFinish.Dequeue();
+                Action<UIController, object[]> callback = uiState.callbacksWhenFinish.Dequeue();
+                object[] _args = uiState.callbacksArgsWhenFinish.Dequeue();
                 DoCallback(callback, _args);
             }
         }

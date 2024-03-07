@@ -81,7 +81,7 @@ namespace GameLogic
             {
                 string str = "TestTerminal " + args[0].String + " | " + args[0].String;
 
-                Log.Debug("TestTerminal " + args[0].String + " | " + args[0].String);
+                Log.Debug(str);
 
                 if (UIModule.Instance.IsOpen("TerminalUIPlane"))
                 {
