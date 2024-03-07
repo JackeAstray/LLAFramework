@@ -58,6 +58,30 @@ namespace GameLogic
                 case 1:
                     multilingual = Multilingual.EN;
                     break;
+                case 2:
+                    multilingual = Multilingual.RU;
+                    break;
+                case 3:
+                    multilingual = Multilingual.FR;
+                    break;
+                case 4:
+                    multilingual = Multilingual.DE;
+                    break;
+                case 5:
+                    multilingual = Multilingual.ES;
+                    break;
+                case 6:
+                    multilingual = Multilingual.IT;
+                    break;
+                case 7:
+                    multilingual = Multilingual.PT;
+                    break;
+                case 8:
+                    multilingual = Multilingual.JP;
+                    break;
+                case 9:
+                    multilingual = Multilingual.KR;
+                    break;
             }
 
             subject.SetState();
@@ -72,16 +96,49 @@ namespace GameLogic
         {
             string text = "";
 
-            if (DatabaseModule.Instance.GetLanguages().ContainsKey(index))
+            Languages language;
+            if (DatabaseModule.Instance.GetLanguages().TryGetValue(index, out language))
             {
                 switch (multilingual)
                 {
                     case Multilingual.ZH:
-                        text = DatabaseModule.Instance.GetLanguages()[index].ZH;
+                        text = language.ZH;
                         break;
 
                     case Multilingual.EN:
-                        text = DatabaseModule.Instance.GetLanguages()[index].EN;
+                        text = language.EN;
+                        break;
+
+                    case Multilingual.RU:
+                        text = language.RU;
+                        break;
+
+                    case Multilingual.FR:
+                        text = language.FR;
+                        break;
+
+                    case Multilingual.DE:
+                        text = language.DE;
+                        break;
+
+                    case Multilingual.ES:
+                        text = language.ES;
+                        break;
+
+                    case Multilingual.IT:
+                        text = language.IT;
+                        break;
+
+                    case Multilingual.PT:
+                        text = language.PT;
+                        break;
+
+                    case Multilingual.JP:
+                        text = language.JP;
+                        break;
+
+                    case Multilingual.KR:
+                        text = language.KR;
                         break;
                 }
             }

@@ -79,11 +79,10 @@ namespace GameLogic
         /// </summary>
         public void LoadPreScene()
         {
-            if (string.IsNullOrEmpty(strPreSceneName))
+            if (!string.IsNullOrEmpty(strPreSceneName))
             {
-                return;
+                LoadScene(strPreSceneName);
             }
-            LoadScene(strPreSceneName);
         }
 
         /// <summary>
@@ -203,7 +202,7 @@ namespace GameLogic
 
             if (async == null)
             {
-                Log.Error("加载场景失败：AsyncOperation 为 null");
+                Log.Error($"加载场景失败：{nameof(AsyncOperation)} 为 null");
                 yield break;
             }
 

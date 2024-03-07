@@ -23,13 +23,12 @@ namespace GameLogic
         #endregion
 
         //缓存从Resource中加载的资源
-        private Hashtable _resourceTable;
+        private Dictionary<string, Object> resourceTable = new Dictionary<string, Object>();
 
         public IEnumerator Init()
         {
             Log.Debug("ResourcesModule 初始化");
             initProgress = 0;
-            _resourceTable = new Hashtable();
             yield return null;
             initProgress = 100;
             IsInited = true;
@@ -50,19 +49,20 @@ namespace GameLogic
         /// <returns></returns>
         public T Load<T>(string assetPath, bool isCache = true) where T : UnityEngine.Object
         {
-            if (_resourceTable.Contains(assetPath))
+            if (resourceTable.TryGetValue(assetPath, out var asset))
             {
-                return _resourceTable[assetPath] as T;
+                return asset as T;
             }
+
             var assets = Resources.Load<T>(assetPath);
-            if (assets == null)
+            if (assets is null)
             {
-                Log.Error(string.Format("资源没有找到,路径为:{0}", assetPath));
+                Log.Error($"资源没有找到,路径为:{assetPath}");
                 return null;
             }
-            if (isCache)
+            if (isCache && assets is null)
             {
-                _resourceTable.Add(assetPath, assets);
+                resourceTable.Add(assetPath, assets);
             }
             return assets;
         }
@@ -77,14 +77,15 @@ namespace GameLogic
         public async Task<T> LoadAsync<T>(string assetPath, bool isCache = true, UnityAction callback = null) where T : UnityEngine.Object
         {
             var assets = await ResourcesExtensions.LoadAsync<T>(assetPath, callback);
-            if (assets == null)
+            if (assets is null)
             {
-                Log.Error(string.Format("资源没有找到,路径为:{0}", assetPath));
+                Log.Error($"资源没有找到,路径为:{assetPath}");
                 return null;
             }
-            if (isCache)
+
+            if (isCache && assets is null)
             {
-                _resourceTable.Add(assetPath, assets);
+                resourceTable.Add(assetPath, assets);
             }
             return assets;
         }
@@ -98,17 +99,17 @@ namespace GameLogic
         /// <returns></returns>
         public Sprite GetAtlasSprite(string atlasName, string spriteName)
         {
-            SpriteAtlas atlas = Resources.Load<SpriteAtlas>(atlasName);
+            var atlas = Resources.Load<SpriteAtlas>(atlasName);
             Sprite sprite = atlas.GetSprite(spriteName);
 
-            if (atlas == null)
+            if (atlas is null)
             {
-                Log.Error("图集：" + atlasName + "不存在，请检查！");
+                Log.Error($"图集：{nameof(atlasName)}不存在，请检查！");
             }
 
-            if (sprite == null)
+            if (sprite is null)
             {
-                Log.Error(atlasName + " 图集中sprite" + spriteName + "不存在，请检查！");
+                Log.Error($"{atlasName} 图集中Sprite:" + spriteName + " 不存在，请检查！");
             }
 
             return sprite;
@@ -135,9 +136,9 @@ namespace GameLogic
         /// <param name="path"></param>
         public void DeleteAssetCache(string path)
         {
-            if (_resourceTable.ContainsKey(path))
+            if (resourceTable.ContainsKey(path))
             {
-                _resourceTable.Remove(path);
+                resourceTable.Remove(path);
             }
         }
 
@@ -146,15 +147,18 @@ namespace GameLogic
         /// </summary>
         public void ClearAssetsCache()
         {
-            foreach (Object asset in _resourceTable)
+            foreach (KeyValuePair<string, Object> item in resourceTable)
             {
+                if (item.Value is Object obj)
+                {
 #if UNITY_EDITOR
-                GameObject.DestroyImmediate(asset, true);
+                    Object.DestroyImmediate(obj, true);
 #else
-                GameObject.DestroyObject(asset);
+                    Object.Destroy(obj);
 #endif
+                }
             }
-            _resourceTable.Clear();
+            resourceTable.Clear();
         }
 
         /// <summary>

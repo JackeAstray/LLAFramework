@@ -10,15 +10,34 @@ namespace GameLogic
         [SerializeField]
         private int key;
 
+        private TMP_Text textComponent;
+
         void Start()
         {
+            textComponent = GetComponent<TMP_Text>();
+
             if (subject == null && LanguagesModule.Instance != null)
             {
                 subject = LanguagesModule.Instance.GetLanguageSubject();
-                subject.Attach(this);
             }
 
             GetTextLanguage();
+        }
+
+        void OnEnable()
+        {
+            if (subject != null)
+            {
+                subject.Attach(this);
+            }
+        }
+
+        void OnDisable()
+        {
+            if (subject != null)
+            {
+                subject.Detach(this);
+            }
         }
 
         public void GetTextLanguage()
@@ -32,11 +51,11 @@ namespace GameLogic
 
             if (!string.IsNullOrEmpty(value))
             {
-                GetComponent<TMP_Text>().text = value;
+                textComponent.text = value;
             }
             else
             {
-                Log.Debug("GetTextLanguage() "+ key + "是空的");
+                Log.Debug("GetTextLanguage() " + key + "是空的");
             }
         }
 

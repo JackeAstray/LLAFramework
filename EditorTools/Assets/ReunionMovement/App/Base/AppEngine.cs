@@ -2,6 +2,7 @@ using GameLogic.Base;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace GameLogic
@@ -20,47 +21,52 @@ namespace GameLogic
         /// <summary>
         /// 所有自定义游戏逻辑模块
         /// </summary>
-        public IList<CustommModuleInitialize> GameModules { get; private set; }
+        public IList<CustommModuleInitialize> gameModules { get; private set; }
 
         /// <summary>
         /// 进入
         /// </summary>
-        public IAppEntry AppEntry { get; private set; }
+        public IAppEntry appEntry { get; private set; }
 
         /// <summary>
         /// 用于标识是否从Unity添加
         /// </summary>
-        private bool _isNewByStatic = false;
+        private bool isNewByStatic = false;
 
         /// <summary>
         /// 是否初始化完成
         /// </summary>
-        public bool IsInited { get; private set; }
+        public bool isInited { get; private set; }
         /// <summary>
         /// 在初始化之前
         /// </summary>
-        public bool IsBeforeInit { get; private set; }
+        public bool isBeforeInit { get; private set; }
         /// <summary>
         /// 正在初始化
         /// </summary>
-        public bool IsOnInit { get; private set; }
+        public bool isOnInit { get; private set; }
         /// <summary>
         /// 是否开始游戏
         /// </summary>
-        public bool IsStartGame { get; private set; }
+        public bool isStartGame { get; private set; }
 
         //应用程序退出
-        public static bool IsApplicationQuit = false;
+        public static bool isApplicationQuit = false;
         //应用程序焦点（是否被压入后台）
-        public static bool IsApplicationFocus = true;
+        public static bool isApplicationFocus = true;
         //应用程序正在运行
-        public static bool IsAppPlaying = false;
+        public static bool isAppPlaying = false;
         //更新事件
-        public static Action UpdateEvent;
+        public static Action updateEvent;
         //每300ms事件更新一次
-        public static Action UpdatePer300msEvent;
+        public static Action updatePer300msEvent;
         //每1s事件更新一次
-        public static Action UpdatePer1sEvent;
+        public static Action updatePer1sEvent;
+
+        private float time_update_per1s;
+        private float time_update_per300ms;
+
+        private bool isWindowsEditor;
 
         /// <summary>
         /// 启动入口
@@ -72,9 +78,9 @@ namespace GameLogic
         public static AppEngine New(GameObject gameObjectToAttach, IAppEntry entry, IList<CustommModuleInitialize> modules)
         {
             AppEngine appEngine = gameObjectToAttach.AddComponent<AppEngine>();
-            appEngine._isNewByStatic = true;
-            appEngine.GameModules = modules;
-            appEngine.AppEntry = entry;
+            appEngine.isNewByStatic = true;
+            appEngine.gameModules = modules;
+            appEngine.appEntry = entry;
 
             return appEngine;
         }
@@ -87,7 +93,8 @@ namespace GameLogic
 
         void Start()
         {
-            IsAppPlaying = true;
+            isAppPlaying = true;
+            isWindowsEditor = Application.platform == RuntimePlatform.WindowsEditor;
         }
 
         private void Init()
@@ -102,24 +109,24 @@ namespace GameLogic
         private IEnumerator DoInit()
         {
             yield return null;
-            IsBeforeInit = true;
-            if (AppEntry != null)
+            isBeforeInit = true;
+            if (appEntry != null)
             {
-                yield return StartCoroutine(AppEntry.OnBeforeInit());
+                yield return StartCoroutine(appEntry.OnBeforeInit());
             }
 
 
-            IsOnInit = true;
-            yield return StartCoroutine(DoInitModules(GameModules));
+            isOnInit = true;
+            yield return StartCoroutine(DoInitModules(gameModules));
 
-            IsStartGame = true;
-            if (AppEntry != null)
+            isStartGame = true;
+            if (appEntry != null)
             {
-                yield return StartCoroutine(AppEntry.OnGameStart());
+                yield return StartCoroutine(appEntry.OnGameStart());
 
             }
 
-            IsInited = true;
+            isInited = true;
         }
 
         /// <summary>
@@ -133,7 +140,7 @@ namespace GameLogic
             var startMem = 0f;
             foreach (CustommModuleInitialize initModule in modules)
             {
-                if (Application.platform == RuntimePlatform.WindowsEditor)
+                if (isWindowsEditor)
                 {
                     startInitTime = Time.time;
                     startMem = GC.GetTotalMemory(false);
@@ -141,32 +148,31 @@ namespace GameLogic
 
                 yield return StartCoroutine(initModule.Init());
 
-                if (Application.platform == RuntimePlatform.WindowsEditor)
+                if (isWindowsEditor)
                 {
                     var nowMem = GC.GetTotalMemory(false);
                 }
             }
         }
 
-        private float time_update_per1s, time_update_per300ms;
         protected virtual void Update()
         {
-            UpdateEvent?.Invoke();
+            updateEvent?.Invoke();
             float time = Time.time;
             if (time > time_update_per1s)
             {
                 time_update_per1s = time + 1.0f;
-                UpdatePer1sEvent?.Invoke();
+                updatePer1sEvent?.Invoke();
             }
             if (time > time_update_per300ms)
             {
                 time_update_per300ms = time + 0.3f;
-                UpdatePer300msEvent?.Invoke();
+                updatePer300msEvent?.Invoke();
             }
 
-            if (GameModules.Count > 0)
+            if (gameModules.Count > 0)
             {
-                foreach (CustommModuleInitialize module in GameModules)
+                foreach (CustommModuleInitialize module in gameModules)
                 {
                     module.UpdateTime(Time.deltaTime, Time.unscaledDeltaTime);
                 }
@@ -178,8 +184,8 @@ namespace GameLogic
         /// </summary>
         void OnApplicationQuit()
         {
-            IsApplicationQuit = true;
-            IsAppPlaying = false;
+            isApplicationQuit = true;
+            isAppPlaying = false;
         }
         /// <summary>
         /// 焦点处理
@@ -187,7 +193,7 @@ namespace GameLogic
         /// <param name="focus"></param>
         void OnApplicationFocus(bool focus)
         {
-            IsApplicationFocus = focus;
+            isApplicationFocus = focus;
         }
 
         /// <summary>
@@ -195,7 +201,7 @@ namespace GameLogic
         /// </summary>
         public void ClearModuleData()
         {
-            var modules = GameModules;
+            var modules = gameModules;
             foreach (CustommModuleInitialize initModule in modules)
             {
                 initModule.ClearData();

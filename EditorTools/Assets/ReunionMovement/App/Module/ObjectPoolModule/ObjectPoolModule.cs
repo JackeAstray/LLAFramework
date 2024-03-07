@@ -104,16 +104,14 @@ namespace GameLogic
 
                 if (initialPoolSize > 0)
                 {
-                    bool active = prefab.activeSelf;
-                    prefab.SetActive(false);
                     Transform parent = root.transform;
                     while (list.Count < initialPoolSize)
                     {
                         var obj = (GameObject)Object.Instantiate(prefab);
                         obj.transform.parent = parent;
+                        obj.SetActive(false);
                         list.Add(obj);
                     }
-                    prefab.SetActive(active);
                 }
             }
         }
@@ -182,7 +180,6 @@ namespace GameLogic
         public GameObject Spawn(GameObject prefab, Transform parent, Vector3 position, Quaternion rotation)
         {
             List<GameObject> list;
-            Transform trans;
             GameObject obj;
             if (pooledObjects.TryGetValue(prefab, out list))
             {
@@ -196,30 +193,21 @@ namespace GameLogic
                     }
                     if (obj != null)
                     {
-                        trans = obj.transform;
-                        trans.parent = parent;
-                        trans.localPosition = position;
-                        trans.localRotation = rotation;
+                        obj.transform.parent = parent;
+                        obj.transform.localPosition = position;
+                        obj.transform.localRotation = rotation;
                         obj.SetActive(true);
                         spawnedObjects.Add(obj, prefab);
                         return obj;
                     }
                 }
-                obj = (GameObject)Object.Instantiate(prefab);
-                trans = obj.transform;
-                trans.parent = parent;
-                trans.localPosition = position;
-                trans.localRotation = rotation;
+                obj = GameObject.Instantiate(prefab, position, rotation, parent);
                 spawnedObjects.Add(obj, prefab);
                 return obj;
             }
             else
             {
-                obj = (GameObject)Object.Instantiate(prefab);
-                trans = obj.GetComponent<Transform>();
-                trans.parent = parent;
-                trans.localPosition = position;
-                trans.localRotation = rotation;
+                obj = GameObject.Instantiate(prefab, position, rotation, parent);
                 return obj;
             }
         }

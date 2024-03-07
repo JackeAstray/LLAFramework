@@ -18,21 +18,21 @@ namespace GameLogic
 #if UNITY_WEBGL
             Application.focusChanged += Application_focusChanged;
 #else
-            System.Threading.Tasks.Task.Run(AsyncSkip);
+            System.Threading.Tasks.Task.Run(StopSplashScreen);
 #endif
         }
 #if UNITY_WEBGL
         private static void Application_focusChanged(bool obj)
         {
             Application.focusChanged -= Application_focusChanged;
-            SplashScreen.Stop(SplashScreen.StopBehavior.StopImmediate);
+            StopSplashScreen();
         }
-#else
-        private static void AsyncSkip()
+#endif
+        private static void StopSplashScreen()
         {
             SplashScreen.Stop(SplashScreen.StopBehavior.StopImmediate);
         }
-#endif
+    }
     }
 }
 #endif

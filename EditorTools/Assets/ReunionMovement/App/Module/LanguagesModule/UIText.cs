@@ -14,17 +14,34 @@ namespace GameLogic
         [SerializeField]
         private int key;
 
+        private Text textComponent;
+
         void Start()
         {
             if (subject == null && LanguagesModule.Instance != null)
             {
                 subject = LanguagesModule.Instance.GetLanguageSubject();
-                subject.Attach(this);
             }
 
             GetTextLanguage();
         }
-        
+
+        void OnEnable()
+        {
+            if (subject != null)
+            {
+                subject.Attach(this);
+            }
+        }
+
+        void OnDisable()
+        {
+            if (subject != null)
+            {
+                subject.Detach(this);
+            }
+        }
+
         public void GetTextLanguage()
         {
             if (LanguagesModule.Instance == null)
@@ -36,7 +53,7 @@ namespace GameLogic
 
             if (!string.IsNullOrEmpty(value))
             {
-                GetComponent<Text>().text = value;
+                textComponent.text = value;
             }
             else
             {

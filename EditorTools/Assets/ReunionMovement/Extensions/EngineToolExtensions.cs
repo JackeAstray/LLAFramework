@@ -101,7 +101,23 @@ public static class EngineToolExtensions
     /// <returns></returns>
     public static List<T> Last<T>(this IEnumerable<T> source, int num)
     {
-        return source.Skip(Math.Max(0, source.Count() - num)).ToList();
+        // 开始读取的位置
+        var startIndex = Math.Max(0, source.ToList().Count - num);
+        var index = 0;
+        var items = new List<T>();
+        if (source != null)
+        {
+            foreach (T item in source)
+            {
+                if (index < startIndex)
+                {
+                    continue;
+                }
+
+                items.Add(item);
+            }
+        }
+        return items;
     }
 
     /// <summary>
@@ -113,7 +129,12 @@ public static class EngineToolExtensions
     /// <returns></returns>
     public static bool AddRange<T>(this HashSet<T> @this, IEnumerable<T> items)
     {
-        return items.All(item => @this.Add(item));
+        bool allAdded = true;
+        foreach (T item in items)
+        {
+            allAdded &= @this.Add(item);
+        }
+        return allAdded;
     }
 
     /// <summary>
@@ -124,7 +145,12 @@ public static class EngineToolExtensions
     /// <returns></returns>
     public static T[] ToArray<T>(this IEnumerable<T> source)
     {
-        return source.ToArray();
+        var list = new List<T>();
+        foreach (T item in source)
+        {
+            list.Add(item);
+        }
+        return list.ToArray();
     }
 
     /// <summary>
@@ -135,7 +161,12 @@ public static class EngineToolExtensions
     /// <returns></returns>
     public static List<T> ToList<T>(this IEnumerable<T> source)
     {
-        return source.ToList();
+        var list = new List<T>();
+        foreach (T item in source)
+        {
+            list.Add(item);
+        }
+        return list;
     }
 
     /// <summary>

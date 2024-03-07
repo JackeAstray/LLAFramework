@@ -21,6 +21,11 @@ namespace GameLogic
             observers.Add(observer);
         }
 
+        public void Detach(LanguageObserver observer)
+        {
+            observers.Remove(observer);
+        }
+
         public void NotifyAllObservers()
         {
             foreach(LanguageObserver observer in observers)

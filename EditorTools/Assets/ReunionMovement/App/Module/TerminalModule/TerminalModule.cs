@@ -73,6 +73,7 @@ namespace GameLogic
             }
         }
 
+        #region 例子
         [RegisterCommand(Help = "TestTerminal 2 String", MinArgCount = 2, MaxArgCount = 2)]
         static void TestTerminal(CommandArg[] args)
         {
@@ -88,5 +89,6 @@ namespace GameLogic
                 }
             }
         }
+        #endregion
     }
 }
