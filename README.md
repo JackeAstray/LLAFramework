@@ -191,6 +191,8 @@ UI工具使用说明<br>
     - Http                Http工具用来快速访问网络、调用API<br>
     - LitJson             JSON工具<br>
     - LoadImage           加载Image<br>
+    - ScriptableObject    <br>
+      - ColorPalette      调色板<br>
     - Timer               计时器<br>
 - Scenes                  场景文件夹<br>
 - Scripts                 脚本文件夹<br>
