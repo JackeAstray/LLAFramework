@@ -30,7 +30,7 @@ namespace GameLogic.Editor
         GameObject uiObj { get; set; }
 
 
-        [MenuItem("工具箱/UI工具", false, 5)]
+        [MenuItem("工具箱/UI工具", false, 40)]
         //创建UI
         public static void ShowWindow()
         {

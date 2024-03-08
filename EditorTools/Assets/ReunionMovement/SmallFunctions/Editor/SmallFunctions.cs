@@ -17,7 +17,7 @@ namespace GameLogic.EditorTools
 
         static System.Version version;
 
-        [MenuItem("工具箱/小功能", false, 6)]
+        [MenuItem("工具箱/小功能", false, 100)]
         public static void SmallFunctionsWindow()
         {
             version = new System.Version(PlayerSettings.bundleVersion);

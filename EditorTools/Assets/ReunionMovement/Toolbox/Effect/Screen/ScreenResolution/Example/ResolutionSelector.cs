@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace GameLogic
+namespace GameLogic.Example
 {
     public class ResolutionSelector : MonoBehaviour
     {

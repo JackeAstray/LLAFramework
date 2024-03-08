@@ -22,7 +22,7 @@ namespace GameLogic.EditorTools
         /// <summary>
         /// 禁用所有日志脚本宏定义。
         /// </summary>
-        [MenuItem("工具箱/碰撞器线框宏/禁用所有宏", false, 1)]
+        [MenuItem("工具箱/碰撞器线框宏/禁用所有宏", false, 17)]
         public static void DisableAllColliderGizmo()
         {
             foreach (string specifyLogScriptingDefineSymbol in AllDefineSymbols)
@@ -34,7 +34,7 @@ namespace GameLogic.EditorTools
         /// <summary>
         /// 启用所有日志脚本宏定义。
         /// </summary>
-        [MenuItem("工具箱/碰撞器线框宏/启用所有宏", false, 1)]
+        [MenuItem("工具箱/碰撞器线框宏/启用所有宏", false, 18)]
         public static void EnableAllColliderGizmo()
         {
             DisableAllColliderGizmo();
@@ -47,7 +47,7 @@ namespace GameLogic.EditorTools
         /// <summary>
         /// 启用AI宏。
         /// </summary>
-        [MenuItem("工具箱/碰撞器线框宏/启用AI宏", false, 1)]
+        [MenuItem("工具箱/碰撞器线框宏/启用AI宏", false, 19)]
         public static void EnableAI()
         {
             SetAboveLogScriptingDefineSymbol(EnabledAI);
@@ -56,7 +56,7 @@ namespace GameLogic.EditorTools
         /// <summary>
         /// 启用PHYSICS2D宏。
         /// </summary>
-        [MenuItem("工具箱/碰撞器线框宏/启用PHYSICS2D宏", false, 2)]
+        [MenuItem("工具箱/碰撞器线框宏/启用PHYSICS2D宏", false, 20)]
         public static void EnableEnabledPHYSICS2D()
         {
             SetAboveLogScriptingDefineSymbol(EnabledPHYSICS2D);
@@ -65,7 +65,7 @@ namespace GameLogic.EditorTools
         /// <summary>
         /// 启用PHYSICS宏。
         /// </summary>
-        [MenuItem("工具箱/碰撞器线框宏/启用PHYSICS宏", false, 3)]
+        [MenuItem("工具箱/碰撞器线框宏/启用PHYSICS宏", false, 21)]
         public static void EnableEnabledPHYSICS()
         {
             SetAboveLogScriptingDefineSymbol(EnabledPHYSICS);

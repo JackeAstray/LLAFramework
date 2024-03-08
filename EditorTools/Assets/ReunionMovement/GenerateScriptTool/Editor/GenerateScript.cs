@@ -24,7 +24,7 @@ namespace GameLogic.EditorTools
         // 脚本名称
         string scriptName { get; set; }
 
-        [MenuItem("工具箱/脚本生成工具", false, 4)]
+        [MenuItem("工具箱/脚本生成工具", false, 80)]
         public static void ShowWindow()
         {
             //弹出编辑器

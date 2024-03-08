@@ -1,0 +1,16 @@
+using GameLogic;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace GameLogic.Example
+{
+    public class TestScene : MonoBehaviour
+    {
+        public string SceneName;
+        public void LoadScene()
+        {
+            SceneModule.Instance.LoadScene(SceneName/*, true*/);
+        }
+    }
+}

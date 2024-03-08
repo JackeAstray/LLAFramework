@@ -1,0 +1,21 @@
+using GameLogic;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace GameLogic.Example
+{
+    public class TestSound : MonoBehaviour
+    { 
+        public void PlaySound()
+        {
+            SoundModule.Instance.PlaySound(120012);
+        }
+
+
+        public void PlaySwitch()
+        {
+            SoundModule.Instance.PlaySwitch(100002);
+        }
+    }
+}

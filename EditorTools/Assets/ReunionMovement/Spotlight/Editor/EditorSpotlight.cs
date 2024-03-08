@@ -57,7 +57,7 @@ namespace GameLogic.EditorTools
             }
         }
 
-        [MenuItem("工具箱/焦点工具 %l")]
+        [MenuItem("工具箱/焦点工具", false, 60)]
         private static void Init()
         {
             var window = CreateInstance<EditorSpotlight>();
