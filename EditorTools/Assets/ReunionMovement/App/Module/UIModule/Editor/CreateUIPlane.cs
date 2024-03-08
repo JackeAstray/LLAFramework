@@ -156,7 +156,7 @@ namespace GameLogic.Editor
             canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             canvasScaler.referenceResolution = uiSize;
             canvasScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-            canvasScaler.matchWidthOrHeight = 1;
+            canvasScaler.matchWidthOrHeight = 0.5f;
         }
 
         /// <summary>
