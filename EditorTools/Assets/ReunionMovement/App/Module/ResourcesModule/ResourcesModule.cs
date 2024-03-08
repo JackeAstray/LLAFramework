@@ -27,11 +27,11 @@ namespace GameLogic
 
         public IEnumerator Init()
         {
-            Log.Debug("ResourcesModule 初始化");
             initProgress = 0;
             yield return null;
             initProgress = 100;
             IsInited = true;
+            Log.Debug("ResourcesModule 初始化完成");
         }
 
         public void ClearData()

@@ -20,6 +20,7 @@ namespace GameLogic
             modules.Add(SoundModule.Instance);
             modules.Add(UIModule.Instance);
             modules.Add(SceneModule.Instance);
+            modules.Add(ColorPaletteModule.Instance);
 
             return modules;
         }
@@ -55,10 +56,10 @@ namespace GameLogic
 
             TerminalModule.Instance.terminalRequest.RegisterCommands();
 
-            StartCoroutine(StartGameShow());
+            StartCoroutine(StartGame());
         }
 
-        public IEnumerator StartGameShow()
+        public IEnumerator StartGame()
         {
             UIModule.Instance.OpenWindow("StartAppUIPlane");
 

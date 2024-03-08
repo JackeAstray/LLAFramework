@@ -2,10 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Rendering;
-using static UnityEngine.Rendering.DebugUI;
 
 namespace GameLogic
 {
@@ -31,14 +28,12 @@ namespace GameLogic
 
         public IEnumerator Init()
         {
-            Log.Debug("SoundModule 初始化");
             initProgress = 0;
-
             CreateAudioRootAndInit();
-
             yield return null;
             initProgress = 100;
             IsInited = true;
+            Log.Debug("SoundModule 初始化完成");
         }
 
         public void ClearData()

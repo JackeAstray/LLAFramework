@@ -21,15 +21,13 @@ namespace GameLogic
 
         public IEnumerator Init()
         {
-            Log.Debug("TerminalModule 初始化");
             initProgress = 0;
-
             keyboard = Keyboard.current;
             terminalRequest = new TerminalRequest();
-
             yield return null;
             initProgress = 100;
             IsInited = true;
+            Log.Debug("TerminalModule 初始化完成");
         }
 
         public void ClearData()

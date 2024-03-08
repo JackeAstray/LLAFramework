@@ -30,11 +30,11 @@ namespace GameLogic
         /// <returns></returns>
         public IEnumerator Init()
         {
-            Log.Debug("EventModule 初始化");
             initProgress = 0;
             yield return null;
             initProgress = 100;
             IsInited = true;
+            Log.Debug("EventModule 初始化完成");
         }
 
         /// <summary>

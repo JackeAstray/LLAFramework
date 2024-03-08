@@ -45,17 +45,14 @@ namespace GameLogic
 
         public IEnumerator Init()
         {
-            Log.Debug("SceneModule 初始化");
             initProgress = 0;
-
             strCurSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-
             startProgressWaitingTime = 0.5f;
             endProgressWaitingTime = 0.5f;
-
             yield return null;
             initProgress = 100;
             IsInited = true;
+            Log.Debug("SceneModule 初始化完成");
         }
 
         public void ClearData()

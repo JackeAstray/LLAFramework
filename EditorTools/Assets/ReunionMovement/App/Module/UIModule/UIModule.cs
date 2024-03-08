@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Rendering.Universal;
-using UnityEngine.SceneManagement;
 
 namespace GameLogic
 {
@@ -36,13 +34,11 @@ namespace GameLogic
 
         public IEnumerator Init()
         {
-            Log.Debug("UIModule 初始化");
             initProgress = 0;
-
             yield return StartApp.Instance.StartMyCoroutine(CreateRoot());
-
             initProgress = 100;
             IsInited = true;
+            Log.Debug("UIModule 初始化完成");
         }
 
         public void ClearData()

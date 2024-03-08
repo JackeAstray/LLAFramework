@@ -33,20 +33,19 @@ namespace GameLogic
 
         public IEnumerator Init()
         {
-            Log.Debug("DataBaseModule 初始化");
             initProgress = 0;
             InitConfig();
             yield return null;
             initProgress = 100;
             IsInited = true;
+            Log.Debug("DataBaseModule 初始化完成");
         }
 
         public void ClearData()
         {
-            Log.Debug("DataBaseModule 清除数据");
-
             gameConfigs.Clear();
             languages.Clear();
+            Log.Debug("DataBaseModule 清除数据");
         }
 
         ////-------------------------------------
@@ -57,8 +56,6 @@ namespace GameLogic
             LoadLanguages();
             //------------------------------------
             LoadSoundConfig();
-
-            Log.Debug("初始化，加载Database");
         }
 
         /// <summary>

@@ -31,15 +31,13 @@ namespace GameLogic
 
         public IEnumerator Init()
         {
-            Log.Debug("ObjectPoolModule 初始化");
             initProgress = 0;
-
             CreateRoot();
             CreatePools();
-
             yield return null;
             initProgress = 100;
             IsInited = true;
+            Log.Debug("ObjectPoolModule 初始化完成");
         }
 
         public void ClearData()

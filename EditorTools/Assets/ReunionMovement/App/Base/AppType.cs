@@ -53,4 +53,17 @@ namespace GameLogic
         //以下为自定义
         //Hidden = 8,
     }
+
+    /// <summary>
+    /// 调色板方案
+    /// </summary>
+    public enum ColorPaletteScheme
+    {
+        CommonlyUsed,
+        Scheme1,
+        Scheme2,
+        Scheme3,
+        Scheme4,
+        Scheme5,
+    }
 }

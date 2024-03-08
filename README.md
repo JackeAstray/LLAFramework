@@ -142,58 +142,59 @@ UI工具使用说明<br>
 
 
 ## 文件夹结构：<a name="FolderStructure"></a>
-- 3RD                   用于存放第三方库<br>
-- Editor                编辑器文件夹<br>
-  - Scenes              用于存放生成UI的场景<br>
-- Resources             资源文件夹<br>
-- ReunionMovement       模块化插件（每个单独的模块都会放入其中）<br>
-  - APP                   APP是用于启动各个模块系统<br>
-    - Base                APP的基础功能<br>
-    - Module              APP的各个模块<br>
-      - DatabaseModule    数据模块<br>
-      - EventModule       事件模块<br>
-      - LanguagesModule   多语言模块<br>
-      - ObjectPoolModule  对象池模块<br>
-      - ResourcesModule   资源模块<br>
-      - SceneModule       场景模块<br>
-      - SoundModule       声音模块<br>
-      - TerminalModule    终端模块<br>
-      - UIModule          UI模块<br>
-    - StartApp            APP的启动脚本<br>
-  - Common                公用类<br>
-    - Observer            观察者模式基类<br>
-    - SingleToneMgr       单例模式基类<br>
-    - PathUtils           单例模式基类<br>
-    - Editor              <br>
-      - ScriptingDefineSymbols  脚本宏<br>
-  - ExcelTool             表格导出工具(用于导出.cs|.xml|.json|.lua文件)<br>
-  - Extensions            扩展功能脚本<br>
-  - GenerateScriptTool    创建脚本工具<br>
-  - LogTool               日志工具，集成了宏命令可开启和关闭Log<br>
-  - OpenPath              打开指定路径文件夹<br>
-  - SmallFunctions        小功能<br>
-  - SplitImg              图片自动裁切留白区域，需要此EXE【../Tools/SplitImg/SplitImg.exe】<br>
-  - Spotlight             焦点工具、用于搜索对象<br>
-  - Toolbox               工具箱<br>
-    - Application         控制Android状态栏<br>
-    - ColliderGizmo       编辑器下碰撞器显示绘制边框<br>
-    - DownloadFile        下载文件<br>
-    - Effect              效果<br>
-      - Arrow             箭头工具<br>
-      - Billboard         广告牌<br>
-      - Camera            摄像机（旋转、漫游）<br>
-      - FPS               FPS计数器<br>
-      - Ripple            UI点击后波浪效果<br>
-      - Screen            屏幕适配<br>
-      - ScreenLogger      Log显示在屏幕上<br>
-      - TextTools         Text工具<br>
-      - VibrationUtil     震动<br>
-    - Http                Http工具用来快速访问网络、调用API<br>
-    - LitJson             JSON工具<br>
-    - LoadImage           加载Image<br>
-    - ScriptableObject    <br>
-      - ColorPalette      调色板<br>
-    - Timer               计时器<br>
-- Scenes                  场景文件夹<br>
-- Scripts                 脚本文件夹<br>
-- Settings                URP配置文件<br>
+- 3RD                             用于存放第三方库<br>
+- Editor                          编辑器文件夹<br>
+  - Scenes                        用于存放生成UI的场景<br>
+- Resources                       资源文件夹<br>
+- ReunionMovement                 模块化插件（每个单独的模块都会放入其中）<br>
+  - APP                           APP是用于启动各个模块系统<br>
+    - Base                        APP的基础功能<br>
+    - Module                      APP的各个模块<br>
+      - ColorPaletteModule        调色板模块，用于记录调整配色方案<br>
+      - DatabaseModule            数据模块<br>
+      - EventModule               事件模块<br>
+      - LanguagesModule           多语言模块<br>
+      - ObjectPoolModule          对象池模块<br>
+      - ResourcesModule           资源模块<br>
+      - SceneModule               场景模块<br>
+      - SoundModule               声音模块<br>
+      - TerminalModule            终端模块<br>
+      - UIModule                  UI模块<br>
+    - StartApp                    APP的启动脚本<br>
+  - Common                        公用类<br>
+    - Observer                    观察者模式基类<br>
+    - SingleToneMgr               单例模式基类<br>
+    - PathUtils                   单例模式基类<br>
+    - Editor                      <br>
+      - ScriptingDefineSymbols    脚本宏<br>
+  - ExcelTool                     表格导出工具(用于导出.cs|.xml|.json|.lua文件)<br>
+  - Extensions                    扩展功能脚本<br>
+  - GenerateScriptTool            创建脚本工具<br>
+  - LogTool                       日志工具，集成了宏命令可开启和关闭Log<br>
+  - OpenPath                      打开指定路径文件夹<br>
+  - SmallFunctions                小功能<br>
+  - SplitImg                      图片自动裁切留白区域，需要此EXE【../Tools/SplitImg/SplitImg.exe】<br>
+  - Spotlight                     焦点工具、用于搜索对象<br>
+  - Toolbox                       工具箱<br>
+    - Application                 控制Android状态栏<br>
+    - ColliderGizmo               编辑器下碰撞器显示绘制边框<br>
+    - DownloadFile                下载文件<br>
+    - Effect                      效果<br>
+      - Arrow                     箭头工具<br>
+      - Billboard                 广告牌<br>
+      - Camera                    摄像机（旋转、漫游）<br>
+      - FPS                       FPS计数器<br>
+      - Ripple                    UI点击后波浪效果<br>
+      - Screen                    屏幕适配<br>
+      - ScreenLogger              Log显示在屏幕上<br>
+      - TextTools                 Text工具<br>
+      - VibrationUtil             震动<br>
+    - Http                        Http工具用来快速访问网络、调用API<br>
+    - LitJson                     JSON工具<br>
+    - LoadImage                   加载Image<br>
+    - ScriptableObject            <br>
+      - ColorPalette              调色板<br>
+    - Timer                       计时器<br>
+- Scenes                          场景文件夹<br>
+- Scripts                         脚本文件夹<br>
+- Settings                        URP配置文件<br>
