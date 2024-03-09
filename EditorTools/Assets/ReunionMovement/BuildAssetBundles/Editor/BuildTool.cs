@@ -12,6 +12,9 @@ namespace GameLogic.EditorTools
         [MenuItem("工具箱/构建包/构建Bundles", false, 22)]
         public static void BuildBundles()
         {
+            // 获取ResourcesFile文件夹下的所有子文件夹
+            string[] directoryEntries = Directory.GetDirectories("Assets/ResourcesFile");
+
             BuildTarget buildTarget = EditorUserBuildSettings.activeBuildTarget;
             
             // 导出路径
@@ -23,6 +26,18 @@ namespace GameLogic.EditorTools
             }
 
             Log.Debug("导出路径: " + exportPath);
+
+            foreach (string directoryPath in directoryEntries)
+            {
+                // 获取文件夹名称作为AB包的名称
+                string assetBundleName = Path.GetFileName(directoryPath);
+
+                // 设置AB包的名称
+                AssetImporter.GetAtPath(directoryPath).assetBundleName = assetBundleName;
+
+                // 打包AB包到指定路径
+                BuildPipeline.BuildAssetBundles("../AssetBundles", BuildAssetBundleOptions.None, BuildTarget.StandaloneWindows);
+            }
         }
     }
 }
