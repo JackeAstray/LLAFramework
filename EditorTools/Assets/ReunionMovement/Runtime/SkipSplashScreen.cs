@@ -33,6 +33,5 @@ namespace GameLogic
             SplashScreen.Stop(SplashScreen.StopBehavior.StopImmediate);
         }
     }
-    }
 }
 #endif
