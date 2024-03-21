@@ -675,16 +675,17 @@ namespace GameLogic
         /// <returns></returns>
         public static string MD5Encrypt(string str)
         {
-            using (MD5CryptoServiceProvider md5Hasher = new MD5CryptoServiceProvider())
+            MD5 md5 = new MD5CryptoServiceProvider();
+            byte[] fromData = Encoding.UTF8.GetBytes(str);
+            byte[] targetData = md5.ComputeHash(fromData);
+            string byte2String = null;
+
+            for (int i = 0; i < targetData.Length; i++)
             {
-                byte[] hashedDataBytes = md5Hasher.ComputeHash(Encoding.GetEncoding("gb2312").GetBytes(str));
-                StringBuilder tmp = new StringBuilder();
-                foreach (byte i in hashedDataBytes)
-                {
-                    tmp.Append(i.ToString("x2"));
-                }
-                return tmp.ToString();
+                byte2String += targetData[i].ToString("x2");
             }
+
+            return byte2String;
         }
         /// <summary>
         /// 无视锁文件，直接读bytes  读取（加载）数据
