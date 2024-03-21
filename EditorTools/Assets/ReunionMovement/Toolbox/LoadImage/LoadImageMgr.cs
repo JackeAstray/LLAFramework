@@ -57,7 +57,7 @@ namespace GameLogic.Download
                     {
                         loadEnd.Invoke(downloadTexture);
                         imageDic[url] = downloadTexture;
-                        SaveToLocalPath(urlHash, downloadTexture);
+                        SaveToLocalPath(urlHash, downloadTexture, suffix);
                     }
                 });
             }
@@ -93,10 +93,10 @@ namespace GameLogic.Download
         /// </summary>
         /// <param name="url"></param>
         /// <param name="texture"></param>
-        private void SaveToLocalPath(string urlHash, Texture2D texture)
+        private void SaveToLocalPath(string urlHash, Texture2D texture, string suffix = ".png")
         {
             byte[] bytes = texture.EncodeToPNG();
-            string localFilePath = string.Format("{0}/{1}.png", savePath, urlHash);
+            string localFilePath = $"{savePath}/{urlHash}{suffix}";
 
             try
             {
