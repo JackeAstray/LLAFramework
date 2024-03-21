@@ -27,7 +27,7 @@ namespace GameLogic.Download
         /// <param name="url"></param>
         /// <param name="loadEnd">callback</param>
         /// <returns></returns>
-        public IEnumerator LoadImage(string url, Action<Texture2D> loadEnd)
+        public IEnumerator LoadImage(string url, Action<Texture2D> loadEnd, string suffix = ".png")
         {
             if (imageDic.TryGetValue(url, out Texture2D texture))
             {
@@ -36,7 +36,7 @@ namespace GameLogic.Download
             }
 
             string urlHash = EngineExtensions.MD5Encrypt(url);
-            string localFilePath = string.Format("{0}/{1}.png", savePath, urlHash);
+            string localFilePath = $"{savePath}/{urlHash}{suffix}";
 
             if (File.Exists(localFilePath))
             {
