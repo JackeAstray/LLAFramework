@@ -40,14 +40,11 @@ namespace GameLogic.Download
 
             if (File.Exists(localFilePath))
             {
-                yield return DownloadImage(localFilePath, (state, localTexture) =>
-                {
-                    if (state)
-                    {
-                        loadEnd.Invoke(localTexture);
-                        imageDic[url] = localTexture;
-                    }
-                });
+                byte[] imageBytes = File.ReadAllBytes(localFilePath);
+                Texture2D localTexture = new Texture2D(2, 2);
+                localTexture.LoadImage(imageBytes);
+                loadEnd.Invoke(localTexture);
+                imageDic[url] = localTexture;
             }
             else
             {
