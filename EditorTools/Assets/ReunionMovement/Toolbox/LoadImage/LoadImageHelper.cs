@@ -12,19 +12,15 @@ namespace GameLogic.Download
     {
         private Coroutine loadTextureCoroutine;
 
-        public Texture2D LoadTexture2D(string url)
+        public IEnumerator LoadTexture2D(string url, Action<Texture2D> action)
         {
             if (string.IsNullOrEmpty(url))
             {
                 Log.Error("Url不能为空！");
-                return null;
+                yield break;
             }
 
-            Texture2D tex2d = new Texture2D(2,2);
-
-            StartCoroutine(LoadImage(url, tex => tex2d = tex));
-
-            return tex2d;
+            yield return LoadImage(url, tex => { action(tex); });
         }
 
         /// <summary>
@@ -52,11 +48,11 @@ namespace GameLogic.Download
         /// 加载图片
         /// </summary>
         /// <param name="url"></param>
-        /// <param name="cb"></param>
+        /// <param name="action"></param>
         /// <returns></returns>
-        private IEnumerator LoadImage(string url, Action<Texture2D> cb)
+        private IEnumerator LoadImage(string url, Action<Texture2D> action)
         {
-            yield return LoadImageMgr.instance.LoadImage(url, cb);
+            yield return LoadImageMgr.instance.LoadImage(url, action);
         }
     }
 }
