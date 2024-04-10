@@ -4,13 +4,13 @@ using UnityEngine;
 using UnityEngine.Sprites;
 using UnityEngine.UI;
 
-namespace GameLogic.UGUIExpand
+namespace GameLogic.UI.ImageExtensions
 {
     /// <summary>
     /// 镜像图像
     /// </summary>
     [AddComponentMenu("UI/镜像图像", 20)]
-    public class MirrorImage : Image
+    public class MirrorImage : ImageEx
     {
         /// <summary>
         /// 镜像类型
