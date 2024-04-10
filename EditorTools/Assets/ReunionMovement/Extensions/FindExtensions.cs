@@ -75,7 +75,7 @@ public static class FindExtensions
             return comp;
         }
 
-        return go.GetComponentsInChildren<T>().FirstOrDefault();
+        return go.GetComponentsInChildren<T>().FirstOrDefault_V1();
     }
     #endregion
 

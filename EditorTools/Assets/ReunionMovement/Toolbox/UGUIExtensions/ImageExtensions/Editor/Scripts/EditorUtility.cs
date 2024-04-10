@@ -168,12 +168,22 @@ namespace GameLogic.UI.ImageExtensions.Editor
             }
         }
 
+        /// <summary>
+        /// 查找图像扩展根目录
+        /// </summary>
+        /// <returns></returns>
         internal static string FindImageExtensionsRootDirectory()
         {
             string guid = AssetDatabase.FindAssets("ImageEx t:Shader").FirstOrDefault();
             string path = AssetDatabase.GUIDToAssetPath(guid);
-            if (string.IsNullOrEmpty(path)) return String.Empty;
+
+            if (string.IsNullOrEmpty(path))
+            {
+                return String.Empty;
+            }
+
             string[] directories = path.Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar });
+
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < directories.Length; i++)
             {

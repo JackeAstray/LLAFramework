@@ -46,10 +46,10 @@ namespace GameLogic.UI.ImageExtensions.Editor
             spMaterial = serializedObject.FindProperty("m_Material");
             spImageType = serializedObject.FindProperty("imageType");
 
-            spFillMethod = serializedObject.FindProperty("fillMethod");
-            spFillOrigin = serializedObject.FindProperty("fillOrigin");
-            spFillAmount = serializedObject.FindProperty("fillAmount");
-            spFillClockwise = serializedObject.FindProperty("fillClockwise");
+            spFillMethod = serializedObject.FindProperty("m_FillMethod");
+            spFillOrigin = serializedObject.FindProperty("m_FillOrigin");
+            spFillAmount = serializedObject.FindProperty("m_FillAmount");
+            spFillClockwise = serializedObject.FindProperty("m_FillClockwise");
 
             spConstrainRotation = serializedObject.FindProperty("constrainRotation");
             spShapeRotation = serializedObject.FindProperty("shapeRotation");
@@ -64,7 +64,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
             spHexagon = serializedObject.FindProperty("hexagon");
             spNStarPolygon = serializedObject.FindProperty("nStarPolygon");
 
-            spPreserveAspect = serializedObject.FindProperty("preserveAspect");
+            spPreserveAspect = serializedObject.FindProperty("m_PreserveAspect");
 
             spGradient = serializedObject.FindProperty("gradientEffect");
         }
@@ -121,8 +121,6 @@ namespace GameLogic.UI.ImageExtensions.Editor
                 EditorGUILayout.EndVertical();
             }
 
-
-
             EditorGUILayout.Space();
             ImageTypeGUI();
 
@@ -170,7 +168,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
             float labelWidth = x - fieldWidth;
 
             line.width = labelWidth;
-            EditorGUI.LabelField(line, "一画");
+            EditorGUI.LabelField(line, "一条线");
             Rect dragZone = line;
             line.x += labelWidth;
             line.width = fieldWidth;
@@ -255,11 +253,11 @@ namespace GameLogic.UI.ImageExtensions.Editor
             float labelWidth = x - fieldWidth;
 
             line.width = labelWidth;
-            EditorGUI.LabelField(line, "Rotation");
+            EditorGUI.LabelField(line, "旋转");
             line.x += labelWidth;
             line.width = r.width - labelWidth - 78;
 
-            string[] options = spConstrainRotation.hasMultipleDifferentValues ? new[] { "---", "---" } : new[] { "Free", "Constrained" };
+            string[] options = spConstrainRotation.hasMultipleDifferentValues ? new[] { "---", "---" } : new[] { "自由", "约束" };
             bool boolVal = spConstrainRotation.boolValue;
             EditorGUI.BeginChangeCheck();
             {
@@ -273,7 +271,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
 
             line.x += line.width + 14;
             line.width = 64;
-            EditorGUI.LabelField(line, "Flip");
+            EditorGUI.LabelField(line, "图像翻转");
 
             line.y += EditorGUIUtility.standardVerticalSpacing + EditorGUIUtility.singleLineHeight;
             line.x = r.x + 10;
@@ -282,7 +280,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
             EditorGUI.BeginDisabledGroup(spConstrainRotation.boolValue);
             {
                 Rect dragZone = line;
-                EditorGUI.LabelField(line, "Angle");
+                EditorGUI.LabelField(line, "角度");
                 line.x = r.x + labelWidth;
                 line.width = r.width - labelWidth - 148;
 

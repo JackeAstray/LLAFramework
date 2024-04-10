@@ -37,9 +37,9 @@ public static class EngineToolExtensions
     /// <param name="source"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static T FirstOrDefault<T>(this IEnumerable<T> source)
+    public static T FirstOrDefault_V1<T>(this IEnumerable<T> source)
     {
-        return source.FirstOrDefault();
+        return source.FirstOrDefault_V1();
     }
 
     /// <summary>

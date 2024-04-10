@@ -7,7 +7,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
     [InitializeOnLoad]
     internal static class EditorContents
     {
-        private static string mpuiKitImagesDirectory = string.Empty;
+        private static string imagesDirectory = string.Empty;
 
         private static GUIContent flipHorizontalNormal, flipHorizontalActive;
         private static GUIContent flipVerticalNormal, flipVerticalActive;
@@ -128,14 +128,17 @@ namespace GameLogic.UI.ImageExtensions.Editor
         }
 
         static EditorContents()
-        {
-            FindMpuiKitIconsDirectory();
+        {            
+            FindIconsDirectory();
         }
 
-        private static void FindMpuiKitIconsDirectory()
+        /// <summary>
+        /// 查找工具包图标目录
+        /// </summary>
+        private static void FindIconsDirectory()
         {
             string rootDir = EditorUtility.FindImageExtensionsRootDirectory();
-            mpuiKitImagesDirectory = string.IsNullOrEmpty(rootDir) ? string.Empty : Path.Combine(rootDir, "Editor", "Images");
+            imagesDirectory = string.IsNullOrEmpty(rootDir) ? string.Empty : Path.Combine(rootDir, "Editor", "Images");
         }
 
         private static Texture2D LoadImage(string name, bool activeState, bool ignoreState = false)
@@ -147,9 +150,9 @@ namespace GameLogic.UI.ImageExtensions.Editor
                 else colorLevel = EditorGUIUtility.isProSkin ? 2 : 1;
             }
 
-            if (mpuiKitImagesDirectory == string.Empty) FindMpuiKitIconsDirectory();
+            if (imagesDirectory == string.Empty) FindIconsDirectory();
 
-            string assetPath = $"{mpuiKitImagesDirectory}{Path.DirectorySeparatorChar}{name}{(ignoreState ? string.Empty : $"_{colorLevel}")}.png";
+            string assetPath = $"{imagesDirectory}{Path.DirectorySeparatorChar}{name}{(ignoreState ? string.Empty : $"_{colorLevel}")}.png";
             return AssetDatabase.LoadAssetAtPath(assetPath, typeof(Texture2D)) as Texture2D;
         }
     }

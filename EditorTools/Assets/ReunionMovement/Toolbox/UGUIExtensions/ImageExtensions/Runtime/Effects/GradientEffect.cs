@@ -8,6 +8,7 @@ namespace GameLogic.UI.ImageExtensions
     /// <summary>
     /// 渐变效果
     /// </summary>
+    [Serializable]
     public struct GradientEffect : UIImgComponent
     {
         [SerializeField] private bool enabled;

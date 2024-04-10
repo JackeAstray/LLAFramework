@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Security.Policy;
 using UnityEngine;
 using UnityEngine.UI;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace GameLogic.UI.ImageExtensions
 {

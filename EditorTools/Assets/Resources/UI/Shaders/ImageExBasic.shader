@@ -406,5 +406,5 @@ Shader "ReunionMovement/UI/Basic Procedural Image"
             
         }
     }
-    CustomEditor "UI.Editor.ImageShaderGUI"
+    CustomEditor "GameLogic.UI.ImageExtensions.Editor.ImageShaderGUI"
 }

@@ -40,10 +40,10 @@ namespace GameLogic.UI.ImageExtensions.Editor
 
             spImageType = serializedObject.FindProperty("imageType");
 
-            spFillMethod = serializedObject.FindProperty("fillMethod");
-            spFillOrigin = serializedObject.FindProperty("fillOrigin");
-            spFillAmount = serializedObject.FindProperty("fillAmount");
-            spFillClockwise = serializedObject.FindProperty("fillClockwise");
+            spFillMethod = serializedObject.FindProperty("m_FillMethod");
+            spFillOrigin = serializedObject.FindProperty("m_FillOrigin");
+            spFillAmount = serializedObject.FindProperty("m_FillAmount");
+            spFillClockwise = serializedObject.FindProperty("m_FillClockwise");
 
             spConstrainRotation = serializedObject.FindProperty("constrainRotation");
             spShapeRotation = serializedObject.FindProperty("shapeRotation");
@@ -61,7 +61,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
             spNStarPolygonInset = serializedObject.FindProperty("nStarPolygonInset");
             spNStarPolygonCornerRadius = serializedObject.FindProperty("nStarPolygonCornerRadius");
 
-            spPreserveAspect = serializedObject.FindProperty("preserveAspect");
+            spPreserveAspect = serializedObject.FindProperty("m_PreserveAspect");
         }
 
         public override void OnInspectorGUI()

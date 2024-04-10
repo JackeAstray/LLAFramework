@@ -16,11 +16,11 @@ namespace GameLogic.UI.ImageExtensions.Editor
                     position.y + EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing,
                     position.width - EditorGUIUtility.labelWidth, EditorGUIUtility.singleLineHeight);
 
-                SerializedProperty spFitCircleRadius = property.FindPropertyRelative("m_FitRadius");
+                SerializedProperty spFitCircleRadius = property.FindPropertyRelative("fitRadius");
                 bool FitCirlce = spFitCircleRadius.boolValue;
                 EditorGUI.BeginDisabledGroup(FitCirlce);
                 {
-                    EditorGUI.PropertyField(radiusRect, property.FindPropertyRelative("m_Radius"),
+                    EditorGUI.PropertyField(radiusRect, property.FindPropertyRelative("radius"),
                         new GUIContent("Radius"));
                 }
                 EditorGUI.EndDisabledGroup();
@@ -33,7 +33,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
                     {
                         GUILayout.Space(EditorGUIUtility.labelWidth);
 
-                        FitCirlce = GUI.Toolbar(toolBarRect, FitCirlce ? 1 : 0, new[] { "Free", "Fit" }) == 1;
+                        FitCirlce = GUI.Toolbar(toolBarRect, FitCirlce ? 1 : 0, new[] { "自由", "拟合" }) == 1;
                     }
                     EditorGUILayout.EndHorizontal();
                 }
