@@ -79,24 +79,25 @@ float sdHeart(float2 p, float scale)
 //EndCredit
 
 //sinmix Credit: https://www.shadertoy.com/view/ttKfWd
-float sinmix(vec2 p) {
-    float l = length(p);
-    float s = sqrt(.5);
-    float r=.25+.5*s-l;
-    float4 m = mat2(s,s,-s,s);p=abs(m*p)*m;
-    //return min(max(max(l-1.,r),length(max(p-vec2(1,0),0.))+min(p.y,0.)),-min(r,p.y));
-    return min(max(max(l-1.,r),p.y),-min(r,p.y));
-}
+// float sinmix(float2 p) {
+//     float l = length(p);
+//     float s = sqrt(.5);
+//     float r=.25+.5*s-l;
+//     float4 m = float4(s,s,-s,s);
+//     p=abs(m*p)*m;
+//     //return min(max(max(l-1.,r),length(max(p-vec2(1,0),0.))+min(p.y,0.)),-min(r,p.y));
+//     return min(max(max(l-1.,r),p.y),-min(r,p.y));
+// }
 
-float3 shadeDistance(float d) 
-{
-    float dist = d*100.0;
-    float banding = max(sin(dist), 0.0);
-    float strength = sqrt(1.-exp(-abs(d)*3.));
-    float pattern = mix(strength, banding, (0.6-abs(strength-0.5))*0.3);
-    float3 color = (d > 0.0 ? vec3(1.0,0.6,0.4) : vec3(0.4,0.9,1.0)) * pattern;
-    return color;
-}
+// float3 shadeDistance(float d) 
+// {
+//     float dist = d*100.0;
+//     float banding = max(sin(dist), 0.0);
+//     float strength = sqrt(1.-exp(-abs(d)*3.));
+//     float pattern = mix(strength, banding, (0.6-abs(strength-0.5))*0.3);
+//     float3 color = (d > 0.0 ? vec3(1.0,0.6,0.4) : vec3(0.4,0.9,1.0)) * pattern;
+//     return color;
+// }
 //EndCredit
 
 //https://www.shadertoy.com/view/fsGBD1
