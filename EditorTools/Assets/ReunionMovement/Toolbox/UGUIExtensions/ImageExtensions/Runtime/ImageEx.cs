@@ -249,7 +249,6 @@ namespace GameLogic.UI.ImageExtensions
             {
                 alphaThreshold = value;
                 alphaHitTestMinimumThreshold = alphaThreshold;
-                Debug.Log("AlphaThreshold:" + alphaHitTestMinimumThreshold);
             }
         }
 
@@ -443,8 +442,6 @@ namespace GameLogic.UI.ImageExtensions
         }
 
         #endregion
-
-
 
 #if UNITY_EDITOR
         public void UpdateSerializedValuesFromSharedMaterial()

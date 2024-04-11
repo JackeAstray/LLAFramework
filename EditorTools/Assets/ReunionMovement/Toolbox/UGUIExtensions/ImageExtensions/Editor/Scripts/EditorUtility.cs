@@ -174,8 +174,8 @@ namespace GameLogic.UI.ImageExtensions.Editor
         /// <returns></returns>
         internal static string FindImageExtensionsRootDirectory()
         {
-            string guid = AssetDatabase.FindAssets("ImageEx t:Shader").FirstOrDefault();
-            string path = AssetDatabase.GUIDToAssetPath(guid);
+            string path = "Assets/Resources/UI";
+            //AssetDatabase.GetAssetPath(Selection.activeObject);
 
             if (string.IsNullOrEmpty(path))
             {

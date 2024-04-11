@@ -31,8 +31,10 @@ namespace GameLogic.UI.ImageExtensions
         [SerializeField] private Vector4 rectangleCornerRadius;                   // MapTo -> Normal.y, Normal.z compressed
         [SerializeField] private Vector3 triangleCornerRadius;                    // MapTo -> Normal.y, Normal.z compressed
 
+#pragma warning disable
         [SerializeField] private bool triangleUniformCornerRadius = true;
         [SerializeField] private bool rectangleUniformCornerRadius = true;
+#pragma warning restore
 
         [SerializeField] private float circleRadius;                              // MapTo -> Normal.y
         [SerializeField] private bool circleFitToRect = true;                     // MapTo -> Normal.z
@@ -365,8 +367,12 @@ namespace GameLogic.UI.ImageExtensions
             stream.RectTransform = rectT;
             Rect r = GetPixelAdjustedRect();
             stream.Uv1 = new Vector2(r.width + falloffDistance, r.height + falloffDistance);
-            float packedRotData =
-                PackRotationData(shapeRotation, constrainRotation, flipHorizontal, flipVertical);
+
+            float packedRotData = PackRotationData(shapeRotation, 
+                                                   constrainRotation, 
+                                                   flipHorizontal, 
+                                                   flipVertical);
+
             stream.Uv3 = new Vector2(packedRotData, (float)cornerStyle);
 
             stream.Tangent = QualitySettings.activeColorSpace == ColorSpace.Linear ? outlineColor.linear : outlineColor;
@@ -503,7 +509,7 @@ namespace GameLogic.UI.ImageExtensions
             {
                 toFill.PopulateUIVertex(ref uiVert, i);
 
-                //uiVert.position += ((Vector3)uiVert.uv0 - new Vector3(0.5f, 0.5f)) * m_FalloffDistance;
+                //uiVert.position += ((Vector3)uiVert.uv0 - new Vector3(0.5f, 0.5f)) * falloffDistance;
                 uiVert.uv1 = stream.Uv1;
                 uiVert.uv2 = stream.Uv2;
                 uiVert.uv3 = stream.Uv3;
