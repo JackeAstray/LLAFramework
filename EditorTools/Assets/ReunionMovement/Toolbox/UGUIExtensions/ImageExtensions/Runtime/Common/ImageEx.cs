@@ -8,14 +8,14 @@ using UnityEditor;
 
 namespace GameLogic.UI.ImageExtensions
 {
-    [AddComponentMenu("UI/ReunionMovement/Image")]
+    [AddComponentMenu("UI/ReunionMovement/ImageEx")]
     public class ImageEx : Image
     {
-        #region Constants
+        #region 常量
         public const string shaderName = "ReunionMovement/UI/Procedural Image";
         #endregion
 
-        #region SerializedFields
+        #region 序列化字段
 
         [SerializeField] private DrawShape drawShape = DrawShape.None;
         [SerializeField] private Type imageType = Type.Simple;
@@ -29,6 +29,7 @@ namespace GameLogic.UI.ImageExtensions
         [SerializeField] private float shapeRotation;
         [SerializeField] private bool flipHorizontal;
         [SerializeField] private bool flipVertical;
+        [SerializeField] private float alphaThreshold = 0f;
 
         [SerializeField] private TriangleImg triangle = new TriangleImg();
         [SerializeField] private RectangleImg rectangle = new RectangleImg();
@@ -38,7 +39,6 @@ namespace GameLogic.UI.ImageExtensions
         [SerializeField] private NStarPolygonImg nStarPolygon = new NStarPolygonImg();
 
         [SerializeField] private GradientEffect gradientEffect = new GradientEffect();
-
         #endregion
 
         #region Material PropertyIds
@@ -56,12 +56,12 @@ namespace GameLogic.UI.ImageExtensions
 
         #endregion
 
-        #region Public Properties
+        #region 公共属性
 
-        #region Draw Settings
+        #region 绘图设置
 
         /// <summary>
-        /// Type of the shape to be drawn. ie: Rectangle, Circle
+        /// 要绘制形状的类型
         /// </summary>
         public DrawShape DrawShape
         {
@@ -79,7 +79,7 @@ namespace GameLogic.UI.ImageExtensions
         }
 
         /// <summary>
-        /// 绘制形状的笔划宽度。0不是笔划
+        /// 绘制形状的线条宽度。0不是线条
         /// </summary>
         public float StrokeWidth
         {
@@ -240,6 +240,20 @@ namespace GameLogic.UI.ImageExtensions
         }
 
         /// <summary>
+        /// Alpha阈值
+        /// </summary>
+        public float AlphaThreshold
+        {
+            get { return alphaThreshold; }
+            set
+            {
+                alphaThreshold = value;
+                alphaHitTestMinimumThreshold = alphaThreshold;
+                Debug.Log("AlphaThreshold:" + alphaHitTestMinimumThreshold);
+            }
+        }
+
+        /// <summary>
         /// Defines what material type of use to render the shape. Dynamic or Shared.
         /// Default is Dynamic and will issue one draw call per image object. If set to shared, assigned
         /// material in the material slot will be used to render the image. It will fallback to dynamic
@@ -266,7 +280,7 @@ namespace GameLogic.UI.ImageExtensions
         }
 
         /// <summary>
-        /// Shared material to use to render the shape. the material must use the "MPUI/Procedural Sprite" shader
+        /// 用于渲染形状的共享材质。材质必须使用“ReunionMovement/UI/Procedural Image”着色器
         /// </summary>
         public override Material material
         {
@@ -296,10 +310,9 @@ namespace GameLogic.UI.ImageExtensions
             }
         }
 
-        // ReSharper disable once InconsistentNaming
         /// <summary>
-        /// Type of the image. Only two types are supported. Simple and Filled.
-        /// Default and fallback value is Simple.
+        /// 图像的类型。仅支持两种类型。简单和填充。
+        /// 默认值和回退值为“简单”。
         /// </summary>
         public new Type type
         {
@@ -398,7 +411,7 @@ namespace GameLogic.UI.ImageExtensions
 
         #endregion
 
-        #region Private Variables
+        #region 私有变量
 
         private Material dynamicMaterial;
 
@@ -462,7 +475,7 @@ namespace GameLogic.UI.ImageExtensions
             ShapeRotation = shapeRotation;
             FlipHorizontal = flipHorizontal;
             FlipVertical = flipVertical;
-
+            AlphaThreshold = alphaThreshold;
 
             triangle.OnValidate();
             circle.OnValidate();
@@ -477,8 +490,9 @@ namespace GameLogic.UI.ImageExtensions
             base.SetMaterialDirty();
         }
 #endif
-
-
+        /// <summary>
+        /// 初始化组件
+        /// </summary>
         private void InitializeComponents()
         {
             circle.Init(m_Material, material, rectTransform);
@@ -490,6 +504,9 @@ namespace GameLogic.UI.ImageExtensions
             gradientEffect.Init(m_Material, material, rectTransform);
         }
 
+        /// <summary>
+        /// 修复画布中的附加着色通道
+        /// </summary>
         void FixAdditionalShaderChannelsInCanvas()
         {
             Canvas c = canvas;
@@ -518,6 +535,9 @@ namespace GameLogic.UI.ImageExtensions
             Init();
         }
 
+        /// <summary>
+        /// 初始化
+        /// </summary>
         public void Init()
         {
             InitializeComponents();
@@ -536,6 +556,10 @@ namespace GameLogic.UI.ImageExtensions
             base.OnDestroy();
         }
 
+        /// <summary>
+        /// 监听组件更改
+        /// </summary>
+        /// <param name="toggle"></param>
         protected void ListenToComponentChanges(bool toggle)
         {
             if (toggle)
@@ -566,6 +590,11 @@ namespace GameLogic.UI.ImageExtensions
             FixAdditionalShaderChannelsInCanvas();
         }
 
+        /// <summary>
+        /// 当组件设置更改时
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnComponentSettingsChanged(object sender, EventArgs e)
         {
             base.SetMaterialDirty();
@@ -579,6 +608,11 @@ namespace GameLogic.UI.ImageExtensions
             base.SetMaterialDirty();
         }
 
+        /// <summary>
+        /// 生成网格
+        /// </summary>
+        /// <param name="vh"></param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         protected override void OnPopulateMesh(VertexHelper vh)
         {
             switch (type)
@@ -598,6 +632,12 @@ namespace GameLogic.UI.ImageExtensions
             }
         }
 
+        /// <summary>
+        /// 获取修改后的材质
+        /// </summary>
+        /// <param name="baseMaterial"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public override Material GetModifiedMaterial(Material baseMaterial)
         {
 
@@ -701,6 +741,10 @@ namespace GameLogic.UI.ImageExtensions
             return mat;
         }
 
+        /// <summary>
+        /// 禁用所有材质关键字
+        /// </summary>
+        /// <param name="mat"></param>
         private void DisableAllMaterialKeywords(Material mat)
         {
             mat.DisableKeyword("PROCEDURAL");
@@ -724,13 +768,14 @@ namespace GameLogic.UI.ImageExtensions
             mat.DisableKeyword("GRADIENT_RADIAL");
         }
 
-
+        /// <summary>
+        /// 从共享材质初始化值
+        /// </summary>
         public void InitValuesFromSharedMaterial()
         {
             if (m_Material == null) return;
             Material mat = m_Material;
 
-            //Debug.Log("Parsing shared mat");
             //Basic Settings
             drawShape = (DrawShape)mat.GetInt(drawShape_Sp);
 
@@ -742,7 +787,6 @@ namespace GameLogic.UI.ImageExtensions
             flipVertical = mat.GetInt(flipVertical_Sp) == 1;
             constrainRotation = mat.GetInt(constrainedRotation_Sp) == 1;
             shapeRotation = mat.GetFloat(shapeRotation_Sp);
-            //Debug.Log($"Parsed Falloff Distance: {m_FalloffDistance}");
 
             triangle.InitValuesFromMaterial(ref mat);
             circle.InitValuesFromMaterial(ref mat);
@@ -756,12 +800,16 @@ namespace GameLogic.UI.ImageExtensions
         }
 
 #if UNITY_EDITOR
+        /// <summary>
+        /// 创建材质资产
+        /// </summary>
+        /// <returns></returns>
         public Material CreateMaterialAssetFromComponentSettings()
         {
             Material matAsset = new Material(Shader.Find(shaderName));
             matAsset = GetModifiedMaterial(matAsset);
-            string path = EditorUtility.SaveFilePanelInProject("Create Material for ImageEx",
-                "Material", "mat", "Choose location");
+            string path = EditorUtility.SaveFilePanelInProject("通过ImageEx创建材质",
+                "Material", "mat", "选择位置");
             AssetDatabase.CreateAsset(matAsset, path);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();

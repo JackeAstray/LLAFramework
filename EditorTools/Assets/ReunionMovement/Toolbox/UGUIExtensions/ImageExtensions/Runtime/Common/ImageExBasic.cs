@@ -13,7 +13,7 @@ namespace GameLogic.UI.ImageExtensions
     [AddComponentMenu("UI/ReunionMovement/ImageExBasic")]
     public class ImageExBasic : Image
     {
-        #region SerializedFields
+        #region 序列化字段
 
         [SerializeField] private DrawShape drawShape = DrawShape.None;
         [SerializeField] private Type imageType = Type.Simple;                                                                           // Mapping in Vertex Stream
@@ -26,15 +26,13 @@ namespace GameLogic.UI.ImageExtensions
         [SerializeField] private bool flipHorizontal;                             // MapTo -> UV3.x Compressed
         [SerializeField] private bool flipVertical;                               // MapTo -> UV3.x Compressed
         [SerializeField] private CornerStyleType cornerStyle;                     // MapTo -> UV3.y
+        [SerializeField] private float alphaThreshold = 0f;
 
         [SerializeField] private Vector4 rectangleCornerRadius;                   // MapTo -> Normal.y, Normal.z compressed
         [SerializeField] private Vector3 triangleCornerRadius;                    // MapTo -> Normal.y, Normal.z compressed
-#pragma warning disable
-        // ReSharper disable once NotAccessedField.Local
+
         [SerializeField] private bool triangleUniformCornerRadius = true;
-        // ReSharper disable once NotAccessedField.Local
         [SerializeField] private bool rectangleUniformCornerRadius = true;
-#pragma warning restore
 
         [SerializeField] private float circleRadius;                              // MapTo -> Normal.y
         [SerializeField] private bool circleFitToRect = true;                     // MapTo -> Normal.z
@@ -44,7 +42,7 @@ namespace GameLogic.UI.ImageExtensions
         [SerializeField] private float nStarPolygonCornerRadius;                  // MapTo -> Normal.z
         #endregion
 
-        #region Public Accessors
+        #region 公共访问器
 
         public DrawShape Shape
         {
@@ -124,6 +122,10 @@ namespace GameLogic.UI.ImageExtensions
                 base.SetVerticesDirty();
             }
         }
+
+        /// <summary>
+        /// 翻转垂直
+        /// </summary>
         public bool FlipVertical
         {
             get => flipVertical;
@@ -131,6 +133,20 @@ namespace GameLogic.UI.ImageExtensions
             {
                 flipVertical = value;
                 base.SetVerticesDirty();
+            }
+        }
+
+        /// <summary>
+        /// Alpha阈值
+        /// </summary>
+        public float AlphaThreshold
+        {
+            get { return alphaThreshold; }
+            set
+            {
+                alphaThreshold = value;
+                alphaHitTestMinimumThreshold = alphaThreshold;
+                base.SetMaterialDirty();
             }
         }
 
@@ -296,21 +312,33 @@ namespace GameLogic.UI.ImageExtensions
             ConstrainRotation = constrainRotation;
             FlipHorizontal = flipHorizontal;
             FlipVertical = flipVertical;
+            AlphaThreshold = alphaThreshold;
             CornerStyle = cornerStyle;
         }
 #endif
 
+        /// <summary>
+        /// 获取最小尺寸的一半
+        /// </summary>
+        /// <returns></returns>
         private float GetMinSizeHalf()
         {
             return GetMinSize() * 0.5f;
         }
 
+        /// <summary>
+        /// 获取最小尺寸
+        /// </summary>
+        /// <returns></returns>
         private float GetMinSize()
         {
             Vector2 size = GetPixelAdjustedRect().size;
             return Mathf.Min(size.x, size.y);
         }
 
+        /// <summary>
+        /// 限制旋转值
+        /// </summary>
         private void ConstrainRotationValue()
         {
             if (!constrainRotation) return;
@@ -326,6 +354,10 @@ namespace GameLogic.UI.ImageExtensions
             base.SetVerticesDirty();
         }
 
+        /// <summary>
+        /// 创建顶点流
+        /// </summary>
+        /// <returns></returns>
         private VertexDataStream CreateVertexStream()
         {
             VertexDataStream stream = new VertexDataStream();
@@ -376,6 +408,14 @@ namespace GameLogic.UI.ImageExtensions
             return stream;
         }
 
+        /// <summary>
+        /// 打包旋转数据
+        /// </summary>
+        /// <param name="rotation"></param>
+        /// <param name="constrainRotation"></param>
+        /// <param name="flipH"></param>
+        /// <param name="flipV"></param>
+        /// <returns></returns>
         private float PackRotationData(float rotation, bool constrainRotation, bool flipH, bool flipV)
         {
             int c = constrainRotation ? 1 : 0;
@@ -388,7 +428,10 @@ namespace GameLogic.UI.ImageExtensions
             return cr;
         }
 
-
+        /// <summary>
+        /// 解包旋转
+        /// </summary>
+        /// <param name="f"></param>
         void UnPackRotation(float f)
         {
             float r = 0, x = 0, y = 0, z = 0;
@@ -420,6 +463,11 @@ namespace GameLogic.UI.ImageExtensions
             base.SetVerticesDirty();
         }
 
+        /// <summary>
+        /// 修复半径
+        /// </summary>
+        /// <param name="radius"></param>
+        /// <returns></returns>
         private Vector4 FixRadius(Vector4 radius)
         {
             Rect rect = rectTransform.rect;
@@ -439,7 +487,10 @@ namespace GameLogic.UI.ImageExtensions
             return radius * scaleFactor;
         }
 
-
+        /// <summary>
+        /// 重写以填充网格
+        /// </summary>
+        /// <param name="toFill"></param>
         protected override void OnPopulateMesh(VertexHelper toFill)
         {
             base.OnPopulateMesh(toFill);

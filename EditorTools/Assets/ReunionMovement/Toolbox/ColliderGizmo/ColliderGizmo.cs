@@ -521,7 +521,7 @@ namespace GameLogic.Internal
 
         private SerializedProperty includeChilds;
 
-        private ColliderGizmo target;
+        private new ColliderGizmo target;
 
         private int collidersCount;
 

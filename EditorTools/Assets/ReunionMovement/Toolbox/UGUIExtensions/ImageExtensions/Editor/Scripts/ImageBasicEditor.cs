@@ -20,6 +20,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
 
         private SerializedProperty spPreserveAspect;
         private SerializedProperty spFillMethod, spFillOrigin, spFillAmount, spFillClockwise;
+        private SerializedProperty spAlphaThreshold;
         private SerializedProperty spShape;
         private SerializedProperty spStrokeWidth, spOutlineWidth, spOutlineColor, spFalloffDistance;
         private SerializedProperty spConstrainRotation, spShapeRotation, spFlipHorizontal, spFlipVertical;
@@ -50,6 +51,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
             spFlipHorizontal = serializedObject.FindProperty("flipHorizontal");
             spFlipVertical = serializedObject.FindProperty("flipVertical");
 
+            spAlphaThreshold = serializedObject.FindProperty("alphaThreshold");
 
             spCircleRadius = serializedObject.FindProperty("circleRadius");
             spCircleFitToRect = serializedObject.FindProperty("circleFitToRect");
@@ -469,9 +471,9 @@ namespace GameLogic.UI.ImageExtensions.Editor
             {
                 EditorGUI.showMixedValue = spSprite.hasMultipleDifferentValues;
                 sprite = EditorGUILayout.ObjectField("精灵", sprite, typeof(Sprite), false, GUILayout.Height(EditorGUIUtility.singleLineHeight)) as Sprite;
-
                 EditorGUI.showMixedValue = false;
             }
+
             if (EditorGUI.EndChangeCheck())
             {
                 Sprite newSprite = sprite == null ? EditorUtility.EmptySprite : sprite;
@@ -492,6 +494,9 @@ namespace GameLogic.UI.ImageExtensions.Editor
                 (serializedObject.targetObject as Image)?.DisableSpriteOptimizations();
             }
             EditorGUI.EndDisabledGroup();
+
+            Rect rect = EditorGUILayout.GetControlRect();
+            EditorGUI.Slider(rect, spAlphaThreshold, 0f, 1f, "Alpha阈值");
         }
 
         private void ImageTypeGUI()
@@ -505,8 +510,9 @@ namespace GameLogic.UI.ImageExtensions.Editor
                     "类型");
                 imageTypeRect.x += EditorGUIUtility.labelWidth + 2;
                 imageTypeRect.width -= EditorGUIUtility.labelWidth + 2;
-                selectedIndex = EditorGUI.Popup(imageTypeRect, selectedIndex, new[] { "简单", "填满" });
+                selectedIndex = EditorGUI.Popup(imageTypeRect, selectedIndex, new[] { "简单", "填充" });
             }
+
             if (EditorGUI.EndChangeCheck())
             {
                 spImageType.enumValueIndex = (int)(selectedIndex == 0 ? Image.Type.Simple : Image.Type.Filled);

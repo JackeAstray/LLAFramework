@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Codice.CM.Client.Differences.Graphic;
+using System;
+using System.Security.Policy;
 using UnityEditor;
 using UnityEditor.UI;
 using UnityEngine;
@@ -15,6 +17,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
         private SerializedProperty spCircle, spTriangle, spRectangle, spPentagon, spHexagon, spNStarPolygon;
         private SerializedProperty spPreserveAspect;
         private SerializedProperty spFillMethod, spFillOrigin, spFillAmount, spFillClockwise;
+        private SerializedProperty spAlphaThreshold;
         private SerializedProperty spShape;
         private SerializedProperty spStrokeWidth, spOutlineWidth, spOutlineColor, spFalloffDistance;
         private SerializedProperty spConstrainRotation, spShapeRotation, spFlipHorizontal, spFlipVertical;
@@ -56,6 +59,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
             spFlipHorizontal = serializedObject.FindProperty("flipHorizontal");
             spFlipVertical = serializedObject.FindProperty("flipVertical");
 
+            spAlphaThreshold = serializedObject.FindProperty("alphaThreshold");
 
             spCircle = serializedObject.FindProperty("circle");
             spRectangle = serializedObject.FindProperty("rectangle");
@@ -68,8 +72,6 @@ namespace GameLogic.UI.ImageExtensions.Editor
 
             spGradient = serializedObject.FindProperty("gradientEffect");
         }
-
-
 
         public override void OnInspectorGUI()
         {
@@ -118,6 +120,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
                 {
                     AdditionalShapeDataGUI();
                 }
+
                 EditorGUILayout.EndVertical();
             }
 
@@ -159,7 +162,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
             Color outlineColor = spOutlineColor.colorValue;
 
             Rect r = EditorGUILayout.GetControlRect(true,
-                EditorGUIUtility.singleLineHeight * 2 + EditorGUIUtility.standardVerticalSpacing);
+                     EditorGUIUtility.singleLineHeight * 2 + EditorGUIUtility.standardVerticalSpacing);
             Rect line = r;
             line.height = EditorGUIUtility.singleLineHeight;
             float x = (line.width - 10f) / 2;
@@ -168,7 +171,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
             float labelWidth = x - fieldWidth;
 
             line.width = labelWidth;
-            EditorGUI.LabelField(line, "一条线");
+            EditorGUI.LabelField(line, "线条");
             Rect dragZone = line;
             line.x += labelWidth;
             line.width = fieldWidth;
@@ -400,6 +403,9 @@ namespace GameLogic.UI.ImageExtensions.Editor
 
                 (serializedObject.targetObject as Image)?.DisableSpriteOptimizations();
             }
+
+            Rect rect = EditorGUILayout.GetControlRect();
+            EditorGUI.Slider(rect, spAlphaThreshold, 0f, 1f, "Alpha阈值");
         }
 
         private void ImageTypeGUI()
@@ -413,7 +419,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
                     "类型");
                 imageTypeRect.x += EditorGUIUtility.labelWidth + 2;
                 imageTypeRect.width -= EditorGUIUtility.labelWidth + 2;
-                selectedIndex = EditorGUI.Popup(imageTypeRect, selectedIndex, new[] { "简单", "填满" });
+                selectedIndex = EditorGUI.Popup(imageTypeRect, selectedIndex, new[] { "简单", "填充" });
             }
             if (EditorGUI.EndChangeCheck())
             {
