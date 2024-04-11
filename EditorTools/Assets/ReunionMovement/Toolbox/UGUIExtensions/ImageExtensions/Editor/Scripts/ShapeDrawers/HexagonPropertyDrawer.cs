@@ -29,7 +29,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
 
                 Rect line = position;
                 line.height = EditorGUIUtility.singleLineHeight;
-                string[] toolbarLabel = new[] { "自由", "通义" };
+                string[] toolbarLabel = new[] { "自由", "统一" };
                 EditorUtility.CornerRadiusModeGUI(line, ref uniformRect, toolbarLabel);
                 line.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
                 EditorGUI.BeginChangeCheck();
@@ -56,14 +56,14 @@ namespace GameLogic.UI.ImageExtensions.Editor
 
 
                 line.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-                EditorUtility.CornerRadiusModeGUI(line, ref uniformTriS, toolbarLabel, "Tip Size");
+                EditorUtility.CornerRadiusModeGUI(line, ref uniformTriS, toolbarLabel, "尖端大小");
                 line.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
                 EditorGUI.BeginChangeCheck();
                 {
                     EditorGUI.showMixedValue = triSizes.hasMultipleDifferentValues;
                     if (uniformTriS.boolValue)
                     {
-                        triSizesFloatValue = EditorGUI.FloatField(line, "Uniform Size", triSizesFloatValue);
+                        triSizesFloatValue = EditorGUI.FloatField(line, "统一大小", triSizesFloatValue);
                     }
                     else
                     {
@@ -81,14 +81,14 @@ namespace GameLogic.UI.ImageExtensions.Editor
 
 
                 line.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-                EditorUtility.CornerRadiusModeGUI(line, ref uniformTriR, toolbarLabel, "Tip Radius");
+                EditorUtility.CornerRadiusModeGUI(line, ref uniformTriR, toolbarLabel, "尖端半径");
                 line.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
                 EditorGUI.BeginChangeCheck();
                 {
                     EditorGUI.showMixedValue = triRadius.hasMultipleDifferentValues;
                     if (uniformTriR.boolValue)
                     {
-                        triRadiusFloatValue = EditorGUI.FloatField(line, "Uniform Radius", triRadiusFloatValue);
+                        triRadiusFloatValue = EditorGUI.FloatField(line, "均匀半径", triRadiusFloatValue);
                     }
                     else
                     {

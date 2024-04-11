@@ -132,7 +132,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
         }
 
         public static void CornerRadiusModeGUI(Rect rect, ref SerializedProperty property, string[] toolBarHeading,
-            string label = "Corner Radius")
+            string label = "圆角半径")
         {
             bool boolVal = property.boolValue;
             Rect labelRect = new Rect(rect.x, rect.y, EditorGUIUtility.labelWidth, rect.height);

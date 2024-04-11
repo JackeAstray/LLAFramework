@@ -48,7 +48,7 @@ namespace GameLogic.UI.ImageExtensions
             {
                 if (emptySprite == null)
                 {
-                    emptySprite = Resources.Load<Sprite>("UI/Sprites/mpui_default_empty_sprite");
+                    emptySprite = Resources.Load<Sprite>("UI/Sprites/default_empty_sprite");
                 }
 
                 return emptySprite;

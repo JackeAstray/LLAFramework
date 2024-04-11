@@ -18,7 +18,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
                 SerializedProperty uniform = property.FindPropertyRelative("uniformCornerRadius");
                 SerializedProperty radius = property.FindPropertyRelative("cornerRadius");
 
-                EditorUtility.CornerRadiusModeGUI(LabelRect, ref uniform, new[] { "自由", "一致" });
+                EditorUtility.CornerRadiusModeGUI(LabelRect, ref uniform, new[] { "自由", "统一" });
 
                 float floatVal = radius.vector3Value.x;
                 Vector3 vectorValue = radius.vector3Value;

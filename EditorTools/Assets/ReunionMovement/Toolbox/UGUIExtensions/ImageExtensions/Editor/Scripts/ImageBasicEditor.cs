@@ -82,7 +82,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
             EditorGUI.BeginChangeCheck();
             {
                 EditorGUI.showMixedValue = spShape.hasMultipleDifferentValues;
-                selectedIndex = (DrawShapeBasic)EditorGUI.EnumPopup(shapePopupRect, "Draw Shape", selectedIndex);
+                selectedIndex = (DrawShapeBasic)EditorGUI.EnumPopup(shapePopupRect, "绘制形状", selectedIndex);
                 EditorGUI.showMixedValue = false;
             }
             if (EditorGUI.EndChangeCheck())
@@ -124,8 +124,6 @@ namespace GameLogic.UI.ImageExtensions.Editor
                 EditorGUILayout.EndVertical();
             }
 
-
-
             EditorGUILayout.Space();
             ImageTypeGUI();
 
@@ -147,28 +145,28 @@ namespace GameLogic.UI.ImageExtensions.Editor
         private void NStarPolygonGUI()
         {
             spNStarPolygonSideCount.intValue =
-                EditorGUILayout.IntSlider("Side Count", spNStarPolygonSideCount.intValue, 3, 10);
+                EditorGUILayout.IntSlider("边数", spNStarPolygonSideCount.intValue, 3, 10);
             spNStarPolygonInset.floatValue =
-                EditorGUILayout.Slider("Inset", spNStarPolygonInset.floatValue, 2f,
+                EditorGUILayout.Slider("插入", spNStarPolygonInset.floatValue, 2f,
                     spNStarPolygonSideCount.intValue - 0.1f);
             spNStarPolygonCornerRadius.floatValue =
-                EditorGUILayout.FloatField("Corner Radius", spNStarPolygonCornerRadius.floatValue);
+                EditorGUILayout.FloatField("圆角半径", spNStarPolygonCornerRadius.floatValue);
 
         }
 
         private void CircleGUI()
         {
             EditorGUI.BeginDisabledGroup(spCircleFitToRect.boolValue);
-            EditorGUILayout.PropertyField(spCircleRadius, new GUIContent("Radius"));
+            EditorGUILayout.PropertyField(spCircleRadius, new GUIContent("半径"));
             EditorGUI.EndDisabledGroup();
             Rect rect = EditorGUILayout.GetControlRect();
-            EditorUtility.CornerRadiusModeGUI(rect, ref spCircleFitToRect, new[] { "Free", "Fit" }, String.Empty);
+            EditorUtility.CornerRadiusModeGUI(rect, ref spCircleFitToRect, new[] { "自由", "拟合" }, String.Empty);
         }
 
         private void RectangleGUI()
         {
             Rect rect = EditorGUILayout.GetControlRect(true, EditorGUIUtility.singleLineHeight);
-            EditorUtility.CornerRadiusModeGUI(rect, ref spRectangleUniformCornerRadius, new[] { "Free", "Uniform" });
+            EditorUtility.CornerRadiusModeGUI(rect, ref spRectangleUniformCornerRadius, new[] { "自由", "统一" });
 
             Vector4 vectorValue = spRectangleCornerRadius.vector4Value;
             float floatVal = vectorValue.x;
@@ -181,7 +179,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
                 EditorGUI.showMixedValue = spRectangleCornerRadius.hasMultipleDifferentValues;
                 if (spRectangleUniformCornerRadius.boolValue)
                 {
-                    floatVal = EditorGUILayout.FloatField("Uniform Radius", floatVal);
+                    floatVal = EditorGUILayout.FloatField("均匀半径", floatVal);
                 }
                 else
                 {
@@ -213,7 +211,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
         private void TriangleGUI()
         {
             Rect rect = EditorGUILayout.GetControlRect(true, EditorGUIUtility.singleLineHeight);
-            EditorUtility.CornerRadiusModeGUI(rect, ref spTriangleUniformCornerRadius, new[] { "Free", "Uniform" });
+            EditorUtility.CornerRadiusModeGUI(rect, ref spTriangleUniformCornerRadius, new[] { "自由", "统一" });
 
             Vector3 vectorValue = spTriangleCornerRadius.vector3Value;
             float floatVal = vectorValue.x;
@@ -223,7 +221,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
                 EditorGUI.showMixedValue = spTriangleCornerRadius.hasMultipleDifferentValues;
                 if (spTriangleUniformCornerRadius.boolValue)
                 {
-                    floatVal = EditorGUILayout.FloatField("Uniform Radius", floatVal);
+                    floatVal = EditorGUILayout.FloatField("均匀半径", floatVal);
                 }
                 else
                 {
@@ -259,7 +257,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
             float labelWidth = x - fieldWidth;
 
             line.width = labelWidth;
-            EditorGUI.LabelField(line, "Stroke");
+            EditorGUI.LabelField(line, "一条线");
             Rect dragZone = line;
             line.x += labelWidth;
             line.width = fieldWidth;
@@ -277,7 +275,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
 
             line.x += fieldWidth + 10;
             line.width = labelWidth;
-            EditorGUI.LabelField(line, "Falloff");
+            EditorGUI.LabelField(line, "衰减");
             dragZone = line;
             line.x += labelWidth;
             line.width = fieldWidth;
@@ -297,7 +295,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
             line.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
             line.x = r.x;
             line.width = labelWidth;
-            EditorGUI.LabelField(line, "Outline Width");
+            EditorGUI.LabelField(line, "轮廓宽度");
             dragZone = line;
             line.x += labelWidth;
             line.width = fieldWidth;
@@ -315,7 +313,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
 
             line.x += fieldWidth + 10;
             line.width = labelWidth;
-            EditorGUI.LabelField(line, "Outline Color");
+            EditorGUI.LabelField(line, "轮廓颜色");
             dragZone = line;
             line.width = fieldWidth;
             line.x += labelWidth;
@@ -347,13 +345,13 @@ namespace GameLogic.UI.ImageExtensions.Editor
             float labelWidth = x - fieldWidth;
 
             line.width = labelWidth;
-            EditorGUI.LabelField(line, "Rotation");
+            EditorGUI.LabelField(line, "旋转");
             line.x += labelWidth;
             line.width = r.width - labelWidth - 78;
 
             string[] options = spConstrainRotation.hasMultipleDifferentValues
                 ? new[] { "---", "---" }
-                : new[] { "Free", "Constrained" };
+                : new[] { "自由", "限制" };
             bool boolVal = spConstrainRotation.boolValue;
             EditorGUI.BeginChangeCheck();
             {
@@ -367,7 +365,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
 
             line.x += line.width + 14;
             line.width = 64;
-            EditorGUI.LabelField(line, "Flip");
+            EditorGUI.LabelField(line, "图像翻转");
 
             line.y += EditorGUIUtility.standardVerticalSpacing + EditorGUIUtility.singleLineHeight;
             line.x = r.x + 10;
@@ -376,7 +374,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
             EditorGUI.BeginDisabledGroup(spConstrainRotation.boolValue);
             {
                 Rect dragZone = line;
-                EditorGUI.LabelField(line, "Angle");
+                EditorGUI.LabelField(line, "角度");
                 line.x = r.x + labelWidth;
                 line.width = r.width - labelWidth - 148;
 
@@ -460,7 +458,6 @@ namespace GameLogic.UI.ImageExtensions.Editor
                 spFlipHorizontal.boolValue = flipH;
                 spFlipVertical.boolValue = flipV;
             }
-
         }
 
         private new void SpriteGUI()
@@ -471,7 +468,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
             EditorGUI.BeginChangeCheck();
             {
                 EditorGUI.showMixedValue = spSprite.hasMultipleDifferentValues;
-                sprite = EditorGUILayout.ObjectField("Sprite", sprite, typeof(Sprite), false, GUILayout.Height(EditorGUIUtility.singleLineHeight)) as Sprite;
+                sprite = EditorGUILayout.ObjectField("精灵", sprite, typeof(Sprite), false, GUILayout.Height(EditorGUIUtility.singleLineHeight)) as Sprite;
 
                 EditorGUI.showMixedValue = false;
             }
@@ -505,10 +502,10 @@ namespace GameLogic.UI.ImageExtensions.Editor
             {
                 EditorGUI.LabelField(
                     new Rect(imageTypeRect.x, imageTypeRect.y, EditorGUIUtility.labelWidth, imageTypeRect.height),
-                    "Type");
+                    "类型");
                 imageTypeRect.x += EditorGUIUtility.labelWidth + 2;
                 imageTypeRect.width -= EditorGUIUtility.labelWidth + 2;
-                selectedIndex = EditorGUI.Popup(imageTypeRect, selectedIndex, new[] { "Simple", "Filled" });
+                selectedIndex = EditorGUI.Popup(imageTypeRect, selectedIndex, new[] { "简单", "填满" });
             }
             if (EditorGUI.EndChangeCheck())
             {
@@ -528,26 +525,26 @@ namespace GameLogic.UI.ImageExtensions.Editor
                 switch ((Image.FillMethod)spFillMethod.enumValueIndex)
                 {
                     case Image.FillMethod.Horizontal:
-                        spFillOrigin.intValue = (int)(Image.OriginHorizontal)EditorGUILayout.EnumPopup("Fill Origin",
+                        spFillOrigin.intValue = (int)(Image.OriginHorizontal)EditorGUILayout.EnumPopup("填充原点",
                             (Image.OriginHorizontal)spFillOrigin.intValue);
                         break;
                     case Image.FillMethod.Vertical:
-                        spFillOrigin.intValue = (int)(Image.OriginVertical)EditorGUILayout.EnumPopup("Fill Origin",
+                        spFillOrigin.intValue = (int)(Image.OriginVertical)EditorGUILayout.EnumPopup("填充原点",
                             (Image.OriginVertical)spFillOrigin.intValue);
                         break;
                     case Image.FillMethod.Radial90:
                         spFillOrigin.intValue =
-                            (int)(Image.Origin90)EditorGUILayout.EnumPopup("Fill Origin",
+                            (int)(Image.Origin90)EditorGUILayout.EnumPopup("填充原点",
                                 (Image.Origin90)spFillOrigin.intValue);
                         break;
                     case Image.FillMethod.Radial180:
                         spFillOrigin.intValue =
-                            (int)(Image.Origin180)EditorGUILayout.EnumPopup("Fill Origin",
+                            (int)(Image.Origin180)EditorGUILayout.EnumPopup("填充原点",
                                 (Image.Origin180)spFillOrigin.intValue);
                         break;
                     case Image.FillMethod.Radial360:
                         spFillOrigin.intValue =
-                            (int)(Image.Origin360)EditorGUILayout.EnumPopup("Fill Origin",
+                            (int)(Image.Origin360)EditorGUILayout.EnumPopup("填充原点",
                                 (Image.Origin360)spFillOrigin.intValue);
                         break;
                 }
@@ -555,7 +552,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
                 EditorGUILayout.PropertyField(spFillAmount);
                 if ((Image.FillMethod)spFillMethod.enumValueIndex > Image.FillMethod.Vertical)
                 {
-                    EditorGUILayout.PropertyField(spFillClockwise, new GUIContent("Clockwise"));
+                    EditorGUILayout.PropertyField(spFillClockwise, new GUIContent("顺时针"));
                 }
 
                 --EditorGUI.indentLevel;

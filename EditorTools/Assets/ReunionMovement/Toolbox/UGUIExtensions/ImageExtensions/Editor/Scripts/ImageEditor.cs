@@ -80,7 +80,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
             RaycastControlsGUI();
             EditorGUILayout.PropertyField(m_Color);
             EditorGUILayout.Space();
-            EditorGUILayout.PropertyField(spShape);
+            EditorGUILayout.PropertyField(spShape, new GUIContent("绘制形状"));
 
             if (spShape.enumValueIndex != (int)DrawShape.None)
             {
@@ -257,7 +257,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
             line.x += labelWidth;
             line.width = r.width - labelWidth - 78;
 
-            string[] options = spConstrainRotation.hasMultipleDifferentValues ? new[] { "---", "---" } : new[] { "自由", "约束" };
+            string[] options = spConstrainRotation.hasMultipleDifferentValues ? new[] { "---", "---" } : new[] { "自由", "限制" };
             bool boolVal = spConstrainRotation.boolValue;
             EditorGUI.BeginChangeCheck();
             {
@@ -381,7 +381,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
         private new void SpriteGUI()
         {
             EditorGUI.BeginChangeCheck();
-            EditorGUILayout.PropertyField(spSprite, new GUIContent("Sprite"));
+            EditorGUILayout.PropertyField(spSprite, new GUIContent("精灵"));
             if (EditorGUI.EndChangeCheck())
             {
                 Sprite newSprite = spSprite.objectReferenceValue as Sprite;
@@ -410,7 +410,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
             {
                 EditorGUI.LabelField(
                     new Rect(imageTypeRect.x, imageTypeRect.y, EditorGUIUtility.labelWidth, imageTypeRect.height),
-                    "Type");
+                    "类型");
                 imageTypeRect.x += EditorGUIUtility.labelWidth + 2;
                 imageTypeRect.width -= EditorGUIUtility.labelWidth + 2;
                 selectedIndex = EditorGUI.Popup(imageTypeRect, selectedIndex, new[] { "简单", "填满" });

@@ -21,7 +21,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
                 EditorGUI.BeginDisabledGroup(FitCirlce);
                 {
                     EditorGUI.PropertyField(radiusRect, property.FindPropertyRelative("radius"),
-                        new GUIContent("Radius"));
+                        new GUIContent("半径"));
                 }
                 EditorGUI.EndDisabledGroup();
 

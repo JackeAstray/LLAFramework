@@ -24,7 +24,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
 
                 Rect line = position;
                 line.height = EditorGUIUtility.singleLineHeight;
-                EditorUtility.CornerRadiusModeGUI(line, ref uniform, new[] { "自由", "一致" });
+                EditorUtility.CornerRadiusModeGUI(line, ref uniform, new[] { "自由", "统一" });
                 line.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
 
                 EditorGUI.BeginChangeCheck();
@@ -32,7 +32,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
                     EditorGUI.showMixedValue = RectRadius.hasMultipleDifferentValues;
                     if (boolVal)
                     {
-                        radiusFloatValue = EditorGUI.FloatField(line, "   均匀半径", radiusFloatValue);
+                        radiusFloatValue = EditorGUI.FloatField(line, "均匀半径", radiusFloatValue);
                     }
                     else
                     {
@@ -52,9 +52,8 @@ namespace GameLogic.UI.ImageExtensions.Editor
                 }
 
                 line.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-                EditorGUI.PropertyField(line, triSize, new GUIContent("尖端尺寸"));//Tip size
+                EditorGUI.PropertyField(line, triSize, new GUIContent("尖端大小"));//Tip size
                 line.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-                //EditorGUI.PropertyField(line, triRadius, new GUIContent("Tip Radius"));
                 EditorGUI.PropertyField(line, triRadius, new GUIContent("尖端半径"));//Tip Radius
             }
             EditorGUI.EndProperty();

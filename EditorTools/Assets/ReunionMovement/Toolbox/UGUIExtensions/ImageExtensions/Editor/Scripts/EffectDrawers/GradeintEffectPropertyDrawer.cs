@@ -23,7 +23,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
                 EditorGUI.BeginChangeCheck();
                 {
                     EditorGUI.showMixedValue = Enabled.hasMultipleDifferentValues;
-                    enabled = EditorGUI.Toggle(line, "Gradient", enabled);
+                    enabled = EditorGUI.Toggle(line, "渐变", enabled);
                     EditorGUI.showMixedValue = false;
 
                     if (enabled)
@@ -31,7 +31,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
                         line.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
 
                         EditorGUI.showMixedValue = gradientType.hasMultipleDifferentValues;
-                        gradType = (GradientType)EditorGUI.EnumPopup(line, "Type", gradType);
+                        gradType = (GradientType)EditorGUI.EnumPopup(line, "类型", gradType);
                         EditorGUI.showMixedValue = false;
                     }
                 }
@@ -73,7 +73,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
                         {
                             line.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
                             EditorGUI.showMixedValue = rotation.hasMultipleDifferentValues;
-                            EditorGUI.PropertyField(line, rotation, new GUIContent("Rotation"));
+                            EditorGUI.PropertyField(line, rotation, new GUIContent("旋转"));
                         }
 
                         EditorGUI.showMixedValue = false;

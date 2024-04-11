@@ -18,13 +18,13 @@ namespace GameLogic.UI.ImageExtensions.Editor
                 Rect line = position;
                 line.height = EditorGUIUtility.singleLineHeight;
 
-                EditorGUI.Slider(line, sideCount, 3f, 10f);
+                EditorGUI.Slider(line, sideCount, 3f, 10f, "边数");
                 line.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-                EditorGUI.Slider(line, inset, 2f, sideCount.floatValue - 0.01f);
+                EditorGUI.Slider(line, inset, 2f, sideCount.floatValue - 0.01f, "插入");
                 line.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-                EditorGUI.PropertyField(line, cornerRadius);
+                EditorGUI.PropertyField(line, cornerRadius, new GUIContent("圆角半径"));
                 line.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-                EditorGUI.PropertyField(line, offset);
+                EditorGUI.PropertyField(line, offset, new GUIContent("偏移量"));
             }
             EditorGUI.EndProperty();
         }
