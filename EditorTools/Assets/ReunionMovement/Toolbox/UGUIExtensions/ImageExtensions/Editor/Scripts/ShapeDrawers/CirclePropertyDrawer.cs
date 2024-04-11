@@ -6,7 +6,6 @@ namespace GameLogic.UI.ImageExtensions.Editor
     [CustomPropertyDrawer(typeof(CircleImg))]
     public class CirclePropertyDrawer : PropertyDrawer
     {
-
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.BeginProperty(position, label, property);

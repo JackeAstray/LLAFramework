@@ -14,7 +14,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
     public class ImageExEditor : ImageEditor
     {
         private SerializedProperty spSprite;
-        private SerializedProperty spCircle, spTriangle, spRectangle, spPentagon, spHexagon, spNStarPolygon;
+        private SerializedProperty spCircle, spTriangle, spRectangle, spPentagon, spHexagon, spNStarPolygon, spHeart;
         private SerializedProperty spPreserveAspect;
         private SerializedProperty spFillMethod, spFillOrigin, spFillAmount, spFillClockwise;
         private SerializedProperty spAlphaThreshold;
@@ -67,6 +67,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
             spPentagon = serializedObject.FindProperty("pentagon");
             spHexagon = serializedObject.FindProperty("hexagon");
             spNStarPolygon = serializedObject.FindProperty("nStarPolygon");
+            spHeart = serializedObject.FindProperty("heart");
 
             spPreserveAspect = serializedObject.FindProperty("m_PreserveAspect");
 
@@ -109,6 +110,10 @@ namespace GameLogic.UI.ImageExtensions.Editor
                         case DrawShape.NStarPolygon:
                             EditorGUILayout.PropertyField(spNStarPolygon);
                             break;
+                        case DrawShape.Heart:
+                            EditorGUILayout.PropertyField(spHeart);
+                            break;
+
                         default:
                             throw new ArgumentOutOfRangeException();
                     }

@@ -13,7 +13,8 @@ namespace GameLogic.UI.ImageExtensions
         Rectangle,      //矩形
         Pentagon,       //五边形
         Hexagon,        //六边形
-        NStarPolygon    //N角星
+        NStarPolygon,   //N星多边形
+        Heart,          //心形
     }
 
     //渐变类型

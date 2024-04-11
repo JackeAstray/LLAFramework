@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UI.ImageExtensions;
+using Unity.VisualScripting;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -37,6 +38,7 @@ namespace GameLogic.UI.ImageExtensions
         [SerializeField] private PentagonImg pentagon = new PentagonImg();
         [SerializeField] private HexagonImg hexagon = new HexagonImg();
         [SerializeField] private NStarPolygonImg nStarPolygon = new NStarPolygonImg();
+        [SerializeField] private HeartImg heart = new HeartImg();
 
         [SerializeField] private GradientEffect gradientEffect = new GradientEffect();
         #endregion
@@ -398,6 +400,16 @@ namespace GameLogic.UI.ImageExtensions
             }
         }
 
+        public HeartImg Heart
+        {
+            get => heart;
+            set
+            {
+                heart = value;
+                SetMaterialDirty();
+            }
+        }
+
         public GradientEffect GradientEffect
         {
             get => gradientEffect;
@@ -480,6 +492,7 @@ namespace GameLogic.UI.ImageExtensions
             pentagon.OnValidate();
             hexagon.OnValidate();
             nStarPolygon.OnValidate();
+            heart.OnValidate();
 
             gradientEffect.OnValidate();
 
@@ -498,6 +511,7 @@ namespace GameLogic.UI.ImageExtensions
             pentagon.Init(m_Material, material, rectTransform);
             hexagon.Init(m_Material, material, rectTransform);
             nStarPolygon.Init(m_Material, material, rectTransform);
+            heart.Init(m_Material, material, rectTransform);
             gradientEffect.Init(m_Material, material, rectTransform);
         }
 
@@ -567,6 +581,7 @@ namespace GameLogic.UI.ImageExtensions
                 pentagon.onComponentSettingsChanged += OnComponentSettingsChanged;
                 hexagon.onComponentSettingsChanged += OnComponentSettingsChanged;
                 nStarPolygon.onComponentSettingsChanged += OnComponentSettingsChanged;
+                heart.onComponentSettingsChanged += OnComponentSettingsChanged;
                 gradientEffect.onComponentSettingsChanged += OnComponentSettingsChanged;
             }
             else
@@ -577,6 +592,7 @@ namespace GameLogic.UI.ImageExtensions
                 pentagon.onComponentSettingsChanged -= OnComponentSettingsChanged;
                 hexagon.onComponentSettingsChanged -= OnComponentSettingsChanged;
                 nStarPolygon.onComponentSettingsChanged -= OnComponentSettingsChanged;
+                heart.onComponentSettingsChanged -= OnComponentSettingsChanged;
                 gradientEffect.onComponentSettingsChanged -= OnComponentSettingsChanged;
             }
         }
@@ -602,6 +618,7 @@ namespace GameLogic.UI.ImageExtensions
         {
             base.OnRectTransformDimensionsChange();
             circle.UpdateCircleRadius(rectTransform);
+            heart.UpdateCircleRadius(rectTransform);
             base.SetMaterialDirty();
         }
 
@@ -692,6 +709,7 @@ namespace GameLogic.UI.ImageExtensions
             pentagon.ModifyMaterial(ref mat);
             hexagon.ModifyMaterial(ref mat);
             nStarPolygon.ModifyMaterial(ref mat);
+            heart.ModifyMaterial(ref mat);
 
             gradientEffect.ModifyMaterial(ref mat);
 
@@ -705,6 +723,7 @@ namespace GameLogic.UI.ImageExtensions
                     mat.DisableKeyword("PENTAGON");
                     mat.DisableKeyword("HEXAGON");
                     mat.DisableKeyword("NSTAR_POLYGON");
+                    mat.DisableKeyword("HEART");
                     break;
                 case DrawShape.Circle:
                     mat.EnableKeyword("CIRCLE");
@@ -723,6 +742,9 @@ namespace GameLogic.UI.ImageExtensions
                     break;
                 case DrawShape.Hexagon:
                     mat.EnableKeyword("HEXAGON");
+                    break;
+                case DrawShape.Heart:
+                    mat.EnableKeyword("HEART");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -753,6 +775,7 @@ namespace GameLogic.UI.ImageExtensions
             mat.DisableKeyword("PENTAGON");
             mat.DisableKeyword("HEXAGON");
             mat.DisableKeyword("NSTAR_POLYGON");
+            mat.DisableKeyword("Heart");
 
             mat.DisableKeyword("STROKE");
             mat.DisableKeyword("OUTLINED");
@@ -791,6 +814,7 @@ namespace GameLogic.UI.ImageExtensions
             pentagon.InitValuesFromMaterial(ref mat);
             hexagon.InitValuesFromMaterial(ref mat);
             nStarPolygon.InitValuesFromMaterial(ref mat);
+            heart.InitValuesFromMaterial(ref mat);
 
             //GradientEffect
             gradientEffect.InitValuesFromMaterial(ref mat);

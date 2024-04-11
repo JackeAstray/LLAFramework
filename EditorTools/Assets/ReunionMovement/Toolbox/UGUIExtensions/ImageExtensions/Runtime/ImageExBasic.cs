@@ -280,6 +280,7 @@ namespace GameLogic.UI.ImageExtensions
                     case DrawShape.Pentagon:
                     case DrawShape.Hexagon:
                     case DrawShape.NStarPolygon:
+                    case DrawShape.Heart:
                         return Materials.GetMaterial(3, strokeWidth > 0f, outlineWidth > 0f);
                     default:
                         throw new ArgumentOutOfRangeException();

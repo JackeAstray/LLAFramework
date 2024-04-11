@@ -59,12 +59,22 @@ float sdNStarPolygon(in float2 p, in float r, in float n, in float m) // m=[2,n]
 }
 //EndCredit
 
-//环 Credit: https://www.shadertoy.com/view/DsccDH
-float sdRing(in float2 p, in float2 n, in float r, in float th)
+//心 Credit: https://www.shadertoy.com/view/3tyBzV
+float dot2(float2 v)
+{ 
+    return dot(v,v); 
+}
+
+float sdHeart(float2 p, float scale)
 {
-    p.x = abs(p.x);
-    p = float4(n.x,n.y,-n.y,n.x)*p;
-    return max(abs(length(p)-r)-th*0.5,length(float2(p.x,max(0.0,abs(r-p.y)-th*0.5)))*sign(p.x));
+    p.x = abs(p.x)/ scale;
+    p.y = p.y / scale;
+
+    if(p.y + p.x > 1.0 )
+    {
+        return sqrt(dot2(p-float2(0.25,0.75))) - sqrt(2.0) / 4.0;
+    }
+    return sqrt(min(dot2(p-float2(0.00,1.00)), dot2(p-0.5*max(p.x+p.y,0.0)))) * sign(p.x-p.y);
 }
 //EndCredit
 //形状结束------------------------

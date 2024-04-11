@@ -30,7 +30,7 @@ Shader "ReunionMovement/UI/Procedural Image"
         _NStarPolygonInset ("Nstar Polygon Inset", float) = 2
         _NStarPolygonCornerRadius ("Nstar Polygon Corner Radius", float) = 0
         _NStarPolygonOffset ("Nstar Polygon Offset", Vector) = (0, 0, 0, 0)
-        
+
         _EnableGradient ("Enable GradientEffect", int) = 0
         _GradientType ("GradientEffect Type", int) = 0
         _GradientInterpolationType ("GradientEffect Interpolation Type", int) = 0
@@ -69,10 +69,6 @@ Shader "ReunionMovement/UI/Procedural Image"
         
         _ColorMask ("Color Mask", Float) = 15
         
-              /* //SOFTMASK_HANDLE_START
-         [PerRendererData] _SoftMask ("Mask", 2D) = "white" {}
-              */ //SOFTMASK_HANDLE_END
-        
         [Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip ("Use Alpha Clip", Float) = 0
     }
     
@@ -107,23 +103,15 @@ Shader "ReunionMovement/UI/Procedural Image"
             #include "UnityCG.cginc"
             #include "UnityUI.cginc"
             #include "2D_SDF.cginc"
-                  /* //SOFTMASK_HANDLE_START
-			#include "Assets/SoftMask/Shaders/SoftMask.cginc" //SOFTMASK_INCLUDE_HANDLE
-                  */ //SOFTMASK_HANDLE_END
-            
             
             #pragma multi_compile_local _ UNITY_UI_CLIP_RECT
             #pragma multi_compile_local _ UNITY_UI_ALPHACLIP
             
-            #pragma multi_compile_local _ CIRCLE TRIANGLE RECTANGLE PENTAGON HEXAGON NSTAR_POLYGON
+            #pragma multi_compile_local _ CIRCLE TRIANGLE RECTANGLE PENTAGON HEXAGON NSTAR_POLYGON HEART
             
             #pragma multi_compile_local _ STROKE OUTLINED OUTLINED_STROKE
             #pragma multi_compile_local _ GRADIENT_LINEAR GRADIENT_RADIAL GRADIENT_CORNER
 
-                  /* //SOFTMASK_HANDLE_START
-            #pragma multi_compile _ SOFTMASK_SIMPLE
-                  */ //SOFTMASK_HANDLE_END
-            
             struct appdata_t
             {
                 float4 vertex: POSITION;
@@ -145,9 +133,9 @@ Shader "ReunionMovement/UI/Procedural Image"
                 float4 worldPosition : TEXCOORD3;
 
 
-                      /* //SOFTMASK_HANDLE_START
+                /* //SOFTMASK_HANDLE_START
                 SOFTMASK_COORDS(4)
-                      */ //SOFTMASK_HANDLE_END
+                */ //SOFTMASK_HANDLE_END
                 
                 UNITY_VERTEX_OUTPUT_STEREO
             };
@@ -236,7 +224,7 @@ Shader "ReunionMovement/UI/Procedural Image"
             
             
             
-            
+            //渐变
             #if GRADIENT_LINEAR || GRADIENT_RADIAL
                 float4 SampleGradient(float Time)
                 {
@@ -259,6 +247,7 @@ Shader "ReunionMovement/UI/Procedural Image"
                 }
             #endif
             
+            //矩形
             #if RECTANGLE
                 half rectangleScene(float4 _additionalData)
                 {
@@ -288,27 +277,10 @@ Shader "ReunionMovement/UI/Procedural Image"
                     corners = max(corners, 0.0) * cornerMask;
 
                     return rect*(cornerMask-1) - corners;
-                    /*
-                    float2 _texcoord = _additionalData.xy;
-                    float2 _size = float2(_additionalData.z, _additionalData.w);
-                    float4 radius = _RectangleCornerRadius;
-                    
-                    
-                    half rect = rectanlge(_texcoord - half2(_size.x / 2.0, _size.y / 2.0), _size.x, _size.y);
-                    half cornerCircle = circle(_texcoord - radius.xx, radius.x);
-                    rect = _texcoord.x < radius.x && _texcoord.y < radius.x ? cornerCircle: rect;
-                    cornerCircle = circle(_texcoord - half2(_size.x - radius.y, radius.y), radius.y);
-                    rect = _texcoord.x > _size.x - radius.y && _texcoord.y < radius.y ? cornerCircle: rect;
-                    cornerCircle = circle(_texcoord - (half2(_size.x, _size.y) - radius.zz), radius.z);
-                    rect = _texcoord.x > _size.x - radius.z && _texcoord.y > _size.y - radius.z ? cornerCircle: rect;
-                    cornerCircle = circle(_texcoord - half2(radius.w, _size.y - radius.w), radius.w);
-                    rect = _texcoord.x < radius.w && _texcoord.y > _size.y - radius.w ? cornerCircle: rect;
-                    
-                    return rect;
-                    */
                 }
             #endif
             
+            //圆
             #if CIRCLE
                 float circleScene(float4 _additionalData)
                 {
@@ -322,6 +294,7 @@ Shader "ReunionMovement/UI/Procedural Image"
                 }
             #endif
             
+            //三角形
             #if TRIANGLE
                 half triangleScene(float4 _additionalData)
                 {
@@ -331,7 +304,6 @@ Shader "ReunionMovement/UI/Procedural Image"
                     float height = _size.y;//_additionalData.w;
                     
                     half sdf = sdTriangleIsosceles(_texcoord - half2(width / 2.0, height), half2(width / 2.0, -height));
-
                     //return sdf;
                     
                     _TriangleCornerRadius = max(_TriangleCornerRadius, half3(0.001, 0.001, 0.001));
@@ -375,6 +347,7 @@ Shader "ReunionMovement/UI/Procedural Image"
                 }
             #endif
             
+            //五边形
             #if PENTAGON
                 half pentagonScene(float4 _additionalData)
                 {
@@ -385,7 +358,6 @@ Shader "ReunionMovement/UI/Procedural Image"
                     float height = _size.y;
                     
                     // solid pentagon
-                    //实心五边形
                     half baseRect = rectanlge(_texcoord - half2(width / 2.0, height / 2.0), width, height);
                     half scale = height / _PentagonTipSize;
                     half rhombus = sdRhombus(_texcoord - float2(width / 2, _PentagonTipSize * scale), float2(width / 2, _PentagonTipSize) * scale);
@@ -435,6 +407,7 @@ Shader "ReunionMovement/UI/Procedural Image"
                 }
             #endif
             
+            //六边形
             #if HEXAGON
                 half hexagonScene(float4 _additionalData)
                 {
@@ -450,8 +423,6 @@ Shader "ReunionMovement/UI/Procedural Image"
                     half rhombus2 = sdRhombus(_texcoord - float2(width - _HexagonTipSize.y * scale, height / 2.0), float2(_HexagonTipSize.y, height / 2.0) * scale);
                     half sdfHexagon = sdfDifference(sdfDifference(baseRect, -rhombus1), -rhombus2);
 
-                    
-                    
                     //Left Rounded Corners
                     float halfHeight = height / 2.0;
                     float m = -halfHeight / _HexagonTipSize.x;
@@ -465,9 +436,7 @@ Shader "ReunionMovement/UI/Procedural Image"
                     half y = m * x + c;
                     half fy = map(_texcoord.x, x, circlePivot.x, y, circlePivot.y);
                     sdfHexagon = _texcoord.y > fy && _texcoord.y < height - fy ? cornerCircle: sdfHexagon;
-
                     //return sdfHexagon;
-                    
                     //bottom
                     k = _HexagonCornerRadius.x * d + c;
                     circlePivot = half2((_HexagonCornerRadius.x - k) / m, _HexagonCornerRadius.x);
@@ -519,7 +488,7 @@ Shader "ReunionMovement/UI/Procedural Image"
                 
             #endif
             
-            
+            //N星形多边形
             #if NSTAR_POLYGON
                 half nStarPolygonScene(float4 _additionalData)
                 {
@@ -532,6 +501,26 @@ Shader "ReunionMovement/UI/Procedural Image"
                 }
             #endif
             
+            //心形
+            #if HEART
+                half heartScene(float4 _additionalData)
+                {
+                    //得到纹理坐标
+                    float2 _texcoord = _additionalData.xy;
+                    //得到宽
+                    float width = _additionalData.z;
+                    //得到高
+                    float height = _additionalData.w;
+
+                    float radius = min(width, height) * 0.7;
+
+                    float2 value = _texcoord - float2(width * 0.5, height * 0.1);
+                    half sdf = sdHeart(value, radius);
+                    return sdf;
+                }
+            #endif
+
+            //旋转uv
             float2 rotateUV(float2 uv, float rotation, float2 mid)
             {
                 return float2(
@@ -540,6 +529,7 @@ Shader "ReunionMovement/UI/Procedural Image"
                 );
             }
             
+            //顶点着色器
             v2f vert(appdata_t v)
             {
                 v2f OUT;
@@ -568,13 +558,10 @@ Shader "ReunionMovement/UI/Procedural Image"
                 #endif
                 OUT.color = v.color * _Color;
 
-
-                      /* //SOFTMASK_HANDLE_START
-                SOFTMASK_CALCULATE_COORDS(OUT, v.vertex);
-                      */ //SOFTMASK_HANDLE_END
                 return OUT;
             }
             
+            //片元着色器
             fixed4 frag(v2f IN): SV_Target
             {
                 half4 color = IN.color;
@@ -623,7 +610,7 @@ Shader "ReunionMovement/UI/Procedural Image"
                     color *= finalCol;
                 #endif
                 
-                #if RECTANGLE || CIRCLE || PENTAGON || TRIANGLE || HEXAGON || NSTAR_POLYGON
+                #if RECTANGLE || CIRCLE || PENTAGON || TRIANGLE || HEXAGON || NSTAR_POLYGON || HEART
                     float sdfData = 0;
                     float pixelScale = clamp(1.0/_FalloffDistance, 1.0/2048.0, 2048.0);
                     #if RECTANGLE
@@ -638,12 +625,15 @@ Shader "ReunionMovement/UI/Procedural Image"
                         sdfData = hexagonScene(IN.shapeData);
                     #elif NSTAR_POLYGON
                         sdfData = nStarPolygonScene(IN.shapeData);
+                    #elif HEART
+                        sdfData = heartScene(IN.shapeData);
                     #endif
                 
                     #if !OUTLINED && !STROKE && !OUTLINED_STROKE
                         float sdf = sampleSdf(sdfData, pixelScale);
                         color.a *= sdf;
                     #endif
+
                     #if STROKE
                         float sdf = sampleSdfStrip(sdfData, _StrokeWidth + _OutlineWidth, pixelScale);
                         color.a *= sdf;
@@ -665,10 +655,6 @@ Shader "ReunionMovement/UI/Procedural Image"
                     #endif
                 #endif
 
-                      /* //SOFTMASK_HANDLE_START
-                color.a *= SOFTMASK_GET_MASK(IN);
-                      */ //SOFTMASK_HANDLE_END
-                
                 #ifdef UNITY_UI_CLIP_RECT
                     color.a *= UnityGet2DClipping(IN.worldPosition.xy, _ClipRect);
                 #endif

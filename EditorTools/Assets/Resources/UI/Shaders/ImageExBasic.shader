@@ -12,11 +12,6 @@ Shader "ReunionMovement/UI/Basic Procedural Image"
         _StencilReadMask ("Stencil Read Mask", Float) = 255
         _ColorMask ("Color Mask", Float) = 15
         
-        
-              /* //SOFTMASK_HANDLE_START
-         [PerRendererData] _SoftMask ("Mask", 2D) = "white" {}
-              */ //SOFTMASK_HANDLE_END
-        
         [Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip ("Use Alpha Clip", Float) = 0
     }
     
@@ -51,20 +46,12 @@ Shader "ReunionMovement/UI/Basic Procedural Image"
             #include "UnityCG.cginc"
             #include "UnityUI.cginc"
             #include "2D_SDF.cginc"
-                  /* //SOFTMASK_HANDLE_START
-			#include "Assets/SoftMask/Shaders/SoftMask.cginc" //SOFTMASK_INCLUDE_HANDLE
-                  */ //SOFTMASK_HANDLE_END
             
             #pragma multi_compile_local _ UNITY_UI_CLIP_RECT
             #pragma multi_compile_local _ UNITY_UI_ALPHACLIP
             
-            #pragma multi_compile_local _ CIRCLE TRIANGLE RECTANGLE NSTAR_POLYGON
+            #pragma multi_compile_local _ CIRCLE TRIANGLE RECTANGLE NSTAR_POLYGON HEART
             #pragma multi_compile_local _ STROKE OUTLINED OUTLINED_STROKE
-            
-                  /* //SOFTMASK_HANDLE_START
-            #pragma multi_compile _ SOFTMASK_SIMPLE
-                  */ //SOFTMASK_HANDLE_END
-            
             
             struct appdata_t
             {
@@ -91,11 +78,6 @@ Shader "ReunionMovement/UI/Basic Procedural Image"
                 float4 shapeData: TEXCOORD3;
                 float4 worldPosition: TEXCOORD4;
 
-                
-                      /* //SOFTMASK_HANDLE_START
-                SOFTMASK_COORDS(5)
-                      */ //SOFTMASK_HANDLE_END
-                
                 UNITY_VERTEX_OUTPUT_STEREO
             };
             
@@ -104,7 +86,8 @@ Shader "ReunionMovement/UI/Basic Procedural Image"
             fixed4 _TextureSampleAdd;
             float4 _ClipRect;
             float4 _MainTex_ST;
-
+            
+            //矩形
             #if RECTANGLE
                 half rectangleScene(float4 _sizeData, float4 _shapeData, float _cornerStyle)
                 {
@@ -129,29 +112,16 @@ Shader "ReunionMovement/UI/Basic Procedural Image"
                     cornerCircles.w = radius.w - length(_texcoord - half2(radius.w, _size.y - radius.w)); //circle(_texcoord - half2(radius.w, _size.y - radius.w), radius.w);
 
                     cornerCircles = min(max(cornerCircles, 0) * cornerRects, rect);
-                    //cornerCircles = max(cornerCircles, 0) * cornerRects;
+
                     half corners = max(max(max(cornerCircles.x, cornerCircles.y), cornerCircles.z), cornerCircles.w);
                     corners = max(corners, 0.0) * cornerMask;
 
                     //return rect;
                     return rect*(cornerMask-1) - corners;
-
-                    /*
-                    half rect = rectanlge(_texcoord - half2(_size.x / 2.0, _size.y / 2.0), _size.x, _size.y);
-                    half cornerCircle = circle(_texcoord - radius.xx, radius.x);
-                    rect = _texcoord.x < radius.x && _texcoord.y < radius.x ? cornerCircle: rect;
-                    cornerCircle = circle(_texcoord - half2(_size.x - radius.y, radius.y), radius.y);
-                    rect = _texcoord.x > _size.x - radius.y && _texcoord.y < radius.y ? cornerCircle: rect;
-                    cornerCircle = circle(_texcoord - (half2(_size.x, _size.y) - radius.zz), radius.z);
-                    rect = _texcoord.x > _size.x - radius.z && _texcoord.y > _size.y - radius.z ? cornerCircle: rect;
-                    cornerCircle = circle(_texcoord - half2(radius.w, _size.y - radius.w), radius.w);
-                    rect = _texcoord.x < radius.w && _texcoord.y > _size.y - radius.w ? cornerCircle: rect;
-                    */
-                    
-                    //max(max(max(cornerCircles.x, cornerCircles.y), cornerCircles.z), cornerCircles.w);
                 }
             #endif
             
+            //圆形
             #if CIRCLE
                 float circleScene(float4 _sizeData, float4 _shapeData)
                 {
@@ -165,6 +135,7 @@ Shader "ReunionMovement/UI/Basic Procedural Image"
                 }
             #endif
             
+            //三角形
             #if TRIANGLE
                 half triangleScene(float4 _sizeData, float4 _shapeData)
                 {
@@ -218,6 +189,7 @@ Shader "ReunionMovement/UI/Basic Procedural Image"
                 }
             #endif
             
+            //N星形多边形
             #if NSTAR_POLYGON
                 half nStarPolygonScene(float4 _sizeData, float4 _shapeData)
                 {
@@ -230,6 +202,7 @@ Shader "ReunionMovement/UI/Basic Procedural Image"
                 }
             #endif
             
+            //旋转uv
             float2 rotateUV(float2 uv, float rotation, float2 mid)
             {
                 return float2(
@@ -238,7 +211,6 @@ Shader "ReunionMovement/UI/Basic Procedural Image"
                 );
             }
             
-			
 			float4 decode_0_1_16(float2 input){
 			    float m = 65535.0;
 			    float e = 256.0 / 255.0;
@@ -251,7 +223,7 @@ Shader "ReunionMovement/UI/Basic Procedural Image"
 			    return clamp(c * e, 0.0, 1.0);
 			}
 			
-            
+            //顶点着色器
             v2f vert(appdata_t v)
             {
                 v2f OUT;
@@ -291,8 +263,6 @@ Shader "ReunionMovement/UI/Basic Procedural Image"
                 float f = abs(rotationData);
                 float shapeRotation = frac(f) * 360.0 * sign;
                 
-                // r.xyz -> constrainRotation, flipHorizontal, flipVertical
-                
                 f = floor(f);
                 float p = f / 100.0;
                 float z = round(p); 
@@ -322,12 +292,10 @@ Shader "ReunionMovement/UI/Basic Procedural Image"
                     OUT.vertex.xy += (_ScreenParams.zw - 1.0) * float2(-1.0, 1.0);
                 #endif
                 
-                      /* //SOFTMASK_HANDLE_START
-                SOFTMASK_CALCULATE_COORDS(OUT, v.vertex);
-                      */ //SOFTMASK_HANDLE_END
                 return OUT;
             }
             
+            //片元着色器
             fixed4 frag(v2f IN): SV_Target
             {
                 half4 color = IN.color;
@@ -365,7 +333,6 @@ Shader "ReunionMovement/UI/Basic Procedural Image"
                 #if !OUTLINED && !STROKE && !OUTLINED_STROKE
                     half shape = sampleSdf(sdfData, pixelScale);
                     color.a *= shape;
-                    //color.a = sdfData;
                 #endif
                 #if STROKE
                     half shape = sampleSdfStrip(sdfData, strokeWidth, pixelScale);
@@ -387,11 +354,6 @@ Shader "ReunionMovement/UI/Basic Procedural Image"
                     color.a *= alpha;
                 #endif
 
-
-                      /* //SOFTMASK_HANDLE_START
-                color.a *= SOFTMASK_GET_MASK(IN);
-                      */ //SOFTMASK_HANDLE_END
-                
                 #ifdef UNITY_UI_CLIP_RECT
                     color.a *= UnityGet2DClipping(IN.worldPosition.xy, _ClipRect);
                 #endif
@@ -403,7 +365,6 @@ Shader "ReunionMovement/UI/Basic Procedural Image"
                 return fixed4(color);
             }
             ENDCG
-            
         }
     }
     CustomEditor "GameLogic.UI.ImageExtensions.Editor.ImageShaderGUI"

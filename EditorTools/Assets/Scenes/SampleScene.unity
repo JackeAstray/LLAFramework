@@ -1722,8 +1722,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.000076293945, y: 0}
-  m_SizeDelta: {x: 205.5127, y: 192.7298}
+  m_AnchoredPosition: {x: 0.000076293945, y: 6.7}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1739789397
 MonoBehaviour:
@@ -1745,7 +1745,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: bb3e7cd0ad1111b4db305c3257080438, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1755,14 +1755,14 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
-  drawShape: 1
+  drawShape: 7
   imageType: 0
   materialMode: 0
   strokeWidth: 0
-  outlineWidth: 0
+  outlineWidth: 0.01
   outlineColor: {r: 0, g: 0, b: 0, a: 1}
   falloffDistance: 0
-  constrainRotation: 1
+  constrainRotation: 0
   shapeRotation: 0
   flipHorizontal: 0
   flipVertical: 0
@@ -1771,10 +1771,10 @@ MonoBehaviour:
     cornerRadius: {x: 0, y: 0, z: 0}
     uniformCornerRadius: 0
   rectangle:
-    cornerRadius: {x: 0, y: 0, z: 0, w: 0}
+    cornerRadius: {x: 10, y: 10, z: 10, w: 10}
     uniformCornerRadius: 0
   circle:
-    radius: 96.3649
+    radius: 50
     fitRadius: 1
   pentagon:
     cornerRadius: {x: 0, y: 0, z: 0, w: 0}
@@ -1782,11 +1782,11 @@ MonoBehaviour:
     tipRadius: 0.001
     tipSize: 1
   hexagon:
-    cornerRadius: {x: 1, y: 1, z: 1, w: 1}
+    cornerRadius: {x: 1, y: 10, z: 10, w: 1}
     uniformCornerRadius: 0
-    tipSize: {x: 1, y: 1}
+    tipSize: {x: 18.43, y: 1}
     uniformTipSize: 0
-    tipRadius: {x: 1, y: 1}
+    tipRadius: {x: 51.05, y: 1}
     uniformTipRadius: 0
   nStarPolygon:
     sideCount: 3
