@@ -77,6 +77,39 @@ float sdHeart(float2 p, float scale)
     return sqrt(min(dot2(p-float2(0.00,1.00)), dot2(p-0.5*max(p.x+p.y,0.0)))) * sign(p.x-p.y);
 }
 //EndCredit
+
+//sinmix Credit: https://www.shadertoy.com/view/ttKfWd
+float sinmix(vec2 p) {
+    float l = length(p);
+    float s = sqrt(.5);
+    float r=.25+.5*s-l;
+    float4 m = mat2(s,s,-s,s);p=abs(m*p)*m;
+    //return min(max(max(l-1.,r),length(max(p-vec2(1,0),0.))+min(p.y,0.)),-min(r,p.y));
+    return min(max(max(l-1.,r),p.y),-min(r,p.y));
+}
+
+float3 shadeDistance(float d) 
+{
+    float dist = d*100.0;
+    float banding = max(sin(dist), 0.0);
+    float strength = sqrt(1.-exp(-abs(d)*3.));
+    float pattern = mix(strength, banding, (0.6-abs(strength-0.5))*0.3);
+    float3 color = (d > 0.0 ? vec3(1.0,0.6,0.4) : vec3(0.4,0.9,1.0)) * pattern;
+    return color;
+}
+//EndCredit
+
+//https://www.shadertoy.com/view/fsGBD1
+//https://www.shadertoy.com/view/4ssyzj
+//https://www.shadertoy.com/view/wdlGWn
+//https://www.shadertoy.com/view/wdtcDn
+//https://www.shadertoy.com/view/ldVXRt
+//https://www.shadertoy.com/view/llXfRl
+//https://www.shadertoy.com/view/tscSz7
+//https://www.shadertoy.com/view/fdSBDD
+//https://www.shadertoy.com/view/fd3Szl
+//https://www.shadertoy.com/view/4dVXWy
+//https://www.shadertoy.com/view/Xd3cR8
 //形状结束------------------------
 
 //用于进一步的图形处理，例如渲染或者着色
