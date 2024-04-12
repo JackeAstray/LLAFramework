@@ -7,7 +7,7 @@ namespace GameLogic
     /// <summary>
     /// 截屏
     /// </summary>
-    public class ScreenCapture
+    public class ScreenCaptureV1
     {
         /// <summary>
         /// 初始化
