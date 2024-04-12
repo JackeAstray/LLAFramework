@@ -9,13 +9,12 @@ namespace GameLogic.UI.ImageExtensions
     /// <summary>
     /// 镜像图像
     /// </summary>
-    [AddComponentMenu("UI/镜像图像", 20)]
-    public class MirrorImage : ImageEx
+    public class MirrorImage : Image
     {
         /// <summary>
         /// 镜像类型
         /// </summary>
-        public enum MirrorType
+        public enum MirrorTypes
         {
             /// <summary>
             /// 水平
@@ -41,18 +40,17 @@ namespace GameLogic.UI.ImageExtensions
         /// 镜像类型
         /// </summary>
         [SerializeField]
-        private MirrorType m_mirrorType = MirrorType.Horizontal;
+        private MirrorTypes mirrorType = MirrorTypes.Quarter;
 
-        public MirrorType mirrorType
+        public MirrorTypes MirrorType
         {
-            get { return m_mirrorType; }
+            get { return mirrorType; }
             set
             {
-                if (m_mirrorType != value)
+                if (mirrorType != value)
                 {
-                    m_mirrorType = value;
+                    mirrorType = value;
                     SetVerticesDirty();
-
                 }
             }
         }
@@ -92,11 +90,11 @@ namespace GameLogic.UI.ImageExtensions
             {
                 float w = sprite.rect.width / pixelsPerUnit;
                 float h = sprite.rect.height / pixelsPerUnit;
-                if (mirrorType == MirrorType.Horizontal)
+                if (MirrorType == MirrorTypes.Horizontal)
                 {
                     w *= 2;
                 }
-                else if (mirrorType == MirrorType.Vertical)
+                else if (MirrorType == MirrorTypes.Vertical)
                 {
                     h *= 2;
                 }
@@ -120,17 +118,16 @@ namespace GameLogic.UI.ImageExtensions
             Vector4 v = GetDrawingDimensions(lPreserveAspect);
             var uv = (sprite != null) ? DataUtility.GetOuterUV(sprite) : Vector4.zero;
             Vector4 v1 = v;
-            //Debug.Log("uv::::" + uv + "  v:" + v+ "  center:"+ rectTransform.rect.center+ "  rect:" + rectTransform.rect);
 
-            switch (mirrorType)
+            switch (MirrorType)
             {
-                case MirrorType.Horizontal:
+                case MirrorTypes.Horizontal:
                     v.z = (v.z + v.x) / 2;
                     break;
-                case MirrorType.Vertical:
+                case MirrorTypes.Vertical:
                     v.w = (v.w + v.y) / 2;
                     break;
-                case MirrorType.Quarter:
+                case MirrorTypes.Quarter:
                     v.z = (v.z + v.x) / 2;
                     v.w = (v.w + v.y) / 2;
                     break;
@@ -149,11 +146,11 @@ namespace GameLogic.UI.ImageExtensions
             vh.AddTriangle(0, 1, 2);
             vh.AddTriangle(2, 3, 0);
 
-            switch (mirrorType)
+            switch (MirrorType)
             {
                 /// 1,2,5
                 /// 0,3,4
-                case MirrorType.Horizontal:
+                case MirrorTypes.Horizontal:
                     vh.AddVert(new Vector3(v1.z, v1.y), color32, new Vector2(uv.x, uv.y));
                     vh.AddVert(new Vector3(v1.z, v1.w), color32, new Vector2(uv.x, uv.w));
                     vh.AddTriangle(3, 2, 5);
@@ -162,7 +159,7 @@ namespace GameLogic.UI.ImageExtensions
                 /// 4,5
                 /// 1,2
                 /// 0,3
-                case MirrorType.Vertical:
+                case MirrorTypes.Vertical:
                     vh.AddVert(new Vector3(v1.x, v1.w), color32, new Vector2(uv.x, uv.y));
                     vh.AddVert(new Vector3(v1.z, v1.w), color32, new Vector2(uv.z, uv.y));
                     vh.AddTriangle(1, 4, 5);
@@ -171,7 +168,7 @@ namespace GameLogic.UI.ImageExtensions
                 /// 8,7,6
                 /// 1,2,5
                 /// 0,3,4
-                case MirrorType.Quarter:
+                case MirrorTypes.Quarter:
                     vh.AddVert(new Vector3(v1.z, v1.y), color32, new Vector2(uv.x, uv.y));
                     vh.AddVert(new Vector3(v1.z, v.w), color32, new Vector2(uv.x, uv.w));
                     vh.AddTriangle(3, 2, 5);
@@ -243,21 +240,21 @@ namespace GameLogic.UI.ImageExtensions
             s_UVScratch[3] = new Vector2(outer.z, outer.w);
 
 
-            switch (mirrorType)
+            switch (MirrorType)
             {
-                case MirrorType.Horizontal:
+                case MirrorTypes.Horizontal:
                     s_VertScratch[2].x = rect.width - (s_VertScratch[1].x - s_VertScratch[0].x);
                     s_VertScratch[2].y = rect.height - (s_VertScratch[1].y - s_VertScratch[0].y);
                     s_UVScratch[2] = new Vector2(inner.x, inner.w);
                     s_UVScratch[3] = new Vector2(outer.x, outer.w);
                     break;
-                case MirrorType.Vertical:
+                case MirrorTypes.Vertical:
                     s_VertScratch[2].x = rect.width - (s_VertScratch[1].x - s_VertScratch[0].x);
                     s_VertScratch[2].y = rect.height - (s_VertScratch[1].y - s_VertScratch[0].y);
                     s_UVScratch[2] = new Vector2(inner.z, inner.y);
                     s_UVScratch[3] = new Vector2(outer.z, outer.y);
                     break;
-                case MirrorType.Quarter:
+                case MirrorTypes.Quarter:
                     s_VertScratch[2].x = rect.width - (s_VertScratch[1].x - s_VertScratch[0].x);
                     s_VertScratch[2].y = rect.height - (s_VertScratch[1].y - s_VertScratch[0].y);
                     s_UVScratch[2] = new Vector2(inner.x, inner.y);
@@ -375,21 +372,21 @@ namespace GameLogic.UI.ImageExtensions
                 // 如果矩形小于边框的总和，那么就没有足够的空间放置正常大小的边框。
                 // 为了避免边框重叠产生的视觉效果，我们将边框缩小以适应。
                 float combinedBorders = border[axis] + border[axis + 2];
-                switch (mirrorType)
+                switch (MirrorType)
                 {
-                    case MirrorType.Horizontal:
+                    case MirrorTypes.Horizontal:
                         if (axis == 0)
                         {
                             combinedBorders = border[axis] + border[axis];
                         }
                         break;
-                    case MirrorType.Vertical:
+                    case MirrorTypes.Vertical:
                         if (axis == 1)
                         {
                             combinedBorders = border[axis] + border[axis];
                         }
                         break;
-                    case MirrorType.Quarter:
+                    case MirrorTypes.Quarter:
                         combinedBorders = border[axis] + border[axis];
                         break;
                     default:
@@ -588,9 +585,9 @@ namespace GameLogic.UI.ImageExtensions
                             var uvMin1 = uvMin;
                             var clipped1 = clipped;
                             //Debug.Log("i::" + i + "  j:::" + j);
-                            switch (mirrorType)
+                            switch (MirrorType)
                             {
-                                case MirrorType.Horizontal:
+                                case MirrorTypes.Horizontal:
                                     if (i % 2 == 1)
                                     {
                                         float offsetX = 0;
@@ -603,7 +600,7 @@ namespace GameLogic.UI.ImageExtensions
                                         clipped1 = new Vector2(offsetX, clipped.y);
                                     }
                                     break;
-                                case MirrorType.Vertical:
+                                case MirrorTypes.Vertical:
                                     if (j % 2 == 1)
                                     {
                                         float offsetY = 0;
@@ -618,7 +615,7 @@ namespace GameLogic.UI.ImageExtensions
 
                                     }
                                     break;
-                                case MirrorType.Quarter:
+                                case MirrorTypes.Quarter:
                                     if (j % 2 == 1 && i % 2 == 1)
                                     {
 
