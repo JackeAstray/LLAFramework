@@ -37,7 +37,6 @@ namespace GameLogic
         private float elapsed;
         private int frames;
         private float fps;
-        private float averageFps;
 
         private Color goodColor;
         private Color okColor;
@@ -64,7 +63,7 @@ namespace GameLogic
             var xPos = 0;
             var yPos = 0;
             var linesHeight = 40;
-            var linesWidth = 90;
+            var linesWidth = 130;
             if (anchor == Anchor.LeftBottom || anchor == Anchor.RightBottom) yPos = Screen.height - linesHeight;
             if (anchor == Anchor.RightTop || anchor == Anchor.RightBottom) xPos = Screen.width - linesWidth;
             xPos += xOffset;
@@ -93,7 +92,6 @@ namespace GameLogic
                 fps = frames / elapsed;
                 elapsed = 0;
                 frames = 0;
-                averageFps = (averageFps * (frames - 1) + fps) / frames;
             }
         }
 
@@ -101,12 +99,16 @@ namespace GameLogic
         {
             if (editorOnly && !Application.isEditor) return;
 
+            GUIStyle style = new GUIStyle();
+            style.fontSize = 30; // 设置字体大小
+            
             var defaultColor = GUI.color;
-            var color = fps <= badFps || averageFps <= badFps ? badColor : fps <= okFps || averageFps <= okFps ? okColor : goodColor;
-            GUI.color = color;
-            GUI.Label(rect1, "FPS: " + (int)fps);
-            GUI.Label(rect2, "平均值FPS: " + (int)averageFps);
-            GUI.color = defaultColor;
+            var color = fps <= badFps ? badColor : fps <= okFps ? okColor : goodColor;
+            //GUI.color = color;
+            style.normal.textColor = color; // 设置字体颜色
+            GUI.Label(rect1, "FPS: " + (int)fps, style);
+            style.normal.textColor = defaultColor; // 设置字体颜色
+            //GUI.color = defaultColor;
         }
     }
 }

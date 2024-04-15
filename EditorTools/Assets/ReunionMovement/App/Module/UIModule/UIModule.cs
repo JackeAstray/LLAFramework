@@ -93,10 +93,9 @@ namespace GameLogic
 
             GameObject.DontDestroyOnLoad(uiRoot);
 
-            EventSystem = new GameObject("EventSystem").AddComponent<EventSystem>();
-            EventSystem.gameObject.AddComponent<StandaloneInputModule>();
-
-            GameObject.DontDestroyOnLoad(EventSystem);
+            //EventSystem = new GameObject("EventSystem").AddComponent<EventSystem>();
+            //EventSystem.gameObject.AddComponent<StandaloneInputModule>();
+            //GameObject.DontDestroyOnLoad(EventSystem);
 
             initProgress = 50;
 

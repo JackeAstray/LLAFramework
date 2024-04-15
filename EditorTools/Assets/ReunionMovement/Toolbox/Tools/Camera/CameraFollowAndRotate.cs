@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls;
+using UnityEngine.InputSystem.EnhancedTouch;
+using InputSystemTouch = UnityEngine.InputSystem.EnhancedTouch.Touch;
+using InputSystemTouchPhase = UnityEngine.InputSystem.TouchPhase;
 
 namespace GameLogic
 {
@@ -41,6 +44,21 @@ namespace GameLogic
 
         private Vector2 lastTouchPos0;
         private Vector2 lastTouchPos1;
+#if USE_INPUT_SYSTEM
+        private float _startMultiTouchRadius;
+        private float _startMultiTouchDistance;
+        private float _radius;
+
+        //private const float MaxIdleTime = 0.2f;
+        //public static bool UsingTouch;
+        //private float idleTime;
+#else
+        protected const string MOUSEX = "Mouse X";
+        protected const string MOUSEY = "Mouse Y";
+        private UnityEngine.Touch oldTouch1; //上次触摸点1
+        private UnityEngine.Touch oldTouch2; //上次触摸点2
+#endif
+
 
         public bool isEnable = true;
         private bool isMobilePlatform;
@@ -61,17 +79,21 @@ namespace GameLogic
 
             cfrCamera = GetComponent<Camera>();
 
+
+#if USE_INPUT_SYSTEM
             mouse = Mouse.current;
             touchscreen = Touchscreen.current;
             keyboard = Keyboard.current;
 
+            EnhancedTouchSupport.Enable();
+#endif
             isMobilePlatform = Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer;
         }
 
         public void Update()
         {
             bool isPointerOverUI = IsPointerOverUI();
-
+#if USE_INPUT_SYSTEM
             // 检查是否按下了Alt键
             if (keyboard[Key.LeftAlt].wasPressedThisFrame)
             {
@@ -84,11 +106,31 @@ namespace GameLogic
                     HideCursor();
                 }
             }
-
+#else
+            // 检查是否按下了Alt键
+            if (Input.GetKeyDown(KeyCode.LeftAlt))
+            {
+                DisplayCursor();
+            }
+            else if (Input.GetKeyUp(KeyCode.LeftAlt))
+            {
+                if (hideCursor)
+                {
+                    HideCursor();
+                }
+            }
+#endif
             if (!isPointerOverUI)
             {
                 GetViewInput();
             }
+        }
+
+        public void OnDestroy()
+        {
+#if USE_INPUT_SYSTEM
+
+#endif
         }
 
         private void GetViewInput()
@@ -97,6 +139,7 @@ namespace GameLogic
             {
                 if (!isMobilePlatform)
                 {
+#if USE_INPUT_SYSTEM
                     //鼠标左键拖拽
                     if (mouse.leftButton.isPressed)
                     {
@@ -107,34 +150,22 @@ namespace GameLogic
 
                     //滚轮
                     SetZoom();
+#else
+                    //鼠标左键拖拽
+                    if (Input.GetMouseButton(0))
+                    {
+                        float horz = Input.GetAxis(MOUSEX);
+                        float vert = Input.GetAxis(MOUSEY);
+                        OrbitCamera(horz, -vert);
+                    }
+
+                    //滚轮
+                    SetZoom();
+#endif
                 }
                 else
                 {
-                    //没有触摸
-                    if (touchscreen.touches.Count <= 0)
-                    {
-                        return;
-                    }
-
-                    //触摸为1 开始触摸
-                    if (touchscreen.touches.Count == 1 && touchscreen.touches[0].phase.ReadValue() == UnityEngine.InputSystem.TouchPhase.Began)
-                    {
-
-                    }
-                    //触摸为1 滑动
-                    else if (touchscreen.touches.Count == 1)
-                    {
-                        TouchControl touch = touchscreen.touches[0];
-
-                        float horz = touch.delta.x.ReadValue();
-                        float vert = touch.delta.y.ReadValue();
-
-                        OrbitCamera(horz, -vert);
-                    }
-                    else if (touchscreen.touches.Count == 2)
-                    {
-                        HandleMultiTouch();
-                    }
+                    TouchSystem();
                 }
             }
         }
@@ -176,9 +207,85 @@ namespace GameLogic
 #if UNITY_EDITOR
             return EventSystem.current.IsPointerOverGameObject();
 #elif UNITY_ANDROID || UNITY_IPHONE
-            return EventSystem.current.IsPointerOverGameObject(touchscreen.touches[0].touchId.ReadValue());
+#if USE_INPUT_SYSTEM
+            if (InputSystemTouch.activeTouches.Count > 0)
+            {
+                InputSystemTouch touch = InputSystemTouch.activeTouches[0];
+                return EventSystem.current.IsPointerOverGameObject(touch.touchId);
+            }
+            return false;
+#else
+            if (Input.touchCount > 0)
+            {
+                return EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId);
+            }
+            return false;
+#endif
 #else
             return EventSystem.current.IsPointerOverGameObject();
+#endif
+        }
+
+        int GetTouchCount()
+        {
+#if USE_INPUT_SYSTEM
+            return InputSystemTouch.activeTouches.Count;
+#else
+            return Input.touchCount;
+#endif
+        }
+
+        public void TouchSystem()
+        {
+            //没有触摸
+            if (GetTouchCount() <= 0)
+            {
+                return;
+            }
+
+#if USE_INPUT_SYSTEM
+            //触摸为1 开始触摸
+            if (InputSystemTouch.activeTouches.Count == 1)
+            {
+                InputSystemTouch touch = InputSystemTouch.activeTouches[0];
+                if (touch.phase == InputSystemTouchPhase.Began)
+                {
+                    //开始触摸   
+                }
+                else
+                {
+                    // 滑动
+                    float horz = touch.delta.x;
+                    float vert = touch.delta.y;
+
+                    OrbitCamera(horz, -vert);
+                }
+            }
+            else 
+            {
+                HandleMultiTouch();
+            }
+#else
+            //触摸为1 开始触摸
+            if (1 == Input.touchCount && Input.GetTouch(0).phase == UnityEngine.TouchPhase.Began)
+            {
+
+            }
+
+            //触摸为1 滑动
+            else if (Input.touchCount == 1)
+            {
+                UnityEngine.Touch touch = Input.GetTouch(0);
+
+                float horz = touch.deltaPosition.x;
+                float vert = touch.deltaPosition.y;
+
+                OrbitCamera(horz, -vert);
+            }
+            else if (Input.touchCount == 2)
+            {
+                HandleMultiTouch();
+            }
 #endif
         }
 
@@ -199,19 +306,21 @@ namespace GameLogic
         /// </summary>
         private void HandleMultiTouch()
         {
-            TouchControl touch0 = touchscreen.touches[0];
-            TouchControl touch1 = touchscreen.touches[1];
+#if USE_INPUT_SYSTEM
+            var firstTouch = InputSystemTouch.activeTouches[0];
+            var secondTouch = InputSystemTouch.activeTouches[1];
 
-            if (touch1.phase.ReadValue() == UnityEngine.InputSystem.TouchPhase.Began)
+            if (firstTouch.phase == InputSystemTouchPhase.Began ||
+                secondTouch.phase == InputSystemTouchPhase.Began)
             {
-                lastTouchPos0 = touch0.position.ReadValue();
-                lastTouchPos1 = touch1.position.ReadValue();
+                lastTouchPos0 = firstTouch.screenPosition;
+                lastTouchPos1 = secondTouch.screenPosition;
             }
-            else if (touch0.phase.ReadValue() == UnityEngine.InputSystem.TouchPhase.Moved ||
-                     touch1.phase.ReadValue() == UnityEngine.InputSystem.TouchPhase.Moved)
+            else if (firstTouch.phase == InputSystemTouchPhase.Moved ||
+                     secondTouch.phase == InputSystemTouchPhase.Moved)
             {
-                var tempPos0 = touch0.position.ReadValue();
-                var tempPos1 = touch1.position.ReadValue();
+                var tempPos0 = firstTouch.screenPosition;
+                var tempPos1 = secondTouch.screenPosition;
                 var currDist = Vector2.Distance(tempPos0, tempPos1);
                 var lastDist = Vector2.Distance(lastTouchPos0, lastTouchPos1);
                 var delta = currDist - lastDist;
@@ -221,6 +330,38 @@ namespace GameLogic
                 lastTouchPos0 = tempPos0;
                 lastTouchPos1 = tempPos1;
             }
+#else
+            UnityEngine.Touch newTouch1 = Input.GetTouch(0);
+            UnityEngine.Touch newTouch2 = Input.GetTouch(1);
+
+            //第二点刚接触屏幕，只做记录，不做处理
+            if (newTouch2.phase == UnityEngine.TouchPhase.Began)
+            {
+                oldTouch1 = newTouch1;
+                oldTouch2 = newTouch2;
+                return;
+            }
+
+            if (newTouch2.phase == UnityEngine.TouchPhase.Began)
+            {
+                oldTouch1 = newTouch1;
+                oldTouch2 = newTouch2;
+            }
+            else if (newTouch1.phase == UnityEngine.TouchPhase.Moved ||
+                     newTouch2.phase == UnityEngine.TouchPhase.Moved)
+            {
+                var tempPos0 = newTouch1.position;
+                var tempPos1 = newTouch2.position;
+                var currDist = Vector2.Distance(tempPos0, tempPos1);
+                var lastDist = Vector2.Distance(lastTouchPos0, lastTouchPos1);
+                var delta = currDist - lastDist;
+
+                SetZoom(-delta);
+
+                lastTouchPos0 = tempPos0;
+                lastTouchPos1 = tempPos1;
+            }
+#endif
         }
 
         #region 设置摄像头远近
@@ -229,7 +370,11 @@ namespace GameLogic
         /// </summary>
         public void SetZoom()
         {
+#if USE_INPUT_SYSTEM
             float delta = mouse.scroll.ReadValue().y * -zoomValue;
+#else
+            float delta = Input.mouseScrollDelta.y * -zoomValue;
+#endif
             SetZoom(delta);
         }
 
@@ -238,11 +383,16 @@ namespace GameLogic
         /// </summary>
         public void SetZoom(float delta)
         {
+#if USE_INPUT_SYSTEM
             distance += delta;
             distance = Mathf.Clamp(distance, minDistance, maxDistance);
+#else
+            distance += delta;
+            distance = Mathf.Clamp(distance, minDistance, maxDistance);
+#endif
             UpdatePosition();
         }
-        #endregion
+#endregion
 
         #region 距离
         public float GetDistance()

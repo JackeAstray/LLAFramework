@@ -54,17 +54,14 @@ namespace GameLogic
 
             yield return null;
 
-            TerminalModule.Instance.terminalRequest.RegisterCommands();
-
+            //TerminalModule.Instance.terminalRequest.RegisterCommands();
             StartCoroutine(StartGame());
         }
 
         public IEnumerator StartGame()
         {
-            UIModule.Instance.OpenWindow("StartAppUIPlane");
-
-            SoundModule.Instance.PlayMusic(100001);
-
+            //UIModule.Instance.OpenWindow("StartAppUIPlane");
+            //SoundModule.Instance.PlayMusic(100001);
             yield return new WaitForSeconds(0f);
         }
 
