@@ -1,4 +1,4 @@
-﻿Shader "LLAstray/HexagonalGridSpecialEffects"
+﻿Shader "ReunionMovement/HexagonalGridSpecialEffects"
 {
     Properties
     {
@@ -16,7 +16,7 @@
 
     CGINCLUDE
     #include "UnityCG.cginc"
-    #include "Common.cginc"
+    #include "../Base/Common.cginc"
 
     #pragma shader_feature _ ENABLE_SCREEN_ASPECT_RATIO
     

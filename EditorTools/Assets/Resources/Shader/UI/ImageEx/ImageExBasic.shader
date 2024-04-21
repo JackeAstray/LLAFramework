@@ -45,7 +45,7 @@ Shader "ReunionMovement/UI/Basic Procedural Image"
             
             #include "UnityCG.cginc"
             #include "UnityUI.cginc"
-            #include "2D_SDF.cginc"
+            #include "../Base/2D_SDF.cginc"
             
             #pragma multi_compile_local _ UNITY_UI_CLIP_RECT
             #pragma multi_compile_local _ UNITY_UI_ALPHACLIP
