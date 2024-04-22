@@ -48,10 +48,6 @@ namespace GameLogic
         private float _startMultiTouchRadius;
         private float _startMultiTouchDistance;
         private float _radius;
-
-        //private const float MaxIdleTime = 0.2f;
-        //public static bool UsingTouch;
-        //private float idleTime;
 #else
         protected const string MOUSEX = "Mouse X";
         protected const string MOUSEY = "Mouse Y";
