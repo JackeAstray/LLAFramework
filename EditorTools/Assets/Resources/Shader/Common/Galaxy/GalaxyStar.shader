@@ -1,53 +1,72 @@
-Shader "Custom/GalaxyStar"
+Shader "ReunionMovement/GalaxyStar"
 {
     Properties
     {
-        _Color ("Color", Color) = (1,1,1,1)
-        _MainTex ("Albedo (RGB)", 2D) = "white" {}
-        _Glossiness ("Smoothness", Range(0,1)) = 0.5
-        _Metallic ("Metallic", Range(0,1)) = 0.0
+        _StarsTexture("星空贴图", CUBE) = "white" {}
+        _RotationStars("旋转星空", Float) = 0
+        _StarsEmissionPower("星空发射功率", Float) = 4
+		_StarsRotationSpeed("星空旋转速度", Float) = 0.1
+        _EtaAAEdgesFix("Eta AA边缘修复", Range( 0 , 0.5)) = 0
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
-        LOD 200
+        Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="Opaque" "Queue"="Background" }
+        LOD 0
 
-        CGPROGRAM
-        // Physically based Standard lighting model, and enable shadows on all light types
-        #pragma surface surf Standard fullforwardshadows
-
-        // Use shader model 3.0 target, to get nicer looking lighting
+        HLSLINCLUDE
         #pragma target 3.0
+        sampler2D _StarsTexture;
 
-        sampler2D _MainTex;
-
-        struct Input
+        float3 RotateAroundAxis( float3 center, float3 original, float3 u, float angle )
         {
-            float2 uv_MainTex;
-        };
-
-        half _Glossiness;
-        half _Metallic;
-        fixed4 _Color;
-
-        // Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
-        // See https://docs.unity3d.com/Manual/GPUInstancing.html for more information about instancing.
-        // #pragma instancing_options assumeuniformscaling
-        UNITY_INSTANCING_BUFFER_START(Props)
-            // put more per-instance properties here
-        UNITY_INSTANCING_BUFFER_END(Props)
-
-        void surf (Input IN, inout SurfaceOutputStandard o)
-        {
-            // Albedo comes from a texture tinted by color
-            fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
-            o.Albedo = c.rgb;
-            // Metallic and smoothness come from slider variables
-            o.Metallic = _Metallic;
-            o.Smoothness = _Glossiness;
-            o.Alpha = c.a;
+            original -= center;
+            float C = cos( angle );
+            float S = sin( angle );
+            float t = 1 - C;
+            float m00 = t * u.x * u.x + C;
+            float m01 = t * u.x * u.y - S * u.z;
+            float m02 = t * u.x * u.z + S * u.y;
+            float m10 = t * u.x * u.y + S * u.z;
+            float m11 = t * u.y * u.y + C;
+            float m12 = t * u.y * u.z - S * u.x;
+            float m20 = t * u.x * u.z - S * u.y;
+            float m21 = t * u.y * u.z + S * u.x;
+            float m22 = t * u.z * u.z + C;
+            float3x3 finalMatrix = float3x3( m00, m01, m02, m10, m11, m12, m20, m21, m22 );
+            return mul( finalMatrix, original ) + center;
         }
-        ENDCG
+        ENDHLSL
+
+        Pass
+        {
+			Name "DepthOnly"
+			Tags { "LightMode"="DepthOnly" }
+
+			ZWrite On
+			ColorMask 0
+			AlphaToMask Off
+            HLSLPROGRAM
+            #pragma vertex vert
+			#pragma fragment frag
+
+            float _StarsEmissionPower;
+            float _StarsRotationSpeed;
+            float _RotationStars;
+
+            float _Eta;
+            float _EtaAAEdgesFix;
+
+            
+            float temp_output_645_0 = ( 1.0 + ( _Eta * clampResult881 ) + ( temp_output_78_0 * -_RimNoiseRefraction ) );
+            float Eta797 = temp_output_645_0;
+            float In0797 = _EtaAAEdgesFix;
+            float3 rotatedValue646 = RotateAroundAxis( float3( 0,0,0 ), -ase_worldViewDir, normalize( _RotationAxis ), temp_output_1023_0 );
+            float3 V797 = rotatedValue646;
+            float3 localRefractFixed797 = RefractFixed797( V797 , N797 , Eta797 , In0797 );
+            float4 texCUBENode640 = texCUBE( _StarsTexture, localRefractFixed797 );
+
+            ENDHLSL
+        }
     }
     FallBack "Diffuse"
 }
