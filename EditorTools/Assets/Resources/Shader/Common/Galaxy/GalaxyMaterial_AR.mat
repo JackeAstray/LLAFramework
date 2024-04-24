@@ -10,9 +10,7 @@ Material:
   m_Name: GalaxyMaterial_AR
   m_Shader: {fileID: 4800000, guid: 365fd700cba8557458d94798e4abacb7, type: 3}
   m_ValidKeywords:
-  - _DARKCLOUDSENABLED_ON
   - _RIMENABLED_ON
-  - _RIMNOISECAENABLED_ON
   m_InvalidKeywords:
   - _KEYWORD0_ON
   - _REFRECTIONCASECONDMODE_ON
@@ -192,22 +190,22 @@ Material:
     - _CometsDistortionAmount: 1
     - _CometsRotationSpeed: -0.1
     - _Cutoff: 0.5
-    - _DARKCLOUDSENABLED: 1
-    - _DarkCloudsEdgesGlowClamp: 4
-    - _DarkCloudsEdgesGlowExp: 1
+    - _DARKCLOUDSENABLED: 0
+    - _DarkCloudsEdgesGlowClamp: 1
+    - _DarkCloudsEdgesGlowExp: 0.2
     - _DarkCloudsEdgesGlowGB: 0
     - _DarkCloudsEdgesGlowPower: 10
     - _DarkCloudsEdgesGlowStyle: 0
     - _DarkCloudsLighten: 1
     - _DarkCloudsRotationSpeed: -4.77
-    - _DarkCloudsThicker: 1
+    - _DarkCloudsThicker: 0.2
     - _DetailNormalMapScale: 1
     - _DistortionAmount: 0.5
     - _DistortionExp: 1
     - _DistortionExp2: 1
     - _DstBlend: 0
     - _Eta: 0
-    - _EtaAAEdgesFix: 0.5
+    - _EtaAAEdgesFix: 0
     - _EtaEdgesFix: 0
     - _EtaFresnelExp: 1
     - _EtaFresnelExp2: 1
@@ -258,7 +256,7 @@ Material:
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _RIMENABLED: 1
-    - _RIMNOISECAENABLED: 1
+    - _RIMNOISECAENABLED: 0
     - _RefractionCA: 0
     - _RefractionExp: 1
     - _RefractionExp2: 1
@@ -266,7 +264,7 @@ Material:
     - _RefrectionCASecondMode: 1
     - _RimAddOrMultiply: 0
     - _RimEmissionPower: 0
-    - _RimExp: 8.91
+    - _RimExp: 0.2
     - _RimExp2: 0.2
     - _RimNoiseAmount: 0
     - _RimNoiseCAAmount: 0
@@ -298,7 +296,7 @@ Material:
     - _SphericalDistortionAmount: 0
     - _SphericalDistortionExp: 1
     - _SrcBlend: 1
-    - _StarsEmissionPower: 1.19
+    - _StarsEmissionPower: 2
     - _StarsHueShift: 0
     - _StarsRotationSpeed: 0
     - _SunDistortionPower: -0.25
