@@ -23,11 +23,11 @@ Material:
   m_Name: GalaxyMaterial_AR
   m_Shader: {fileID: -6465566751694194690, guid: 58c1f0e4ade8c8a4f8e6451758cb5545,
     type: 3}
-  m_ValidKeywords:
-  - _RIMENABLED_ON
+  m_ValidKeywords: []
   m_InvalidKeywords:
   - _KEYWORD0_ON
   - _REFRECTIONCASECONDMODE_ON
+  - _RIMENABLED_ON
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -51,6 +51,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _CometsTexture:
         m_Texture: {fileID: 8900000, guid: d18f54fc546873440ac8e9582ce0b4d6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Cubemap:
+        m_Texture: {fileID: 8900000, guid: 950fe9248ec095e4a8fcfcc9492d73ed, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DarkCloudsTexture:
