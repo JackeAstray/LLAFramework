@@ -54,6 +54,7 @@ MonoBehaviour:
   baseRect: {fileID: 417872113824774265}
   origin: {fileID: 0}
   startsActive: 0
+  type: 0
 --- !u!1 &417872113824774266
 GameObject:
   m_ObjectHideFlags: 0
@@ -220,8 +221,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4068436182535160382}
   - component: {fileID: 4068436182535160376}
-  - component: {fileID: 7983614259343443668}
-  - component: {fileID: 7063450454004736296}
+  - component: {fileID: 6634015434013963118}
   m_Layer: 5
   m_Name: Outline
   m_TagString: Untagged
@@ -257,7 +257,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4068436182535160383}
   m_CullTransparentMesh: 1
---- !u!114 &7983614259343443668
+--- !u!114 &6634015434013963118
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -266,7 +266,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4068436182535160383}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41f1c5417c9d7ab4b84e531f83f60a4b, type: 3}
+  m_Script: {fileID: 11500000, guid: 4041ee2aabac59f4589e76bac1cb0e81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
@@ -277,7 +277,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3f91331724a9da84197e9b6d94f0483c, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -287,21 +287,82 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
-  borderWidth: 0
-  falloffDistance: 0
---- !u!114 &7063450454004736296
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4068436182535160383}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68356c3764ad390429ddad9e48ce8c31, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  radius: {x: 10, y: 10, z: 10, w: 10}
+  drawShape: 3
+  imageType: 0
+  materialMode: 0
+  strokeWidth: 0
+  outlineWidth: 0
+  outlineColor: {r: 0, g: 0, b: 0, a: 1}
+  falloffDistance: 0.5
+  constrainRotation: 1
+  shapeRotation: 0
+  flipHorizontal: 0
+  flipVertical: 0
+  alphaThreshold: 0
+  triangle:
+    cornerRadius: {x: 0, y: 0, z: 0}
+    uniformCornerRadius: 0
+  rectangle:
+    cornerRadius: {x: 10, y: 10, z: 10, w: 10}
+    uniformCornerRadius: 0
+  circle:
+    radius: 0
+    fitRadius: 0
+  pentagon:
+    cornerRadius: {x: 0, y: 0, z: 0, w: 0}
+    uniformCornerRadius: 0
+    tipRadius: 0.001
+    tipSize: 1
+  hexagon:
+    cornerRadius: {x: 1, y: 1, z: 1, w: 1}
+    uniformCornerRadius: 0
+    tipSize: {x: 1, y: 1}
+    uniformTipSize: 0
+    tipRadius: {x: 1, y: 1}
+    uniformTipRadius: 0
+  nStarPolygon:
+    sideCount: 3
+    inset: 2
+    cornerRadius: 0
+    offset: {x: 0, y: 0}
+  gradientEffect:
+    enabled: 0
+    gradientType: 0
+    gradient:
+      serializedVersion: 2
+      key0: {r: 1, g: 1, b: 1, a: 1}
+      key1: {r: 1, g: 1, b: 1, a: 1}
+      key2: {r: 0, g: 0, b: 0, a: 0}
+      key3: {r: 0, g: 0, b: 0, a: 0}
+      key4: {r: 0, g: 0, b: 0, a: 0}
+      key5: {r: 0, g: 0, b: 0, a: 0}
+      key6: {r: 0, g: 0, b: 0, a: 0}
+      key7: {r: 0, g: 0, b: 0, a: 0}
+      ctime0: 0
+      ctime1: 65535
+      ctime2: 0
+      ctime3: 0
+      ctime4: 0
+      ctime5: 0
+      ctime6: 0
+      ctime7: 0
+      atime0: 0
+      atime1: 65535
+      atime2: 0
+      atime3: 0
+      atime4: 0
+      atime5: 0
+      atime6: 0
+      atime7: 0
+      m_Mode: 0
+      m_NumColorKeys: 2
+      m_NumAlphaKeys: 2
+    cornerGradientColors:
+    - {r: 0, g: 0, b: 0, a: 0}
+    - {r: 0, g: 0, b: 0, a: 0}
+    - {r: 0, g: 0, b: 0, a: 0}
+    - {r: 0, g: 0, b: 0, a: 0}
+    rotation: 0
 --- !u!1 &4068436182738736013
 GameObject:
   m_ObjectHideFlags: 0
@@ -349,8 +410,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4068436182849898910}
   - component: {fileID: 4068436182849898904}
-  - component: {fileID: 8567012087536691384}
-  - component: {fileID: 4854243128627117840}
+  - component: {fileID: 7890464831330527665}
   m_Layer: 5
   m_Name: Outline
   m_TagString: Untagged
@@ -386,7 +446,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4068436182849898911}
   m_CullTransparentMesh: 1
---- !u!114 &8567012087536691384
+--- !u!114 &7890464831330527665
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -395,7 +455,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4068436182849898911}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41f1c5417c9d7ab4b84e531f83f60a4b, type: 3}
+  m_Script: {fileID: 11500000, guid: 4041ee2aabac59f4589e76bac1cb0e81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
@@ -406,7 +466,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3f91331724a9da84197e9b6d94f0483c, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -416,21 +476,82 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
-  borderWidth: 0
-  falloffDistance: 0
---- !u!114 &4854243128627117840
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4068436182849898911}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68356c3764ad390429ddad9e48ce8c31, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  radius: {x: 10, y: 10, z: 10, w: 10}
+  drawShape: 3
+  imageType: 0
+  materialMode: 0
+  strokeWidth: 0
+  outlineWidth: 0
+  outlineColor: {r: 0, g: 0, b: 0, a: 1}
+  falloffDistance: 0.5
+  constrainRotation: 1
+  shapeRotation: 0
+  flipHorizontal: 0
+  flipVertical: 0
+  alphaThreshold: 0
+  triangle:
+    cornerRadius: {x: 0, y: 0, z: 0}
+    uniformCornerRadius: 0
+  rectangle:
+    cornerRadius: {x: 10, y: 10, z: 10, w: 10}
+    uniformCornerRadius: 0
+  circle:
+    radius: 0
+    fitRadius: 0
+  pentagon:
+    cornerRadius: {x: 0, y: 0, z: 0, w: 0}
+    uniformCornerRadius: 0
+    tipRadius: 0.001
+    tipSize: 1
+  hexagon:
+    cornerRadius: {x: 1, y: 1, z: 1, w: 1}
+    uniformCornerRadius: 0
+    tipSize: {x: 1, y: 1}
+    uniformTipSize: 0
+    tipRadius: {x: 1, y: 1}
+    uniformTipRadius: 0
+  nStarPolygon:
+    sideCount: 3
+    inset: 2
+    cornerRadius: 0
+    offset: {x: 0, y: 0}
+  gradientEffect:
+    enabled: 0
+    gradientType: 0
+    gradient:
+      serializedVersion: 2
+      key0: {r: 1, g: 1, b: 1, a: 1}
+      key1: {r: 1, g: 1, b: 1, a: 1}
+      key2: {r: 0, g: 0, b: 0, a: 0}
+      key3: {r: 0, g: 0, b: 0, a: 0}
+      key4: {r: 0, g: 0, b: 0, a: 0}
+      key5: {r: 0, g: 0, b: 0, a: 0}
+      key6: {r: 0, g: 0, b: 0, a: 0}
+      key7: {r: 0, g: 0, b: 0, a: 0}
+      ctime0: 0
+      ctime1: 65535
+      ctime2: 0
+      ctime3: 0
+      ctime4: 0
+      ctime5: 0
+      ctime6: 0
+      ctime7: 0
+      atime0: 0
+      atime1: 65535
+      atime2: 0
+      atime3: 0
+      atime4: 0
+      atime5: 0
+      atime6: 0
+      atime7: 0
+      m_Mode: 0
+      m_NumColorKeys: 2
+      m_NumAlphaKeys: 2
+    cornerGradientColors:
+    - {r: 0, g: 0, b: 0, a: 0}
+    - {r: 0, g: 0, b: 0, a: 0}
+    - {r: 0, g: 0, b: 0, a: 0}
+    - {r: 0, g: 0, b: 0, a: 0}
+    rotation: 0
 --- !u!1 &4068436182907976715
 GameObject:
   m_ObjectHideFlags: 0
@@ -441,8 +562,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4068436182907976714}
   - component: {fileID: 4068436182907976692}
-  - component: {fileID: 3043638395429839182}
-  - component: {fileID: 7294611275677872754}
+  - component: {fileID: 6601910983625907553}
   m_Layer: 5
   m_Name: Outline
   m_TagString: Untagged
@@ -478,7 +598,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4068436182907976715}
   m_CullTransparentMesh: 1
---- !u!114 &3043638395429839182
+--- !u!114 &6601910983625907553
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -487,7 +607,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4068436182907976715}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41f1c5417c9d7ab4b84e531f83f60a4b, type: 3}
+  m_Script: {fileID: 11500000, guid: 4041ee2aabac59f4589e76bac1cb0e81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
@@ -498,7 +618,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3f91331724a9da84197e9b6d94f0483c, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -508,21 +628,82 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
-  borderWidth: 0
-  falloffDistance: 0
---- !u!114 &7294611275677872754
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4068436182907976715}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68356c3764ad390429ddad9e48ce8c31, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  radius: {x: 10, y: 10, z: 10, w: 10}
+  drawShape: 3
+  imageType: 0
+  materialMode: 0
+  strokeWidth: 0
+  outlineWidth: 0
+  outlineColor: {r: 0, g: 0, b: 0, a: 1}
+  falloffDistance: 0.5
+  constrainRotation: 1
+  shapeRotation: 0
+  flipHorizontal: 0
+  flipVertical: 0
+  alphaThreshold: 0
+  triangle:
+    cornerRadius: {x: 0, y: 0, z: 0}
+    uniformCornerRadius: 0
+  rectangle:
+    cornerRadius: {x: 10, y: 10, z: 10, w: 10}
+    uniformCornerRadius: 0
+  circle:
+    radius: 0
+    fitRadius: 0
+  pentagon:
+    cornerRadius: {x: 0, y: 0, z: 0, w: 0}
+    uniformCornerRadius: 0
+    tipRadius: 0.001
+    tipSize: 1
+  hexagon:
+    cornerRadius: {x: 1, y: 1, z: 1, w: 1}
+    uniformCornerRadius: 0
+    tipSize: {x: 1, y: 1}
+    uniformTipSize: 0
+    tipRadius: {x: 1, y: 1}
+    uniformTipRadius: 0
+  nStarPolygon:
+    sideCount: 3
+    inset: 2
+    cornerRadius: 0
+    offset: {x: 0, y: 0}
+  gradientEffect:
+    enabled: 0
+    gradientType: 0
+    gradient:
+      serializedVersion: 2
+      key0: {r: 1, g: 1, b: 1, a: 1}
+      key1: {r: 1, g: 1, b: 1, a: 1}
+      key2: {r: 0, g: 0, b: 0, a: 0}
+      key3: {r: 0, g: 0, b: 0, a: 0}
+      key4: {r: 0, g: 0, b: 0, a: 0}
+      key5: {r: 0, g: 0, b: 0, a: 0}
+      key6: {r: 0, g: 0, b: 0, a: 0}
+      key7: {r: 0, g: 0, b: 0, a: 0}
+      ctime0: 0
+      ctime1: 65535
+      ctime2: 0
+      ctime3: 0
+      ctime4: 0
+      ctime5: 0
+      ctime6: 0
+      ctime7: 0
+      atime0: 0
+      atime1: 65535
+      atime2: 0
+      atime3: 0
+      atime4: 0
+      atime5: 0
+      atime6: 0
+      atime7: 0
+      m_Mode: 0
+      m_NumColorKeys: 2
+      m_NumAlphaKeys: 2
+    cornerGradientColors:
+    - {r: 0, g: 0, b: 0, a: 0}
+    - {r: 0, g: 0, b: 0, a: 0}
+    - {r: 0, g: 0, b: 0, a: 0}
+    - {r: 0, g: 0, b: 0, a: 0}
+    rotation: 0
 --- !u!1 &4068436183009304424
 GameObject:
   m_ObjectHideFlags: 0
@@ -570,8 +751,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4068436183074365991}
   - component: {fileID: 4068436183074365985}
-  - component: {fileID: 435743359139093061}
-  - component: {fileID: 3426190347116841218}
+  - component: {fileID: 3440493761504275676}
   m_Layer: 5
   m_Name: Outline
   m_TagString: Untagged
@@ -607,7 +787,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4068436183074365988}
   m_CullTransparentMesh: 1
---- !u!114 &435743359139093061
+--- !u!114 &3440493761504275676
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -616,7 +796,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4068436183074365988}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41f1c5417c9d7ab4b84e531f83f60a4b, type: 3}
+  m_Script: {fileID: 11500000, guid: 4041ee2aabac59f4589e76bac1cb0e81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
@@ -627,7 +807,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3f91331724a9da84197e9b6d94f0483c, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -637,21 +817,82 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
-  borderWidth: 0
-  falloffDistance: 0
---- !u!114 &3426190347116841218
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4068436183074365988}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68356c3764ad390429ddad9e48ce8c31, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  radius: {x: 10, y: 10, z: 10, w: 10}
+  drawShape: 3
+  imageType: 0
+  materialMode: 0
+  strokeWidth: 0
+  outlineWidth: 0
+  outlineColor: {r: 0, g: 0, b: 0, a: 1}
+  falloffDistance: 0.5
+  constrainRotation: 1
+  shapeRotation: 0
+  flipHorizontal: 0
+  flipVertical: 0
+  alphaThreshold: 0
+  triangle:
+    cornerRadius: {x: 0, y: 0, z: 0}
+    uniformCornerRadius: 0
+  rectangle:
+    cornerRadius: {x: 10, y: 10, z: 10, w: 10}
+    uniformCornerRadius: 0
+  circle:
+    radius: 0
+    fitRadius: 0
+  pentagon:
+    cornerRadius: {x: 0, y: 0, z: 0, w: 0}
+    uniformCornerRadius: 0
+    tipRadius: 0.001
+    tipSize: 1
+  hexagon:
+    cornerRadius: {x: 1, y: 1, z: 1, w: 1}
+    uniformCornerRadius: 0
+    tipSize: {x: 1, y: 1}
+    uniformTipSize: 0
+    tipRadius: {x: 1, y: 1}
+    uniformTipRadius: 0
+  nStarPolygon:
+    sideCount: 3
+    inset: 2
+    cornerRadius: 0
+    offset: {x: 0, y: 0}
+  gradientEffect:
+    enabled: 0
+    gradientType: 0
+    gradient:
+      serializedVersion: 2
+      key0: {r: 1, g: 1, b: 1, a: 1}
+      key1: {r: 1, g: 1, b: 1, a: 1}
+      key2: {r: 0, g: 0, b: 0, a: 0}
+      key3: {r: 0, g: 0, b: 0, a: 0}
+      key4: {r: 0, g: 0, b: 0, a: 0}
+      key5: {r: 0, g: 0, b: 0, a: 0}
+      key6: {r: 0, g: 0, b: 0, a: 0}
+      key7: {r: 0, g: 0, b: 0, a: 0}
+      ctime0: 0
+      ctime1: 65535
+      ctime2: 0
+      ctime3: 0
+      ctime4: 0
+      ctime5: 0
+      ctime6: 0
+      ctime7: 0
+      atime0: 0
+      atime1: 65535
+      atime2: 0
+      atime3: 0
+      atime4: 0
+      atime5: 0
+      atime6: 0
+      atime7: 0
+      m_Mode: 0
+      m_NumColorKeys: 2
+      m_NumAlphaKeys: 2
+    cornerGradientColors:
+    - {r: 0, g: 0, b: 0, a: 0}
+    - {r: 0, g: 0, b: 0, a: 0}
+    - {r: 0, g: 0, b: 0, a: 0}
+    - {r: 0, g: 0, b: 0, a: 0}
+    rotation: 0
 --- !u!1 &4068436183178434142
 GameObject:
   m_ObjectHideFlags: 0
@@ -662,8 +903,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4068436183178434137}
   - component: {fileID: 4068436183178434139}
-  - component: {fileID: 7081275349037026366}
-  - component: {fileID: 4200278453212498935}
+  - component: {fileID: 8911321332290749585}
   m_Layer: 5
   m_Name: Outline
   m_TagString: Untagged
@@ -699,7 +939,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4068436183178434142}
   m_CullTransparentMesh: 1
---- !u!114 &7081275349037026366
+--- !u!114 &8911321332290749585
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -708,7 +948,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4068436183178434142}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41f1c5417c9d7ab4b84e531f83f60a4b, type: 3}
+  m_Script: {fileID: 11500000, guid: 4041ee2aabac59f4589e76bac1cb0e81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
@@ -719,7 +959,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3f91331724a9da84197e9b6d94f0483c, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -729,21 +969,82 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
-  borderWidth: 0
-  falloffDistance: 0
---- !u!114 &4200278453212498935
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4068436183178434142}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68356c3764ad390429ddad9e48ce8c31, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  radius: {x: 10, y: 10, z: 10, w: 10}
+  drawShape: 3
+  imageType: 0
+  materialMode: 0
+  strokeWidth: 0
+  outlineWidth: 0
+  outlineColor: {r: 0, g: 0, b: 0, a: 1}
+  falloffDistance: 0.5
+  constrainRotation: 1
+  shapeRotation: 0
+  flipHorizontal: 0
+  flipVertical: 0
+  alphaThreshold: 0
+  triangle:
+    cornerRadius: {x: 0, y: 0, z: 0}
+    uniformCornerRadius: 0
+  rectangle:
+    cornerRadius: {x: 10, y: 10, z: 10, w: 10}
+    uniformCornerRadius: 0
+  circle:
+    radius: 0
+    fitRadius: 0
+  pentagon:
+    cornerRadius: {x: 0, y: 0, z: 0, w: 0}
+    uniformCornerRadius: 0
+    tipRadius: 0.001
+    tipSize: 1
+  hexagon:
+    cornerRadius: {x: 1, y: 1, z: 1, w: 1}
+    uniformCornerRadius: 0
+    tipSize: {x: 1, y: 1}
+    uniformTipSize: 0
+    tipRadius: {x: 1, y: 1}
+    uniformTipRadius: 0
+  nStarPolygon:
+    sideCount: 3
+    inset: 2
+    cornerRadius: 0
+    offset: {x: 0, y: 0}
+  gradientEffect:
+    enabled: 0
+    gradientType: 0
+    gradient:
+      serializedVersion: 2
+      key0: {r: 1, g: 1, b: 1, a: 1}
+      key1: {r: 1, g: 1, b: 1, a: 1}
+      key2: {r: 0, g: 0, b: 0, a: 0}
+      key3: {r: 0, g: 0, b: 0, a: 0}
+      key4: {r: 0, g: 0, b: 0, a: 0}
+      key5: {r: 0, g: 0, b: 0, a: 0}
+      key6: {r: 0, g: 0, b: 0, a: 0}
+      key7: {r: 0, g: 0, b: 0, a: 0}
+      ctime0: 0
+      ctime1: 65535
+      ctime2: 0
+      ctime3: 0
+      ctime4: 0
+      ctime5: 0
+      ctime6: 0
+      ctime7: 0
+      atime0: 0
+      atime1: 65535
+      atime2: 0
+      atime3: 0
+      atime4: 0
+      atime5: 0
+      atime6: 0
+      atime7: 0
+      m_Mode: 0
+      m_NumColorKeys: 2
+      m_NumAlphaKeys: 2
+    cornerGradientColors:
+    - {r: 0, g: 0, b: 0, a: 0}
+    - {r: 0, g: 0, b: 0, a: 0}
+    - {r: 0, g: 0, b: 0, a: 0}
+    - {r: 0, g: 0, b: 0, a: 0}
+    rotation: 0
 --- !u!1 &4068436183289457943
 GameObject:
   m_ObjectHideFlags: 0
@@ -754,8 +1055,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4068436183289457942}
   - component: {fileID: 4068436183289457936}
-  - component: {fileID: 3128495702995269508}
-  - component: {fileID: 7598868827147706881}
+  - component: {fileID: 2347816715493374174}
   m_Layer: 5
   m_Name: Outline
   m_TagString: Untagged
@@ -791,7 +1091,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4068436183289457943}
   m_CullTransparentMesh: 1
---- !u!114 &3128495702995269508
+--- !u!114 &2347816715493374174
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -800,7 +1100,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4068436183289457943}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41f1c5417c9d7ab4b84e531f83f60a4b, type: 3}
+  m_Script: {fileID: 11500000, guid: 4041ee2aabac59f4589e76bac1cb0e81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
@@ -811,7 +1111,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3f91331724a9da84197e9b6d94f0483c, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -821,21 +1121,82 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
-  borderWidth: 0
-  falloffDistance: 0
---- !u!114 &7598868827147706881
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4068436183289457943}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68356c3764ad390429ddad9e48ce8c31, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  radius: {x: 10, y: 10, z: 10, w: 10}
+  drawShape: 3
+  imageType: 0
+  materialMode: 0
+  strokeWidth: 0
+  outlineWidth: 0
+  outlineColor: {r: 0, g: 0, b: 0, a: 1}
+  falloffDistance: 0.5
+  constrainRotation: 1
+  shapeRotation: 0
+  flipHorizontal: 0
+  flipVertical: 0
+  alphaThreshold: 0
+  triangle:
+    cornerRadius: {x: 0, y: 0, z: 0}
+    uniformCornerRadius: 0
+  rectangle:
+    cornerRadius: {x: 10, y: 10, z: 10, w: 10}
+    uniformCornerRadius: 0
+  circle:
+    radius: 0
+    fitRadius: 0
+  pentagon:
+    cornerRadius: {x: 0, y: 0, z: 0, w: 0}
+    uniformCornerRadius: 0
+    tipRadius: 0.001
+    tipSize: 1
+  hexagon:
+    cornerRadius: {x: 1, y: 1, z: 1, w: 1}
+    uniformCornerRadius: 0
+    tipSize: {x: 1, y: 1}
+    uniformTipSize: 0
+    tipRadius: {x: 1, y: 1}
+    uniformTipRadius: 0
+  nStarPolygon:
+    sideCount: 3
+    inset: 2
+    cornerRadius: 0
+    offset: {x: 0, y: 0}
+  gradientEffect:
+    enabled: 0
+    gradientType: 0
+    gradient:
+      serializedVersion: 2
+      key0: {r: 1, g: 1, b: 1, a: 1}
+      key1: {r: 1, g: 1, b: 1, a: 1}
+      key2: {r: 0, g: 0, b: 0, a: 0}
+      key3: {r: 0, g: 0, b: 0, a: 0}
+      key4: {r: 0, g: 0, b: 0, a: 0}
+      key5: {r: 0, g: 0, b: 0, a: 0}
+      key6: {r: 0, g: 0, b: 0, a: 0}
+      key7: {r: 0, g: 0, b: 0, a: 0}
+      ctime0: 0
+      ctime1: 65535
+      ctime2: 0
+      ctime3: 0
+      ctime4: 0
+      ctime5: 0
+      ctime6: 0
+      ctime7: 0
+      atime0: 0
+      atime1: 65535
+      atime2: 0
+      atime3: 0
+      atime4: 0
+      atime5: 0
+      atime6: 0
+      atime7: 0
+      m_Mode: 0
+      m_NumColorKeys: 2
+      m_NumAlphaKeys: 2
+    cornerGradientColors:
+    - {r: 0, g: 0, b: 0, a: 0}
+    - {r: 0, g: 0, b: 0, a: 0}
+    - {r: 0, g: 0, b: 0, a: 0}
+    - {r: 0, g: 0, b: 0, a: 0}
+    rotation: 0
 --- !u!1 &4068436183328162959
 GameObject:
   m_ObjectHideFlags: 0
@@ -846,8 +1207,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4068436183328162958}
   - component: {fileID: 4068436183328162952}
-  - component: {fileID: 5066308765215093484}
-  - component: {fileID: 8774799168288043314}
+  - component: {fileID: 9122981502469556820}
   m_Layer: 5
   m_Name: Outline
   m_TagString: Untagged
@@ -883,7 +1243,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4068436183328162959}
   m_CullTransparentMesh: 1
---- !u!114 &5066308765215093484
+--- !u!114 &9122981502469556820
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -892,7 +1252,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4068436183328162959}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41f1c5417c9d7ab4b84e531f83f60a4b, type: 3}
+  m_Script: {fileID: 11500000, guid: 4041ee2aabac59f4589e76bac1cb0e81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
@@ -903,7 +1263,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3f91331724a9da84197e9b6d94f0483c, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -913,21 +1273,82 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
-  borderWidth: 0
-  falloffDistance: 0
---- !u!114 &8774799168288043314
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4068436183328162959}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68356c3764ad390429ddad9e48ce8c31, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  radius: {x: 10, y: 10, z: 10, w: 10}
+  drawShape: 3
+  imageType: 0
+  materialMode: 0
+  strokeWidth: 0
+  outlineWidth: 0
+  outlineColor: {r: 0, g: 0, b: 0, a: 1}
+  falloffDistance: 0.5
+  constrainRotation: 1
+  shapeRotation: 0
+  flipHorizontal: 0
+  flipVertical: 0
+  alphaThreshold: 0
+  triangle:
+    cornerRadius: {x: 0, y: 0, z: 0}
+    uniformCornerRadius: 0
+  rectangle:
+    cornerRadius: {x: 10, y: 10, z: 10, w: 10}
+    uniformCornerRadius: 0
+  circle:
+    radius: 0
+    fitRadius: 0
+  pentagon:
+    cornerRadius: {x: 0, y: 0, z: 0, w: 0}
+    uniformCornerRadius: 0
+    tipRadius: 0.001
+    tipSize: 1
+  hexagon:
+    cornerRadius: {x: 1, y: 1, z: 1, w: 1}
+    uniformCornerRadius: 0
+    tipSize: {x: 1, y: 1}
+    uniformTipSize: 0
+    tipRadius: {x: 1, y: 1}
+    uniformTipRadius: 0
+  nStarPolygon:
+    sideCount: 3
+    inset: 2
+    cornerRadius: 0
+    offset: {x: 0, y: 0}
+  gradientEffect:
+    enabled: 0
+    gradientType: 0
+    gradient:
+      serializedVersion: 2
+      key0: {r: 1, g: 1, b: 1, a: 1}
+      key1: {r: 1, g: 1, b: 1, a: 1}
+      key2: {r: 0, g: 0, b: 0, a: 0}
+      key3: {r: 0, g: 0, b: 0, a: 0}
+      key4: {r: 0, g: 0, b: 0, a: 0}
+      key5: {r: 0, g: 0, b: 0, a: 0}
+      key6: {r: 0, g: 0, b: 0, a: 0}
+      key7: {r: 0, g: 0, b: 0, a: 0}
+      ctime0: 0
+      ctime1: 65535
+      ctime2: 0
+      ctime3: 0
+      ctime4: 0
+      ctime5: 0
+      ctime6: 0
+      ctime7: 0
+      atime0: 0
+      atime1: 65535
+      atime2: 0
+      atime3: 0
+      atime4: 0
+      atime5: 0
+      atime6: 0
+      atime7: 0
+      m_Mode: 0
+      m_NumColorKeys: 2
+      m_NumAlphaKeys: 2
+    cornerGradientColors:
+    - {r: 0, g: 0, b: 0, a: 0}
+    - {r: 0, g: 0, b: 0, a: 0}
+    - {r: 0, g: 0, b: 0, a: 0}
+    - {r: 0, g: 0, b: 0, a: 0}
+    rotation: 0
 --- !u!1 &4068436183535556375
 GameObject:
   m_ObjectHideFlags: 0
@@ -975,8 +1396,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4068436184144366680}
   - component: {fileID: 4068436184144366682}
-  - component: {fileID: 3066530818537630827}
-  - component: {fileID: 1312806632485943971}
+  - component: {fileID: 772356470387678622}
   m_Layer: 5
   m_Name: Outline
   m_TagString: Untagged
@@ -1012,7 +1432,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4068436184144366681}
   m_CullTransparentMesh: 1
---- !u!114 &3066530818537630827
+--- !u!114 &772356470387678622
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1021,7 +1441,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4068436184144366681}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41f1c5417c9d7ab4b84e531f83f60a4b, type: 3}
+  m_Script: {fileID: 11500000, guid: 4041ee2aabac59f4589e76bac1cb0e81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
@@ -1032,7 +1452,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3f91331724a9da84197e9b6d94f0483c, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1042,21 +1462,82 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
-  borderWidth: 0
-  falloffDistance: 0
---- !u!114 &1312806632485943971
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4068436184144366681}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68356c3764ad390429ddad9e48ce8c31, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  radius: {x: 10, y: 10, z: 10, w: 10}
+  drawShape: 3
+  imageType: 0
+  materialMode: 0
+  strokeWidth: 0
+  outlineWidth: 0
+  outlineColor: {r: 0, g: 0, b: 0, a: 1}
+  falloffDistance: 0.5
+  constrainRotation: 1
+  shapeRotation: 0
+  flipHorizontal: 0
+  flipVertical: 0
+  alphaThreshold: 0
+  triangle:
+    cornerRadius: {x: 0, y: 0, z: 0}
+    uniformCornerRadius: 0
+  rectangle:
+    cornerRadius: {x: 10, y: 10, z: 10, w: 10}
+    uniformCornerRadius: 0
+  circle:
+    radius: 0
+    fitRadius: 0
+  pentagon:
+    cornerRadius: {x: 0, y: 0, z: 0, w: 0}
+    uniformCornerRadius: 0
+    tipRadius: 0.001
+    tipSize: 1
+  hexagon:
+    cornerRadius: {x: 1, y: 1, z: 1, w: 1}
+    uniformCornerRadius: 0
+    tipSize: {x: 1, y: 1}
+    uniformTipSize: 0
+    tipRadius: {x: 1, y: 1}
+    uniformTipRadius: 0
+  nStarPolygon:
+    sideCount: 3
+    inset: 2
+    cornerRadius: 0
+    offset: {x: 0, y: 0}
+  gradientEffect:
+    enabled: 0
+    gradientType: 0
+    gradient:
+      serializedVersion: 2
+      key0: {r: 1, g: 1, b: 1, a: 1}
+      key1: {r: 1, g: 1, b: 1, a: 1}
+      key2: {r: 0, g: 0, b: 0, a: 0}
+      key3: {r: 0, g: 0, b: 0, a: 0}
+      key4: {r: 0, g: 0, b: 0, a: 0}
+      key5: {r: 0, g: 0, b: 0, a: 0}
+      key6: {r: 0, g: 0, b: 0, a: 0}
+      key7: {r: 0, g: 0, b: 0, a: 0}
+      ctime0: 0
+      ctime1: 65535
+      ctime2: 0
+      ctime3: 0
+      ctime4: 0
+      ctime5: 0
+      ctime6: 0
+      ctime7: 0
+      atime0: 0
+      atime1: 65535
+      atime2: 0
+      atime3: 0
+      atime4: 0
+      atime5: 0
+      atime6: 0
+      atime7: 0
+      m_Mode: 0
+      m_NumColorKeys: 2
+      m_NumAlphaKeys: 2
+    cornerGradientColors:
+    - {r: 0, g: 0, b: 0, a: 0}
+    - {r: 0, g: 0, b: 0, a: 0}
+    - {r: 0, g: 0, b: 0, a: 0}
+    - {r: 0, g: 0, b: 0, a: 0}
+    rotation: 0
 --- !u!1 &4068436184156189318
 GameObject:
   m_ObjectHideFlags: 0
