@@ -11,6 +11,8 @@ namespace GameLogic
     {
         //隐藏光标
         public bool hideCursor = true;
+        //点击鼠标进行旋转
+        public bool clickToRot = true;
 
         public float normalSpeed = 25.0f;
         public float shiftSpeed = 54.0f;
@@ -24,13 +26,17 @@ namespace GameLogic
         public float minRot = -90f;                         //最小旋转角度
         //旋转缓冲速度
         public float lerpSpeed = 10f;
-        private float targetRotationX = 0f;
-        private float targetRotationY = 0f;
+
+        //目标旋转角度
+        public float targetRotationX = 0f;
+        public float targetRotationY = 0f;
+
+        //摄像机移动范围
+        public BoxCollider boxCollider;
 
         private Transform thisTransform;
 
         Mouse mouse;
-        Touchscreen touchscreen;
         Keyboard keyboard;
 
         public void Start()
@@ -43,7 +49,6 @@ namespace GameLogic
             thisTransform = transform;
 
             mouse = Mouse.current;
-            touchscreen = Touchscreen.current;
             keyboard = Keyboard.current;
         }
 
@@ -62,8 +67,23 @@ namespace GameLogic
                 }
             }
 
-            UpdateCameraRotation();
+            if (clickToRot)
+            {
+                if (mouse.rightButton.isPressed)
+                {
+                    UpdateCameraRotation();
+                }
+            }
+            else
+            {
+                UpdateCameraRotation();
+            }
 
+            MoveCamera();
+        }
+
+        public void MoveCamera()
+        {
             Vector3 cameraVelocity = GetBaseInput();
 
             if (keyboard.leftShiftKey.isPressed)
@@ -80,6 +100,9 @@ namespace GameLogic
             UpdateCameraPosition(cameraVelocity);
         }
 
+        /// <summary>
+        /// 更新摄像机旋转
+        /// </summary>
         private void UpdateCameraRotation()
         {
             // 获取鼠标输入的旋转增量
@@ -95,6 +118,10 @@ namespace GameLogic
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, lerpSpeed * Time.deltaTime);
         }
 
+        /// <summary>
+        /// 处理按下Shift键时的移动
+        /// </summary>
+        /// <param name="cameraVelocity"></param>
         private void HandleShiftMovement(ref Vector3 cameraVelocity)
         {
             totalSpeed += Time.deltaTime;
@@ -104,6 +131,10 @@ namespace GameLogic
             cameraVelocity.z = Mathf.Clamp(cameraVelocity.z, -speedCap, speedCap);
         }
 
+        /// <summary>
+        /// 获取基础输入
+        /// </summary>
+        /// <returns></returns>
         private Vector3 GetBaseInput()
         {
             float horizontalInput = keyboard.dKey.isPressed ? 1 : keyboard.aKey.isPressed ? -1 : 0;
@@ -112,17 +143,46 @@ namespace GameLogic
             return new Vector3(horizontalInput, 0, verticalInput);
         }
 
+        /// <summary>
+        /// 更新摄像机位置
+        /// </summary>
+        /// <param name="cameraVelocity"></param>
         private void UpdateCameraPosition(Vector3 cameraVelocity)
         {
-            thisTransform.Translate(cameraVelocity);
+            if (boxCollider != null)
+            {
+                thisTransform.Translate(cameraVelocity);
+                Vector3 newPosition = thisTransform.position;
+                // 检查新的位置是否在盒子碰撞器的边界内
+                if (boxCollider.bounds.Contains(newPosition))
+                {
+                    // 如果在边界内，更新位置
+                    thisTransform.position = newPosition;
+                }
+                else
+                {
+                    // 如果在边界外，将位置调整到边界上
+                    thisTransform.position = boxCollider.bounds.ClosestPoint(newPosition);
+                }
+            }
+            else
+            {
+                thisTransform.Translate(cameraVelocity);
+            }
         }
 
+        /// <summary>
+        /// 显示光标
+        /// </summary>
         public void DisplayCursor()
         {
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
         }
 
+        /// <summary>
+        /// 隐藏光标
+        /// </summary>
         public void HideCursor()
         {
             Cursor.visible = false;
