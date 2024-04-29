@@ -13,11 +13,13 @@ namespace GameLogic
         //目标对象
         public Transform targetPos;
 
-#region 摄像机移动
+        #region 摄像机移动
         //摄像机
         public Camera csmoCamera { get; private set; }
         //移动速度
-        public float csmoCameraSpeed;
+        public float csmoCameraSpeed = 50;
+
+        public BoxCollider restrictedZone;
         #endregion
 
         #region 摄像机旋转/远近
@@ -71,6 +73,22 @@ namespace GameLogic
                     Vector3 moveDirection = (right * -horz) + (up * -vert);
                     moveDirection *= (csmoCameraSpeed * 0.001f);
                     targetPos.position += moveDirection;
+
+                    if (restrictedZone != null)
+                    {
+                        Vector3 newPosition = targetPos.position;
+                        // 检查新的位置是否在盒子碰撞器的边界内
+                        if (restrictedZone.bounds.Contains(newPosition))
+                        {
+                            // 如果在边界内，更新位置
+                            targetPos.position = newPosition;
+                        }
+                        else
+                        {
+                            // 如果在边界外，将位置调整到边界上
+                            targetPos.position = restrictedZone.bounds.ClosestPoint(newPosition);
+                        }
+                    }
                 }
 
                 //鼠标左键拖拽
@@ -161,7 +179,22 @@ namespace GameLogic
 
         public void SetZoom()
         {
-            float delta = mouse.scroll.ReadValue().y * -zoomValue;
+            float value = mouse.scroll.ReadValue().y;
+            if (value > 0)
+            {
+                value = 1;
+            }
+            else if (value < 0)
+            {
+                value = -1;
+            }
+            else
+            {
+                value = 0;
+            }
+
+            float delta = value * -zoomValue;
+
             SetZoom(delta);
         }
 
