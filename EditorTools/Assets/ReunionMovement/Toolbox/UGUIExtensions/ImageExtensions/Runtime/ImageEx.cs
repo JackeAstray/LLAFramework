@@ -77,6 +77,7 @@ namespace GameLogic.UI.ImageExtensions
                 }
 
                 base.SetMaterialDirty();
+                base.SetVerticesDirty();
             }
         }
 

@@ -152,6 +152,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
             }
             EditorGUILayout.EndVertical();
 
+            //刷新
             serializedObject.ApplyModifiedProperties();
             serializedObject.Update();
             Repaint();

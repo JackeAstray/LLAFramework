@@ -1,4 +1,4 @@
-Shader "ReunionMovement/PrettyHip"
+Shader "ReunionMovement/PrettyHip2"
 {
     Properties
     {
@@ -60,32 +60,31 @@ Shader "ReunionMovement/PrettyHip"
                 // 调整UV坐标
                 uv.y *= aspect;
                 // 旋转角度，以弧度为单位
-                float angle = radians(45);
+                float angle = radians(30 + _Time.y);
                 // 创建旋转矩阵
                 float2x2 rotationMatrix = float2x2(cos(angle), -sin(angle), sin(angle), cos(angle));  
 	            // 旋转UV坐标
-                uv = mul(rotationMatrix, uv);  
+                uv = mul(rotationMatrix, uv);
                 // 将UV坐标中心移回(0.5, 0.5)
                 uv /= aspect;
                 uv += 0.5;
-                
-                float2 pos = 10.0*uv;
+
+                float2 pos = 20.0*uv;
                 float2 rep = fract(pos);
-                float dist = 2.0 * min(min(rep.x, 1.0-rep.x), min(rep.y, 1.0-rep.y));
-                float squareDist = length((floor(pos) + float2(0.5,0.5)) - float2(5.0, 5.0));
-                float edge = sin(_Time.y - squareDist * 0.5) * 0.5 + 0.5;
-                edge = (_Time.y - squareDist*0.5)*0.5;
-                edge = 2.0 * fract(edge*0.5);
+                float dist = min(min(rep.x, 1.0-rep.x), min(rep.y, 1.0-rep.y));
+                float squareDist = length((floor(pos) + float2(0.5,0.5)) - float2(10.0, 10.0));
+                float edge = sin(_Time.y - squareDist * 20.);
+                edge = (edge * edge) % (edge / edge);
+
                 float value = fract(dist*2.0);
                 value = mix(value, 1.0-value, step(1.0, edge));
-                edge = pow(abs(1.0-edge), 2.0);
+                edge = pow(abs(1.0-edge), 2.2) * 0.5;
                 value = smoothstep( edge-0.05, edge, 0.95*value);
-                
-                value += squareDist*.1;
+
                 //设置渐变色
                 float4 gradientColor1 = _GradientColor1;
                 float4 gradientColor2 = _GradientColor2;
-                fixed4 col = mix(gradientColor1, gradientColor2, value);
+                fixed4 col = mix(gradientColor1, gradientColor2, float4(pow(value, 2), pow(value, 1.5), pow(value, 1.2), 1));
    
                 return col;
             }
