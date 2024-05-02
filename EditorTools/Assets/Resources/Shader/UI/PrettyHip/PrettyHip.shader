@@ -21,7 +21,7 @@ Shader "ReunionMovement/PrettyHip"
             #pragma multi_compile_fog
 
             #include "UnityCG.cginc"
-            #include "../Base/Common.cginc"
+            #include "../../Base/Common.cginc"
 
             float4 _GradientColor1;
             float4 _GradientColor2;

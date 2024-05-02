@@ -21,7 +21,7 @@ Shader "ReunionMovement/PrettyHip2"
             #pragma multi_compile_fog
 
             #include "UnityCG.cginc"
-            #include "../Base/Common.cginc"
+            #include "../../Base/Common.cginc"
 
             float4 _GradientColor1;
             float4 _GradientColor2;
@@ -74,7 +74,7 @@ Shader "ReunionMovement/PrettyHip2"
                 float dist = min(min(rep.x, 1.0-rep.x), min(rep.y, 1.0-rep.y));
                 float squareDist = length((floor(pos) + float2(0.5,0.5)) - float2(10.0, 10.0));
                 float edge = sin(_Time.y - squareDist * 20.);
-                edge = (edge * edge) % (edge / edge);
+                edge = fmod(edge * edge, edge / edge);
 
                 float value = fract(dist*2.0);
                 value = mix(value, 1.0-value, step(1.0, edge));

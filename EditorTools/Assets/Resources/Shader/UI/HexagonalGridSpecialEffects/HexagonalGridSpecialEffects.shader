@@ -16,7 +16,7 @@
 
     CGINCLUDE
     #include "UnityCG.cginc"
-    #include "../Base/Common.cginc"
+    #include "../../Base/Common.cginc"
 
     #pragma shader_feature _ ENABLE_SCREEN_ASPECT_RATIO
     
