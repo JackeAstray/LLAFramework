@@ -1,5 +1,3 @@
-// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
-
 Shader "ReunionMovement/GalaxyStar2"
 {
     Properties 
