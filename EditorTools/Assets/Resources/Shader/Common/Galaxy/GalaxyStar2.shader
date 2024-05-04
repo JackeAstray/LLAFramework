@@ -61,7 +61,11 @@ Shader "ReunionMovement/GalaxyStar2"
             fixed4 frag (v2f i) : SV_Target
             {
                 float2 uv = i.uv;
-                float res =  _ScreenParams.x / _ScreenParams.y;
+                float res = _ScreenParams.y / _ScreenParams.x;
+                if (_ScreenParams.x > _ScreenParams.y)
+                {
+                    res = _ScreenParams.x / _ScreenParams.y;
+                }
                 float4 fragColor = (0,0,0,0);
 
                 //静态星星

@@ -9,7 +9,7 @@ namespace GameLogic.EditorTools
     public static class BuildTool
     {
         //22-40
-        [MenuItem("工具箱/构建包/构建Bundles", false, 22)]
+        //[MenuItem("工具箱/构建包/构建Bundles", false, 22)]
         public static void BuildBundles()
         {
             // 获取ResourcesFile文件夹下的所有子文件夹
