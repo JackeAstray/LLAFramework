@@ -36,7 +36,7 @@ namespace GameLogic
             }
             else
             {
-                Transform root = SoundModule.Instance.root.transform;
+                Transform root = SoundModule.Instance.backgroundMusicRoot.transform;
                 gameObject.transform.parent = root.transform;
             }
 

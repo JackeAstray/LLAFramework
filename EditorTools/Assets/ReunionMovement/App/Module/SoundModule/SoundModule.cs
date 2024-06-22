@@ -18,7 +18,8 @@ namespace GameLogic
         public double InitProgress { get { return initProgress; } }
         #endregion
 
-        public GameObject root { get; private set; }
+        //背景音乐根节点
+        public GameObject backgroundMusicRoot { get; private set; }
 
         private SoundModuleSettings settings;
         AudioSource sourceAS;
@@ -56,9 +57,9 @@ namespace GameLogic
         /// </summary>
         public void CreateAudioRootAndInit()
         {
-            root = new GameObject("AudioRoot");
-            sourceAS = root.AddComponent<AudioSource>();
-            GameObject.DontDestroyOnLoad(root);
+            backgroundMusicRoot = new GameObject("BackgroundMusicRoot");
+            sourceAS = backgroundMusicRoot.AddComponent<AudioSource>();
+            GameObject.DontDestroyOnLoad(backgroundMusicRoot);
             settings = new SoundModuleSettings();
             settings.LoadSettings();
         }
