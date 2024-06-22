@@ -52,7 +52,7 @@ namespace GameLogic
 
             yield return new WaitForSeconds(clip.length);
 
-            ObjectPoolModule.Instance.Recycle(gameObject);
+            SoundPoolModule.Instance.Recycle(gameObject);
         }
     }
 }

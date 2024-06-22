@@ -208,7 +208,7 @@ namespace GameLogic
 
                 if (clip != null)
                 {
-                    GameObject go = ObjectPoolModule.Instance.Spawn(ObjectPoolModule.Instance.startupPools[0].prefab);
+                    GameObject go = SoundPoolModule.Instance.Spawn(SoundPoolModule.Instance.startupPools[0].prefab);
                     if (go != null)
                     {
                         SoundObj soundObj = go.GetComponent<SoundObj>();
@@ -217,6 +217,11 @@ namespace GameLogic
                     }
                 }
             }
+        }
+
+        public void StopSound()
+        {
+            SoundPoolModule.Instance.RecycleAll();
         }
         #endregion
 

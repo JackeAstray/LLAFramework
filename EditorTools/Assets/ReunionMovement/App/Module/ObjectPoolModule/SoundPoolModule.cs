@@ -8,18 +8,18 @@ namespace GameLogic
     /// <summary>
     /// 对象池
     /// </summary>
-    public class ObjectPoolModule : CustommModuleInitialize
+    public class SoundPoolModule : CustommModuleInitialize
     {
         #region 实例与初始化
-        public static ObjectPoolModule Instance = new ObjectPoolModule();
+        public static SoundPoolModule Instance = new SoundPoolModule();
         public bool IsInited { get; private set; }
         private double initProgress = 0;
         public double InitProgress { get { return initProgress; } }
         #endregion
 
         string poolPath = "Prefabs/Pools/SoundObj";
-        GameObject root;
-        GameObject destroyRoot;
+        GameObject soundPoolRoot;
+        GameObject soundPoolTempRoot;
         //启动对象池用
         public List<StartupPool> startupPools = new List<StartupPool>();
         //临时列表
@@ -58,18 +58,18 @@ namespace GameLogic
         #region 启动对象池
         public void CreateRoot()
         {
-            root = new GameObject("ObjectPoolRoot");
-            root.transform.localPosition = Vector3.zero;
-            root.transform.localRotation = Quaternion.identity;
-            root.transform.localScale = Vector3.one;
+            soundPoolRoot = new GameObject("SoundPoolRoot");
+            soundPoolRoot.transform.localPosition = Vector3.zero;
+            soundPoolRoot.transform.localRotation = Quaternion.identity;
+            soundPoolRoot.transform.localScale = Vector3.one;
 
-            destroyRoot = new GameObject("ObjectPoolTempRoot");
-            destroyRoot.transform.localPosition = Vector3.zero;
-            destroyRoot.transform.localRotation = Quaternion.identity;
-            destroyRoot.transform.localScale = Vector3.one;
+            soundPoolTempRoot = new GameObject("SoundPoolTempRoot");
+            soundPoolTempRoot.transform.localPosition = Vector3.zero;
+            soundPoolTempRoot.transform.localRotation = Quaternion.identity;
+            soundPoolTempRoot.transform.localScale = Vector3.one;
 
-            GameObject.DontDestroyOnLoad(root);
-            GameObject.DontDestroyOnLoad(destroyRoot);
+            GameObject.DontDestroyOnLoad(soundPoolRoot);
+            GameObject.DontDestroyOnLoad(soundPoolTempRoot);
         }
 
         public void CreatePools()
@@ -102,7 +102,7 @@ namespace GameLogic
 
                 if (initialPoolSize > 0)
                 {
-                    Transform parent = root.transform;
+                    Transform parent = soundPoolRoot.transform;
                     while (list.Count < initialPoolSize)
                     {
                         var obj = (GameObject)Object.Instantiate(prefab);
@@ -136,7 +136,7 @@ namespace GameLogic
         /// <returns></returns>
         public GameObject Spawn(GameObject prefab, Vector3 position, Quaternion rotation)
         {
-            return Spawn(prefab, destroyRoot.transform, position, rotation);
+            return Spawn(prefab, soundPoolTempRoot.transform, position, rotation);
         }
         /// <summary>
         /// 生成
@@ -156,7 +156,7 @@ namespace GameLogic
         /// <returns></returns>
         public GameObject Spawn(GameObject prefab, Vector3 position)
         {
-            return Spawn(prefab, destroyRoot.transform, position, Quaternion.identity);
+            return Spawn(prefab, soundPoolTempRoot.transform, position, Quaternion.identity);
         }
         /// <summary>
         /// 生成
@@ -165,7 +165,7 @@ namespace GameLogic
         /// <returns></returns>
         public GameObject Spawn(GameObject prefab)
         {
-            return Spawn(prefab, destroyRoot.transform, Vector3.zero, Quaternion.identity);
+            return Spawn(prefab, soundPoolTempRoot.transform, Vector3.zero, Quaternion.identity);
         }
         /// <summary>
         /// 生成
@@ -248,7 +248,7 @@ namespace GameLogic
         {
             pooledObjects[prefab].Add(obj);
             spawnedObjects.Remove(obj);
-            obj.transform.parent = root.transform;
+            obj.transform.parent = soundPoolRoot.transform;
             obj.SetActive(false);
         }
 
@@ -511,6 +511,9 @@ namespace GameLogic
         #endregion
     }
 
+    /// <summary>
+    /// 启动池
+    /// </summary>
     [System.Serializable]
     public class StartupPool
     {
