@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LitJson;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -41,15 +42,11 @@ namespace GameLogic.HttpModule.Service.Unity
 
 		public IHttpRequest Post(string uri, byte[] bytes, string contentType)
 		{
-			using var unityWebRequest = new UnityWebRequest(uri, UnityWebRequest.kHttpVerbPOST)
-			{
-				uploadHandler = new UploadHandlerRaw(bytes)
-				{
-					contentType = contentType
-				},
-				downloadHandler = new DownloadHandlerBuffer()
-			};
-			return new UnityHttpRequest(unityWebRequest);
+            UnityWebRequest unityWebRequest = new UnityWebRequest(uri, UnityWebRequest.kHttpVerbPOST);
+            unityWebRequest.uploadHandler = new UploadHandlerRaw(bytes);
+            unityWebRequest.downloadHandler = new DownloadHandlerBuffer();
+            unityWebRequest.SetRequestHeader("Content-Type", contentType);
+            return new UnityHttpRequest(unityWebRequest);
 		}
 
 		public IHttpRequest PostJson(string uri, string json)
@@ -59,7 +56,7 @@ namespace GameLogic.HttpModule.Service.Unity
 
 		public IHttpRequest PostJson<T>(string uri, T payload) where T : class
 		{
-            var json = JsonUtility.ToJson(payload);
+            var json = JsonMapper.ToJson(payload);
             return PostJson(uri, json);
 		}
 
