@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static GameLogic.SoundPoolModule;
 
 namespace GameLogic
 {
@@ -61,7 +62,6 @@ namespace GameLogic
         public IEnumerator StartGame()
         {
             //UIModule.Instance.OpenWindow("StartAppUIPlane");
-            //SoundModule.Instance.PlayMusic(100001);
             yield return new WaitForSeconds(0f);
         }
 

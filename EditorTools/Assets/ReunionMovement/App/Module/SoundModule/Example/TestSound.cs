@@ -2,6 +2,7 @@ using GameLogic;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static GameLogic.SoundPoolModule;
 
 namespace GameLogic.Example
 {
@@ -9,7 +10,12 @@ namespace GameLogic.Example
     { 
         public void PlaySound()
         {
-            SoundModule.Instance.PlaySound(120012);
+            SoundModule.Instance.PlaySound(120012, PoolType.EffectSound);
+        }
+
+        public void PlaySound2()
+        {
+            SoundModule.Instance.PlaySound(120012, PoolType.Voice);
         }
 
 

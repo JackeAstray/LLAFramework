@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using static GameLogic.SoundPoolModule;
 
 namespace GameLogic
 {
@@ -175,9 +176,9 @@ namespace GameLogic
         /// 播放声音
         /// </summary>
         /// <param name="index"></param>
-        public void PlaySound(int index)
+        public void PlaySound(int index, PoolType poolType = PoolType.EffectSound)
         {
-            PlaySound(index, null, false);
+            PlaySound(index, null, false, poolType);
         }
 
         /// <summary>
@@ -185,9 +186,9 @@ namespace GameLogic
         /// </summary>
         /// <param name="index"></param>
         /// <param name="pos"></param>
-        public void PlaySound(int index, Transform pos)
+        public void PlaySound(int index, Transform pos, PoolType poolType = PoolType.EffectSound)
         {
-            PlaySound(index, pos, false);
+            PlaySound(index, pos, false, poolType);
         }
 
         /// <summary>
@@ -196,11 +197,11 @@ namespace GameLogic
         /// <param name="index"></param>
         /// <param name="emitter"></param>
         /// <param name="loop"></param>
-        public void PlaySound(int index, Transform emitter, bool loop)
+        public void PlaySound(int index, Transform emitter, bool loop, PoolType poolType)
         {
-            ObjectProcessing(index, emitter, loop);
+            ProcessingPlaySound(index, emitter, loop, poolType);
         }
-        void ObjectProcessing(int index, Transform emitter, bool loop)
+        void ProcessingPlaySound(int index, Transform emitter, bool loop, PoolType poolType)
         {
             SoundConfig soundConfig = DatabaseModule.Instance.GetSoundConfig(index);
             if (soundConfig != null)
@@ -209,20 +210,20 @@ namespace GameLogic
 
                 if (clip != null)
                 {
-                    GameObject go = SoundPoolModule.Instance.Spawn(SoundPoolModule.Instance.startupPools[0].prefab);
+                    GameObject go = SoundPoolModule.Instance.Spawn(SoundPoolModule.Instance.startupPools[0].prefab, poolType);
                     if (go != null)
                     {
                         SoundObj soundObj = go.GetComponent<SoundObj>();
                         soundObj.clip = clip;
-                        soundObj.ObjectProcessing(index, emitter, loop,settings.GetSoundVolume(),settings.GetSoundMuted());
+                        soundObj.Processing(index, emitter, loop,settings.GetSoundVolume(),settings.GetSoundMuted(), poolType);
                     }
                 }
             }
         }
 
-        public void StopSound()
+        public void StopSound(PoolType poolType)
         {
-            SoundPoolModule.Instance.RecycleAll();
+            SoundPoolModule.Instance.RecycleAll(poolType);
         }
         #endregion
 

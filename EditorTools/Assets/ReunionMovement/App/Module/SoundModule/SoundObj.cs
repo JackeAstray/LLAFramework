@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static GameLogic.SoundPoolModule;
 
 namespace GameLogic
 {
     public class SoundObj : MonoBehaviour
     {
         public AudioClip clip;
-
+        PoolType poolType = PoolType.EffectSound;
         public void OnEnable()
         {
 
@@ -23,12 +24,12 @@ namespace GameLogic
 
         }
 
-        public void ObjectProcessing(int index, Transform emitter, bool loop, float volume, bool nute)
+        public void Processing(int index, Transform emitter, bool loop, float volume, bool nute, PoolType poolType)
         {
-            StartCoroutine(ObjectProcessing2(index,emitter,loop,volume,nute));
+            StartCoroutine(ObjectProcessing(index, emitter, loop, volume, nute, poolType));
         }
 
-        IEnumerator ObjectProcessing2(int index, Transform emitter, bool loop,float volume, bool nute)
+        IEnumerator ObjectProcessing(int index, Transform emitter, bool loop,float volume, bool nute, PoolType poolType)
         {
             if (emitter != null)
             {
@@ -36,8 +37,17 @@ namespace GameLogic
             }
             else
             {
-                Transform root = SoundModule.Instance.backgroundMusicRoot.transform;
-                gameObject.transform.parent = root.transform;
+                switch (poolType)
+                {
+                    case PoolType.Voice:
+                        Transform root2 = SoundPoolModule.Instance.voicePoolTempRoot.transform;
+                        gameObject.transform.parent = root2.transform;
+                        break;
+                    case PoolType.EffectSound:
+                        Transform root1 = SoundPoolModule.Instance.effectSoundPoolTempRoot.transform;
+                        gameObject.transform.parent = root1.transform;
+                        break;
+                }
             }
 
             gameObject.transform.localPosition = Vector3.zero;
@@ -52,7 +62,7 @@ namespace GameLogic
 
             yield return new WaitForSeconds(clip.length);
 
-            SoundPoolModule.Instance.Recycle(gameObject);
+            SoundPoolModule.Instance.Recycle(gameObject, poolType);
         }
     }
 }

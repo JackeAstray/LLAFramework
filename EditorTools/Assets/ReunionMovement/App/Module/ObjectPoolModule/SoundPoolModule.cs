@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static GameLogic.SoundPoolModule;
 
 
 namespace GameLogic
@@ -18,16 +19,31 @@ namespace GameLogic
         #endregion
 
         string poolPath = "Prefabs/Pools/SoundObj";
-        GameObject soundPoolRoot;
-        GameObject soundPoolTempRoot;
+
+        //人声
+        GameObject voicePoolRoot;
+        public GameObject voicePoolTempRoot;
+
+        //特效音
+        GameObject effectSoundPoolRoot;
+        public GameObject effectSoundPoolTempRoot;
+        
         //启动对象池用
         public List<StartupPool> startupPools = new List<StartupPool>();
         //临时列表
         static List<GameObject> tempList = new List<GameObject>();
         //预设对象池
         Dictionary<GameObject, List<GameObject>> pooledObjects = new Dictionary<GameObject, List<GameObject>>();
-        //生成对象池
-        Dictionary<GameObject, GameObject> spawnedObjects = new Dictionary<GameObject, GameObject>();
+        //生成对象池 人声
+        Dictionary<GameObject, GameObject> spawnedVoiceSoundObjects = new Dictionary<GameObject, GameObject>();
+        //生成对象池 特效
+        Dictionary<GameObject, GameObject> spawnedEffectSoundObjects = new Dictionary<GameObject, GameObject>();
+
+        public enum PoolType
+        {
+            Voice,
+            EffectSound
+        }
 
         public IEnumerator Init()
         {
@@ -58,18 +74,30 @@ namespace GameLogic
         #region 启动对象池
         public void CreateRoot()
         {
-            soundPoolRoot = new GameObject("SoundPoolRoot");
-            soundPoolRoot.transform.localPosition = Vector3.zero;
-            soundPoolRoot.transform.localRotation = Quaternion.identity;
-            soundPoolRoot.transform.localScale = Vector3.one;
+            voicePoolRoot = new GameObject("VoicePoolRoot");
+            voicePoolRoot.transform.localPosition = Vector3.zero;
+            voicePoolRoot.transform.localRotation = Quaternion.identity;
+            voicePoolRoot.transform.localScale = Vector3.one;
 
-            soundPoolTempRoot = new GameObject("SoundPoolTempRoot");
-            soundPoolTempRoot.transform.localPosition = Vector3.zero;
-            soundPoolTempRoot.transform.localRotation = Quaternion.identity;
-            soundPoolTempRoot.transform.localScale = Vector3.one;
+            voicePoolTempRoot = new GameObject("VoicePoolTempRoot");
+            voicePoolTempRoot.transform.localPosition = Vector3.zero;
+            voicePoolTempRoot.transform.localRotation = Quaternion.identity;
+            voicePoolTempRoot.transform.localScale = Vector3.one;
+            
+            effectSoundPoolRoot = new GameObject("VoiceSoundPoolRoot");
+            effectSoundPoolRoot.transform.localPosition = Vector3.zero;
+            effectSoundPoolRoot.transform.localRotation = Quaternion.identity;
+            effectSoundPoolRoot.transform.localScale = Vector3.one;
 
-            GameObject.DontDestroyOnLoad(soundPoolRoot);
-            GameObject.DontDestroyOnLoad(soundPoolTempRoot);
+            effectSoundPoolTempRoot = new GameObject("VoiceSoundPoolTempRoot");
+            effectSoundPoolTempRoot.transform.localPosition = Vector3.zero;
+            effectSoundPoolTempRoot.transform.localRotation = Quaternion.identity;
+            effectSoundPoolTempRoot.transform.localScale = Vector3.one;
+
+            GameObject.DontDestroyOnLoad(voicePoolRoot);
+            GameObject.DontDestroyOnLoad(voicePoolTempRoot);
+            GameObject.DontDestroyOnLoad(effectSoundPoolRoot);
+            GameObject.DontDestroyOnLoad(effectSoundPoolTempRoot);
         }
 
         public void CreatePools()
@@ -97,12 +125,24 @@ namespace GameLogic
         {
             if (prefab != null && !pooledObjects.ContainsKey(prefab))
             {
-                var list = new List<GameObject>();
+                List<GameObject> list = new List<GameObject>();
                 pooledObjects.Add(prefab, list);
 
                 if (initialPoolSize > 0)
                 {
-                    Transform parent = soundPoolRoot.transform;
+                    Transform parent = voicePoolRoot.transform;
+                    while (list.Count < initialPoolSize)
+                    {
+                        var obj = (GameObject)Object.Instantiate(prefab);
+                        obj.transform.parent = parent;
+                        obj.SetActive(false);
+                        list.Add(obj);
+                    }
+                }
+                list.Clear();
+                if (initialPoolSize > 0)
+                {
+                    Transform parent = effectSoundPoolRoot.transform;
                     while (list.Count < initialPoolSize)
                     {
                         var obj = (GameObject)Object.Instantiate(prefab);
@@ -123,9 +163,9 @@ namespace GameLogic
         /// <param name="parent"></param>
         /// <param name="position"></param>
         /// <returns></returns>
-        public GameObject Spawn(GameObject prefab, Transform parent, Vector3 position)
+        public GameObject Spawn(GameObject prefab, Transform parent, Vector3 position, PoolType poolType)
         {
-            return Spawn(prefab, parent, position, Quaternion.identity);
+            return Spawn(prefab, parent, position, Quaternion.identity, poolType);
         }
         /// <summary>
         /// 生成
@@ -134,9 +174,18 @@ namespace GameLogic
         /// <param name="position"></param>
         /// <param name="rotation"></param>
         /// <returns></returns>
-        public GameObject Spawn(GameObject prefab, Vector3 position, Quaternion rotation)
+        public GameObject Spawn(GameObject prefab, Vector3 position, Quaternion rotation, PoolType poolType)
         {
-            return Spawn(prefab, soundPoolTempRoot.transform, position, rotation);
+            switch (poolType)
+            {
+                case PoolType.Voice:
+                    return Spawn(prefab, voicePoolTempRoot.transform, position, rotation, poolType);
+                case PoolType.EffectSound:
+                default:
+                    return Spawn(prefab, effectSoundPoolTempRoot.transform, position, rotation, poolType);
+            }
+
+            
         }
         /// <summary>
         /// 生成
@@ -144,9 +193,9 @@ namespace GameLogic
         /// <param name="prefab"></param>
         /// <param name="parent"></param>
         /// <returns></returns>
-        public GameObject Spawn(GameObject prefab, Transform parent)
+        public GameObject Spawn(GameObject prefab, Transform parent, PoolType poolType)
         {
-            return Spawn(prefab, parent, Vector3.zero, Quaternion.identity);
+            return Spawn(prefab, parent, Vector3.zero, Quaternion.identity, poolType);
         }
         /// <summary>
         /// 生成
@@ -154,18 +203,32 @@ namespace GameLogic
         /// <param name="prefab"></param>
         /// <param name="position"></param>
         /// <returns></returns>
-        public GameObject Spawn(GameObject prefab, Vector3 position)
+        public GameObject Spawn(GameObject prefab, Vector3 position, PoolType poolType)
         {
-            return Spawn(prefab, soundPoolTempRoot.transform, position, Quaternion.identity);
+            switch (poolType)
+            {
+                case PoolType.Voice:
+                    return Spawn(prefab, voicePoolTempRoot.transform, position, Quaternion.identity, poolType);
+                case PoolType.EffectSound:
+                default:
+                    return Spawn(prefab, effectSoundPoolTempRoot.transform, position, Quaternion.identity, poolType);
+            }
         }
         /// <summary>
         /// 生成
         /// </summary>
         /// <param name="prefab"></param>
         /// <returns></returns>
-        public GameObject Spawn(GameObject prefab)
+        public GameObject Spawn(GameObject prefab, PoolType poolType)
         {
-            return Spawn(prefab, soundPoolTempRoot.transform, Vector3.zero, Quaternion.identity);
+            switch (poolType)
+            {
+                case PoolType.Voice:
+                    return Spawn(prefab, voicePoolTempRoot.transform, Vector3.zero, Quaternion.identity, poolType);
+                case PoolType.EffectSound:
+                default:
+                    return Spawn(prefab, effectSoundPoolTempRoot.transform, Vector3.zero, Quaternion.identity, poolType);
+            }
         }
         /// <summary>
         /// 生成
@@ -175,7 +238,7 @@ namespace GameLogic
         /// <param name="position"></param>
         /// <param name="rotation"></param>
         /// <returns></returns>
-        public GameObject Spawn(GameObject prefab, Transform parent, Vector3 position, Quaternion rotation)
+        public GameObject Spawn(GameObject prefab, Transform parent, Vector3 position, Quaternion rotation, PoolType poolType)
         {
             List<GameObject> list;
             GameObject obj;
@@ -195,12 +258,31 @@ namespace GameLogic
                         obj.transform.localPosition = position;
                         obj.transform.localRotation = rotation;
                         obj.SetActive(true);
-                        spawnedObjects.Add(obj, prefab);
+
+                        switch (poolType)
+                        {
+                            case PoolType.Voice:
+                                spawnedVoiceSoundObjects.Add(obj, prefab);
+                                break;
+                            case PoolType.EffectSound:
+                                spawnedEffectSoundObjects.Add(obj, prefab);
+                                break;
+                        }
                         return obj;
                     }
                 }
                 obj = GameObject.Instantiate(prefab, position, rotation, parent);
-                spawnedObjects.Add(obj, prefab);
+
+                switch (poolType)
+                {
+                    case PoolType.Voice:
+                        spawnedVoiceSoundObjects.Add(obj, prefab);
+                        break;
+                    case PoolType.EffectSound:
+                        spawnedEffectSoundObjects.Add(obj, prefab);
+                        break;
+                }
+
                 return obj;
             }
             else
@@ -217,25 +299,42 @@ namespace GameLogic
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>
-        public void Recycle<T>(T obj) where T : Component
+        public void Recycle<T>(T obj, PoolType poolType) where T : Component
         {
-            Recycle(obj.gameObject);
+            Recycle(obj.gameObject, poolType);
         }
 
         /// <summary>
         /// 回收利用
         /// </summary>
         /// <param name="obj"></param>
-        public void Recycle(GameObject obj)
+        public void Recycle(GameObject obj, PoolType poolType)
         {
             GameObject prefab;
-            if (spawnedObjects.TryGetValue(obj, out prefab))
+
+            switch (poolType)
             {
-                Recycle(obj, prefab);
-            }
-            else
-            {
-                Object.Destroy(obj);
+                case PoolType.Voice:
+                    if (spawnedVoiceSoundObjects.TryGetValue(obj, out prefab))
+                    {
+                        Recycle(obj, prefab, poolType);
+                    }
+                    else
+                    {
+                        Object.Destroy(obj);
+                    }
+                    break;
+                case PoolType.EffectSound:
+                default:
+                    if (spawnedEffectSoundObjects.TryGetValue(obj, out prefab))
+                    {
+                        Recycle(obj, prefab, poolType);
+                    }
+                    else
+                    {
+                        Object.Destroy(obj);
+                    }
+                    break;
             }
         }
 
@@ -244,11 +343,23 @@ namespace GameLogic
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="prefab"></param>
-        void Recycle(GameObject obj, GameObject prefab)
+        void Recycle(GameObject obj, GameObject prefab, PoolType poolType)
         {
             pooledObjects[prefab].Add(obj);
-            spawnedObjects.Remove(obj);
-            obj.transform.parent = soundPoolRoot.transform;
+
+            switch (poolType)
+            {
+                case PoolType.Voice:
+                    spawnedVoiceSoundObjects.Remove(obj);
+                    obj.transform.parent = voicePoolRoot.transform;
+                    break;
+                case PoolType.EffectSound:
+                default:
+                    spawnedEffectSoundObjects.Remove(obj);
+                    obj.transform.parent = effectSoundPoolRoot.transform;
+                    break;
+            }
+
             obj.SetActive(false);
         }
 
@@ -257,42 +368,76 @@ namespace GameLogic
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="prefab"></param>
-        public void RecycleAll<T>(T prefab) where T : Component
+        public void RecycleAll<T>(T prefab, PoolType poolType) where T : Component
         {
-            RecycleAll(prefab.gameObject);
+            RecycleAll(prefab.gameObject, poolType);
         }
 
         /// <summary>
         /// 回收利用全部
         /// </summary>
         /// <param name="prefab"></param>
-        public void RecycleAll(GameObject prefab)
+        public void RecycleAll(GameObject prefab, PoolType poolType)
         {
-            foreach (var item in spawnedObjects)
+            switch (poolType)
             {
-                if (item.Value == prefab)
-                {
-                    tempList.Add(item.Key);
-                }
+                case PoolType.Voice:
+                    foreach (var item in spawnedVoiceSoundObjects)
+                    {
+                        if (item.Value == prefab)
+                        {
+                            tempList.Add(item.Key);
+                        }
+                    }
+                    for (int i = 0; i < tempList.Count; ++i)
+                    {
+                        Recycle(tempList[i], poolType);
+                    }
+                    tempList.Clear();
+                    break;
+                case PoolType.EffectSound:
+                default:
+                    foreach (var item in spawnedEffectSoundObjects)
+                    {
+                        if (item.Value == prefab)
+                        {
+                            tempList.Add(item.Key);
+                        }
+                    }
+                    for (int i = 0; i < tempList.Count; ++i)
+                    {
+                        Recycle(tempList[i], poolType);
+                    }
+                    tempList.Clear();
+                    break;
             }
-            for (int i = 0; i < tempList.Count; ++i)
-            {
-                Recycle(tempList[i]);
-            }
-            tempList.Clear();
         }
 
         /// <summary>
         /// 回收利用全部
         /// </summary>
-        public void RecycleAll()
+        public void RecycleAll(PoolType poolType)
         {
-            tempList.AddRange(spawnedObjects.Keys);
-            for (int i = 0; i < tempList.Count; ++i)
+            switch (poolType)
             {
-                Recycle(tempList[i]);
+                case PoolType.Voice:
+                    tempList.AddRange(spawnedVoiceSoundObjects.Keys);
+                    for (int i = 0; i < tempList.Count; ++i)
+                    {
+                        Recycle(tempList[i], poolType);
+                    }
+                    tempList.Clear();
+                    break;
+                case PoolType.EffectSound:
+                default:
+                    tempList.AddRange(spawnedEffectSoundObjects.Keys);
+                    for (int i = 0; i < tempList.Count; ++i)
+                    {
+                        Recycle(tempList[i], poolType);
+                    }
+                    tempList.Clear();
+                    break;
             }
-            tempList.Clear();
         }
         #endregion
 
@@ -395,9 +540,16 @@ namespace GameLogic
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public bool IsSpawned(GameObject obj)
+        public bool IsSpawned(GameObject obj, PoolType poolType)
         {
-            return spawnedObjects.ContainsKey(obj);
+            switch(poolType)
+            {
+                case PoolType.Voice:
+                    return spawnedVoiceSoundObjects.ContainsKey(obj);
+                case PoolType.EffectSound:
+                default:
+                    return spawnedEffectSoundObjects.ContainsKey(obj);
+            }
         }
 
         /// <summary>
@@ -406,9 +558,9 @@ namespace GameLogic
         /// <typeparam name="T"></typeparam>
         /// <param name="prefab"></param>
         /// <returns></returns>
-        public int CountSpawned<T>(T prefab) where T : Component
+        public int CountSpawned<T>(T prefab, PoolType poolType) where T : Component
         {
-            return CountSpawned(prefab.gameObject);
+            return CountSpawned(prefab.gameObject, poolType);
         }
 
         /// <summary>
@@ -416,15 +568,30 @@ namespace GameLogic
         /// </summary>
         /// <param name="prefab"></param>
         /// <returns></returns>
-        public int CountSpawned(GameObject prefab)
+        public int CountSpawned(GameObject prefab, PoolType poolType)
         {
             int count = 0;
-            foreach (var instancePrefab in spawnedObjects.Values)
+
+            switch (poolType)
             {
-                if (prefab == instancePrefab)
-                {
-                    ++count;
-                }
+                case PoolType.Voice:
+                    foreach (var instancePrefab in spawnedVoiceSoundObjects.Values)
+                    {
+                        if (prefab == instancePrefab)
+                        {
+                            ++count;
+                        }
+                    }
+                    break;
+                case PoolType.EffectSound:
+                    foreach (var instancePrefab in spawnedEffectSoundObjects.Values)
+                    {
+                        if (prefab == instancePrefab)
+                        {
+                            ++count;
+                        }
+                    }
+                    break;
             }
             return count;
         }
@@ -436,7 +603,7 @@ namespace GameLogic
         /// <param name="list"></param>
         /// <param name="appendList"></param>
         /// <returns></returns>
-        public List<GameObject> GetSpawned(GameObject prefab, List<GameObject> list, bool appendList)
+        public List<GameObject> GetSpawned(GameObject prefab, List<GameObject> list, bool appendList, PoolType poolType)
         {
             if (list == null)
             {
@@ -446,12 +613,28 @@ namespace GameLogic
             {
                 list.Clear();
             }
-            foreach (var item in spawnedObjects)
+
+            switch(poolType)
             {
-                if (item.Value == prefab)
-                {
-                    list.Add(item.Key);
-                }
+                case PoolType.Voice:
+                    foreach (var item in spawnedVoiceSoundObjects)
+                    {
+                        if (item.Value == prefab)
+                        {
+                            list.Add(item.Key);
+                        }
+                    }
+                    break;
+                case PoolType.EffectSound:
+                default:
+                    foreach (var item in spawnedEffectSoundObjects)
+                    {
+                        if (item.Value == prefab)
+                        {
+                            list.Add(item.Key);
+                        }
+                    }
+                    break;
             }
             return list;
         }
@@ -464,7 +647,7 @@ namespace GameLogic
         /// <param name="list"></param>
         /// <param name="appendList"></param>
         /// <returns></returns>
-        public List<T> GetSpawned<T>(T prefab, List<T> list, bool appendList) where T : Component
+        public List<T> GetSpawned<T>(T prefab, List<T> list, bool appendList, PoolType poolType) where T : Component
         {
             if (list == null)
             {
@@ -475,13 +658,31 @@ namespace GameLogic
                 list.Clear();
             }
             var prefabObj = prefab.gameObject;
-            foreach (var item in spawnedObjects)
+
+            switch (poolType)
             {
-                if (item.Value == prefabObj)
-                {
-                    list.Add(item.Key.GetComponent<T>());
-                }
+                case PoolType.Voice:
+
+                    foreach (var item in spawnedVoiceSoundObjects)
+                    {
+                        if (item.Value == prefabObj)
+                        {
+                            list.Add(item.Key.GetComponent<T>());
+                        }
+                    }
+                    break;
+                case PoolType.EffectSound:
+                default:
+                    foreach (var item in spawnedEffectSoundObjects)
+                    {
+                        if (item.Value == prefabObj)
+                        {
+                            list.Add(item.Key.GetComponent<T>());
+                        }
+                    }
+                    break;
             }
+
             return list;
         }
 
@@ -505,7 +706,8 @@ namespace GameLogic
 
         public void DestroyAll(GameObject prefab)
         {
-            RecycleAll(prefab);
+            RecycleAll(prefab, PoolType.Voice);
+            RecycleAll(prefab, PoolType.EffectSound);
             DestroyPooled(prefab);
         }
         #endregion
