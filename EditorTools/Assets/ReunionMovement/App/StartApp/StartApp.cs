@@ -3,7 +3,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static GameLogic.SoundPoolModule;
 
 namespace GameLogic
 {
@@ -24,6 +23,7 @@ namespace GameLogic
             modules.Add(SceneModule.Instance);
             modules.Add(ColorPaletteModule.Instance);
             modules.Add(DownloadImageModule.Instance);
+            modules.Add(DownloadFileModule.Instance);
 
             return modules;
         }
@@ -65,6 +65,22 @@ namespace GameLogic
         {
             //UIModule.Instance.OpenWindow("StartAppUIPlane");
             yield return new WaitForSeconds(0f);
+
+            //DownloadFileModule.Instance.SetUrl("http://localhost:8081/Download/%E5%A3%81%E7%BA%B8/%E5%8F%A4%E5%A0%A1%E9%BE%8D%E5%A7%AC.png");
+
+            //string savePath = Application.persistentDataPath + "/Picture/古堡龍姬.png";
+            //DownloadFileModule.Instance.DownloadToFile(
+            //    4,
+            //    savePath,
+            //    (size, count) =>
+            //    {
+            //        UnityEngine.Debug.LogFormat("[{0}]下载进度 >>> {1}/{2}", "多线程下载至本地", size, count);
+            //    },
+            //    (data) =>
+            //    {
+            //        UnityEngine.Debug.LogFormat("[{0}]下载完毕>>>{1}", "多线程下载至本地", data.Length);
+            //    }
+            //);
         }
 
         /// <summary>
@@ -92,8 +108,15 @@ namespace GameLogic
 
         }
 
+        void Update()
+        {
+            // 更新事件
+            RefreshCoroutineTasks();
+        }
+
+        #region 协程
         /// <summary>
-        /// 启动Coroutine
+        /// 启动协程
         /// </summary>
         /// <param name="coroutine"></param>
         /// <returns></returns>
@@ -103,12 +126,117 @@ namespace GameLogic
         }
 
         /// <summary>
-        /// 停止Coroutine
+        /// 停止协程
         /// </summary>
         /// <param name="coroutine"></param>
         public override void StopMyCoroutine(Coroutine coroutine)
         {
             StopCoroutine(coroutine);
         }
+
+        public void AddCoroutine(IEnumerator routine, Action<Coroutine> callback)
+        {
+            var task = new CoroutineTask();
+            task.Enumerator = routine;
+            task.Callback = callback;
+            coroutineTasks.Add(task);
+        }
+
+        /// <summary>
+        /// 启动协程
+        /// </summary>
+        /// <param name="handler"></param>
+        /// <returns></returns>
+        public Coroutine StartCoroutine(Action handler)
+        {
+            return StartCoroutine(EnumCoroutine(handler));
+        }
+
+        /// <summary>
+        /// 启动协程
+        /// </summary>
+        /// <param name="handler"></param>
+        /// <param name="callback"></param>
+        /// <returns></returns>
+        public Coroutine StartCoroutine(Action handler, Action callback)
+        {
+            return StartCoroutine(EnumCoroutine(handler, callback));
+        }
+
+        /// <summary>
+        /// 枚举协程
+        /// </summary>
+        /// <param name="routine"></param>
+        /// <param name="callBack"></param>
+        /// <returns></returns>
+        IEnumerator EnumCoroutine(Coroutine routine, Action callBack)
+        {
+            yield return routine;
+            callBack?.Invoke();
+        }
+
+        /// <summary>
+        /// 枚举协程
+        /// </summary>
+        /// <param name="handler"></param>
+        /// <returns></returns>
+        IEnumerator EnumCoroutine(Action handler)
+        {
+            handler?.Invoke();
+            yield return null;
+        }
+
+        /// <summary>
+        /// 枚举协程
+        /// </summary>
+        /// <param name="handler"></param>
+        /// <param name="callack"></param>
+        /// <returns></returns>
+        IEnumerator EnumCoroutine(Action handler, Action callack)
+        {
+            yield return StartCoroutine(handler);
+            callack?.Invoke();
+        }
+
+        /// <summary>
+        /// 枚举断言协程
+        /// </summary>
+        /// <param name="handler"></param>
+        /// <param name="callBack"></param>
+        /// <returns></returns>
+        IEnumerator EnumPredicateCoroutine(Func<bool> handler, Action callBack)
+        {
+            yield return new WaitUntil(handler);
+            callBack();
+        }
+
+        /// <summary>
+        /// 协程任务
+        /// </summary>
+        void RefreshCoroutineTasks()
+        {
+            while (coroutineTasks.Count > 0)
+            {
+                var task = coroutineTasks[0];
+                coroutineTasks.RemoveAt(0);
+                var coroutine = StartCoroutine(task.Enumerator);
+                task.Callback?.Invoke(coroutine);
+            }
+        }
+
+        /// <summary>
+        /// 生成任务Id
+        /// </summary>
+        /// <returns>任务Id</returns>
+        long GenerateTaskId()
+        {
+            if (taskIndex == long.MaxValue)
+                taskIndex = 0;
+            else
+                taskIndex++;
+            return taskIndex;
+        }
+        #endregion
+
     }
 }

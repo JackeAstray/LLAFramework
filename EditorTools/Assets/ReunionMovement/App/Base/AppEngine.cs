@@ -7,12 +7,6 @@ using UnityEngine;
 
 namespace GameLogic
 {
-    public interface IAppEntry
-    {
-        IEnumerator OnBeforeInit();
-        IEnumerator OnGameStart();
-    }
-
     /// <summary>
     /// App引擎
     /// </summary>

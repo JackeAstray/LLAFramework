@@ -367,5 +367,3 @@ namespace GameLogic.Download
         }
     }
 }
-
-
