@@ -104,8 +104,13 @@ namespace GameLogic
             delegateEvent.Handle(eventData);
         }
 
+        public void ClearEventTypeListeners(EventModuleType type)
+        {
+            eventTypeListeners.Clear();
+        }
+
         /// <summary>
-        /// 场景管理器轮询。
+        /// 更新
         /// </summary>
         /// <param name="elapseSeconds">逻辑流逝时间，以秒为单位。</param>
         /// <param name="realElapseSeconds">真实流逝时间，以秒为单位。</param>

@@ -93,9 +93,6 @@ namespace GameLogic.HttpModule.Service.Unity
                     Url = unityWebRequest.url,
                     Bytes = unityWebRequest.downloadHandler?.data,
                     Text = unityWebRequest.downloadHandler?.text,
-                    //IsSuccessful = !unityWebRequest.isHttpError && !unityWebRequest.isNetworkError,
-                    //IsHttpError = unityWebRequest.isHttpError,
-                    //IsNetworkError = unityWebRequest.isNetworkError,
                     IsSuccessful = unityWebRequest.result != UnityWebRequest.Result.ConnectionError && unityWebRequest.result != UnityWebRequest.Result.ConnectionError,
                     IsHttpError = unityWebRequest.result == UnityWebRequest.Result.ConnectionError,
                     IsNetworkError = unityWebRequest.result == UnityWebRequest.Result.ConnectionError,
@@ -105,15 +102,15 @@ namespace GameLogic.HttpModule.Service.Unity
                     Texture = (unityWebRequest.downloadHandler as DownloadHandlerTexture)?.texture
                 };
 
-                if (unityWebRequest.result == UnityWebRequest.Result.ConnectionError)
+                if (response.IsNetworkError) // 使用修正后的条件
                 {
                     onNetworkError?.Invoke(response);
                 }
-                else if (unityWebRequest.result != UnityWebRequest.Result.Success)
+                else if (response.IsHttpError) // 使用修正后的条件
                 {
                     onError?.Invoke(response);
                 }
-                else
+                else if (response.IsSuccessful) // 检查请求是否成功
                 {
                     onSuccess?.Invoke(response);
                 }

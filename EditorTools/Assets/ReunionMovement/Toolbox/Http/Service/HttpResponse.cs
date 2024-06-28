@@ -13,7 +13,7 @@ namespace GameLogic.HttpModule.Service
 		public byte[] Bytes { get; set; }
 		public string Text { get; set; }
 		public string Error { get; set; }
-		public Texture Texture { get; set; }
+		public Texture2D Texture { get; set; }
 		public Dictionary<string, string> ResponseHeaders { get; set; }
 	}
 }

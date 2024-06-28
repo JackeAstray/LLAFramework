@@ -1,3 +1,4 @@
+using GameLogic.Download;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ namespace GameLogic
             modules.Add(UIModule.Instance);
             modules.Add(SceneModule.Instance);
             modules.Add(ColorPaletteModule.Instance);
+            modules.Add(DownloadImageModule.Instance);
 
             return modules;
         }
