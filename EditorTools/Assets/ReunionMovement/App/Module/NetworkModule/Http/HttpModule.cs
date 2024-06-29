@@ -1,45 +1,57 @@
-﻿using System;
+using GameLogic;
+using GameLogic.Http.Service.Unity;
+using GameLogic.Http.Service;
 using System.Collections;
 using System.Collections.Generic;
-using GameLogic.HttpModule.Service;
-using GameLogic.HttpModule.Service.Unity;
 using UnityEngine;
+using System;
 using UnityEngine.Networking;
+using UnityEditor.PackageManager.Requests;
 
-namespace GameLogic.HttpModule
+namespace GameLogic.Http
 {
-    public sealed class Http : MonoBehaviour
+    public class HttpModule : CustommModuleInitialize
     {
-        public static Http Instance
-        {
-            get
-            {
-                if (instance != null) return instance;
-                Init(new UnityHttpService());
-                return instance;
-            }
-        }
+        #region 实例与初始化
+        public static HttpModule Instance = new HttpModule();
+        public bool IsInited { get; private set; }
+        private double initProgress = 0;
+        public double InitProgress { get { return initProgress; } }
+        #endregion
 
-        private static Http instance;
-
+        #region 数据
         private IHttpService service;
+        private IHttpRequest sendRequest;
         private Dictionary<string, string> superHeaders;
         private Dictionary<IHttpRequest, Coroutine> httpRequests;
+        #endregion
+
+        public IEnumerator Init()
+        {
+            initProgress = 0;
+            yield return null;
+            initProgress = 100;
+            IsInited = true;
+
+            Log.Debug("DownloadFileModule 初始化完成");
+
+            Init(new UnityHttpService());
+        }
+
+        public void ClearData()
+        {
+            Log.Debug("DownloadFileModule 清除数据");
+        }
 
         /// <summary>
         /// 初始化Http
         /// </summary>
         /// <param name="service"></param>
-        public static void Init(IHttpService service)
+        public void Init(IHttpService service)
         {
-            if (instance) return;
-
-            instance = new GameObject(typeof(Http).Name).AddComponent<Http>();
-            instance.gameObject.hideFlags = HideFlags.HideInHierarchy;
-            instance.superHeaders = new Dictionary<string, string>();
-            instance.httpRequests = new Dictionary<IHttpRequest, Coroutine>();
-            instance.service = service;
-            DontDestroyOnLoad(instance.gameObject);
+            superHeaders = new Dictionary<string, string>();
+            httpRequests = new Dictionary<IHttpRequest, Coroutine>();
+            this.service = service;
         }
 
         #region Super Headers
@@ -48,9 +60,9 @@ namespace GameLogic.HttpModule
         /// SuperHeaders是键值对，将被添加到每个后续的HttpRequest中。
         /// </summary>
         /// <returns>A dictionary of super-headers.</returns>
-        public static Dictionary<string, string> GetSuperHeaders()
+        public Dictionary<string, string> GetSuperHeaders()
         {
-            return new Dictionary<string, string>(Instance.superHeaders);
+            return new Dictionary<string, string>(superHeaders);
         }
 
         /// <summary>
@@ -58,7 +70,7 @@ namespace GameLogic.HttpModule
         /// </summary>
         /// <param name="key">要设置的标题键</param>
         /// <param name="value">要分配的标头值</param>
-        public static void SetSuperHeader(string key, string value)
+        public void SetSuperHeader(string key, string value)
         {
             if (string.IsNullOrEmpty(key))
             {
@@ -70,7 +82,7 @@ namespace GameLogic.HttpModule
                 throw new ArgumentException("值不能为null或空，如果要删除该值，请使用RemoveSuperHeader（）方法。");
             }
 
-            Instance.superHeaders[key] = value;
+            superHeaders[key] = value;
         }
 
         /// <summary>
@@ -78,93 +90,93 @@ namespace GameLogic.HttpModule
         /// </summary>
         /// <param name="key">要删除的标题键</param>
         /// <returns>如果元素移除成功</returns>
-        public static bool RemoveSuperHeader(string key)
+        public bool RemoveSuperHeader(string key)
         {
             if (string.IsNullOrEmpty(key))
             {
                 throw new ArgumentException("密钥不能为null或为空");
             }
 
-            return Instance.superHeaders.Remove(key);
+            return superHeaders.Remove(key);
         }
 
         #endregion
 
         #region 静态请求
 
-        /// <see cref="GameLogic.HttpModule.Service.IHttpService.Get"/>
+        /// <see cref="GameLogic.Http.Service.IHttpService.Get"/>
         public static IHttpRequest Get(string uri)
         {
             return Instance.service.Get(uri);
         }
 
-        /// <see cref="GameLogic.HttpModule.Service.IHttpService.GetTexture"/>
+        /// <see cref="GameLogic.Http.Service.IHttpService.GetTexture"/>
         public static IHttpRequest GetTexture(string uri)
         {
             return Instance.service.GetTexture(uri);
         }
 
-        /// <see cref="GameLogic.HttpModule.Service.IHttpService.Post(string, string)"/>
+        /// <see cref="GameLogic.Http.Service.IHttpService.Post(string, string)"/>
         public static IHttpRequest Post(string uri, string postData)
         {
             return Instance.service.Post(uri, postData);
         }
 
-        /// <see cref="GameLogic.HttpModule.Service.IHttpService.Post(string, WWWForm)"/>
+        /// <see cref="GameLogic.Http.Service.IHttpService.Post(string, WWWForm)"/>
         public static IHttpRequest Post(string uri, WWWForm formData)
         {
             return Instance.service.Post(uri, formData);
         }
 
-        /// <see cref="GameLogic.HttpModule.Service.IHttpService.Post(string, Dictionary&lt;string, string&gt;)"/>
+        /// <see cref="GameLogic.Http.Service.IHttpService.Post(string, Dictionary&lt;string, string&gt;)"/>
         public static IHttpRequest Post(string uri, Dictionary<string, string> formData)
         {
             return Instance.service.Post(uri, formData);
         }
 
-        /// <see cref="GameLogic.HttpModule.Service.IHttpService.Post(string, List&lt;IMultipartFormSection&gt;)"/>
+        /// <see cref="GameLogic.Http.Service.IHttpService.Post(string, List&lt;IMultipartFormSection&gt;)"/>
         public static IHttpRequest Post(string uri, List<IMultipartFormSection> multipartForm)
         {
             return Instance.service.Post(uri, multipartForm);
         }
 
-        /// <see cref="GameLogic.HttpModule.Service.IHttpService.Post(string, byte[], string)"/>
+        /// <see cref="GameLogic.Http.Service.IHttpService.Post(string, byte[], string)"/>
         public static IHttpRequest Post(string uri, byte[] bytes, string contentType)
         {
             return Instance.service.Post(uri, bytes, contentType);
         }
 
-        /// <see cref="GameLogic.HttpModule.Service.IHttpService.PostJson"/>
+        /// <see cref="GameLogic.Http.Service.IHttpService.PostJson"/>
         public static IHttpRequest PostJson(string uri, string json)
         {
             return Instance.service.PostJson(uri, json);
         }
 
-        /// <see cref="GameLogic.HttpModule.Service.IHttpService.PostJson{T}(string, T)"/>
+        /// <see cref="GameLogic.Http.Service.IHttpService.PostJson{T}(string, T)"/>
         public static IHttpRequest PostJson<T>(string uri, T payload) where T : class
         {
             return Instance.service.PostJson(uri, payload);
         }
 
-        /// <see cref="GameLogic.HttpModule.Service.IHttpService.Put(string, byte[])"/>
+        /// <see cref="GameLogic.Http.Service.IHttpService.Put(string, byte[])"/>
         public static IHttpRequest Put(string uri, byte[] bodyData)
         {
             return Instance.service.Put(uri, bodyData);
         }
 
-        /// <see cref="GameLogic.HttpModule.Service.IHttpService.Put(string, string)"/>
+        /// <see cref="GameLogic.Http.Service.IHttpService.Put(string, string)"/>
         public static IHttpRequest Put(string uri, string bodyData)
         {
             return Instance.service.Put(uri, bodyData);
         }
 
-        /// <see cref="GameLogic.HttpModule.Service.IHttpService.Delete"/>
+        /// <see cref="GameLogic.Http.Service.IHttpService.Delete"/>
         public static IHttpRequest Delete(string uri)
         {
             return Instance.service.Delete(uri);
         }
 
-        /// <see cref="GameLogic.HttpModule.Service.IHttpService.Head"/>
+        /// <see cref="GameLogic.Http.Service.IHttpService.Head"/>
         public static IHttpRequest Head(string uri)
         {
             return Instance.service.Head(uri);
@@ -181,9 +193,13 @@ namespace GameLogic.HttpModule
         internal void Send(IHttpRequest request, Action<HttpResponse> onSuccess = null,
             Action<HttpResponse> onError = null, Action<HttpResponse> onNetworkError = null)
         {
-            var enumerator = SendCoroutine(request, onSuccess, onError, onNetworkError);
-            var coroutine = StartCoroutine(enumerator);
-            httpRequests.Add(request, coroutine);
+            sendRequest = request;
+            StartApp.Instance.AddCoroutine(SendCoroutine(sendRequest, onSuccess, onError, onNetworkError), SendCallback);
+        }
+
+        private void SendCallback(Coroutine coroutine)
+        {
+            httpRequests.Add(sendRequest, coroutine);
         }
 
         /// <summary>
@@ -198,7 +214,7 @@ namespace GameLogic.HttpModule
             Action<HttpResponse> onError = null, Action<HttpResponse> onNetworkError = null)
         {
             yield return service.Send(request, onSuccess, onError, onNetworkError);
-            Instance.httpRequests.Remove(request);
+            httpRequests.Remove(request);
         }
 
         /// <summary>
@@ -207,16 +223,20 @@ namespace GameLogic.HttpModule
         /// <param name="request"></param>
         internal void Abort(IHttpRequest request)
         {
-            Instance.service.Abort(request);
+            service.Abort(request);
 
             if (httpRequests.TryGetValue(request, out Coroutine coroutine))
             {
-                StopCoroutine(coroutine);
-                Instance.httpRequests.Remove(request);
+                StartApp.Instance.StopCoroutine(coroutine);
+                httpRequests.Remove(request);
             }
         }
-
-        private void Update()
+        /// <summary>
+        /// 更新
+        /// </summary>
+        /// <param name="elapseSeconds"></param>
+        /// <param name="realElapseSeconds"></param>
+        public void UpdateTime(float elapseSeconds, float realElapseSeconds)
         {
             var keys = new List<IHttpRequest>(httpRequests.Keys);
             foreach (var httpRequest in keys)

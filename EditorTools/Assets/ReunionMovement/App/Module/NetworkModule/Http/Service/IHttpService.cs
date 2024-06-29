@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace GameLogic.HttpModule.Service
+namespace GameLogic.Http.Service
 {
 	public interface IHttpService
 	{

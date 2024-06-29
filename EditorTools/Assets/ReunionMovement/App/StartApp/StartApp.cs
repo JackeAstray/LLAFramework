@@ -1,4 +1,5 @@
 using GameLogic.Download;
+using GameLogic.Http;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,6 +25,7 @@ namespace GameLogic
             modules.Add(ColorPaletteModule.Instance);
             modules.Add(DownloadImageModule.Instance);
             modules.Add(DownloadFileModule.Instance);
+            modules.Add(HttpModule.Instance);
 
             return modules;
         }
@@ -115,26 +117,8 @@ namespace GameLogic
         }
 
         #region 协程
-        /// <summary>
-        /// 启动协程
-        /// </summary>
-        /// <param name="coroutine"></param>
-        /// <returns></returns>
-        public override Coroutine StartMyCoroutine(IEnumerator coroutine)
-        {
-            return StartCoroutine(coroutine);
-        }
 
-        /// <summary>
-        /// 停止协程
-        /// </summary>
-        /// <param name="coroutine"></param>
-        public override void StopMyCoroutine(Coroutine coroutine)
-        {
-            StopCoroutine(coroutine);
-        }
-
-        public void AddCoroutine(IEnumerator routine, Action<Coroutine> callback)
+        public override void AddCoroutine(IEnumerator routine, Action<Coroutine> callback)
         {
             var task = new CoroutineTask();
             task.Enumerator = routine;
@@ -147,7 +131,7 @@ namespace GameLogic
         /// </summary>
         /// <param name="handler"></param>
         /// <returns></returns>
-        public Coroutine StartCoroutine(Action handler)
+        public override Coroutine StartCoroutine(Action handler)
         {
             return StartCoroutine(EnumCoroutine(handler));
         }
@@ -158,9 +142,24 @@ namespace GameLogic
         /// <param name="handler"></param>
         /// <param name="callback"></param>
         /// <returns></returns>
-        public Coroutine StartCoroutine(Action handler, Action callback)
+        public override Coroutine StartCoroutine(Action handler, Action callback)
         {
             return StartCoroutine(EnumCoroutine(handler, callback));
+        }
+
+        public override void StopAllCoroutine()
+        {
+            base.StopAllCoroutines();
+        }
+
+        public override void StopTargetCoroutine(IEnumerator enumerator)
+        {
+            base.StopCoroutine(enumerator);
+        }
+
+        public override void StopTargetCoroutine(Coroutine coroutine)
+        {
+            base.StopCoroutine(coroutine);
         }
 
         /// <summary>
@@ -222,19 +221,6 @@ namespace GameLogic
                 var coroutine = StartCoroutine(task.Enumerator);
                 task.Callback?.Invoke(coroutine);
             }
-        }
-
-        /// <summary>
-        /// 生成任务Id
-        /// </summary>
-        /// <returns>任务Id</returns>
-        long GenerateTaskId()
-        {
-            if (taskIndex == long.MaxValue)
-                taskIndex = 0;
-            else
-                taskIndex++;
-            return taskIndex;
         }
         #endregion
 

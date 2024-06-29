@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GameLogic.HttpModule.Service
+namespace GameLogic.Http.Service
 {
 	public interface IHttpRequest
 	{

@@ -6,7 +6,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace GameLogic.HttpModule.Service.Unity
+namespace GameLogic.Http.Service.Unity
 {
 	public class UnityHttpService : IHttpService
 	{

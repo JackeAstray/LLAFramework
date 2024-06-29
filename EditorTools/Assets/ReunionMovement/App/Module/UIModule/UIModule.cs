@@ -35,7 +35,7 @@ namespace GameLogic
         public IEnumerator Init()
         {
             initProgress = 0;
-            yield return StartApp.Instance.StartMyCoroutine(CreateRoot());
+            yield return StartApp.Instance.StartCoroutine(CreateRoot());
             initProgress = 100;
             IsInited = true;
             Log.Debug("UIModule 初始化完成");

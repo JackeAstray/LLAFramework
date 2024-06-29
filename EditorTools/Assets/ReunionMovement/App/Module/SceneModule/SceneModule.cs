@@ -134,7 +134,7 @@ namespace GameLogic
             if (openLoad)
             {
                 //先异步加载 Loading 界面
-                onLoadingSceneCoroutine = StartApp.Instance.StartMyCoroutine(OnLoadingScene(strLoadSceneName, OnLoadingSceneLoaded, LoadSceneMode.Single));
+                StartApp.Instance.AddCoroutine(OnLoadingScene(strLoadSceneName, OnLoadingSceneLoaded, LoadSceneMode.Single), LoadingSceneCallback);
             }
             else
             {
@@ -184,7 +184,7 @@ namespace GameLogic
         private void OnLoadingSceneLoaded()
         {
             // 过渡场景加载完成后加载下一个场景
-            onLoadTargetSceneCoroutine = StartApp.Instance.StartMyCoroutine(OnLoadTargetScene(strTargetSceneName, LoadSceneMode.Single));
+            StartApp.Instance.AddCoroutine(OnLoadTargetScene(strTargetSceneName, LoadSceneMode.Single), LoadTargetSceneCallback);
         }
 
         /// <summary>
@@ -266,6 +266,16 @@ namespace GameLogic
         private void ExecuteSlcc()
         {
             sceneLoadingCompletionCallback?.Invoke();
+        }
+
+        private void LoadingSceneCallback(Coroutine coroutine)
+        {
+            onLoadingSceneCoroutine = coroutine;
+        }
+
+        private void LoadTargetSceneCallback(Coroutine coroutine)
+        {
+            onLoadTargetSceneCoroutine = coroutine;
         }
 
         /// <summary>

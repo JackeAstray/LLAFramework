@@ -1,5 +1,5 @@
-﻿using GameLogic.HttpModule;
-using GameLogic.HttpModule.Service;
+﻿using GameLogic.Http;
+using GameLogic.Http.Service;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -80,7 +80,7 @@ namespace GameLogic.Download
             {
                 this.loadEnd += loadEnd;
 
-                var request = Http.GetTexture(url).
+                var request = HttpModule.GetTexture(url).
                                     OnSuccess(GetImage).
                                     OnDownloadProgress(GetImageProgress).
                                     OnError((error) => Debug.LogError(error)).

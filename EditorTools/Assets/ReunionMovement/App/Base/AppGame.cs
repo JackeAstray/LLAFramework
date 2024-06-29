@@ -32,18 +32,6 @@ namespace GameLogic
         public abstract IEnumerator OnGameStart();
 
         #region 协程定义
-        /// <summary>
-        /// 启动协程
-        /// </summary>
-        /// <param name="coroutine"></param>
-        /// <returns></returns>
-        public abstract Coroutine StartMyCoroutine(IEnumerator coroutine);
-
-        /// <summary>
-        /// 停止协程
-        /// </summary>
-        /// <param name="coroutine"></param>
-        public abstract void StopMyCoroutine(Coroutine coroutine);
 
         public long taskIndex = 0;
         /// <summary>
@@ -64,6 +52,45 @@ namespace GameLogic
         }
 
         public List<CoroutineTask> coroutineTasks = new List<CoroutineTask>();
+
+        /// <summary>
+        /// 添加协程
+        /// </summary>
+        /// <param name="routine"></param>
+        /// <param name="callback"></param>
+        public abstract void AddCoroutine(IEnumerator routine, Action<Coroutine> callback);
+
+        /// <summary>
+        /// 启动协程
+        /// </summary>
+        /// <param name="handler"></param>
+        /// <returns></returns>
+        public abstract Coroutine StartCoroutine(Action handler);
+
+        /// <summary>
+        /// 启动协程
+        /// </summary>
+        /// <param name="handler"></param>
+        /// <param name="callback"></param>
+        /// <returns></returns>
+        public abstract Coroutine StartCoroutine(Action handler, Action callback);
+
+        /// <summary>
+        /// 停止所有协程
+        /// </summary>
+        public abstract void StopAllCoroutine();
+
+        /// <summary>
+        /// 停止目标协程
+        /// </summary>
+        /// <param name="enumerator"></param>
+        public abstract void StopTargetCoroutine(IEnumerator enumerator);
+
+        /// <summary>
+        /// 停止目标协程
+        /// </summary>
+        /// <param name="coroutine"></param>
+        public abstract void StopTargetCoroutine(Coroutine coroutine);
         #endregion
     }
 }

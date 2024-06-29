@@ -1,5 +1,5 @@
-using GameLogic.HttpModule.Service;
-using GameLogic.HttpModule;
+using GameLogic.Http.Service;
+using GameLogic.Http;
 using UnityEngine;
 
 namespace GameLogic.Example
@@ -16,7 +16,7 @@ namespace GameLogic.Example
             form.AddField("project_id", 1);
             form.AddField("drill_number", 2);
             
-            var request = Http.Post(tempUrl, form).
+            var request = HttpModule.Post(tempUrl, form).
                 OnSuccess(HandleSuccess_Histogram)
                 .OnError(response => Debug.LogError(response.StatusCode))
                 .Send();

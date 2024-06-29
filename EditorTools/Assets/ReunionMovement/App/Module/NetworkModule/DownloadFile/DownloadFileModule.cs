@@ -20,19 +20,7 @@ namespace GameLogic.Download
         #endregion
 
         #region 数据
-        // 主线程
-        private SynchronizationContext mainThreadSynContext;
 
-        // 网址
-        public string Url;
-
-        // 错误回调
-        public event Action<Exception> OnError;
-        // 错误所
-        private static object errorlock = new object();
-
-        // 主要用于关闭线程
-        private bool isDownload = false;
         #endregion
 
         public IEnumerator Init()

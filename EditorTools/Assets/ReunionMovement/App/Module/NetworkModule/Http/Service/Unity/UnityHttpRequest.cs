@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.Networking;
 
-namespace GameLogic.HttpModule.Service.Unity
+namespace GameLogic.Http.Service.Unity
 {
 	public class UnityHttpRequest : IHttpRequest, IUpdateProgress
 	{
@@ -23,12 +23,12 @@ namespace GameLogic.HttpModule.Service.Unity
 		public UnityHttpRequest(UnityWebRequest unityWebRequest)
 		{
 			this.unityWebRequest = unityWebRequest;
-			headers = new Dictionary<string, string>(Http.GetSuperHeaders());
+			headers = new Dictionary<string, string>(HttpModule.Instance.GetSuperHeaders());
 		}
 
 		public IHttpRequest RemoveSuperHeaders()
 		{
-			foreach (var kvp in Http.GetSuperHeaders())
+			foreach (var kvp in HttpModule.Instance.GetSuperHeaders())
 			{
 				headers.Remove(kvp.Key);
 			}
@@ -100,7 +100,7 @@ namespace GameLogic.HttpModule.Service.Unity
 				unityWebRequest.SetRequestHeader(header.Key, header.Value);
 			}
 
-			Http.Instance.Send(this, onSuccess, onError, onNetworkError);
+            HttpModule.Instance.Send(this, onSuccess, onError, onNetworkError);
 			return this;
 		}
 
@@ -118,7 +118,7 @@ namespace GameLogic.HttpModule.Service.Unity
 
 		public void Abort()
 		{
-			Http.Instance.Abort(this);
+			HttpModule.Instance.Abort(this);
 		}
 
 		private void UpdateProgress(ref float currentProgress, float progress, Action<float> onProgress)

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace GameLogic.HttpModule.Service
+namespace GameLogic.Http.Service
 {
 	public class HttpResponse
 	{

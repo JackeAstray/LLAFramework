@@ -1,4 +1,4 @@
-﻿namespace GameLogic.HttpModule.Service.Unity
+﻿namespace GameLogic.Http.Service.Unity
 {
 	public interface IUpdateProgress
 	{
