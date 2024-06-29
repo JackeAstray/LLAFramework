@@ -65,24 +65,7 @@ namespace GameLogic
 
         public IEnumerator StartGame()
         {
-            //UIModule.Instance.OpenWindow("StartAppUIPlane");
             yield return new WaitForSeconds(0f);
-
-            //DownloadFileModule.Instance.SetUrl("http://localhost:8081/Download/%E5%A3%81%E7%BA%B8/%E5%8F%A4%E5%A0%A1%E9%BE%8D%E5%A7%AC.png");
-
-            //string savePath = Application.persistentDataPath + "/Picture/古堡龍姬.png";
-            //DownloadFileModule.Instance.DownloadToFile(
-            //    4,
-            //    savePath,
-            //    (size, count) =>
-            //    {
-            //        UnityEngine.Debug.LogFormat("[{0}]下载进度 >>> {1}/{2}", "多线程下载至本地", size, count);
-            //    },
-            //    (data) =>
-            //    {
-            //        UnityEngine.Debug.LogFormat("[{0}]下载完毕>>>{1}", "多线程下载至本地", data.Length);
-            //    }
-            //);
         }
 
         /// <summary>
