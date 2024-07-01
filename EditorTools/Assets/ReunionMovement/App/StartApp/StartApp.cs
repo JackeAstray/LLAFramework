@@ -67,13 +67,27 @@ namespace GameLogic
         {
             string url = "http://localhost:8081/Download/%E5%A3%81%E7%BA%B8/%E5%8F%A4%E5%A0%A1%E9%BE%8D%E5%A7%AC.png";
 
-            //DownloadImageModule.Instance.DownloadImage(url, GetTexture2D);
+            DownloadFileModule.Instance.GetFileSize(url);
+            //DownloadFileModule.Instance.DownloadFile(url, OnDownload);
 
-            DownloadFileModule.Instance.url = url;
-            DownloadFileModule.Instance.GetFileSize();
-            DownloadFileModule.Instance.DownloadFile();
+            List<string> urls = new List<string>();
+            urls.Add("http://192.168.18.37:8081/Download/%E5%A3%81%E7%BA%B8/gamersky_02origin_03_2018414198D2F.jpg");
+            urls.Add("http://192.168.18.37:8081/Download/%E5%A3%81%E7%BA%B8/gamersky_03origin_05_2018414197C26.jpg");
+            urls.Add("http://192.168.18.37:8081/Download/%E5%A3%81%E7%BA%B8/gamersky_03origin_05_20184141984F8.jpg");
+            urls.Add("http://192.168.18.37:8081/Download/%E5%A3%81%E7%BA%B8/c6b34d509d2647bd3698ae850a55b8ec2747097a.jpg");
+            DownloadFileModule.Instance.DownloadFiles(urls, OnDownloadAll);
 
             yield return new WaitForSeconds(0f);
+        }
+
+        void OnDownload()
+        {
+            Debug.Log("下载完成");
+        }
+
+        void OnDownloadAll()
+        {
+            Debug.Log("下载All完成");
         }
 
         /// <summary>

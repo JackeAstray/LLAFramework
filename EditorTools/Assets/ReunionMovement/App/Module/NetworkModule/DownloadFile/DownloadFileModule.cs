@@ -25,7 +25,19 @@ namespace GameLogic.Download
 
         #region 数据
         public string url;
+        public List<string> urls = new List<string>();
+        public int downloadCount;
+        public int downloadCountMax;
         private string savePath;
+
+        public float downloadProgress;
+        public float DownloadProgress { get { return downloadProgress; } }
+
+        public float downloadAllProgress;
+        public float DownloadAllProgress { get { return downloadAllProgress; } }
+
+        Action DownloadCompleted;
+        Action DownloadAllCompleted;
 
         private Dictionary<string, string> mimeTypeToExtension = new Dictionary<string, string>
         {
@@ -36,6 +48,7 @@ namespace GameLogic.Download
             {"image/gif", ".gif"},
             {"image/jpeg", ".jpg"},
             {"image/png", ".png"},
+            {"image/webp", ".webp"},
 
             {"audio/mp3",".mp3"},
             {"audio/wav",".wav"},
@@ -76,7 +89,7 @@ namespace GameLogic.Download
         /// 查询文件大小
         /// </summary>
         /// <returns></returns>
-        public void GetFileSize()
+        public void GetFileSize(string url)
         {
             var request = HttpModule.Head(url).
                 OnSuccess(GetFileSizeCompleted).
@@ -90,8 +103,8 @@ namespace GameLogic.Download
 
             if (httpResponse.IsSuccessful)
             {
-                //float fileSize = float.Parse(httpResponse.ResponseHeaders["Content-Length"]);
-                //Log.Debug("文件大小：" + fileSize);
+                float fileSize = float.Parse(httpResponse.ResponseHeaders["Content-Length"]);
+                Log.Debug("文件大小：" + fileSize);
             }
         }
 
@@ -102,9 +115,25 @@ namespace GameLogic.Download
         #endregion
 
         #region 下载
-
-        public void DownloadFile()
+        /// <summary>
+        /// 下载文件
+        /// </summary>
+        public void DownloadFile(string url, Action onDownloadsComplete = null, bool multiple = false)
         {
+            downloadProgress = 0;
+
+            if (!multiple)
+            {
+                downloadCount = 0;
+                downloadCountMax = 1;
+
+                if (onDownloadsComplete != null)
+                {
+                    DownloadCompleted += onDownloadsComplete;
+                }
+            }
+
+            this.url = url;
             var request = HttpModule.Get(url).
                 OnDownloadProgress(DownloadFileProgress).
                 OnSuccess(DownloadFileCompleted).
@@ -112,6 +141,27 @@ namespace GameLogic.Download
                 Send();
         }
 
+        public void DownloadFiles(List<string> fileUrls, Action onDownloadsAllComplete = null)
+        {
+            urls.Clear();
+            downloadCount = 0;
+            downloadCountMax = fileUrls.Count;
+            downloadAllProgress = 0;
+
+            if (onDownloadsAllComplete != null)
+            {
+                DownloadAllCompleted += onDownloadsAllComplete;
+            }
+
+            urls.AddRange(fileUrls);
+
+            DownloadFile(urls[downloadCount] , null, true);
+        }
+
+        /// <summary>
+        /// 下载完成
+        /// </summary>
+        /// <param name="httpResponse"></param>
         public void DownloadFileCompleted(HttpResponse httpResponse)
         {
             Log.Debug("下载完成");
@@ -126,6 +176,27 @@ namespace GameLogic.Download
                 string fileName = urlHash + extension;
                 string filePath = Path.Combine(savePath, fileName);
                 File.WriteAllBytes(filePath, bytes);
+
+                DownloadCompleted?.Invoke();
+                DownloadCompleted = null;
+
+                if (downloadCountMax > 1)
+                {
+                    downloadCount++;
+                    Log.Debug("下载进度：" + downloadCount + "/" + downloadCountMax);
+
+                    if (downloadCount == downloadCountMax)
+                    {
+                        DownloadAllCompleted?.Invoke();
+                        DownloadAllCompleted = null;
+                    }
+                    else
+                    {
+                        DownloadFile(urls[downloadCount], null, true);
+                    }
+
+                    downloadAllProgress = (float)downloadCount / downloadCountMax;
+                }
             }
         }
 
@@ -136,6 +207,7 @@ namespace GameLogic.Download
 
         public void DownloadFileProgress(float progress)
         {
+            downloadProgress = progress;
             Log.Debug("下载进度：" + progress);
         }
 
