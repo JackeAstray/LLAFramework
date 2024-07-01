@@ -22,7 +22,7 @@ namespace GameLogic.Http.Service.Unity
 
 		public IHttpRequest Post(string uri, string postData)
 		{
-			return new UnityHttpRequest(UnityWebRequest.Post(uri, postData));
+			return new UnityHttpRequest(UnityWebRequest.PostWwwForm(uri, postData));
 		}
 
 		public IHttpRequest Post(string uri, WWWForm formData)
@@ -93,8 +93,8 @@ namespace GameLogic.Http.Service.Unity
                     Url = unityWebRequest.url,
                     Bytes = unityWebRequest.downloadHandler?.data,
                     Text = unityWebRequest.downloadHandler?.text,
-                    IsSuccessful = unityWebRequest.result != UnityWebRequest.Result.ConnectionError && unityWebRequest.result != UnityWebRequest.Result.ConnectionError,
-                    IsHttpError = unityWebRequest.result == UnityWebRequest.Result.ConnectionError,
+                    IsSuccessful = unityWebRequest.result != UnityWebRequest.Result.ConnectionError && unityWebRequest.result != UnityWebRequest.Result.ProtocolError,
+                    IsHttpError = unityWebRequest.result == UnityWebRequest.Result.ProtocolError,
                     IsNetworkError = unityWebRequest.result == UnityWebRequest.Result.ConnectionError,
                     Error = unityWebRequest.error,
                     StatusCode = unityWebRequest.responseCode,

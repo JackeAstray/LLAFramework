@@ -1,3 +1,4 @@
+using GameLogic;
 using GameLogic.Download;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,6 +14,12 @@ public class DownloadImageExample : MonoBehaviour
     {
         rawImage = GetComponent<RawImage>();
 
+        Invoke("Init",2f);
+    }
+
+    public void Init()
+    {
+        Log.Debug("Init");
         DownloadImageModule.Instance.DownloadImage("http://gips0.baidu.com/it/u=3602773692,1512483864&fm=3028&app=3028&f=JPEG&fmt=auto?w=960&h=1280", (texture) =>
         {
             rawImage.texture = texture;

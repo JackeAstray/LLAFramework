@@ -23,9 +23,9 @@ namespace GameLogic
             modules.Add(UIModule.Instance);
             modules.Add(SceneModule.Instance);
             modules.Add(ColorPaletteModule.Instance);
+            modules.Add(HttpModule.Instance);
             modules.Add(DownloadImageModule.Instance);
             modules.Add(DownloadFileModule.Instance);
-            modules.Add(HttpModule.Instance);
 
             return modules;
         }
@@ -65,6 +65,14 @@ namespace GameLogic
 
         public IEnumerator StartGame()
         {
+            string url = "http://localhost:8081/Download/%E5%A3%81%E7%BA%B8/%E5%8F%A4%E5%A0%A1%E9%BE%8D%E5%A7%AC.png";
+
+            //DownloadImageModule.Instance.DownloadImage(url, GetTexture2D);
+
+            DownloadFileModule.Instance.url = url;
+            DownloadFileModule.Instance.GetFileSize();
+            DownloadFileModule.Instance.DownloadFile();
+
             yield return new WaitForSeconds(0f);
         }
 
@@ -100,6 +108,11 @@ namespace GameLogic
         }
 
         #region 协程
+
+        public void GetTexture2D(Texture2D texture2d)
+        {
+
+        }
 
         public override void AddCoroutine(IEnumerator routine, Action<Coroutine> callback)
         {
@@ -206,6 +219,5 @@ namespace GameLogic
             }
         }
         #endregion
-
     }
 }

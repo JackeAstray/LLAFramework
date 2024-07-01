@@ -57,34 +57,41 @@ namespace GameLogic.Download
         /// <param name="url"></param>
         public void DownloadImage(string url, Action<Texture2D> loadEnd, string suffix = ".png")
         {
-            if (imageDic.TryGetValue(url, out Texture2D texture))
+            try
             {
-                loadEnd.Invoke(texture);
-                return;
+                if (imageDic.TryGetValue(url, out Texture2D texture))
+                {
+                    loadEnd.Invoke(texture);
+                    return;
+                }
+
+                this.suffix = suffix;
+                currentUrl = url;
+                urlHash = EngineExtensions.MD5Encrypt(url);
+                string localFilePath = $"{savePath}/{urlHash}{suffix}";
+
+                if (File.Exists(localFilePath))
+                {
+                    byte[] imageBytes = File.ReadAllBytes(localFilePath);
+                    Texture2D localTexture = new Texture2D(2, 2);
+                    localTexture.LoadImage(imageBytes);
+                    imageDic[url] = localTexture;
+                    loadEnd?.Invoke(imageDic[url]);
+                }
+                else
+                {
+                    this.loadEnd += loadEnd;
+                    var request = HttpModule.GetTexture(url).
+                                        OnSuccess(GetImage).
+                                        OnDownloadProgress(GetImageProgress).
+                                        OnError((error) => Debug.LogError(error)).
+                                        Send();
+
+                }
             }
-
-            this.suffix = suffix;
-            currentUrl = url;
-            urlHash = EngineExtensions.MD5Encrypt(url);
-            string localFilePath = $"{savePath}/{urlHash}{suffix}";
-
-            if (File.Exists(localFilePath))
+            catch (Exception ex)
             {
-                byte[] imageBytes = File.ReadAllBytes(localFilePath);
-                Texture2D localTexture = new Texture2D(2, 2);
-                localTexture.LoadImage(imageBytes);
-                imageDic[url] = localTexture;
-                loadEnd?.Invoke(imageDic[url]);                
-            }
-            else
-            {
-                this.loadEnd += loadEnd;
-
-                var request = HttpModule.GetTexture(url).
-                                    OnSuccess(GetImage).
-                                    OnDownloadProgress(GetImageProgress).
-                                    OnError((error) => Debug.LogError(error)).
-                                    Send();
+                Log.Error("下载文件时发生异常：" + ex.Message);
             }
         }
 
@@ -107,7 +114,7 @@ namespace GameLogic.Download
         /// <param name="progress"></param>
         public void GetImageProgress(float progress)
         {
-            Debug.Log(progress);
+            Log.Debug(progress);
         }
 
         /// <summary>
@@ -126,7 +133,7 @@ namespace GameLogic.Download
             }
             catch (Exception ex)
             {
-                Debug.LogError(ex.ToString());
+                Log.Error(ex.ToString());
             }
         }
 

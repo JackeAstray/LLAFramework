@@ -37,6 +37,7 @@ namespace GameLogic
             }
             else
             {
+                this.poolType = poolType;
                 switch (poolType)
                 {
                     case PoolType.Voice:

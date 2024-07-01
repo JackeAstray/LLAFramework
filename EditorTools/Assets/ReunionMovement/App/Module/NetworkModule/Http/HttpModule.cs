@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.Networking;
-using UnityEditor.PackageManager.Requests;
 
 namespace GameLogic.Http
 {
@@ -33,14 +32,14 @@ namespace GameLogic.Http
             initProgress = 100;
             IsInited = true;
 
-            Log.Debug("DownloadFileModule 初始化完成");
+            Log.Debug("HttpModule 初始化完成");
 
             Init(new UnityHttpService());
         }
 
         public void ClearData()
         {
-            Log.Debug("DownloadFileModule 清除数据");
+            Log.Debug("HttpModule 清除数据");
         }
 
         /// <summary>
@@ -190,8 +189,11 @@ namespace GameLogic.Http
         /// <param name="onSuccess"></param>
         /// <param name="onError"></param>
         /// <param name="onNetworkError"></param>
-        internal void Send(IHttpRequest request, Action<HttpResponse> onSuccess = null,
-            Action<HttpResponse> onError = null, Action<HttpResponse> onNetworkError = null)
+        internal void Send(IHttpRequest request, 
+            Action<HttpResponse> onSuccess = null,
+            Action<HttpResponse> onError = null,
+            Action<HttpResponse> onNetworkError = null
+         )
         {
             sendRequest = request;
             StartApp.Instance.AddCoroutine(SendCoroutine(sendRequest, onSuccess, onError, onNetworkError), SendCallback);
@@ -199,7 +201,10 @@ namespace GameLogic.Http
 
         private void SendCallback(Coroutine coroutine)
         {
-            httpRequests.Add(sendRequest, coroutine);
+            if (!httpRequests.ContainsKey(sendRequest))
+            {
+                httpRequests.Add(sendRequest, coroutine);
+            }
         }
 
         /// <summary>
@@ -238,10 +243,13 @@ namespace GameLogic.Http
         /// <param name="realElapseSeconds"></param>
         public void UpdateTime(float elapseSeconds, float realElapseSeconds)
         {
-            var keys = new List<IHttpRequest>(httpRequests.Keys);
-            foreach (var httpRequest in keys)
+            if(httpRequests != null && httpRequests.Count > 0)
             {
-                (httpRequest as IUpdateProgress)?.UpdateProgress();
+                var keys = new List<IHttpRequest>(httpRequests.Keys);
+                foreach (var httpRequest in keys)
+                {
+                    (httpRequest as IUpdateProgress)?.UpdateProgress();
+                }
             }
         }
     }
