@@ -133,6 +133,8 @@ namespace GameLogic.Download
                 }
             }
 
+            string urlHash = EngineExtensions.MD5Encrypt(url);
+
             this.url = url;
             var request = HttpModule.Get(url).
                 OnDownloadProgress(DownloadFileProgress).
@@ -170,10 +172,10 @@ namespace GameLogic.Download
                 byte[] bytes = httpResponse.Bytes;
 
                 string contentType = httpResponse.ResponseHeaders["Content-Type"];
-                string extension = GetExtensionFromMimeType(contentType);
+                string suffix = GetExtensionFromMimeType(contentType);
 
                 string urlHash = EngineExtensions.MD5Encrypt(url);
-                string fileName = urlHash + extension;
+                string fileName = urlHash + suffix;
                 string filePath = Path.Combine(savePath, fileName);
                 File.WriteAllBytes(filePath, bytes);
 
