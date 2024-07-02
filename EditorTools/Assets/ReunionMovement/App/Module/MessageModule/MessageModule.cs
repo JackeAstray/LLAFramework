@@ -18,7 +18,7 @@ namespace GameLogic
 
         #region 数据
         // 消息监听器
-        private Dictionary<MessageType, Action<Message>> listeners = new Dictionary<MessageType, Action<Message>>();
+        private Dictionary<MessageTipType, Action<Message>> listeners = new Dictionary<MessageTipType, Action<Message>>();
         // 消息队列
         private Queue<Message> messageQueue = new Queue<Message>();
         #endregion
@@ -42,7 +42,7 @@ namespace GameLogic
         /// </summary>
         /// <param name="messageType"></param>
         /// <param name="listener"></param>
-        public void RegisterListener(MessageType messageType, Action<Message> listener)
+        public void RegisterListener(MessageTipType messageType, Action<Message> listener)
         {
             if (!listeners.ContainsKey(messageType))
             {
@@ -59,7 +59,7 @@ namespace GameLogic
         /// </summary>
         /// <param name="messageType"></param>
         /// <param name="listener"></param>
-        public void UnregisterListener(MessageType messageType, Action<Message> listener)
+        public void UnregisterListener(MessageTipType messageType, Action<Message> listener)
         {
             if (listeners.ContainsKey(messageType))
             {

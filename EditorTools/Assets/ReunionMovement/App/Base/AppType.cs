@@ -85,7 +85,7 @@ namespace GameLogic
     /// <summary>
     /// 消息类型
     /// </summary>
-    public enum MessageType
+    public enum MessageTipType
     {
         // 提示
         Tip,

@@ -11,10 +11,10 @@ namespace GameLogic
     /// </summary>
     public class Message
     {
-        public MessageType Type { get; private set; }
+        public MessageTipType Type { get; private set; }
         public string Content { get; private set; }
 
-        public Message(MessageType type, string content)
+        public Message(MessageTipType type, string content)
         {
             Type = type;
             Content = content;
