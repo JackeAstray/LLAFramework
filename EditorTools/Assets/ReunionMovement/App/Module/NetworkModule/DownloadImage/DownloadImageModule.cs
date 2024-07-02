@@ -4,14 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.Networking;
-using UnityEngine.Rendering;
 
 namespace GameLogic.Download
 {
@@ -25,10 +18,10 @@ namespace GameLogic.Download
         #endregion
 
         #region 数据
-        public string currentUrl;
-        private string savePath;
-        string urlHash;
-        string suffix;
+        private string currentUrl;
+        private string urlHash;
+        private string suffix;
+        private string localFilePath;
         private Dictionary<string, Texture2D> imageDic = new Dictionary<string, Texture2D>();
 
         Action<Texture2D> loadEnd;
@@ -40,8 +33,6 @@ namespace GameLogic.Download
             yield return null;
             initProgress = 100;
             IsInited = true;
-
-            savePath = GetLocalPath();
 
             Log.Debug("DownloadImageModule 初始化完成");
         }
@@ -61,14 +52,14 @@ namespace GameLogic.Download
             {
                 if (imageDic.TryGetValue(url, out Texture2D texture))
                 {
-                    loadEnd.Invoke(texture);
+                    loadEnd?.Invoke(texture);
                     return;
                 }
 
                 this.suffix = suffix;
-                currentUrl = url;
-                urlHash = EngineExtensions.MD5Encrypt(url);
-                string localFilePath = $"{savePath}/{urlHash}{suffix}";
+                this.currentUrl = url;
+                this.urlHash = EngineExtensions.MD5Encrypt(url);
+                this.localFilePath = $"{PathUtils.GetLocalPath(DownloadType.PersistentImage)}/{urlHash}{suffix}";
 
                 if (File.Exists(localFilePath))
                 {
@@ -105,7 +96,7 @@ namespace GameLogic.Download
             imageDic[currentUrl] = tempTexture;
             loadEnd?.Invoke(imageDic[currentUrl]);
             loadEnd = null;
-            SaveToLocalPath(urlHash, imageDic[currentUrl], suffix);
+            SaveToLocalPath(imageDic[currentUrl]);
         }
 
         /// <summary>
@@ -122,34 +113,18 @@ namespace GameLogic.Download
         /// </summary>
         /// <param name="url"></param>
         /// <param name="texture"></param>
-        private void SaveToLocalPath(string urlHash, Texture2D texture, string suffix = ".png")
+        private void SaveToLocalPath(Texture2D texture)
         {
             byte[] bytes = texture.EncodeToPNG();
-            string localFilePath = $"{savePath}/{urlHash}{suffix}";
 
             try
             {
-                File.WriteAllBytes(localFilePath, bytes);
+                File.WriteAllBytes(this.localFilePath, bytes);
             }
             catch (Exception ex)
             {
                 Log.Error(ex.ToString());
             }
-        }
-
-        /// <summary>
-        /// 获取要保存的路径
-        /// </summary>
-        /// <returns></returns>
-        private string GetLocalPath()
-        {
-            string savePath = Application.persistentDataPath + "/Picture";
-
-            if (!Directory.Exists(savePath))
-            {
-                Directory.CreateDirectory(savePath);
-            }
-            return savePath;
         }
 
         public void UpdateTime(float elapseSeconds, float realElapseSeconds)

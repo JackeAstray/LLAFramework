@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using static GameLogic.Download.DownloadFileModule;
 
 namespace GameLogic
 {
@@ -10,7 +11,40 @@ namespace GameLogic
     /// </summary>
     public static class PathUtils
     {
-        public static readonly string[] PathHeadDefine = { "jar://", "jar:file:///", "file:///", "http://", "https://" };
+        public static readonly string[] PathHeadDefine = { "jar://", "jar:file://", "file://", "file:///", "http://", "https://" };
+
+        public static string GetPathHead(string path)
+        {
+            for (int i = 0; i < PathHeadDefine.Length; i++)
+            {
+                if (path.StartsWith(PathHeadDefine[i]))
+                {
+                    return PathHeadDefine[i];
+                }
+            }
+
+            return "";
+        }
+
+        /// <summary>
+        /// 获取文件协议
+        /// </summary>
+        public static string GetFileProtocol
+        {
+            get
+            {
+                string fileProtocol = "file://";
+                return fileProtocol;
+            }
+        }
+
+        /// <summary>
+        /// 获取规范的路径
+        /// </summary>
+        public static string GetRegularPath(string path)
+        {
+            return path.Replace('\\', '/');
+        }
 
         /// <summary>
         /// 验证路径（是否为真路径）
@@ -37,13 +71,20 @@ namespace GameLogic
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public static string GetFileName(string path)
+        public static string GetFileName(string path, bool withSuffix = true)
         {
-            return Path.GetFileNameWithoutExtension(path);
+            if (withSuffix)
+            {
+                return Path.GetFileName(path);
+            }
+            else
+            {
+                return Path.GetFileNameWithoutExtension(path);
+            }
         }
 
         /// <summary>
-        /// 获取父路径
+        /// 获取路径
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
@@ -72,6 +113,50 @@ namespace GameLogic
             newPath = Path.GetFullPath(AppDataPath() + url);
             return File.Exists(newPath);
         }
+
+        /// <summary>
+        /// 获取在只读区下的完整路径
+        /// </summary>
+        public static string GetReadOnlyPath(string path, bool isUwrPath = false)
+        {
+            string result = GetRegularPath(Path.Combine(Application.streamingAssetsPath, path));
+
+            if (isUwrPath && !path.Contains("file://"))
+            {
+                //使用UnityWebRequest访问 统一加file://头
+                result = "file://" + result;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 获取在读写区下的完整路径
+        /// </summary>
+        public static string GetReadWritePath(string path, bool isUwrPath = false)
+        {
+            string result = GetRegularPath(Path.Combine(Application.persistentDataPath, path));
+
+            if (isUwrPath && !path.Contains("file://"))
+            {
+                //使用UnityWebRequest访问 统一加file://头
+                result = "file://" + result;
+            }
+
+            return result;
+        }
+
+        public static string GetUrlByPC(string path)
+        {
+            if (!path.Contains("://"))
+            {
+                path = GetFileProtocol + path;
+            }
+
+            return path;
+        }
+
+
 
         /// <summary>
         /// 读取文件
@@ -109,6 +194,44 @@ namespace GameLogic
             }
 
             File.WriteAllText(fullPath + fileName, fileContent);
+        }
+
+        /// <summary>
+        /// 获取要保存的路径
+        /// </summary>
+        /// <returns></returns>
+        public static string GetLocalPath(DownloadType downloadType = DownloadType.PersistentFile)
+        {
+            string savePath = Application.persistentDataPath + "/Download";
+
+            switch (downloadType)
+            {
+                case DownloadType.PersistentAssets:
+                    savePath = Application.persistentDataPath + "/Assets";
+                    break;
+                case DownloadType.PersistentFile:
+                    savePath = Application.persistentDataPath + "/File";
+                    break;
+                case DownloadType.PersistentImage:
+                    savePath = Application.persistentDataPath + "/Picture";
+                    break;
+
+                case DownloadType.StreamingAssets:
+                    savePath = Application.streamingAssetsPath + "/Download";
+                    break;
+                case DownloadType.StreamingAssetsFile:
+                    savePath = Application.streamingAssetsPath + "/File";
+                    break;
+                case DownloadType.StreamingAssetsImage:
+                    savePath = Application.streamingAssetsPath + "/Picture";
+                    break;
+            }
+
+            if (!Directory.Exists(savePath))
+            {
+                Directory.CreateDirectory(savePath);
+            }
+            return savePath;
         }
     }
 }

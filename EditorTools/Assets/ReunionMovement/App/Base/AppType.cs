@@ -66,4 +66,19 @@ namespace GameLogic
         Scheme4,
         Scheme5,
     }
+
+    /// <summary>
+    /// 下载类型
+    /// </summary>
+    public enum DownloadType
+    {
+        //持久路径
+        PersistentAssets,
+        PersistentFile,
+        PersistentImage,
+        //流媒体路径
+        StreamingAssets,
+        StreamingAssetsFile,
+        StreamingAssetsImage,
+    }
 }

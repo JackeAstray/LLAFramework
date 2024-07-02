@@ -1,16 +1,12 @@
 using GameLogic.Http;
 using GameLogic.Http.Service;
+using JetBrains.Annotations;
 using System;
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
-using System.Security.Policy;
-using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Networking;
+using UnityEngine.XR;
 
 namespace GameLogic.Download
 {
@@ -24,12 +20,17 @@ namespace GameLogic.Download
         #endregion
 
         #region 数据
+
+        public string currentFilename;
+        //判断本地读取用于（PC）
+        //public bool currentUrlDisk;
+
         public string url;
         public List<string> urls = new List<string>();
         public int downloadCount;
         public int downloadCountMax;
-        private string savePath;
 
+        // 进度
         public float downloadProgress;
         public float DownloadProgress { get { return downloadProgress; } }
 
@@ -39,6 +40,7 @@ namespace GameLogic.Download
         Action DownloadCompleted;
         Action DownloadAllCompleted;
 
+        //MIME类型对应的文件后缀
         private Dictionary<string, string> mimeTypeToExtension = new Dictionary<string, string>
         {
             {"text/html",".html"},
@@ -74,8 +76,6 @@ namespace GameLogic.Download
             yield return null;
             initProgress = 100;
             IsInited = true;
-
-            savePath = GetLocalPath();
             Log.Debug("DownloadFileModule 初始化完成");
         }
 
@@ -91,12 +91,23 @@ namespace GameLogic.Download
         /// <returns></returns>
         public void GetFileSize(string url)
         {
+            string haed = PathUtils.GetPathHead(url);
+            if (haed != "http://" && haed != "https://")
+            {
+                Log.Warning("不是http或https协议");
+                return;
+            }
+
             var request = HttpModule.Head(url).
                 OnSuccess(GetFileSizeCompleted).
                 OnError(GetFileSizeError).
                 Send();
         }
 
+        /// <summary>
+        /// 查询文件大小完成
+        /// </summary>
+        /// <param name="httpResponse"></param>
         public void GetFileSizeCompleted(HttpResponse httpResponse)
         {
             Log.Debug("查询文件大小完成");
@@ -108,6 +119,10 @@ namespace GameLogic.Download
             }
         }
 
+        /// <summary>
+        /// 查询文件大小错误
+        /// </summary>
+        /// <param name="httpResponse"></param>
         public void GetFileSizeError(HttpResponse httpResponse)
         {
             Log.Error("错误：" + httpResponse.Error);
@@ -115,11 +130,103 @@ namespace GameLogic.Download
         #endregion
 
         #region 下载
+        public void DownloadAssets(string url, Action onDownloadsComplete = null, bool multiple = false)
+        {
+            string path = string.Empty;
+
+            if (string.IsNullOrEmpty(url))
+            {
+                Log.Error("下载地址为空");
+                return;
+            }
+
+            if (url.Contains("http") == false)
+            {
+                Log.Error("下载地址错误");
+                return;
+            }
+
+            if (url.Contains("https") == false)
+            {
+                Log.Error("下载地址错误");
+                return;
+            }
+
+            if (!url.Contains("://"))
+            {
+                path = "file://" + url;
+            }
+            else
+            {
+                path = url;
+            }
+
+            downloadProgress = 0;
+
+            if (!multiple)
+            {
+                downloadCount = 0;
+                downloadCountMax = 1;
+
+                if (onDownloadsComplete != null)
+                {
+                    DownloadCompleted += onDownloadsComplete;
+                }
+            }
+
+            string urlHash = EngineExtensions.MD5Encrypt(url);
+
+            this.url = url;
+            var request = HttpModule.Get(url).
+                OnDownloadProgress(DownloadAssetsProgress).
+                OnSuccess(DownloadAssetsCompleted).
+                OnError(DownloadAssetsError).
+                Send();
+        }
+
+        public void DownloadAssetsCompleted(HttpResponse httpResponse)
+        {
+            Log.Debug("下载完成");
+            if (httpResponse.IsSuccessful)
+            {
+
+            }
+        }
+
+        public void DownloadAssetsError(HttpResponse httpResponse)
+        {
+            Log.Error("错误：" + httpResponse.Error);
+        }
+
+        public void DownloadAssetsProgress(float progress)
+        {
+            downloadProgress = progress;
+            Log.Debug("下载进度：" + progress);
+        }
+
         /// <summary>
         /// 下载文件
         /// </summary>
         public void DownloadFile(string url, Action onDownloadsComplete = null, bool multiple = false)
         {
+            if (string.IsNullOrEmpty(url))
+            {
+                Log.Error("下载地址为空");
+                return;
+            }
+            currentFilename = PathUtils.GetFileName(url);
+
+            //string haed = PathUtils.GetPathHead(url);
+            //if (haed != "http://" && haed != "https://")
+            //{
+               
+            //    currentUrlDisk = true;
+            //}
+            //else
+            //{
+            //    currentUrlDisk = false;
+            //}
+
             downloadProgress = 0;
 
             if (!multiple)
@@ -171,12 +278,9 @@ namespace GameLogic.Download
             {
                 byte[] bytes = httpResponse.Bytes;
 
-                string contentType = httpResponse.ResponseHeaders["Content-Type"];
-                string suffix = GetExtensionFromMimeType(contentType);
-
                 string urlHash = EngineExtensions.MD5Encrypt(url);
-                string fileName = urlHash + suffix;
-                string filePath = Path.Combine(savePath, fileName);
+                string fileName = currentFilename;
+                string filePath = Path.Combine(PathUtils.GetLocalPath(DownloadType.PersistentFile), fileName);
                 File.WriteAllBytes(filePath, bytes);
 
                 DownloadCompleted?.Invoke();
@@ -214,20 +318,10 @@ namespace GameLogic.Download
         }
 
         /// <summary>
-        /// 获取要保存的路径
+        /// 通过MIME类型获取文件后缀
         /// </summary>
+        /// <param name="mimeType"></param>
         /// <returns></returns>
-        private string GetLocalPath()
-        {
-            string savePath = Application.persistentDataPath + "/Download";
-
-            if (!Directory.Exists(savePath))
-            {
-                Directory.CreateDirectory(savePath);
-            }
-            return savePath;
-        }
-
         private string GetExtensionFromMimeType(string mimeType)
         {
             if (mimeTypeToExtension.TryGetValue(mimeType, out string extension))
