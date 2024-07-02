@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using TouchScript.Examples.Multiuser;
 using UnityEngine;
 using static GameLogic.Download.DownloadFileModule;
 
@@ -146,17 +148,106 @@ namespace GameLogic
             return result;
         }
 
-        public static string GetUrlByPC(string path)
+        /// <summary>
+        /// 获取文件夹下所有文件大小
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static int GetAllFileSize(string filePath)
         {
-            if (!path.Contains("://"))
+            int sum = 0;
+            if (!Directory.Exists(filePath))
             {
-                path = GetFileProtocol + path;
+                return 0;
             }
 
-            return path;
+            DirectoryInfo dti = new DirectoryInfo(filePath);
+
+            FileInfo[] fi = dti.GetFiles();
+
+            for (int i = 0; i < fi.Length; ++i)
+            {
+                sum += Convert.ToInt32(fi[i].Length / 1024);
+            }
+
+            DirectoryInfo[] di = dti.GetDirectories();
+
+            if (di.Length > 0)
+            {
+                for (int i = 0; i < di.Length; i++)
+                {
+                    sum += GetAllFileSize(di[i].FullName);
+                }
+            }
+            return sum;
         }
 
+        /// <summary>
+        /// 获取指定文件大小
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static long GetFileSize(string filePath)
+        {
+            long sum = 0;
+            if (!File.Exists(filePath))
+            {
+                return 0;
+            }
+            else
+            {
+                FileInfo files = new FileInfo(filePath);
+                sum += files.Length;
+            }
+            return sum;
+        }
 
+        /// <summary>
+        /// 从路径的末尾向前截取指定级别的目录
+        /// </summary>
+        /// <param name="fullPath"></param>
+        /// <param name="levels"></param>
+        /// <returns></returns>
+        public static string TruncatePath(string fullPath, int levels)
+        {
+            for (int i = 0; i < levels; i++)
+            {
+                fullPath = Path.GetDirectoryName(fullPath);
+                if (string.IsNullOrEmpty(fullPath))
+                    break;
+            }
+
+            return fullPath;
+        }
+
+        /// <summary>
+        /// 获取文件夹下所有文件名
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="FileList"></param>
+        /// <returns></returns>
+        public static List<string> GetAllFilesName(string path, List<string> FileList)
+        {
+            DirectoryInfo dir = new DirectoryInfo(path);
+            FileInfo[] fil = dir.GetFiles();
+            DirectoryInfo[] dii = dir.GetDirectories();
+            foreach (FileInfo f in fil)
+            {
+                if (!f.FullName.EndsWith(".meta"))
+                {
+                    Log.Debug(f.Name);
+                    FileList.Add(f.Name);
+                }
+            }
+
+            //获取子文件夹内的文件列表，递归遍历
+            foreach (DirectoryInfo d in dii)
+            {
+                GetAllFilesName(d.FullName, FileList);
+            }
+
+            return FileList;
+        }
 
         /// <summary>
         /// 读取文件

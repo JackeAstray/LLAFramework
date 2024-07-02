@@ -27,6 +27,7 @@ namespace GameLogic
             modules.Add(HttpModule.Instance);
             modules.Add(DownloadImageModule.Instance);
             modules.Add(DownloadFileModule.Instance);
+            modules.Add(MessageModule.Instance);
 
             return modules;
         }
@@ -66,21 +67,6 @@ namespace GameLogic
 
         public IEnumerator StartGame()
         {
-            string url = "E:\\壁纸\\38dbb6fd5266d0168d37fa2f9f2bd40735fa358e.png";
-
-            string tempStr = PathUtils.GetFileName("E:\\壁纸\\38dbb6fd5266d0168d37fa2f9f2bd40735fa358e.png");
-            Debug.Log(tempStr);
-
-            DownloadFileModule.Instance.GetFileSize(url);
-            DownloadFileModule.Instance.DownloadFile(url, OnDownload);
-
-            //List<string> urls = new List<string>();
-            //urls.Add("http://192.168.18.37:8081/Download/%E5%A3%81%E7%BA%B8/gamersky_02origin_03_2018414198D2F.jpg");
-            //urls.Add("http://192.168.18.37:8081/Download/%E5%A3%81%E7%BA%B8/gamersky_03origin_05_2018414197C26.jpg");
-            //urls.Add("http://192.168.18.37:8081/Download/%E5%A3%81%E7%BA%B8/gamersky_03origin_05_20184141984F8.jpg");
-            //urls.Add("http://192.168.18.37:8081/Download/%E5%A3%81%E7%BA%B8/c6b34d509d2647bd3698ae850a55b8ec2747097a.jpg");
-            //DownloadFileModule.Instance.DownloadFiles(urls, OnDownloadAll);
-
             yield return new WaitForSeconds(0f);
         }
 

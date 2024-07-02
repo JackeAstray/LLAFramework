@@ -44,17 +44,17 @@ namespace GameLogic
         /// </summary>
         public bool isStartGame { get; private set; }
 
-        //应用程序退出
+        // 应用程序退出
         public static bool isApplicationQuit = false;
-        //应用程序焦点（是否被压入后台）
+        // 应用程序焦点（是否被压入后台）
         public static bool isApplicationFocus = true;
-        //应用程序正在运行
+        // 应用程序正在运行
         public static bool isAppPlaying = false;
-        //更新事件
+        // 更新事件
         public static Action updateEvent;
-        //每300ms事件更新一次
+        // 每300ms事件更新一次
         public static Action updatePer300msEvent;
-        //每1s事件更新一次
+        // 每1s事件更新一次
         public static Action updatePer1sEvent;
 
         private float time_update_per1s;

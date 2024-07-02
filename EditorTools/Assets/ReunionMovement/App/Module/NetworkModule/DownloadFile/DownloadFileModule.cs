@@ -1,12 +1,9 @@
 using GameLogic.Http;
 using GameLogic.Http.Service;
-using JetBrains.Annotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using UnityEngine;
-using UnityEngine.XR;
 
 namespace GameLogic.Download
 {
@@ -20,27 +17,23 @@ namespace GameLogic.Download
         #endregion
 
         #region 数据
-
-        public string currentFilename;
-        //判断本地读取用于（PC）
-        //public bool currentUrlDisk;
-
-        public string url;
-        public List<string> urls = new List<string>();
-        public int downloadCount;
-        public int downloadCountMax;
+        private string currentFilename;
+        private string url;
+        private List<string> urls = new List<string>();
+        private int downloadCount;
+        private int downloadCountMax;
 
         // 进度
-        public float downloadProgress;
+        private float downloadProgress;
         public float DownloadProgress { get { return downloadProgress; } }
 
-        public float downloadAllProgress;
+        private float downloadAllProgress;
         public float DownloadAllProgress { get { return downloadAllProgress; } }
 
         Action DownloadCompleted;
         Action DownloadAllCompleted;
 
-        //MIME类型对应的文件后缀
+        // MIME类型对应的文件后缀
         private Dictionary<string, string> mimeTypeToExtension = new Dictionary<string, string>
         {
             {"text/html",".html"},
@@ -99,9 +92,9 @@ namespace GameLogic.Download
             }
 
             var request = HttpModule.Head(url).
-                OnSuccess(GetFileSizeCompleted).
-                OnError(GetFileSizeError).
-                Send();
+                                     OnSuccess(GetFileSizeCompleted).
+                                     OnError(GetFileSizeError).
+                                     Send();
         }
 
         /// <summary>
@@ -130,80 +123,6 @@ namespace GameLogic.Download
         #endregion
 
         #region 下载
-        public void DownloadAssets(string url, Action onDownloadsComplete = null, bool multiple = false)
-        {
-            string path = string.Empty;
-
-            if (string.IsNullOrEmpty(url))
-            {
-                Log.Error("下载地址为空");
-                return;
-            }
-
-            if (url.Contains("http") == false)
-            {
-                Log.Error("下载地址错误");
-                return;
-            }
-
-            if (url.Contains("https") == false)
-            {
-                Log.Error("下载地址错误");
-                return;
-            }
-
-            if (!url.Contains("://"))
-            {
-                path = "file://" + url;
-            }
-            else
-            {
-                path = url;
-            }
-
-            downloadProgress = 0;
-
-            if (!multiple)
-            {
-                downloadCount = 0;
-                downloadCountMax = 1;
-
-                if (onDownloadsComplete != null)
-                {
-                    DownloadCompleted += onDownloadsComplete;
-                }
-            }
-
-            string urlHash = EngineExtensions.MD5Encrypt(url);
-
-            this.url = url;
-            var request = HttpModule.Get(url).
-                OnDownloadProgress(DownloadAssetsProgress).
-                OnSuccess(DownloadAssetsCompleted).
-                OnError(DownloadAssetsError).
-                Send();
-        }
-
-        public void DownloadAssetsCompleted(HttpResponse httpResponse)
-        {
-            Log.Debug("下载完成");
-            if (httpResponse.IsSuccessful)
-            {
-
-            }
-        }
-
-        public void DownloadAssetsError(HttpResponse httpResponse)
-        {
-            Log.Error("错误：" + httpResponse.Error);
-        }
-
-        public void DownloadAssetsProgress(float progress)
-        {
-            downloadProgress = progress;
-            Log.Debug("下载进度：" + progress);
-        }
-
         /// <summary>
         /// 下载文件
         /// </summary>
@@ -216,38 +135,23 @@ namespace GameLogic.Download
             }
             currentFilename = PathUtils.GetFileName(url);
 
-            //string haed = PathUtils.GetPathHead(url);
-            //if (haed != "http://" && haed != "https://")
-            //{
-               
-            //    currentUrlDisk = true;
-            //}
-            //else
-            //{
-            //    currentUrlDisk = false;
-            //}
-
             downloadProgress = 0;
 
             if (!multiple)
             {
                 downloadCount = 0;
                 downloadCountMax = 1;
-
-                if (onDownloadsComplete != null)
-                {
-                    DownloadCompleted += onDownloadsComplete;
-                }
+                DownloadCompleted = onDownloadsComplete;
             }
 
             string urlHash = EngineExtensions.MD5Encrypt(url);
 
             this.url = url;
             var request = HttpModule.Get(url).
-                OnDownloadProgress(DownloadFileProgress).
-                OnSuccess(DownloadFileCompleted).
-                OnError(DownloadFileError).
-                Send();
+                                     OnDownloadProgress(DownloadFileProgress).
+                                     OnSuccess(DownloadFileCompleted).
+                                     OnError(DownloadFileError).
+                                     Send();
         }
 
         public void DownloadFiles(List<string> fileUrls, Action onDownloadsAllComplete = null)
