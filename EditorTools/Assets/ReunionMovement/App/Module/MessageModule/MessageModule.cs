@@ -29,12 +29,12 @@ namespace GameLogic
             yield return null;
             initProgress = 100;
             IsInited = true;
-            Log.Debug("DownloadFileModule 初始化完成");
+            Log.Debug("MessageModule 初始化完成");
         }
 
         public void ClearData()
         {
-            Log.Debug("DownloadFileModule 清除数据");
+            Log.Debug("MessageModule 清除数据");
         }
 
         /// <summary>
