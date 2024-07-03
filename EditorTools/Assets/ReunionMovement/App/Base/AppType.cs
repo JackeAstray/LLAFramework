@@ -98,4 +98,11 @@ namespace GameLogic
         // 通知
         Notice,
     }
+
+    public enum RotationDirection
+    {
+        None,
+        Right,
+        Left
+    }
 }

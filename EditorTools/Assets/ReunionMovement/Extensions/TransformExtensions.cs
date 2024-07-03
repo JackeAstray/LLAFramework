@@ -1,5 +1,5 @@
-﻿using System;
-using System.IO;
+﻿using GameLogic;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -123,11 +123,11 @@ public static class TransformExtensions
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="tf"></param>
-    /// <param name="subnode"></param>
+    /// <param name="objName"></param>
     /// <returns></returns>
-    public static T Get<T>(this Transform tf, string subnode) where T : Component
+    public static T Get<T>(this Transform tf, string objName) where T : Component
     {
-        var sub = tf?.Find(subnode);
+        var sub = tf?.Find(objName);
         return sub?.GetComponent<T>();
     }
 
@@ -153,5 +153,99 @@ public static class TransformExtensions
         tf.localPosition = Vector3.zero;
         tf.localRotation = Quaternion.identity;
         tf.localScale = Vector3.one;
+    }
+
+    /// <summary>
+    /// 查找子项
+    /// </summary>
+    /// <param name="findTrans"></param>
+    /// <param name="objName"></param>
+    /// <param name="check_visible">检查可见性</param>
+    /// <param name="raise_error">抛出错误</param>
+    /// <returns></returns>
+    public static Transform Child(this Transform findTrans, string objName, bool check_visible = false, bool raise_error = true)
+    {
+        if (!findTrans)
+        {
+            if (raise_error)
+            {
+                Log.Error("查找失败. findTrans是空的!");
+            }
+            return null;
+        }
+
+        if (string.IsNullOrEmpty(objName))
+        {
+            return null;
+        }
+        // 如果需要检查可见性，但是当前物体不可见
+        if (check_visible && !findTrans.gameObject.activeInHierarchy)
+        {
+            return null;
+        }
+        if (objName == ".")
+        {
+            return findTrans;
+        }
+
+        var ids = objName.Split('/');
+
+        foreach (var id1 in ids)
+        {
+            findTrans = ChildDirect(findTrans, id1, check_visible);
+            if (findTrans == null)
+            {
+                // 如果需要抛出错误
+                if (raise_error)
+                {
+                    Log.Error($"查找子项失败, id:{objName} ,parent={findTrans.name}");
+                }
+                break;
+            }
+        }
+
+        return findTrans;
+    }
+
+    /// <summary>
+    /// 查找子项
+    /// </summary>
+    /// <param name="t"></param>
+    /// <param name="objName"></param>
+    /// <param name="check_visible"></param>
+    /// <param name="raise_error"></param>
+    /// <returns></returns>
+    public static Transform ChildTF(this Transform t, string objName, bool check_visible = false, bool raise_error = true)
+    {
+        return Child(t, objName, check_visible, raise_error);
+    }
+
+    /// <summary>
+    /// 查找子项
+    /// </summary>
+    /// <param name="trans"></param>
+    /// <param name="objName"></param>
+    /// <param name="check_visible"></param>
+    /// <returns></returns>
+    private static Transform ChildDirect(Transform trans, string objName, bool check_visible)
+    {
+        var queue = new Queue<Transform>();
+        queue.Enqueue(trans);
+        while (queue.Count > 0)
+        {
+            trans = queue.Dequeue();
+            var t1 = trans.Find(objName);
+            if (t1 != null && (!check_visible || t1.gameObject.activeInHierarchy))
+            {
+                return t1;
+            }
+
+            foreach (Transform child in trans)
+            {
+                if (!check_visible || child.gameObject.activeInHierarchy)
+                    queue.Enqueue(child);
+            }
+        }
+        return null;
     }
 }

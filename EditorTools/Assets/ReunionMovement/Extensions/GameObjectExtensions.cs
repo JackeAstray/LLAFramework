@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Object = System.Object;
 
@@ -290,28 +291,109 @@ namespace GameLogic
             }
         }
 
+        /// <summary> 
+        /// 在指定物体上添加指定图片 
+        /// </summary>
+        public static Image AddImage(this GameObject target, Sprite sprite)
+        {
+            target.SetActive(false);
+            Image image = target.GetComponent<Image>();
+            if (!image)
+                image = target.AddComponent<Image>();
+            image.sprite = sprite;
+            image.SetNativeSize();
+            target.SetActive(true);
+            return image;
+        }
+
         #region 查找子对象
         /// <summary>
         /// 查找子对象
         /// </summary>
-        /// <param name="go"></param>
-        /// <param name="subnode"></param>
+        /// <param name="go">自己</param>
+        /// <param name="objName">对象名称</param>
         /// <returns></returns>
-        public static GameObject Child(this GameObject go, string subnode)
+        public static GameObject Child(this GameObject go, string objName)
         {
-            return Child(go.transform, subnode);
+            return Child(go.transform, objName);
         }
 
         /// <summary>
         /// 查找子对象
         /// </summary>
-        /// <param name="go"></param>
-        /// <param name="subnode"></param>
+        /// <param name="go">自己</param>
+        /// <param name="objName">对象名称</param>
         /// <returns></returns>
-        public static GameObject Child(Transform go, string subnode)
+        public static GameObject Child(Transform go, string objName )
         {
-            Transform tran = go.Find(subnode);
+            Transform tran = go.Find(objName);
             return tran?.gameObject;
+        }
+
+        /// <summary>
+        /// 查找子对象
+        /// </summary>
+        /// <param name="go">自己</param>
+        /// <param name="objName">对象名</param>
+        /// <param name="check_visible">检查可见</param>
+        /// <param name="error">错误</param>
+        /// <returns></returns>
+        public static GameObject Child(this GameObject go, string objName, bool check_visible = false, bool error = true)
+        {
+            if (!go)
+            {
+                if (error)
+                {
+                    Log.Error("查找失败，GameObject是空的！");
+                }
+                return null;
+            }
+
+            var t = Child(go, objName, check_visible, error);
+            return t?.gameObject;
+        }
+
+        /// <summary>
+        /// 查找子对象组件
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="go">自己</param>
+        /// <param name="objName">对象名</param>
+        /// <param name="check_visible">检查可见</param>
+        /// <param name="error">错误</param>
+        /// <returns></returns>
+        public static T Child<T>(this GameObject go, string objName, bool check_visible = false, bool error = true) where T : Component
+        {
+            var t = Child(go, objName, check_visible, error);
+            return t?.GetComponent<T>();
+        }
+
+        /// <summary>
+        /// 查找子项组件
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="go"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static T FindInChild<T>(this GameObject go, string name = "") where T : Component
+        {
+            if (!go)
+            {
+                return null;
+            }
+
+            if (!string.IsNullOrEmpty(name) && !go.name.Contains(name))
+            {
+                return null;
+            }
+
+            var comp = go.GetComponent<T>();
+            if (comp)
+            {
+                return comp;
+            }
+
+            return go.GetComponentsInChildren<T>().FirstOrDefault_V1();
         }
         #endregion
 
@@ -339,6 +421,36 @@ namespace GameLogic
             return tran?.gameObject;
         }
         #endregion
+
+        #region 清除
+        /// <summary>
+        /// 清除单个实例，默认延迟为0，仅在场景中删除对应对象
+        /// </summary>
+        public static void DestroyObject(this UnityEngine.Object obj, float delay = 0)
+        {
+            GameObject.Destroy(obj, delay);
+        }
+
+        /// <summary>
+        /// 立刻清理实例对象，会在内存中清理实例，Editor适用
+        /// </summary>
+        public static void DestroyObjectImmediate(this UnityEngine.Object obj)
+        {
+            GameObject.DestroyImmediate(obj);
+        }
+
+        /// <summary>
+        /// 清除一组实例
+        /// </summary>
+        /// <typeparam name="T">实例类型</typeparam>
+        /// <param name="objs">对象实例集合</param>
+        public static void DestroyObjects<T>(IEnumerable<T> objs) where T : UnityEngine.Object
+        {
+            foreach (var obj in objs)
+            {
+                GameObject.Destroy(obj);
+            }
+        }
 
         /// <summary>
         /// 清除所有子节点
@@ -371,108 +483,6 @@ namespace GameLogic
         public static void ThisClearChild(this GameObject go)
         {
             ClearChild(go);
-        }
-
-        #region UGUITool
-        /// <summary>
-        /// 设置文本内容
-        /// </summary>
-        /// <param name="textStr">文本内容</param>
-        /// <returns></returns>
-        public static Text SetText(this GameObject obj, string name, string textStr)
-        {
-            var text = obj.Get<Text>(name);
-            text.text = textStr;
-            return text;
-        }
-        /// <summary>
-        /// 设置按钮点击回调
-        /// </summary>
-        /// <param name="onClick">点击回调</param>
-        /// <returns></returns>
-        public static Button SetButton(this GameObject obj, string name, Action<GameObject> onClick)
-        {
-            var btn = obj.Get<Button>(name);
-            btn.onClick.AddListener(() =>
-            {
-                if (null != onClick)
-                {
-                    onClick(btn.gameObject);
-                }
-            });
-            return btn;
-        }
-
-        /// <summary>
-        /// 设置输入框文本输入完毕回调
-        /// </summary>
-        /// <param name="onEndEdit">文本输入完毕后回调</param>
-        /// <returns></returns>
-        public static InputField SetInputField(this GameObject obj, string name, Action<string> onEndEdit)
-        {
-            var input = obj.Get<InputField>(name);
-            input.onEndEdit.AddListener((v) =>
-            {
-                if (null != onEndEdit)
-                {
-                    onEndEdit(v);
-                }
-            });
-            return input;
-        }
-
-        /// <summary>
-        /// 设置下拉框选择回调
-        /// </summary>
-        /// <param name="onValueChanged">选择回调</param>
-        /// <returns></returns>
-        public static Dropdown SetDropDown(this GameObject obj, string name, Action<int> onValueChanged)
-        {
-            var dropdown = obj.Get<Dropdown>(name);
-            dropdown.onValueChanged.RemoveAllListeners();
-            dropdown.onValueChanged.AddListener((v) =>
-            {
-                if (null != onValueChanged)
-                    onValueChanged(v);
-            });
-
-            return dropdown;
-        }
-
-        /// <summary>
-        /// 设置单选框选择回调
-        /// </summary>
-        /// <param name="onValueChanged">选择回调</param>
-        /// <returns></returns>
-        public static Toggle SetToggle(this GameObject obj, string name, Action<bool> onValueChanged)
-        {
-            var toogle = obj.Get<Toggle>(name);
-            toogle.onValueChanged.RemoveAllListeners();
-            toogle.onValueChanged.AddListener((v) =>
-            {
-                if (null != onValueChanged)
-                    onValueChanged(v);
-            });
-
-            return toogle;
-        }
-
-        /// <summary>
-        /// 设置单选框选择回调
-        /// </summary>
-        /// <param name="onValueChanged">选择回调</param>
-        /// <returns></returns>
-        public static Slider SetSlider(this GameObject obj, string name, Action<float> onValueChanged)
-        {
-            var slider = obj.Get<Slider>(name);
-            slider.onValueChanged.RemoveAllListeners();
-            slider.onValueChanged.AddListener((v) =>
-            {
-                if (null != onValueChanged)
-                    onValueChanged(v);
-            });
-
-            return slider;
         }
         #endregion
     }

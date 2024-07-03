@@ -52,4 +52,16 @@ public static class ComponentExtensions
         var transform = go.transform.Find(subnode);
         return transform != null ? transform.GetComponent<T>() : null;
     }
+
+    /// <summary>
+    /// 包含
+    /// </summary>
+    /// <typeparam name="TSource"></typeparam>
+    /// <param name="source"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static bool Contains<TSource>(this IEnumerable<TSource> source, TSource value)
+    {
+        return source.Contains(value);
+    }
 }

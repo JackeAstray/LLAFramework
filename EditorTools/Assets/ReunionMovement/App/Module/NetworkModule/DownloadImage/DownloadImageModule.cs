@@ -58,7 +58,7 @@ namespace GameLogic.Download
 
                 this.suffix = suffix;
                 this.currentUrl = url;
-                this.urlHash = EngineExtensions.MD5Encrypt(url);
+                this.urlHash = StringExtensions.CreateMD5(url);
                 this.localFilePath = $"{PathUtils.GetLocalPath(DownloadType.PersistentImage)}/{urlHash}{suffix}";
 
                 if (File.Exists(localFilePath))

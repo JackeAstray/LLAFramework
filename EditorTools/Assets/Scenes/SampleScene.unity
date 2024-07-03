@@ -2848,7 +2848,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
-  drawShape: 5
+  drawShape: 7
   imageType: 3
   materialMode: 0
   strokeWidth: 0

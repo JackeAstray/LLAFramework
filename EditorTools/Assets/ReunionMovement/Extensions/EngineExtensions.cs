@@ -14,6 +14,8 @@ using UnityEngine;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Globalization;
+using UnityEngine.Networking;
+using UnityEngine.UI;
 
 namespace GameLogic
 {
@@ -22,6 +24,56 @@ namespace GameLogic
     /// </summary>
     public static class EngineExtensions
     {
+        #region Application
+        public static bool IsDebug()
+        {
+            if (Application.isEditor)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 网络可用
+        /// </summary>
+        public static bool NetAvailable
+        {
+            get
+            {
+                return Application.internetReachability != NetworkReachability.NotReachable;
+            }
+        }
+
+        /// <summary>
+        /// 是否是无线
+        /// </summary>
+        public static bool IsWifi
+        {
+            get
+            {
+                return Application.internetReachability == NetworkReachability.ReachableViaLocalAreaNetwork;
+            }
+        }
+
+
+        /// <summary>
+        /// 退出
+        /// </summary>
+        public static void Quit()
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
+        }
+        #endregion
+
+        #region object转换
         /// <summary>
         /// 从对象数组中获取
         /// </summary>
@@ -68,42 +120,6 @@ namespace GameLogic
                 }
             }
         }
-
-        #region Find
-        private static ConcurrentDictionary<string, Type> typeCache = new ConcurrentDictionary<string, Type>();
-        /// <summary>
-        /// 查找类型
-        /// </summary>
-        /// <param name="qualifiedTypeName"></param>
-        /// <returns></returns>
-        public static Type FindType(string qualifiedTypeName)
-        {
-            if (typeCache.TryGetValue(qualifiedTypeName, out Type t))
-            {
-                return t;
-            }
-
-            t = Type.GetType(qualifiedTypeName);
-
-            if (t != null)
-            {
-                typeCache[qualifiedTypeName] = t;
-                return t;
-            }
-
-            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            t = assemblies.AsParallel().Select(asm => asm.GetType(qualifiedTypeName)).FirstOrDefault(t => t != null);
-
-            if (t != null)
-            {
-                typeCache[qualifiedTypeName] = t;
-            }
-
-            return t;
-        }
-        #endregion
-
-        #region object转换
         /// <summary>
         /// object转int32
         /// </summary>
@@ -435,258 +451,7 @@ namespace GameLogic
         }
         #endregion
 
-        #region 字符串
-        /// <summary>
-        /// 字符串转byte
-        /// </summary>
-        /// <param name="val"></param>
-        /// <returns></returns>
-        public static byte ToByte(this string val)
-        {
-            if (byte.TryParse(val, out byte result))
-            {
-                return result;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-        /// <summary>
-        /// 字符串转int64
-        /// </summary>
-        /// <param name="val"></param>
-        /// <returns></returns>
-        public static long ToInt64(this string val)
-        {
-            if (long.TryParse(val, out long result))
-            {
-                return result;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-        /// <summary>
-        /// 字符串转float
-        /// </summary>
-        /// <param name="val"></param>
-        /// <returns></returns>
-        public static float ToFloat(this string val)
-        {
-            if (float.TryParse(val, out float result))
-            {
-                return result;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-        /// <summary>
-        /// 字符串转int32
-        /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        static public Int32 ToInt32(this string str)
-        {
-            if (Int32.TryParse(str, out Int32 result))
-            {
-                return result;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
-        /// <summary>
-        /// 得到字符串长度，一个汉字长度为2
-        /// </summary>
-        /// <param name="inputString"></param>
-        /// <returns></returns>
-        public static int StrLength(string inputString)
-        {
-            int tempLen = 0;
-            byte[] s = Encoding.ASCII.GetBytes(inputString);
-            foreach (byte b in s)
-            {
-                tempLen += (b == 63) ? 2 : 1;
-            }
-            return tempLen;
-        }
-
-        /// <summary>
-        /// 计算字符串的MD5值
-        /// </summary>
-        /// <param name="source"></param>
-        /// <returns></returns>
-        public static string MD5(string source)
-        {
-            using (MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider())
-            {
-                byte[] data = Encoding.UTF8.GetBytes(source);
-                byte[] md5Data = md5.ComputeHash(data, 0, data.Length);
-
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < md5Data.Length; i++)
-                {
-                    sb.Append(md5Data[i].ToString("x2"));
-                }
-                return sb.ToString();
-            }
-        }
-
-        /// <summary>
-        /// 检查类名
-        /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        public static bool CheckClassName(string str)
-        {
-            return Regex.IsMatch(str, @"^[A-Z][A-Za-z0-9_]*$");
-        }
-
-        /// <summary>
-        /// 检查字段名
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static bool CheckFieldName(string name)
-        {
-            return Regex.IsMatch(name, @"^[A-Za-z_][A-Za-z0-9_]*$");
-        }
-
-        /// <summary>
-        /// 第一个字符大写，不改变其他字符
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static string CapitalFirstChar(string str)
-        {
-            if (string.IsNullOrEmpty(str))
-            {
-                return str;
-            }
-
-            return char.ToUpper(str[0]) + str.Substring(1);
-        }
-
-        /// <summary>
-        /// 首字母大写，其他小写
-        /// </summary>
-        /// <param name="word"></param>
-        /// <returns></returns>
-        public static string ToTitleCase(string word)
-        {
-            if (string.IsNullOrEmpty(word))
-            {
-                return word;
-            }
-
-            return char.ToUpper(word[0]) + (word.Length > 1 ? word.Substring(1).ToLower() : "");
-        }
-
-        /// <summary>
-        /// 驼峰命名转下划线命名
-        /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        public static string ToSentenceCase(string str)
-        {
-            if (string.IsNullOrEmpty(str))
-            {
-                return str;
-            }
-
-            str = char.ToLower(str[0]) + str.Substring(1);
-            return Regex.Replace(str, "[a-z][A-Z]", m => char.ToLower(m.Value[0]) + "_" + char.ToLower(m.Value[1]));
-        }
-
-        /// <summary>
-        /// 截断字符串变成数组
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="str"></param>
-        /// <param name="args"></param>
-        /// <returns></returns>
-        public static List<T> Split<T>(string str, params char[] args)
-        {
-            if (args.Length == 0)
-            {
-                args = new[] { '|' }; // 默认
-            }
-
-            if (string.IsNullOrEmpty(str))
-            {
-                return new List<T>();
-            }
-
-            return str.Split(args)
-                    .Where(s => !string.IsNullOrWhiteSpace(s))
-                    .Select(s => (T)Convert.ChangeType(s.Trim(), typeof(T)))
-                    .ToList();
-        }
-
-        /// <summary>
-        /// 判断字符串是否是数字
-        /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        public static bool IsNumber(string str)
-        {
-            return double.TryParse(str, out _);
-        }
-
-        /// <summary>
-        /// 人性化数字显示，百万，千万，亿
-        /// </summary>
-        /// <param name="number"></param>
-        /// <returns></returns>
-        public static string HumanizeNumber(int number)
-        {
-            if (number > 100000000)
-            {
-                return $"{number / 100000000}亿";
-            }
-            else if (number > 10000000)
-            {
-                return $"{number / 10000000}千万";
-            }
-            else if (number > 1000000)
-            {
-                return $"{number / 1000000}百万";
-            }
-            else if (number > 10000)
-            {
-                return $"{number / 10000}万";
-            }
-
-            return number.ToString();
-        }
-        #endregion
-
-        #region File
-        /// <summary>
-        /// MD5Encrypt
-        /// </summary>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        public static string MD5Encrypt(string str)
-        {
-            MD5 md5 = new MD5CryptoServiceProvider();
-            byte[] fromData = Encoding.UTF8.GetBytes(str);
-            byte[] targetData = md5.ComputeHash(fromData);
-            string byte2String = null;
-
-            for (int i = 0; i < targetData.Length; i++)
-            {
-                byte2String += targetData[i].ToString("x2");
-            }
-
-            return byte2String;
-        }
+        #region 文件操作
         /// <summary>
         /// 无视锁文件，直接读bytes  读取（加载）数据
         /// </summary>
@@ -785,272 +550,62 @@ namespace GameLogic
 
             await File.WriteAllTextAsync(fileAbslutePath, jsonStr);
         }
-        #endregion
 
-        #region 计算公式
         /// <summary>
-        /// 计算最大公约数
+        /// 游戏开始把StreamingAssets文件复制到持久化目录
         /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
+        /// <param name="filePath"></param>
+        /// <param name="fileName"></param>
         /// <returns></returns>
-        public static int CalculateMaximumCommonDivisor(int a, int b)
+        public static IEnumerator CopyFileToTarget(string filePath, string fileName)
         {
-            a = Math.Abs(a);
-            b = Math.Abs(b);
-            while (b != 0)
+            string OriginalPath = Application.streamingAssetsPath + "/" + filePath + "/" + fileName;
+            string TargetPath = Application.persistentDataPath + "/" + filePath;
+
+            if (!Directory.Exists(TargetPath))
             {
-                int t = b;
-                b = a % b;
-                a = t;
-            }
-            return a;
-        }
-
-        /// <summary>
-        /// 计算中心点
-        /// </summary>
-        /// <param name="Points"></param>
-        /// <returns></returns>
-        public static Vector3 CalculateCenterPoint(List<Transform> Points)
-        {
-            return Points.Aggregate(Vector3.zero, (acc, p) => acc + p.position) / Points.Count;
-        }
-
-        /// <summary>
-        /// 计算AB与CD两条线段的交点.
-        /// </summary>
-        /// <param name="a">A点</param>
-        /// <param name="b">B点</param>
-        /// <param name="c">C点</param>
-        /// <param name="d">D点</param>
-        /// <returns>是否相交 true:相交 false:未相交 | AB与CD的交点</returns>
-        public static (bool, Vector3) CalculateIntersectionPoint_AB_And_CD_LineSegments(
-            Vector3 a,
-            Vector3 b,
-            Vector3 c,
-            Vector3 d)
-        {
-            Vector3 ab = b - a;
-            Vector3 ca = a - c;
-            Vector3 cd = d - c;
-
-            Vector3 v1 = Vector3.Cross(ca, cd);
-
-            if (Mathf.Abs(Vector3.Dot(v1, ab)) > 1e-6)
-            {
-                // 不共面
-                return (false, Vector3.zero);
+                //创建文件夹
+                Directory.CreateDirectory(TargetPath);
             }
 
-            if (Vector3.Cross(ab, cd).sqrMagnitude <= 1e-6)
+            switch (Application.platform)
             {
-                // 平行
-                return (false, Vector3.zero);
+                case RuntimePlatform.Android:
+                    using (UnityWebRequest www = UnityWebRequest.Get(OriginalPath))
+                    {
+                        yield return www.SendWebRequest();
+                        if (www.result != UnityWebRequest.Result.Success)
+                        {
+                            Debug.Log("复制文件失败：" + www.error);
+                        }
+                        else
+                        {
+                            //Debug.Log("复制成功");
+                            File.WriteAllBytes(TargetPath + "/" + fileName, www.downloadHandler.data);
+                        }
+                    }
+                    break;
+                case RuntimePlatform.IPhonePlayer:
+                    //IOS下StreamingAssets目录
+                    OriginalPath = Application.dataPath + "/Raw/" + filePath + "/" + fileName;
+                    if (!File.Exists(TargetPath + "/" + fileName))
+                    {
+                        //保存到持久化目录
+                        File.Copy(OriginalPath, TargetPath + "/" + fileName);
+                    }
+                    break;
+                case RuntimePlatform.WindowsEditor:
+                case RuntimePlatform.WindowsPlayer:
+                case RuntimePlatform.OSXEditor:
+                case RuntimePlatform.OSXPlayer:
+                    if (!File.Exists(TargetPath + "/" + fileName))
+                    {
+                        //保存到持久化目录
+                        File.Copy(OriginalPath, TargetPath + "/" + fileName);
+                    }
+                    break;
             }
-
-            Vector3 ad = d - a;
-            Vector3 cb = b - c;
-            // 快速排斥
-            if (Mathf.Min(a.x, b.x) > Mathf.Max(c.x, d.x) || Mathf.Max(a.x, b.x) < Mathf.Min(c.x, d.x)
-            || Mathf.Min(a.y, b.y) > Mathf.Max(c.y, d.y) || Mathf.Max(a.y, b.y) < Mathf.Min(c.y, d.y)
-            || Mathf.Min(a.z, b.z) > Mathf.Max(c.z, d.z) || Mathf.Max(a.z, b.z) < Mathf.Min(c.z, d.z)
-            )
-                return (false, Vector3.zero);
-
-            // 跨立试验
-            if (Vector3.Dot(Vector3.Cross(-ca, ab), Vector3.Cross(ab, ad)) > 0
-                && Vector3.Dot(Vector3.Cross(ca, cd), Vector3.Cross(cd, cb)) > 0)
-            {
-                Vector3 v2 = Vector3.Cross(cd, ab);
-                float ratio = Vector3.Dot(v1, v2) / v2.sqrMagnitude;
-                Vector3 intersectPos = a + ab * ratio;
-                return (true, intersectPos);
-            }
-
-            return (false, Vector3.zero);
-        }
-
-        /// <summary>
-        /// 计算两条线段的交点
-        /// </summary>
-        /// <param name="ps1"></param>
-        /// <param name="pe1"></param>
-        /// <param name="ps2"></param>
-        /// <param name="pe2"></param>
-        /// <returns></returns>
-        public static (bool, Vector2) LineIntersectionPoint(Vector2 ps1, Vector2 pe1, Vector2 ps2, Vector2 pe2)
-        {
-            // 获取第一行的A、B、C-点：ps1到pe1
-            float A1 = pe1.y - ps1.y;
-            float B1 = ps1.x - pe1.x;
-            float C1 = A1 * ps1.x + B1 * ps1.y;
-
-            // 获取第二行的A、B、C点：ps2到pe2
-            float A2 = pe2.y - ps2.y;
-            float B2 = ps2.x - pe2.x;
-            float C2 = A2 * ps2.x + B2 * ps2.y;
-
-            // 获取delta并检查直线是否平行
-            float delta = A1 * B2 - A2 * B1;
-            if (delta == 0)
-            {
-                return (false, Vector2.zero);
-            }
-
-            // 现在返回Vector2的交点
-            Vector2 intersectPoint = new Vector2(
-                (B2 * C1 - B1 * C2) / delta,
-                (A1 * C2 - A2 * C1) / delta
-            );
-            return (true, intersectPoint);
-        }
-
-        /// <summary>
-        /// 获取两点之间距离一定百分比的一个点
-        /// </summary>
-        /// <param name="start">起始点</param>
-        /// <param name="end">结束点</param>
-        /// <param name="distance">起始点到目标点距离百分比</param>
-        /// <returns></returns>
-        public static Vector3 GetBetweenPoint1(Vector3 start, Vector3 end, float percent)
-        {
-            // old
-            // Vector3 normal = (end - start).normalized;
-            // float distance = Vector3.Distance(start, end);
-            // return normal * (distance * percent) + start;
-            // new
-            return Vector3.Lerp(start, end, percent);
-        }
-
-        /// <summary>
-        /// 获取两点之间一定距离的点
-        /// </summary>
-        /// <param name="start">起始点</param>
-        /// <param name="end">结束点</param>
-        /// <param name="distance">距离</param>
-        /// <returns></returns>
-        public static Vector3 GetBetweenPoint2(Vector3 start, Vector3 end, float distance)
-        {
-            return start + (end - start).normalized * distance;
-        }
-
-        /// <summary>
-        /// 获取椭圆上的某一点，相对坐标
-        /// </summary>
-        /// <param name="longHalfAxis">长半轴即目标距离</param>
-        /// <param name="shortHalfAxis">短半轴</param>
-        /// <param name="angle"></param>
-        /// <returns></returns>
-        public static Vector2 GetRelativePositionOfEllipse(float longHalfAxis, float shortHalfAxis, float angle)
-        {
-            var rad = angle * Mathf.Deg2Rad; // 弧度
-            var newPos = Vector2.right * longHalfAxis * Mathf.Cos(rad) + Vector2.up * shortHalfAxis * Mathf.Sin(rad);
-            return newPos;
-        }
-
-        /// <summary>
-        /// 计算两个向量之间的角度 3D
-        /// </summary>
-        /// <param name="value1"></param>
-        /// <param name="value2"></param>
-        /// <returns></returns>
-        public static float Angel(Transform value1, Transform value2)
-        {
-            return Vector3.Angle(value1.forward, value2.forward);
-        }
-
-        /// <summary>
-        /// 计算两个向量之间的角度 2D
-        /// </summary>
-        /// <param name="value1"></param>
-        /// <param name="value2"></param>
-        /// <returns></returns>
-        public static float Angle(Vector2 value1, Vector2 value2)
-        {
-            return Vector2.Angle(value1, value2);
-        }
-
-        public enum RotationDirection
-        {
-            None,
-            Right,
-            Left
-        }
-        /// <summary>
-        /// 判断物体左右转转
-        /// </summary>
-        /// <param name="value1"></param>
-        /// <param name="value2"></param>
-        /// <returns></returns>
-        public static RotationDirection GetRotationDirection(Transform value1, Transform value2)
-        {
-            Vector2 v1 = new Vector2(value1.forward.x, value1.forward.z); //旋转前的前方
-            Vector2 v2 = new Vector2(value2.forward.x, value2.forward.z); //旋转后的前方
-
-            float rightFloat = v1.x * v2.y - v2.x * v1.y;
-
-            if (rightFloat < 0)
-            {
-                return RotationDirection.Right;
-            }
-            else if (rightFloat > 0)
-            {
-                return RotationDirection.Left;
-            }
-            else
-            {
-                return RotationDirection.None;
-            }
-        }
-
-        /// <summary>
-        /// 文件大小格式化显示成KB，MB,GB
-        /// </summary>
-        /// <param name="size">字节</param>
-        public static String FormatFileSize(long size)
-        {
-            string[] sizes = { "B", "KB", "MB", "GB", "TB" };
-            int order = 0;
-            while (size >= 1024 && order < sizes.Length - 1)
-            {
-                order++;
-                size = size / 1024;
-            }
-            return String.Format("{0:0.##} {1}", size, sizes[order]);
-        }
-
-        /// <summary>
-        /// 数组值比较
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="a1"></param>
-        /// <param name="a2"></param>
-        /// <returns></returns>
-        public static bool ArraysEqual<T>(T[] a1, T[] a2)
-        {
-            return Enumerable.SequenceEqual(a1, a2);
-        }
-
-        /// <summary>
-        /// 概率，百分比 FLOAT
-        /// 注意，0的时候当是100%
-        /// </summary>
-        /// <param name="chancePercent"></param>
-        /// <returns></returns>
-        public static bool Probability(float chancePercent)
-        {
-            return UnityEngine.Random.Range(0f, 100f) <= chancePercent;
-        }
-
-        /// <summary>
-        /// 概率，百分比 BYTE
-        /// </summary>
-        /// <param name="chancePercent"></param>
-        /// <returns></returns>
-        public static bool Probability(byte chancePercent)
-        {
-            return UnityEngine.Random.Range(1, 101) <= chancePercent;
+            yield return null;
         }
         #endregion
 
@@ -1092,6 +647,258 @@ namespace GameLogic
                 var addresses = await Dns.GetHostAddressesAsync(host);
                 return addresses.FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
             }
+        }
+        #endregion
+
+        #region Texture2D
+        /// <summary>
+        /// texture 转换成 texture2d
+        /// </summary>
+        /// <param name="texture"></param>
+        /// <returns></returns>
+        public static Texture2D TextureToTexture2D(Texture texture)
+        {
+            Texture2D texture2D = new Texture2D(texture.width, texture.height, TextureFormat.RGBA32, false);
+            RenderTexture currentRT = RenderTexture.active;
+            RenderTexture renderTexture = RenderTexture.GetTemporary(texture.width, texture.height, 32);
+            Graphics.Blit(texture, renderTexture);
+
+            RenderTexture.active = renderTexture;
+            texture2D.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
+            texture2D.Apply();
+
+            RenderTexture.active = currentRT;
+            RenderTexture.ReleaseTemporary(renderTexture);
+
+            return texture2D;
+        }
+
+        /// <summary>
+        /// 解除texture锁
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static Texture2D DuplicateTexture(this Texture2D source)
+        {
+            RenderTexture renderTex = RenderTexture.GetTemporary(
+                        source.width,
+                        source.height,
+                        0,
+                        RenderTextureFormat.Default,
+                        RenderTextureReadWrite.Linear);
+
+            Graphics.Blit(source, renderTex);
+            RenderTexture previous = RenderTexture.active;
+            RenderTexture.active = renderTex;
+            Texture2D readableText = new Texture2D(source.width, source.height);
+            readableText.ReadPixels(new Rect(0, 0, renderTex.width, renderTex.height), 0, 0);
+            readableText.Apply();
+            RenderTexture.active = previous;
+            RenderTexture.ReleaseTemporary(renderTex);
+
+            return readableText;
+        }
+
+        /// <summary>
+        /// 裁剪正方形
+        /// </summary>
+        /// <param name="texture"></param>
+        /// <returns></returns>
+        public static Texture2D CutForSquare(this Texture2D texture)
+        {
+            Texture2D tex;
+            int TextureWidth = texture.width;//图片的宽
+            int TextureHeight = texture.height;//图片的高
+
+            int TextureSide = Mathf.Min(TextureWidth, TextureHeight);
+            tex = new Texture2D(TextureSide, TextureSide);
+            UnityEngine.Color[] col = texture.GetPixels((TextureWidth - TextureSide) / 2, (TextureHeight - TextureSide) / 2, TextureSide, TextureSide);
+            tex.SetPixels(0, 0, TextureSide, TextureSide, col);
+            tex.Apply();
+            return tex;
+        }
+
+        /// <summary>
+        /// 正方型裁剪
+        /// 以图片中心为轴心，截取正方型，然后等比缩放
+        /// 用于头像处理
+        /// </summary>
+        /// <param name="texture">要处理的图片</param>
+        /// <param name="side_x">指定的边长</param>
+        /// <param name="side_y">指定的边宽</param>
+        /// <returns></returns>
+        public static Texture2D CutForSquare(this Texture2D texture, int side_x, int side_y)
+        {
+            Texture2D tex;
+            int TextureWidth = texture.width;//图片的宽
+            int TextureHeight = texture.height;//图片的高
+
+            //如果图片的高和宽都比side大
+            if (TextureWidth > side_x && TextureHeight > side_y)
+            {
+                tex = new Texture2D(side_x, side_y);
+                UnityEngine.Color[] col = texture.GetPixels((TextureWidth - side_x) / 2, (TextureWidth - side_y) / 2, side_x, side_y);
+                tex.SetPixels(0, 0, side_x, side_y, col);
+                tex.Apply();
+                return tex;
+            }
+            //如果图片的宽或高小于side
+            if (TextureWidth < side_x || TextureHeight < side_y)
+            {
+                int TextureSide = Mathf.Min(TextureWidth, TextureHeight);
+                tex = new Texture2D(TextureSide, TextureSide);
+                UnityEngine.Color[] col = texture.GetPixels((TextureWidth - TextureSide) / 2, (TextureHeight - TextureSide) / 2, TextureSide, TextureSide);
+                tex.SetPixels(0, 0, TextureSide, TextureSide, col);
+                tex.Apply();
+                return tex;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// byte[]转换为Texture2D
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <returns></returns>
+        public static Texture2D BytesToTexture2D(this byte[] bytes, int width, int height)
+        {
+            Texture2D texture2D = new Texture2D(width, height);
+            texture2D.LoadImage(bytes);
+            return texture2D;
+        }
+
+        /// <summary>
+        /// 双线性插值法缩放图片，等比缩放 
+        /// </summary>
+        public static Texture2D ScaleTextureBilinear(this Texture2D originalTexture, float scaleFactor)
+        {
+            Texture2D newTexture = new Texture2D(Mathf.CeilToInt(originalTexture.width * scaleFactor),
+                Mathf.CeilToInt(originalTexture.height * scaleFactor));
+            float scale = 1.0f / scaleFactor;
+            int maxX = originalTexture.width - 1;
+            int maxY = originalTexture.height - 1;
+            for (int y = 0; y < newTexture.height; y++)
+            {
+                for (int x = 0; x < newTexture.width; x++)
+                {
+                    float targetX = x * scale;
+                    float targetY = y * scale;
+                    int x1 = Mathf.Min(maxX, Mathf.FloorToInt(targetX));
+                    int y1 = Mathf.Min(maxY, Mathf.FloorToInt(targetY));
+                    int x2 = Mathf.Min(maxX, x1 + 1);
+                    int y2 = Mathf.Min(maxY, y1 + 1);
+
+                    float u = targetX - x1;
+                    float v = targetY - y1;
+                    float w1 = (1 - u) * (1 - v);
+                    float w2 = u * (1 - v);
+                    float w3 = (1 - u) * v;
+                    float w4 = u * v;
+                    Color color1 = originalTexture.GetPixel(x1, y1);
+                    Color color2 = originalTexture.GetPixel(x2, y1);
+                    Color color3 = originalTexture.GetPixel(x1, y2);
+                    Color color4 = originalTexture.GetPixel(x2, y2);
+                    Color color = new Color(
+                        Mathf.Clamp01(color1.r * w1 + color2.r * w2 + color3.r * w3 + color4.r * w4),
+                        Mathf.Clamp01(color1.g * w1 + color2.g * w2 + color3.g * w3 + color4.g * w4),
+                        Mathf.Clamp01(color1.b * w1 + color2.b * w2 + color3.b * w3 + color4.b * w4),
+                        Mathf.Clamp01(color1.a * w1 + color2.a * w2 + color3.a * w3 + color4.a * w4)
+                    );
+                    newTexture.SetPixel(x, y, color);
+                }
+            }
+
+            newTexture.Apply();
+            return newTexture;
+        }
+
+        /// <summary> 
+        /// 双线性插值法缩放图片为指定尺寸 
+        /// </summary>
+        public static Texture2D SizeTextureBilinear(this Texture2D originalTexture, Vector2 size)
+        {
+            Texture2D newTexture = new Texture2D(Mathf.CeilToInt(size.x), Mathf.CeilToInt(size.y));
+            float scaleX = originalTexture.width / size.x;
+            float scaleY = originalTexture.height / size.y;
+            int maxX = originalTexture.width - 1;
+            int maxY = originalTexture.height - 1;
+            for (int y = 0; y < newTexture.height; y++)
+            {
+                for (int x = 0; x < newTexture.width; x++)
+                {
+                    float targetX = x * scaleX;
+                    float targetY = y * scaleY;
+                    int x1 = Mathf.Min(maxX, Mathf.FloorToInt(targetX));
+                    int y1 = Mathf.Min(maxY, Mathf.FloorToInt(targetY));
+                    int x2 = Mathf.Min(maxX, x1 + 1);
+                    int y2 = Mathf.Min(maxY, y1 + 1);
+
+                    float u = targetX - x1;
+                    float v = targetY - y1;
+                    float w1 = (1 - u) * (1 - v);
+                    float w2 = u * (1 - v);
+                    float w3 = (1 - u) * v;
+                    float w4 = u * v;
+                    Color color1 = originalTexture.GetPixel(x1, y1);
+                    Color color2 = originalTexture.GetPixel(x2, y1);
+                    Color color3 = originalTexture.GetPixel(x1, y2);
+                    Color color4 = originalTexture.GetPixel(x2, y2);
+                    Color color = new Color(
+                        Mathf.Clamp01(color1.r * w1 + color2.r * w2 + color3.r * w3 + color4.r * w4),
+                        Mathf.Clamp01(color1.g * w1 + color2.g * w2 + color3.g * w3 + color4.g * w4),
+                        Mathf.Clamp01(color1.b * w1 + color2.b * w2 + color3.b * w3 + color4.b * w4),
+                        Mathf.Clamp01(color1.a * w1 + color2.a * w2 + color3.a * w3 + color4.a * w4)
+                    );
+                    newTexture.SetPixel(x, y, color);
+                }
+            }
+
+            newTexture.Apply();
+            return newTexture;
+        }
+
+        /// <summary> 
+        /// Texture旋转
+        /// </summary>
+        public static Texture2D RotateTexture(this Texture2D texture, float eulerAngles)
+        {
+            int x;
+            int y;
+            int i;
+            int j;
+            float phi = eulerAngles / (180 / Mathf.PI);
+            float sn = Mathf.Sin(phi);
+            float cs = Mathf.Cos(phi);
+            Color32[] arr = texture.GetPixels32();
+            Color32[] arr2 = new Color32[arr.Length];
+            int W = texture.width;
+            int H = texture.height;
+            int xc = W / 2;
+            int yc = H / 2;
+
+            for (j = 0; j < H; j++)
+            {
+                for (i = 0; i < W; i++)
+                {
+                    arr2[j * W + i] = new Color32(0, 0, 0, 0);
+
+                    x = (int)(cs * (i - xc) + sn * (j - yc) + xc);
+                    y = (int)(-sn * (i - xc) + cs * (j - yc) + yc);
+
+                    if ((x > -1) && (x < W) && (y > -1) && (y < H))
+                    {
+                        arr2[j * W + i] = arr[y * W + x];
+                    }
+                }
+            }
+
+            Texture2D newImg = new Texture2D(W, H);
+            newImg.SetPixels32(arr2);
+            newImg.Apply();
+
+            return newImg;
         }
         #endregion
     }

@@ -10,7 +10,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
         private static readonly Type editorGUIType = typeof(EditorGUI);
 
         private static readonly Type RecycledTextEditorType =
-            Assembly.GetAssembly(editorGUIType).GetType("UnityEditor.EditorGUI+RecycledTextEditor");
+            System.Reflection.Assembly.GetAssembly(editorGUIType).GetType("UnityEditor.EditorGUI+RecycledTextEditor");
 
         private static readonly Type[] argumentTypes =
         {

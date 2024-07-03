@@ -144,7 +144,7 @@ namespace GameLogic.Download
                 DownloadCompleted = onDownloadsComplete;
             }
 
-            string urlHash = EngineExtensions.MD5Encrypt(url);
+            string urlHash = StringExtensions.CreateMD5(url);
 
             this.url = url;
             var request = HttpModule.Get(url).
@@ -182,7 +182,7 @@ namespace GameLogic.Download
             {
                 byte[] bytes = httpResponse.Bytes;
 
-                string urlHash = EngineExtensions.MD5Encrypt(url);
+                string urlHash = StringExtensions.CreateMD5(url);
                 string fileName = currentFilename;
                 string filePath = Path.Combine(PathUtils.GetLocalPath(DownloadType.PersistentFile), fileName);
                 File.WriteAllBytes(filePath, bytes);
