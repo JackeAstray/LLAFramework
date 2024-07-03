@@ -143,7 +143,7 @@ namespace GameLogic
         /// <returns></returns>
         public T FindControl<T>(string name) where T : Component
         {
-            return FindExtensions.FindChild<T>(gameObject, name);
+            return GameObjectExtensions.Child<T>(gameObject, name);
         }
 
         /// <summary>
@@ -153,7 +153,7 @@ namespace GameLogic
         /// <returns></returns>
         public GameObject FindGameObject(string name)
         {
-            return FindExtensions.FindChild(gameObject, name);
+            return GameObjectExtensions.Child(gameObject, name);
         }
 
         /// <summary>
