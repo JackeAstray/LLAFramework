@@ -8,6 +8,8 @@ namespace GameLogic
 {
     public static class ListExtensions
     {
+        public delegate bool FilterAction<T, K>(T t, K k);
+
         /// <summary>
         /// 洗牌
         /// </summary>
@@ -49,8 +51,6 @@ namespace GameLogic
         {
             return source.Take(num).ToList();
         }
-
-        public delegate bool FilterAction<T, K>(T t, K k);
 
         /// <summary>
         /// 筛选(列表)
@@ -176,6 +176,21 @@ namespace GameLogic
         public static List<T> Union<T>(this List<T> first, List<T> second, IEqualityComparer<T> comparer)
         {
             return first.Union(second, comparer).ToList();
+        }
+
+        /// <summary>
+        /// 从一个List中随机获取
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static T GetRandomItemFromList<T>(IList<T> list)
+        {
+            if (list == null || list.Count == 0)
+                return default(T);
+
+            System.Random rng = new System.Random();
+            return list[rng.Next(list.Count)];
         }
     }
 }

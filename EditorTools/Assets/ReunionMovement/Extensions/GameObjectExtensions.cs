@@ -284,7 +284,6 @@ namespace GameLogic
         public static void SetLayer(GameObject go, int layer)
         {
             go.layer = layer;
-
             foreach (Transform child in go.transform)
             {
                 SetLayer(child.gameObject, layer);
@@ -299,7 +298,9 @@ namespace GameLogic
             target.SetActive(false);
             Image image = target.GetComponent<Image>();
             if (!image)
+            {
                 image = target.AddComponent<Image>();
+            }
             image.sprite = sprite;
             image.SetNativeSize();
             target.SetActive(true);

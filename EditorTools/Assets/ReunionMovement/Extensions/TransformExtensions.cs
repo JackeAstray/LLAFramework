@@ -1,5 +1,6 @@
 ﻿using GameLogic;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 /// <summary>
@@ -227,25 +228,64 @@ public static class TransformExtensions
     /// <param name="objName"></param>
     /// <param name="check_visible"></param>
     /// <returns></returns>
-    private static Transform ChildDirect(Transform trans, string objName, bool check_visible)
+    private static Transform ChildDirect(this Transform trans, string objName, bool check_visible)
     {
-        var queue = new Queue<Transform>();
-        queue.Enqueue(trans);
-        while (queue.Count > 0)
+        if (trans == null || string.IsNullOrEmpty(objName))
         {
-            trans = queue.Dequeue();
-            var t1 = trans.Find(objName);
-            if (t1 != null && (!check_visible || t1.gameObject.activeInHierarchy))
-            {
-                return t1;
-            }
+            return null;
+        }
 
-            foreach (Transform child in trans)
+        var child = trans.Find(objName);
+        if (child != null && (!check_visible || child.gameObject.activeInHierarchy))
+        {
+            return child;
+        }
+
+        if (!check_visible)
+        {
+            // 如果不检查可见性且未找到匹配项，直接返回null
+            return null; 
+        }
+
+        foreach (Transform t in trans)
+        {
+            if (t.gameObject.activeInHierarchy)
             {
-                if (!check_visible || child.gameObject.activeInHierarchy)
-                    queue.Enqueue(child);
+                var found = ChildDirect(t, objName, true);
+                if (found != null)
+                {
+                    return found;
+                }
             }
         }
+
         return null;
+    }
+
+    /// <summary>
+    /// 获取从父节点到自己的完整路径
+    /// </summary>
+    /// <param name="transform"></param>
+    /// <returns></returns>
+    public static string GetRootPathName(this Transform transform)
+    {
+        if (transform == null)
+        {
+            return string.Empty;
+        }
+
+        StringBuilder path = new StringBuilder();
+        BuildPath(transform, ref path);
+        return path.ToString();
+    }
+
+    private static void BuildPath(Transform current, ref StringBuilder path)
+    {
+        if (current.parent != null)
+        {
+            BuildPath(current.parent, ref path);
+            path.Append("/");
+        }
+        path.Append(current.name);
     }
 }

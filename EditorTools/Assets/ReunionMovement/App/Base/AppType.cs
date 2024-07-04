@@ -99,10 +99,48 @@ namespace GameLogic
         Notice,
     }
 
+    /// <summary>
+    /// 旋转方向
+    /// </summary>
     public enum RotationDirection
     {
         None,
         Right,
         Left
+    }
+
+    /// <summary>
+    /// 锚点类型
+    /// </summary>
+    public enum AnchorType
+    {
+        /// <summary>
+        /// 右上角
+        /// </summary>
+        TopRight,
+        /// <summary>
+        /// 左上角
+        /// </summary>
+        TopLeft,
+        /// <summary>
+        /// 四周对齐
+        /// </summary>
+        Stretch,
+        /// <summary>
+        /// 顶部对齐
+        /// </summary>
+        StretchTop,
+        /// <summary>
+        /// 底部对齐
+        /// </summary>
+        StretchBottom,
+        /// <summary>
+        /// 左边对齐
+        /// </summary>
+        StretchLeft,
+        /// <summary>
+        /// 右边对齐
+        /// </summary>
+        StretchRight,
     }
 }

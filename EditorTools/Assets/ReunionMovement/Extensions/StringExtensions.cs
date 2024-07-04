@@ -484,6 +484,78 @@ namespace GameLogic
             return string.Join(sp, source);
         }
 
+        /// <summary>
+        /// 字典转到字符串A:1|B:2|C:3这类
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="K"></typeparam>
+        /// <param name="dict"></param>
+        /// <param name="delimeter1"></param>
+        /// <param name="delimeter2"></param>
+        /// <returns></returns>
+        public static string DictToSplitStr<T, K>(Dictionary<T, K> dict, char delimeter1 = '|', char delimeter2 = ':')
+        {
+            if (dict == null || dict.Count == 0)
+            {
+                return string.Empty;
+            }
+
+            StringBuilder sb = new StringBuilder();
+            foreach (var kvp in dict)
+            {
+                sb.Append(kvp.Key);
+                sb.Append(delimeter2);
+                sb.Append(kvp.Value);
+                sb.Append(delimeter1);
+            }
+            sb.Remove(sb.Length - 1, 1); // 移除最后一个分隔符
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// A:1|B:2|C:3这类字符串转成字典
+        /// </summary>
+        /// <typeparam name="T">string</typeparam>
+        /// <typeparam name="K">string</typeparam>
+        /// <param name="str">原始字符串</param>
+        /// <param name="delimeter1">分隔符1</param>
+        /// <param name="delimeter2">分隔符2</param>
+        /// <returns></returns>
+        public static Dictionary<T, K> SplitToDict<T, K>(string str, char delimeter1 = '|', char delimeter2 = ':')
+        {
+            var dict = new Dictionary<T, K>();
+            if (string.IsNullOrEmpty(str)) return dict;
+
+            var pairs = str.Split(delimeter1);
+            foreach (var pair in pairs)
+            {
+                var keyValue = pair.Split(delimeter2);
+
+                // 跳过无效或不完整的键值对
+                if (keyValue.Length != 2)
+                {
+                    continue;
+                }
+                T key = (T)Convert.ChangeType(keyValue[0], typeof(T));
+                K value = (K)Convert.ChangeType(keyValue[1], typeof(K));
+                // 使用索引器添加或更新字典项
+                dict[key] = value; 
+            }
+
+            return dict;
+        }
+
+        /// <summary>
+        /// 字符串转枚举
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        public static T ToEnum<T>(this string e)
+        {
+            return (T)Enum.Parse(typeof(T), e);
+        }
+
         #region 压缩/解压缩
         /// <summary>
         /// 字符串压缩

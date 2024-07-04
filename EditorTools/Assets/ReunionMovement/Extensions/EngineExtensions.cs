@@ -5,17 +5,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Net;
-using System.Reflection;
-using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using UnityEngine;
-using System.Collections.Concurrent;
 using System.Linq;
 using System.Globalization;
 using UnityEngine.Networking;
-using UnityEngine.UI;
 
 namespace GameLogic
 {
@@ -329,6 +324,9 @@ namespace GameLogic
         #endregion
 
         #region 时间
+        // 时间戳
+        private static readonly DateTimeOffset UnixEpoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
+
         public enum TimeType
         {
             Seconds = 1,
@@ -382,7 +380,25 @@ namespace GameLogic
             //当前时间减去目标时间
             return DateTimeOffset.Now - target;
         }
-        private static readonly DateTimeOffset UnixEpoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
+
+        /// <summary>
+        /// 获取时间差
+        /// </summary>
+        /// <param name="seconds"></param>
+        /// <returns></returns>
+        public static string HumanizeTimeString(int seconds)
+        {
+            TimeSpan ts = TimeSpan.FromSeconds(seconds);
+            string timeStr = string.Format("{0}{1}{2}{3}",
+                ts.Days == 0 ? "" : ts.Days + "天",
+                ts.Hours == 0 ? "" : ts.Hours + "小时",
+                ts.Minutes == 0 ? "" : ts.Minutes + "分钟",
+                ts.Seconds < 0 ? "0秒" : ts.Seconds + "秒");
+
+            return timeStr;
+        }
+
+        
         
         /// <summary>
         /// 秒数据换算为日期

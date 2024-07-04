@@ -75,9 +75,37 @@ namespace GameLogic
         {
             return UnityEngine.Random.Range(1, 101) <= chancePercent;
         }
+
+        /// <summary>
+        /// 判断一个数是否2的次方
+        /// </summary>
+        /// <param name="num"></param>
+        /// <returns></returns>
+        public static bool CheckPow2(int num)
+        {
+            int i = 1;
+            while (true)
+            {
+                if (i > num)
+                    return false;
+                if (i == num)
+                    return true;
+                i = i * 2;
+            }
+        }
         #endregion
 
         #region 计算值
+        /// <summary>
+        /// 获取最近的2次方
+        /// </summary>
+        /// <param name="num"></param>
+        /// <returns></returns>
+        public static int GetNearestPower2(int num)
+        {
+            return (int)(Mathf.Pow(2, Mathf.Ceil(Mathf.Log(num) / Mathf.Log(2))));
+        }
+
         /// <summary>
         /// 计算最大公约数
         /// </summary>
@@ -460,6 +488,31 @@ namespace GameLogic
         }
 
         /// <summary>
+        /// 获取一个圆内随机点
+        /// </summary>
+        /// <param name="startPos"></param>
+        /// <param name="startDirection"></param>
+        /// <param name="nNum"></param>
+        /// <param name="meterInterval"></param>
+        /// <returns></returns>
+        public static Vector3[] GetParallelPoints(Vector3 startPos, Vector3 startDirection, int nNum, float meterInterval)
+        {
+            Vector3[] targetPos = new Vector3[nNum];
+            Vector3 perpendicularDirection = Quaternion.AngleAxis(90, Vector3.forward) * startDirection.normalized; // 计算垂直方向
+            int halfNum = nNum / 2;
+            bool isEven = nNum % 2 == 0;
+
+            for (int i = 0; i < nNum; i++)
+            {
+                int indexOffset = i - halfNum + (isEven ? 1 : 0);
+                float distance = indexOffset * meterInterval + (isEven ? meterInterval / 2 : 0);
+                targetPos[i] = startPos + perpendicularDirection * distance;
+            }
+
+            return targetPos;
+        }
+
+        /// <summary>
         /// 计算AB与CD两条线段的交点.
         /// </summary>
         /// <param name="a">A点</param>
@@ -560,6 +613,35 @@ namespace GameLogic
             double u2 = 1.0 - random.NextDouble();
             double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2);
             return mean + stdDev * randStdNormal;
+        }
+
+        /// <summary>
+        /// 呈弧形，传入一个参考点根据角度和半径计算出其它位置的坐标
+        /// </summary>
+        /// <param name="nNum">需要的数量</param>
+        /// <param name="pAnchorPos">锚定点/参考点</param>
+        /// <param name="fAngle">角度</param>
+        /// <param name="nRadius">半径</param>
+        /// <returns></returns>
+        public static Vector3[] GetSmartNpcPoints(Vector3 startDirection, int nNum, Vector3 pAnchorPos, float fAngle, float nRadius)
+        {
+            Vector3[] points = new Vector3[nNum];
+            // 每个点之间的角度增量
+            float angleIncrement = fAngle / nNum;
+            // 用于旋转的四元数
+            Quaternion rotation = Quaternion.Euler(0, angleIncrement, 0);
+            // 初始方向向量，确保其被规范化并乘以半径
+            Vector3 direction = startDirection.normalized * nRadius;
+
+            for (int i = 0; i < nNum; i++)
+            {
+                // 计算每个点的位置
+                points[i] = pAnchorPos + direction;
+                // 更新方向向量以指向下一个点
+                direction = rotation * direction; 
+            }
+
+            return points;
         }
         #endregion
 

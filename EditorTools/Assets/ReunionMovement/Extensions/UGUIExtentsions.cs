@@ -111,6 +111,41 @@ namespace GameLogic
 
             return slider;
         }
+
+        public static Slider SetSliderValue(this GameObject obj, string name, float value)
+        {
+            var slider = obj.Get<Slider>(name);
+            slider.value = value;
+            return slider;
+        }
+
+        /// <summary>
+        /// 设置图片
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="name"></param>
+        /// <param name="sprite"></param>
+        /// <returns></returns>
+        public static Image SetImage(this GameObject obj, string name, Sprite sprite)
+        {
+            var image = obj.Get<Image>(name);
+            image.sprite = sprite;
+            return image;
+        }
+
+        /// <summary>
+        /// 设置图片
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="name"></param>
+        /// <param name="spriteName"></param>
+        /// <returns></returns>
+        public static Image SetImage(this GameObject obj, string name, string spriteName)
+        {
+            var image = obj.Get<Image>(name);
+            image.sprite = ResourcesModule.Instance.Load<Sprite>(spriteName);
+            return image;
+        }
         #endregion
     }
 }
