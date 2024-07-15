@@ -84,12 +84,12 @@ namespace GameLogic
             voicePoolTempRoot.transform.localRotation = Quaternion.identity;
             voicePoolTempRoot.transform.localScale = Vector3.one;
             
-            effectSoundPoolRoot = new GameObject("VoiceSoundPoolRoot");
+            effectSoundPoolRoot = new GameObject("EffectSoundPoolRoot");
             effectSoundPoolRoot.transform.localPosition = Vector3.zero;
             effectSoundPoolRoot.transform.localRotation = Quaternion.identity;
             effectSoundPoolRoot.transform.localScale = Vector3.one;
 
-            effectSoundPoolTempRoot = new GameObject("VoiceSoundPoolTempRoot");
+            effectSoundPoolTempRoot = new GameObject("EffectSoundPoolTempRoot");
             effectSoundPoolTempRoot.transform.localPosition = Vector3.zero;
             effectSoundPoolTempRoot.transform.localRotation = Quaternion.identity;
             effectSoundPoolTempRoot.transform.localScale = Vector3.one;
@@ -102,16 +102,24 @@ namespace GameLogic
 
         public void CreatePools()
         {
-            StartupPool pool = new StartupPool();
-            pool.size = 20;
-            pool.prefab = ResourcesModule.Instance.Load<GameObject>(poolPath);
-            startupPools.Add(pool);
+            StartupPool pool1 = new StartupPool();
+            pool1.size = 20;
+            pool1.parent = voicePoolRoot.transform;
+            pool1.prefab = ResourcesModule.Instance.Load<GameObject>(poolPath);
+
+            StartupPool pool2 = new StartupPool();
+            pool2.size = 20;
+            pool2.parent = effectSoundPoolRoot.transform;
+            pool2.prefab = ResourcesModule.Instance.Load<GameObject>(poolPath);
+
+            startupPools.Add(pool1);
+            startupPools.Add(pool2);
 
             if (startupPools != null && startupPools.Count > 0)
             {
                 for (int i = 0; i < startupPools.Count; ++i)
                 {
-                    CreatePool(startupPools[i].prefab, startupPools[i].size);
+                    CreatePool(startupPools[i].prefab, startupPools[i].size, startupPools[i].parent);
                 }
             }
         }
@@ -120,36 +128,20 @@ namespace GameLogic
         /// 创建对象池
         /// </summary>
         /// <param name="prefab"></param>
-        /// <param name="initialPoolSize"></param>
-        public void CreatePool(GameObject prefab, int initialPoolSize)
+        /// <param name="size"></param>
+        public void CreatePool(GameObject prefab, int size, Transform parent)
         {
             if (prefab != null && !pooledObjects.ContainsKey(prefab))
             {
                 List<GameObject> list = new List<GameObject>();
                 pooledObjects.Add(prefab, list);
-
-                if (initialPoolSize > 0)
+                // 创建对象池
+                Transform parentVoice = parent;
+                for (int i = 0; i < size; i++)
                 {
-                    Transform parent = voicePoolRoot.transform;
-                    while (list.Count < initialPoolSize)
-                    {
-                        var obj = (GameObject)Object.Instantiate(prefab);
-                        obj.transform.parent = parent;
-                        obj.SetActive(false);
-                        list.Add(obj);
-                    }
-                }
-                list.Clear();
-                if (initialPoolSize > 0)
-                {
-                    Transform parent = effectSoundPoolRoot.transform;
-                    while (list.Count < initialPoolSize)
-                    {
-                        var obj = (GameObject)Object.Instantiate(prefab);
-                        obj.transform.parent = parent;
-                        obj.SetActive(false);
-                        list.Add(obj);
-                    }
+                    var objVoice = (GameObject)Object.Instantiate(prefab, parentVoice);
+                    objVoice.SetActive(false);
+                    list.Add(objVoice);
                 }
             }
         }
@@ -176,16 +168,7 @@ namespace GameLogic
         /// <returns></returns>
         public GameObject Spawn(GameObject prefab, Vector3 position, Quaternion rotation, PoolType poolType)
         {
-            switch (poolType)
-            {
-                case PoolType.Voice:
-                    return Spawn(prefab, voicePoolTempRoot.transform, position, rotation, poolType);
-                case PoolType.EffectSound:
-                default:
-                    return Spawn(prefab, effectSoundPoolTempRoot.transform, position, rotation, poolType);
-            }
-
-            
+            return Spawn(prefab, GetPoolRootTransform(poolType), position, rotation, poolType);
         }
         /// <summary>
         /// 生成
@@ -205,14 +188,7 @@ namespace GameLogic
         /// <returns></returns>
         public GameObject Spawn(GameObject prefab, Vector3 position, PoolType poolType)
         {
-            switch (poolType)
-            {
-                case PoolType.Voice:
-                    return Spawn(prefab, voicePoolTempRoot.transform, position, Quaternion.identity, poolType);
-                case PoolType.EffectSound:
-                default:
-                    return Spawn(prefab, effectSoundPoolTempRoot.transform, position, Quaternion.identity, poolType);
-            }
+            return Spawn(prefab, GetPoolRootTransform(poolType), position, Quaternion.identity, poolType);
         }
         /// <summary>
         /// 生成
@@ -221,14 +197,7 @@ namespace GameLogic
         /// <returns></returns>
         public GameObject Spawn(GameObject prefab, PoolType poolType)
         {
-            switch (poolType)
-            {
-                case PoolType.Voice:
-                    return Spawn(prefab, voicePoolTempRoot.transform, Vector3.zero, Quaternion.identity, poolType);
-                case PoolType.EffectSound:
-                default:
-                    return Spawn(prefab, effectSoundPoolTempRoot.transform, Vector3.zero, Quaternion.identity, poolType);
-            }
+            return Spawn(prefab, GetPoolRootTransform(poolType), Vector3.zero, Quaternion.identity, poolType);
         }
         /// <summary>
         /// 生成
@@ -240,55 +209,43 @@ namespace GameLogic
         /// <returns></returns>
         public GameObject Spawn(GameObject prefab, Transform parent, Vector3 position, Quaternion rotation, PoolType poolType)
         {
-            List<GameObject> list;
-            GameObject obj;
-            if (pooledObjects.TryGetValue(prefab, out list))
+            if (prefab == null) return null;
+
+            if (!pooledObjects.TryGetValue(prefab, out var list))
             {
-                obj = null;
-                if (list.Count > 0)
-                {
-                    while (obj == null && list.Count > 0)
-                    {
-                        obj = list[0];
-                        list.RemoveAt(0);
-                    }
-                    if (obj != null)
-                    {
-                        obj.transform.parent = parent;
-                        obj.transform.localPosition = position;
-                        obj.transform.localRotation = rotation;
-                        obj.SetActive(true);
+                list = new List<GameObject>();
+                pooledObjects.Add(prefab, list);
+            }
 
-                        switch (poolType)
-                        {
-                            case PoolType.Voice:
-                                spawnedVoiceSoundObjects.Add(obj, prefab);
-                                break;
-                            case PoolType.EffectSound:
-                                spawnedEffectSoundObjects.Add(obj, prefab);
-                                break;
-                        }
-                        return obj;
-                    }
-                }
-                obj = GameObject.Instantiate(prefab, position, rotation, parent);
-
-                switch (poolType)
-                {
-                    case PoolType.Voice:
-                        spawnedVoiceSoundObjects.Add(obj, prefab);
-                        break;
-                    case PoolType.EffectSound:
-                        spawnedEffectSoundObjects.Add(obj, prefab);
-                        break;
-                }
-
-                return obj;
+            GameObject obj = list.Find(o => !o.activeSelf);
+            if (obj != null)
+            {
+                obj.transform.SetParent(parent);
+                obj.transform.localPosition = position;
+                obj.transform.localRotation = rotation;
+                obj.SetActive(true);
             }
             else
             {
                 obj = GameObject.Instantiate(prefab, position, rotation, parent);
-                return obj;
+                list.Add(obj);
+            }
+
+            var spawnedObjects = poolType == PoolType.Voice ? spawnedVoiceSoundObjects : spawnedEffectSoundObjects;
+            spawnedObjects[obj] = prefab;
+
+            return obj;
+        }
+
+        private Transform GetPoolRootTransform(PoolType poolType)
+        {
+            switch (poolType)
+            {
+                case PoolType.Voice:
+                    return voicePoolTempRoot.transform;
+                case PoolType.EffectSound:
+                default:
+                    return effectSoundPoolTempRoot.transform;
             }
         }
         #endregion
@@ -720,6 +677,7 @@ namespace GameLogic
     public class StartupPool
     {
         public int size;
+        public Transform parent;
         public GameObject prefab;
     }
 }
