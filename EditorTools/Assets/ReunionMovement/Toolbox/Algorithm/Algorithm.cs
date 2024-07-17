@@ -643,6 +643,29 @@ namespace GameLogic
 
             return points;
         }
+
+        /// <summary>
+        /// 转换屏幕点
+        /// </summary>
+        /// <param name="originalX"></param>
+        /// <param name="originalY"></param>
+        /// <param name="originalWidth"></param>
+        /// <param name="originalHeight"></param>
+        /// <param name="targetWidth"></param>
+        /// <param name="targetHeight"></param>
+        /// <returns></returns>
+        public static Vector2 ConvertScreenPoint(float originalX, float originalY, float originalWidth, float originalHeight, float targetWidth, float targetHeight)
+        {
+            // 计算宽度和高度的缩放比例
+            float scaleX = targetWidth / originalWidth;
+            float scaleY = targetHeight / originalHeight;
+
+            // 应用缩放比例到原始点位
+            float newX = originalX * scaleX;
+            float newY = originalY * scaleY;
+
+            return new Vector2(newX, newY);
+        }
         #endregion
 
         #region 功能
