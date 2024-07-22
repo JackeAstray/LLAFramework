@@ -210,7 +210,7 @@ namespace GameLogic
 
                 if (clip != null)
                 {
-                    GameObject go = SoundPoolModule.Instance.Spawn(SoundPoolModule.Instance.startupPools[0].prefab, poolType);
+                    GameObject go = SoundPoolModule.Instance.Spawn(SoundPoolModule.Instance.startupPools[1].prefab, poolType);
                     if (go != null)
                     {
                         SoundObj soundObj = go.GetComponent<SoundObj>();

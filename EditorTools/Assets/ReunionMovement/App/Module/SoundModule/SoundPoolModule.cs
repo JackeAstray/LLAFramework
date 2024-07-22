@@ -18,7 +18,8 @@ namespace GameLogic
         public double InitProgress { get { return initProgress; } }
         #endregion
 
-        string poolPath = "Prefabs/Pools/SoundObj";
+        string poolPath2 = "Prefabs/Pools/SoundObj";
+        string poolPath1 = "Prefabs/Pools/VoiceObj";
 
         //人声
         GameObject voicePoolRoot;
@@ -105,19 +106,19 @@ namespace GameLogic
             StartupPool pool1 = new StartupPool();
             pool1.size = 20;
             pool1.parent = voicePoolRoot.transform;
-            pool1.prefab = ResourcesModule.Instance.Load<GameObject>(poolPath);
+            pool1.prefab = ResourcesModule.Instance.Load<GameObject>(poolPath1);
 
             StartupPool pool2 = new StartupPool();
             pool2.size = 20;
             pool2.parent = effectSoundPoolRoot.transform;
-            pool2.prefab = ResourcesModule.Instance.Load<GameObject>(poolPath);
+            pool2.prefab = ResourcesModule.Instance.Load<GameObject>(poolPath2);
 
             startupPools.Add(pool1);
             startupPools.Add(pool2);
 
             if (startupPools != null && startupPools.Count > 0)
             {
-                for (int i = 0; i < startupPools.Count; ++i)
+                for (int i = 0; i < startupPools.Count; i++)
                 {
                     CreatePool(startupPools[i].prefab, startupPools[i].size, startupPools[i].parent);
                 }
