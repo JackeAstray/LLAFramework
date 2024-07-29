@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using static GameLogic.SoundPoolModule;
 
 namespace GameLogic
 {
@@ -67,6 +68,11 @@ namespace GameLogic
 
         public IEnumerator StartGame()
         {
+            //SoundModule.Instance.PlayMusic(110010);
+
+            //SoundModule.Instance.PlaySound(120012, PoolType.Voice);
+            //SoundModule.Instance.PlaySound(120019, PoolType.EffectSound);
+
             yield return new WaitForSeconds(0f);
         }
 

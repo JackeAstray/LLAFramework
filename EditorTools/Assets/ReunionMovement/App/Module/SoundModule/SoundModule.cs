@@ -176,6 +176,7 @@ namespace GameLogic
         /// 播放声音
         /// </summary>
         /// <param name="index"></param>
+        /// <param name="poolType"></param>
         public void PlaySound(int index, PoolType poolType = PoolType.EffectSound)
         {
             PlaySound(index, null, false, poolType);
@@ -185,10 +186,23 @@ namespace GameLogic
         /// 播放声音
         /// </summary>
         /// <param name="index"></param>
-        /// <param name="pos"></param>
-        public void PlaySound(int index, Transform pos, PoolType poolType = PoolType.EffectSound)
+        /// <param name="loop"></param>
+        /// <param name="poolType"></param>
+        public void PlaySound(int index, bool loop, PoolType poolType = PoolType.EffectSound)
         {
-            PlaySound(index, pos, false, poolType);
+            PlaySound(index, null, loop, poolType);
+        }
+
+        /// <summary>
+        /// 播放声音
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="loop"></param>
+        /// <param name="pos"></param>
+        /// <param name="poolType"></param>
+        public void PlaySound(int index, bool loop, Transform pos, PoolType poolType = PoolType.EffectSound)
+        {
+            PlaySound(index, pos, loop, poolType);
         }
 
         /// <summary>
@@ -197,10 +211,19 @@ namespace GameLogic
         /// <param name="index"></param>
         /// <param name="emitter"></param>
         /// <param name="loop"></param>
+        /// <param name="poolType"></param>
         public void PlaySound(int index, Transform emitter, bool loop, PoolType poolType)
         {
             ProcessingPlaySound(index, emitter, loop, poolType);
         }
+
+        /// <summary>
+        /// 播放声音
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="emitter"></param>
+        /// <param name="loop"></param>
+        /// <param name="poolType"></param>
         void ProcessingPlaySound(int index, Transform emitter, bool loop, PoolType poolType)
         {
             SoundConfig soundConfig = DatabaseModule.Instance.GetSoundConfig(index);
@@ -210,7 +233,19 @@ namespace GameLogic
 
                 if (clip != null)
                 {
-                    GameObject go = SoundPoolModule.Instance.Spawn(SoundPoolModule.Instance.startupPools[1].prefab, poolType);
+                    GameObject obj = SoundPoolModule.Instance.startupPools[0].prefab;
+                    switch (poolType)
+                    {
+                        case PoolType.Voice:
+                            obj = SoundPoolModule.Instance.startupPools[0].prefab;
+                            break;
+                        case PoolType.EffectSound:
+                            obj = SoundPoolModule.Instance.startupPools[1].prefab;
+                            break;
+                    }
+
+                    GameObject go = SoundPoolModule.Instance.Spawn(obj, poolType);
+
                     if (go != null)
                     {
                         SoundObj soundObj = go.GetComponent<SoundObj>();
@@ -221,6 +256,10 @@ namespace GameLogic
             }
         }
 
+        /// <summary>
+        /// 播放声音
+        /// </summary>
+        /// <param name="poolType"></param>
         public void StopSound(PoolType poolType)
         {
             SoundPoolModule.Instance.RecycleAll(poolType);
