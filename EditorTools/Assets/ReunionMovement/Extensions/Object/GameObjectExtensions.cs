@@ -394,7 +394,7 @@ namespace GameLogic
                 return comp;
             }
 
-            return go.GetComponentsInChildren<T>().FirstOrDefault_V1();
+            return go.GetComponentsInChildren<T>().FirstOrDefaultEx();
         }
         #endregion
 
