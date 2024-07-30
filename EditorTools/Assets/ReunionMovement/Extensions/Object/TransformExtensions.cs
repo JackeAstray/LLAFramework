@@ -104,6 +104,384 @@ public static class TransformExtensions
     }
 
     /// <summary>
+    /// 设置XY位置
+    /// </summary>
+    /// <param name="transform"></param>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    public static void SetXY(this Transform transform, float x, float y)
+    {
+        transform.position = new Vector3(x, y, transform.position.z);
+    }
+
+    /// <summary>
+    /// 设置XZ位置
+    /// </summary>
+    /// <param name="transform"></param>
+    /// <param name="x"></param>
+    /// <param name="z"></param>
+    public static void SetXZ(this Transform transform, float x, float z)
+    {
+        transform.position = new Vector3(x, transform.position.y, z);
+    }
+
+    /// <summary>
+    /// 设置YZ位置
+    /// </summary>
+    /// <param name="transform"></param>
+    /// <param name="y"></param>
+    /// <param name="z"></param>
+    public static void SetYZ(this Transform transform, float y, float z)
+    {
+        transform.position = new Vector3(transform.position.x, y, z);
+    }
+
+    /// <summary>
+    /// 设置XYZ位置
+    /// </summary>
+    /// <param name="transform"></param>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <param name="z"></param>
+    public static void SetXYZ(this Transform transform, float x, float y, float z)
+    {
+        transform.position = new Vector3(x, y, z);
+    }
+
+    /// <summary>
+    /// 设置X轴位置
+    /// </summary>
+    /// <param name="transform"></param>
+    /// <param name="x"></param>
+    public static void SetLocalX(this Transform transform, float x)
+    {
+        transform.localPosition = new Vector3(x, transform.localPosition.y, transform.localPosition.z);
+    }
+
+    /// <summary>
+    /// 设置Y轴位置
+    /// </summary>
+    /// <param name="transform"></param>
+    /// <param name="y"></param>
+    public static void SetLocalY(this Transform transform, float y)
+    {
+        transform.localPosition = new Vector3(transform.localPosition.x, y, transform.localPosition.z);
+    }
+
+    /// <summary>
+    /// 设置Z轴位置
+    /// </summary>
+    /// <param name="transform"></param>
+    /// <param name="z"></param>
+    public static void SetLocalZ(this Transform transform, float z)
+    {
+        transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, z);
+    }
+
+    /// <summary>
+    /// 设置XY位置
+    /// </summary>
+    /// <param name="transform"></param>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    public static void SetLocalXY(this Transform transform, float x, float y)
+    {
+        transform.localPosition = new Vector3(x, y, transform.localPosition.z);
+    }
+
+    /// <summary>
+    /// 设置XZ位置
+    /// </summary>
+    /// <param name="transform"></param>
+    /// <param name="x"></param>
+    /// <param name="z"></param>
+    public static void SetLocalXZ(this Transform transform, float x, float z)
+    {
+        transform.localPosition = new Vector3(x, transform.localPosition.y, z);
+    }
+
+    /// <summary>
+    /// 设置YZ位置
+    /// </summary>
+    /// <param name="transform"></param>
+    /// <param name="y"></param>
+    /// <param name="z"></param>
+    public static void SetLocalYZ(this Transform transform, float y, float z)
+    {
+        transform.localPosition = new Vector3(transform.localPosition.x, y, z);
+    }
+
+    /// <summary>
+    /// 设置XYZ位置
+    /// </summary>
+    /// <param name="transform"></param>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <param name="z"></param>
+    public static void SetLocalXYZ(this Transform transform, float x, float y, float z)
+    {
+        transform.localPosition = new Vector3(x, y, z);
+    }
+
+    /// <summary>
+    /// 设置X缩放
+    /// </summary>
+    public static void SetScaleX(this Transform transform, float x)
+    {
+        transform.localScale = new Vector3(x, transform.localScale.y, transform.localScale.z);
+    }
+
+    /// <summary>
+    /// 设置Y缩放
+    /// </summary>
+    public static void SetScaleY(this Transform transform, float y)
+    {
+        transform.localScale = new Vector3(transform.localScale.x, y, transform.localScale.z);
+    }
+
+    /// <summary>
+    /// 设置Z缩放
+    /// </summary>
+    public static void SetScaleZ(this Transform transform, float z)
+    {
+        transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, z);
+    }
+
+    /// <summary>
+    /// 设置X和Y缩放
+    /// </summary>
+    public static void SetScaleXY(this Transform transform, float x, float y)
+    {
+        transform.localScale = new Vector3(x, y, transform.localScale.z);
+    }
+
+    /// <summary>
+    /// 设置X和Z缩放
+    /// </summary>
+    public static void SetScaleXZ(this Transform transform, float x, float z)
+    {
+        transform.localScale = new Vector3(x, transform.localScale.y, z);
+    }
+
+    /// <summary>
+    /// 设置Y和Y缩放
+    /// </summary>
+    public static void SetScaleYZ(this Transform transform, float y, float z)
+    {
+        transform.localScale = new Vector3(transform.localScale.x, y, z);
+    }
+
+    /// <summary>
+    /// 设置X、Y和Y缩放
+    /// </summary>
+    public static void SetScaleXYZ(this Transform transform, float x, float y, float z)
+    {
+        transform.localScale = new Vector3(x, y, z);
+    }
+
+    /// <summary>
+    ///  在X向上缩放
+    /// </summary>
+    public static void ScaleByX(this Transform transform, float x)
+    {
+        transform.localScale = new Vector3(transform.localScale.x * x, transform.localScale.y, transform.localScale.z);
+    }
+
+    /// <summary>
+    /// 在Y方向上缩放
+    /// </summary>
+    public static void ScaleByY(this Transform transform, float y)
+    {
+        transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y * y, transform.localScale.z);
+    }
+
+    /// <summary>
+    /// 在Z方向上缩放
+    /// </summary>
+    public static void ScaleByZ(this Transform transform, float z)
+    {
+        transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z * z);
+    }
+
+    /// <summary>
+    /// 在X、Y方向上缩放
+    /// </summary>
+    public static void ScaleByXY(this Transform transform, float x, float y)
+    {
+        transform.localScale = new Vector3(transform.localScale.x * x, transform.localScale.y * y, transform.localScale.z);
+    }
+
+    /// <summary>
+    /// 在X、Z方向上缩放
+    /// </summary>
+    public static void ScaleByXZ(this Transform transform, float x, float z)
+    {
+        transform.localScale = new Vector3(transform.localScale.x * x, transform.localScale.y, transform.localScale.z * z);
+    }
+
+    /// <summary>
+    /// 在Y和Z方向上缩放
+    /// </summary>
+    public static void ScaleByYZ(this Transform transform, float y, float z)
+    {
+        transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y * y, transform.localScale.z * z);
+    }
+
+    /// <summary>
+    /// 在X和Y方向上缩放
+    /// </summary>
+    public static void ScaleByXY(this Transform transform, float r)
+    {
+        transform.ScaleByXY(r, r);
+    }
+
+    /// <summary>
+    /// 在X和Z方向上缩放
+    /// </summary>
+    public static void ScaleByXZ(this Transform transform, float r)
+    {
+        transform.ScaleByXZ(r, r);
+    }
+
+    /// <summary>
+    /// 在Y和Z方向上缩放
+    /// </summary>
+    public static void ScaleByYZ(this Transform transform, float r)
+    {
+        transform.ScaleByYZ(r, r);
+    }
+
+    /// <summary>
+    /// 在X、Y和Z方向上缩放
+    /// </summary>
+    public static void ScaleByXYZ(this Transform transform, float x, float y, float z)
+    {
+        transform.localScale = new Vector3(x, y, z);
+    }
+
+    /// <summary>
+    /// 在X、Y和Z方向上缩放
+    /// </summary>
+    public static void ScaleByXYZ(this Transform transform, float r)
+    {
+        transform.ScaleByXYZ(r, r, r);
+    }
+
+    /// <summary>
+    /// 设置X轴旋转
+    /// </summary>
+    public static void SetRotationX(this Transform transform, float angle)
+    {
+        transform.eulerAngles = new Vector3(angle, 0, 0);
+    }
+
+    /// <summary>
+    /// 设置Y轴旋转
+    /// </summary>
+    public static void SetRotationY(this Transform transform, float angle)
+    {
+        transform.eulerAngles = new Vector3(0, angle, 0);
+    }
+
+    /// <summary>
+    /// 设置Z轴旋转
+    /// </summary>
+    public static void SetRotationZ(this Transform transform, float angle)
+    {
+        transform.eulerAngles = new Vector3(0, 0, angle);
+    }
+
+    /// <summary>
+    /// 设置本地X轴旋转
+    /// </summary>
+    public static void SetLocalRotationX(this Transform transform, float angle)
+    {
+        transform.localRotation = Quaternion.Euler(new Vector3(angle, 0, 0));
+    }
+
+    /// <summary>
+    /// 设置本地Y轴旋转
+    /// </summary>
+    public static void SetLocalRotationY(this Transform transform, float angle)
+    {
+        transform.localRotation = Quaternion.Euler(new Vector3(0, angle, 0));
+    }
+
+    /// <summary>
+    /// 设置本地Z轴旋转
+    /// </summary>
+    public static void SetLocalRotationZ(this Transform transform, float angle)
+    {
+        transform.localRotation = Quaternion.Euler(new Vector3(0, 0, angle));
+    }
+
+    /// <summary>
+    /// 重置位置
+    /// </summary>
+    public static void ResetPosition(this Transform transform)
+    {
+        transform.position = Vector3.zero;
+    }
+
+    /// <summary>
+    /// 重置位置
+    /// </summary>
+    public static void ResetLocalPosition(this Transform transform)
+    {
+        transform.localPosition = Vector3.zero;
+    }
+
+    /// <summary>
+    /// 重置旋转
+    /// </summary>
+    /// <param name="transform"></param>
+    public static void ResetRotation(this Transform transform)
+    {
+        transform.rotation = Quaternion.identity;
+    }
+
+    /// <summary>
+    /// 重置旋转
+    /// </summary>
+
+    public static void ResetLocalRotation(this Transform transform)
+    {
+        transform.localRotation = Quaternion.identity;
+    }
+
+    /// <summary>
+    /// 重置本地位置/旋转/缩放
+    /// </summary>
+    /// <param name="transform"></param>
+    public static void ResetLocal(this Transform transform)
+    {
+        transform.ResetLocalRotation();
+        transform.ResetLocalPosition();
+        transform.ResetScale();
+
+    }
+
+    /// <summary>
+    /// 重置位置/旋转/缩放
+    /// </summary>
+    /// <param name="transform"></param>
+    public static void Reset(this Transform transform)
+    {
+        transform.ResetRotation();
+        transform.ResetPosition();
+        transform.ResetScale();
+    }
+
+    /// <summary>
+    /// 重置缩放
+    /// </summary>
+    /// <param name="transform"></param>
+    public static void ResetScale(this Transform transform)
+    {
+        transform.localScale = Vector3.one;
+    }
+
+    /// <summary>
     /// 计算该物体的位置。无论它位于顶部还是底部。分别为-1和1。
     /// </summary>
     /// <returns></returns>

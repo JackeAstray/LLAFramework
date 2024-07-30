@@ -61,7 +61,62 @@ public static class VectorExtensions
     public static void WithAddY(this Vector2 v, float y) => v.y += y;
 
     /// <summary>
-    /// 计算一个点在给定轴上的最近点
+    /// 将向量旋转指定角度
+    /// </summary>
+    /// <param name="vector">要旋转的向量</param>
+    /// <param name="angleInDeg">角度（度）</param>
+    /// <returns>旋转向量</returns>
+    public static Vector2 Rotate(this Vector2 vector, float angleInDeg)
+    {
+        float angleInRad = Mathf.Deg2Rad * angleInDeg;
+        float cosAngle = Mathf.Cos(angleInRad);
+        float sinAngle = Mathf.Sin(angleInRad);
+
+        float x = vector.x * cosAngle - vector.y * sinAngle;
+        float y = vector.x * sinAngle + vector.y * cosAngle;
+
+        return new Vector2(x, y);
+    }
+
+    /// <summary>
+    /// 将向量围绕目标点旋转指定角度
+    /// </summary>
+    /// <param name="vector"></param>
+    /// <param name="angleInDeg"></param>
+    /// <param name="axisPosition"></param>
+    /// <returns></returns>
+    public static Vector2 RotateAround(this Vector2 vector, float angleInDeg, Vector2 axisPosition)
+    {
+        return (vector - axisPosition).Rotate(angleInDeg) + axisPosition;
+    }
+
+
+    /// <summary>
+    /// 将向量旋转90度
+    /// </summary>
+    public static Vector2 Rotate90(this Vector2 vector)
+    {
+        return new Vector2(-vector.y, vector.x);
+    }
+
+    /// <summary>
+    /// 将向量旋转180度
+    /// </summary>
+    public static Vector2 Rotate180(this Vector2 vector)
+    {
+        return new Vector2(-vector.x, -vector.y);
+    }
+
+    /// <summary>
+    /// 将向量旋转270度
+    /// </summary>
+    public static Vector2 Rotate270(this Vector2 vector)
+    {
+        return new Vector2(vector.y, -vector.x);
+    }
+
+    /// <summary>
+    /// 计算一个点在指定轴上的最近点
     /// </summary>
     /// <param name="axisDirection">轴的方向</param>
     /// <param name="point">要计算的点</param>

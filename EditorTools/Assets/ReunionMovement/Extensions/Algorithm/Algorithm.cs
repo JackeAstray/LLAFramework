@@ -17,6 +17,50 @@ namespace GameLogic
 
         #region 判断
         /// <summary>
+        /// 确定一个整数的符号
+        /// </summary>
+        /// <param name="p"></param>
+        /// <returns>
+        /// 如果 p 是正数，返回 1。
+        /// 如果 p 是负数，返回 -1。
+        /// 如果 p 是零，返回 0。
+        /// </returns>
+        public static int Sign(int p) => Math.Sign(p);
+
+        /// <summary>
+        /// 判断两个浮点数是否相等
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static bool Equal(float a, float b)
+        {
+            return a == b;
+        }
+
+        /// <summary>
+        /// 判断一个值是否在0-1范围内
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool InRange01(float value)
+        {
+            return InRange(value, 0, 1);
+        }
+
+        /// <summary>
+        /// 判断一个值是否在一个范围内
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="closedLeft"></param>
+        /// <param name="openRight"></param>
+        /// <returns></returns>
+        public static bool InRange(float value, float closedLeft, float openRight)
+        {
+            return value >= closedLeft && value < openRight;
+        }
+
+        /// <summary>
         /// 是否是奇数
         /// </summary>
         /// <param name="value">检测的值</param>
@@ -96,6 +140,72 @@ namespace GameLogic
         #endregion
 
         #region 计算值
+        /// <summary>
+        /// 双线性插值
+        /// 1.	图像处理：在图像缩放、旋转或变形时，双线性插值可以用来计算新像素的颜色值，以获得更平滑的图像效果。
+        /// 2.	纹理映射：在计算机图形学中，双线性插值用于在纹理映射过程中计算纹理坐标之间的颜色值。
+        /// 3.	地理信息系统（GIS）：在地理数据的可视化和分析中，双线性插值用于在网格数据之间进行平滑过渡。
+        /// 4.	物理模拟：在模拟流体、热传导等物理现象时，双线性插值用于计算网格点之间的值。
+        /// </summary>
+        /// <param name="a">top-left</param>
+        /// <param name="b">top-right</param>
+        /// <param name="c">bottom-left</param>
+        /// <param name="d">bottom-right</param>
+        /// <param name="u">水平插值参数（介于0和1之间）</param>
+        /// <param name="v">垂直插值参数（介于0和1之间）</param>
+        /// <returns></returns>
+        public static float Bilerp(float a, float b, float c, float d, 
+                                   float u, float v)
+        {
+            // 在a和b之间进行线性插值
+            float s1 = Mathf.Lerp(a, b, u);
+            // 在c和d之间进行线性插值
+            float s2 = Mathf.Lerp(c, d, u);
+            // 在s1和s2之间进行线性插值
+            return Mathf.Lerp(s1, s2, v);
+        }
+
+        /// <summary>
+        /// 三线性插值
+        /// 1.	体绘制（Volume Rendering）：在医学成像、科学计算和计算机图形学中，三线性插值用于在三维体数据中进行插值，以获得更平滑的可视化效果。
+        /// 2.	3D 纹理映射：在计算机图形学中，三线性插值用于在三维纹理映射过程中计算纹理坐标之间的颜色值。
+        /// 3.	物理模拟：在模拟流体、热传导等三维物理现象时，三线性插值用于计算网格点之间的值。
+        /// 4.	地理信息系统（GIS）：在三维地理数据的可视化和分析中，三线性插值用于在网格数据之间进行平滑过渡。
+        /// </summary>
+        /// <param name="c000"></param>
+        /// <param name="c100"></param>
+        /// <param name="c010"></param>
+        /// <param name="c110"></param>
+        /// <param name="c001"></param>
+        /// <param name="c101"></param>
+        /// <param name="c011"></param>
+        /// <param name="c111"></param>
+        /// <param name="u">沿x轴的插值参数（在0和1之间）</param>
+        /// <param name="v">沿y轴的插值参数（介于0和1之间）</param>
+        /// <param name="w">沿z轴的插值参数（在0和1之间）</param>
+        /// <returns></returns>
+        public static float Trilerp(float c000, float c100, float c010, float c110,
+                                    float c001, float c101, float c011, float c111,
+                                    float u, float v, float w)
+        {
+            // 在c000和c100之间根据u进行线性插值
+            float c00 = Mathf.Lerp(c000, c100, u);
+            // 在c010和c110之间根据u进行线性插值
+            float c10 = Mathf.Lerp(c010, c110, u);
+            // 在c001和c101之间根据u进行线性插值
+            float c01 = Mathf.Lerp(c001, c101, u);
+            // 在c011和c111之间根据u进行线性插值
+            float c11 = Mathf.Lerp(c011, c111, u);
+
+            // 在c00和c10之间根据v进行线性插值
+            float c0 = Mathf.Lerp(c00, c10, v);
+            // 在c01和c11之间根据v进行线性插值
+            float c1 = Mathf.Lerp(c01, c11, v);
+
+            // 在c0和c1之间根据w进行线性插值
+            return Mathf.Lerp(c0, c1, w);
+        }
+
         /// <summary>
         /// 获取最近的2次方
         /// </summary>

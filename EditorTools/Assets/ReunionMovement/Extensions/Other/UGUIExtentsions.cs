@@ -146,6 +146,28 @@ namespace GameLogic
             image.sprite = ResourcesModule.Instance.Load<Sprite>(spriteName);
             return image;
         }
+
+        /// <summary>
+        /// 设置图像的可见性
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="visible"></param>
+        /// <param name="visibleAlpha"></param>
+        /// <param name="invisibleAlpha"></param>
+        public static void SetVisible(this Image image, bool visible, float visibleAlpha = 1.0f, float invisibleAlpha = 0.0f)
+        {
+            image.SetAlpha(visible ? visibleAlpha : invisibleAlpha);
+        }
+
+        /// <summary>
+        /// 设置图片透明度
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="alpha"></param>
+        public static void SetAlpha(this Image image, float alpha)
+        {
+            image.color = image.color.WithAlpha(alpha);
+        }
         #endregion
     }
 }
