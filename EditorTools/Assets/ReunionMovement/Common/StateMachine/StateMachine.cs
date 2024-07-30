@@ -7,6 +7,10 @@ using UnityEngine;
 
 namespace GameLogic
 {
+    /// <summary>
+    /// 状态机
+    /// </summary>
+    /// <typeparam name="TLabel"></typeparam>
     public class StateMachine<TLabel>
     {
         private class State
@@ -18,10 +22,10 @@ namespace GameLogic
 
             public State(TLabel label, Action onStart, Action onUpdate, Action onStop)
             {
+                this.label = label;
                 this.onStart = onStart;
                 this.onUpdate = onUpdate;
                 this.onStop = onStop;
-                this.label = label;
             }
         }
 
@@ -29,8 +33,14 @@ namespace GameLogic
         private readonly Dictionary<TLabel, State> stateDictionary;
         // 当前状态
         private State currentState;
+        // 全局更新
+        private Action globalUpdate;
         // 历史状态
         private Stack<State> stateHistory;
+        // 并行状态
+        private List<State> parallelStates;
+        // 状态改变事件
+        public event Action<TLabel, TLabel> onStateChanged;
         // 状态转换条件
         private readonly Dictionary<(TLabel, TLabel), Func<bool>> transitionConditions;
         // 状态机是否暂停
@@ -50,7 +60,17 @@ namespace GameLogic
             stateDictionary = new Dictionary<TLabel, State>();
             stateHistory = new Stack<State>();
             transitionConditions = new Dictionary<(TLabel, TLabel), Func<bool>>();
+            parallelStates = new List<State>();
             isPaused = false;
+        }
+
+        /// <summary>
+        /// 设置全局更新
+        /// </summary>
+        /// <param name="globalUpdate"></param>
+        public void SetGlobalUpdate(Action globalUpdate)
+        {
+            this.globalUpdate = globalUpdate;
         }
 
         /// <summary>
@@ -62,8 +82,12 @@ namespace GameLogic
             {
                 return;
             }
-
+            globalUpdate?.Invoke();
             currentState?.onUpdate?.Invoke();
+            foreach (var state in parallelStates)
+            {
+                state.onUpdate?.Invoke();
+            }
         }
         /// <summary>
         /// 添加状态
@@ -101,6 +125,18 @@ namespace GameLogic
         }
 
         /// <summary>
+        /// 添加并行状态
+        /// </summary>
+        /// <param name="label"></param>
+        /// <param name="onStart"></param>
+        /// <param name="onUpdate"></param>
+        /// <param name="onStop"></param>
+        public void AddParallelState(TLabel label, Action onStart = null, Action onUpdate = null, Action onStop = null)
+        {
+            parallelStates.Add(new State(label, onStart, onUpdate, onStop));
+        }
+
+        /// <summary>
         /// 改变状态
         /// </summary>
         /// <param name="newState"></param>
@@ -112,10 +148,13 @@ namespace GameLogic
                 return;
             }
 
+            Debug.Log($"状态从 {currentState.label} 转换到 {newState}");
+
             currentState?.onStop?.Invoke();
             stateHistory.Push(currentState);
             currentState = stateDictionary[newState];
             currentState?.onStart?.Invoke();
+            onStateChanged?.Invoke(stateHistory.Peek().label, newState);
         }
 
 
@@ -165,7 +204,7 @@ namespace GameLogic
         /// <returns></returns>
         public override string ToString()
         {
-            return CurrentState.ToString();
+            return CurrentState?.ToString();
         }
     }
 }
