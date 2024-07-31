@@ -177,6 +177,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1027886790}
   - component: {fileID: 1027886791}
+  - component: {fileID: 1027886792}
+  - component: {fileID: 1027886793}
   m_Layer: 0
   m_Name: StartApp
   m_TagString: Untagged
@@ -211,7 +213,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e48595cb3d8e00d4aafd60ffa486751f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1027886792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1027886789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3431b817d7dc6264c8d820c1dd8a5d29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   taskIndex: 0
+--- !u!114 &1027886793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1027886789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbd59d5d4ee345949be7453df61fecc4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Limit: 100
 --- !u!1 &1263458345
 GameObject:
   m_ObjectHideFlags: 0

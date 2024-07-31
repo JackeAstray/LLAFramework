@@ -196,7 +196,7 @@ namespace GameLogic.Http
          )
         {
             sendRequest = request;
-            StartApp.Instance.AddCoroutine(SendCoroutine(sendRequest, onSuccess, onError, onNetworkError), SendCallback);
+            CoroutinerMgr.Instance.AddCoroutine(SendCoroutine(sendRequest, onSuccess, onError, onNetworkError), SendCallback);
         }
 
         private void SendCallback(Coroutine coroutine)

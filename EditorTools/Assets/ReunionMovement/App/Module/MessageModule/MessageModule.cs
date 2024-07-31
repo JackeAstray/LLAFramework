@@ -88,7 +88,7 @@ namespace GameLogic
             messageQueue.Enqueue(message);
             if (messageQueue.Count == 1)
             {
-                StartApp.Instance.AddCoroutine(ShowMessage(messageQueue.Dequeue(), delayed), null);
+                CoroutinerMgr.Instance.AddCoroutine(ShowMessage(messageQueue.Dequeue(), delayed), null);
             }
         }
 
@@ -115,7 +115,7 @@ namespace GameLogic
         {
             if (messageQueue.Count > 0)
             {
-                StartApp.Instance.AddCoroutine(ShowMessage(messageQueue.Dequeue(), delayed), null);
+                CoroutinerMgr.Instance.AddCoroutine(ShowMessage(messageQueue.Dequeue(), delayed), null);
             }
         }
 
