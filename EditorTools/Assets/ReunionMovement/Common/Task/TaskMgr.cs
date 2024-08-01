@@ -2,6 +2,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace GameLogic
@@ -13,9 +14,25 @@ namespace GameLogic
         /// </summary>
         /// <param name="action"></param>
         /// <param name="callback"></param>
-        public async void StartTask(Action action, Action callback)
+        public async void StartTask(Action action, Action callback, TimeSpan? timeout = null, CancellationToken cancellationToken = default)
         {
-            await RunTask(action, callback);
+            try
+            {
+                await ExecuteTask(() => { action?.Invoke(); return true; }, timeout, cancellationToken);
+                callback?.Invoke();
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.Log("任务被取消");
+            }
+            catch (TimeoutException ex)
+            {
+                Debug.Log($"任务超时: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Debug.Log($"任务异常: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -24,94 +41,70 @@ namespace GameLogic
         /// <typeparam name="T"></typeparam>
         /// <param name="func"></param>
         /// <param name="callback"></param>
-        public async void StartTask<T>(Func<T> func, Action callback)
-        {
-            await RunTask(func, callback);
-        }
-
-        /// <summary>
-        /// 激活任务
-        /// </summary>
-        /// <param name="action">执行方法</param>
-        /// <param name="callback">任务回调</param>
-        /// <param name="cancellationToken">任务取消</param>
-        /// <param name="timeout">任务超时</param>
-        /// <returns></returns>
-        public async Task RunTask(Action action, Action callback, CancellationToken cancellationToken = default, TimeSpan? timeout = null)
+        public async void StartTask<T>(Func<T> func, Action<T> callback, TimeSpan? timeout = null, CancellationToken cancellationToken = default)
         {
             try
             {
-                var task = Task.Run(() =>
-                {
-                    action?.Invoke();
-                }, cancellationToken);
-
-                if (timeout.HasValue)
-                {
-                    if (await Task.WhenAny(task, Task.Delay(timeout.Value, cancellationToken)) == task)
-                    {
-                        await task; // Propagate exceptions
-                    }
-                    else
-                    {
-                        throw new TimeoutException("The task has timed out.");
-                    }
-                }
-                else
-                {
-                    await task;
-                }
-
-                callback?.Invoke();
+                T result = await ExecuteTask(func, timeout, cancellationToken);
+                callback?.Invoke(result);
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.Log("任务被取消");
+            }
+            catch (TimeoutException ex)
+            {
+                Debug.Log($"任务超时: {ex.Message}");
             }
             catch (Exception ex)
             {
-                Debug.LogError($"Task failed: {ex.Message}");
+                Debug.Log($"任务异常: {ex.Message}");
             }
         }
 
         /// <summary>
-        /// 激活任务
+        /// 执行任务
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="func">执行方法</param>
-        /// <param name="callback">任务回调</param>
-        /// <param name="cancellationToken">任务取消</param>
-        /// <param name="timeout">任务超时</param>
+        /// <param name="func"></param>
+        /// <param name="callback"></param>
+        /// <param name="cancellationToken"></param>
+        /// <param name="timeout"></param>
         /// <returns></returns>
-        public async Task<T> RunTask<T>(Func<T> func, Action callback, CancellationToken cancellationToken = default, TimeSpan? timeout = null)
+        private async Task<T> ExecuteTask<T>(Func<T> func, TimeSpan? timeout = null, CancellationToken cancellationToken = default)
         {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                throw new OperationCanceledException(cancellationToken);
+            }
+
             try
             {
-                var task = Task.Run(() =>
-                {
-                    return func != null ? func() : default(T);
-                }, cancellationToken);
+                Task<T> task = Task.Run(func, cancellationToken);
 
-                T result;
                 if (timeout.HasValue)
                 {
-                    if (await Task.WhenAny(task, Task.Delay(timeout.Value, cancellationToken)) == task)
+                    Task delayTask = Task.Delay(timeout.Value, cancellationToken);
+                    Task completedTask = await Task.WhenAny(task, delayTask);
+
+                    if (completedTask == delayTask)
                     {
-                        result = await task; // Propagate exceptions
+                        if (cancellationToken.IsCancellationRequested)
+                        {
+                            throw new OperationCanceledException(cancellationToken);
+                        }
+                        else
+                        {
+                            throw new TimeoutException("任务超时");
+                        }
                     }
-                    else
-                    {
-                        throw new TimeoutException("The task has timed out.");
-                    }
-                }
-                else
-                {
-                    result = await task;
                 }
 
-                callback?.Invoke();
-                return result;
+                return await task;
             }
-            catch (Exception ex)
+            catch (OperationCanceledException)
             {
-                Debug.LogError($"Task failed: {ex.Message}");
-                return default(T);
+                throw;
             }
         }
     }

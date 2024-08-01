@@ -8,6 +8,9 @@ using UnityEngine;
 
 namespace GameLogic
 {
+    /// <summary>
+    /// Unity主线程调度器
+    /// </summary>
     public class UnityMainThreadDispatcher : SingleToneMgr<UnityMainThreadDispatcher>
     {
         private static readonly Queue<Action> executionQueue = new Queue<Action>();

@@ -64,7 +64,9 @@ namespace GameLogic
 
         public TLabel CurrentState
         {
-            get => currentState.label;
+            get {
+                return currentState.label;
+            }
             set => ChangeState(value);
         }
 
@@ -172,8 +174,7 @@ namespace GameLogic
                     return;
                 }
 
-                Debug.Log($"状态从 {currentState.label} 转换到 {newState}");
-
+                //Debug.Log($"状态从 {currentState.label} 转换到 {newState}");
                 currentState?.onStop?.Invoke();
                 onStateExit?.Invoke(currentState.label);
                 stateHistory.Push(currentState);

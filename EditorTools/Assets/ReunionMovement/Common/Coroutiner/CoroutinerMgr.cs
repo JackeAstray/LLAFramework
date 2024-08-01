@@ -8,7 +8,7 @@ using UnityEngine;
 namespace GameLogic
 {
     /// <summary>
-    /// 对象池
+    /// 协程对象池
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class CoroutinerPool<T> where T : class, new()

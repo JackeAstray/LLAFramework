@@ -32,7 +32,9 @@ namespace GameLogic
         public void RegisterSpawnPool(string name, GameObject spawnTem, Action<GameObject> onSpawn = null, Action<GameObject> onDespawn = null, int limit = 0)
         {
             if (string.IsNullOrEmpty(name) || spawnTem == null)
+            {
                 return;
+            }
 
             if (!SpawnPools.ContainsKey(name))
             {
