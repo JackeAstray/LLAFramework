@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace GameLogic
+namespace GameLogic.Example
 {
     public class TaskExample : MonoBehaviour
     {

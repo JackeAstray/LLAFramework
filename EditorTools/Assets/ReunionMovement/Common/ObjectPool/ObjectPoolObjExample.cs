@@ -3,15 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectPoolObjExample : MonoBehaviour
+namespace GameLogic.Example
 {
-    private void OnEnable()
+    public class ObjectPoolObjExample : MonoBehaviour
     {
-        Invoke("OnDespawn", 2.5f);
-    }
+        private void OnEnable()
+        {
+            Invoke("OnDespawn", 2.5f);
+        }
 
-    public void OnDespawn()
-    {
-        ObjectPoolMgr.Instance.Despawn("EnemyPool", gameObject);
+        public void OnDespawn()
+        {
+            ObjectPoolMgr.Instance.Despawn("EnemyPool", gameObject);
+        }
     }
 }

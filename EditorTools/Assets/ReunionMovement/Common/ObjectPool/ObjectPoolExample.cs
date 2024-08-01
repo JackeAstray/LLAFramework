@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using TouchScript.Examples.Tap;
 using UnityEngine;
 
-namespace GameLogic
+namespace GameLogic.Example
 {
     public class ObjectPoolExample : MonoBehaviour
     {
