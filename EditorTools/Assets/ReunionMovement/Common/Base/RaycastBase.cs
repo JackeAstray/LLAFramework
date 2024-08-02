@@ -10,12 +10,12 @@ namespace GameLogic
     /// <summary>
     /// 射线管理器
     /// </summary>
-    public class RaycastMgr
+    public class RaycastBase
     {
         private LayerMask layerMask;
         private Camera camera;
 
-        public RaycastMgr(string layerName, Camera camera)
+        public RaycastBase(string layerName, Camera camera)
         {
             layerMask = 1 << LayerMask.NameToLayer(layerName);
             this.camera = camera;

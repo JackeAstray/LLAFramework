@@ -10,10 +10,12 @@ Unity版本：2022.3.28fc1<br>
 <summary>1 游戏框架</summary>
 <br>
 其中包含了以下模块<br>
+
 - 数据模块<br>
 - 事件模块<br>
 - 多语言模块<br>
-- 对象池模块<br>
+- 消息模块<br>
+- 网络模块<br>
 - 资源模块<br>
 - 场景模块<br>
 - 声音模块<br>
@@ -116,45 +118,43 @@ UI工具使用说明<br>
 ![inspector](https://github.com/JackeAstray/EditorTools/blob/main/Screenshot/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202023-09-11%20130454.png)
 </details>
 
-<details>
-<summary>10 其他功能</summary>
-1、广告牌<br>
-2、屏幕适配<br>
-3、屏幕LOG<br>
-4、计时器<br>
-5、FPS<br>
-6、震动（ios、android用）<br>
-7、图片首次导入到指定文件夹自动替换类型<br>
-8、图片自动裁剪留白<br>
-9、单例模式父类<br>
-10、扩展功能<br>
- - AsyncOperationExtensions<br>
- - ColorExtensions<br>
- - ComponentExtensions<br>
- - EngineExtensions<br> 
- - EngineToolExtensions<br>
- - FindExtensions<br>
- - GameObjectExtensions<br>
- - ResourcesExtensions<br>
- - TransformExtensions<br>
- - Vector3Extensions<br>
-</details>
-
-
 ## 文件夹结构：<a name="FolderStructure"></a>
 - 3RD                             用于存放第三方库<br>
+  - Animated Loading Icons        加载动画<br>
+  - FancyScrollView               花式滚动视图<br>
+  - InputSystem                   输入系统例子<br>
+  - Joystick Pack                 摇杆<br>
+  - SqlCipher4Unity3D             Sqlite插件<br>
+  - TouchScript                   触摸插件<br>
+  - UIEffect                      UI特效<br>
 - Editor                          编辑器文件夹<br>
   - Scenes                        用于存放生成UI的场景<br>
+- Plugins                         插件文件夹<br>
 - Resources                       资源文件夹<br>
+  - AutoDatabase                  此文件夹用于存放生成的数据文件<br>
+  - Fonts                         字体<br>
+  - Materials                     材质球<br>
+  - Models                        模型<br>
+  - Prefabs                       预制体<br>
+  - ScriptableObject              脚本化对象<br>
+  - Shader                        Shader<br>
+  - SkyBox                        天空盒<br>
+  - Sounds                        音频<br>
+  - Sprites                       精灵<br>
+  - Terminal                      终端预制体<br>
+  - UI                            UI<br>
+- ResourcesFile                   此文件夹暂时无用<br>
 - ReunionMovement                 模块化插件（每个单独的模块都会放入其中）<br>
   - APP                           APP是用于启动各个模块系统<br>
     - Base                        APP的基础功能<br>
     - Module                      APP的各个模块<br>
+      - AssetBundleModule         AB模块（暂时无用）<br>
       - ColorPaletteModule        调色板模块，用于记录调整配色方案<br>
       - DatabaseModule            数据模块<br>
       - EventModule               事件模块<br>
       - LanguagesModule           多语言模块<br>
-      - ObjectPoolModule          对象池模块<br>
+      - MessageModule             消息模块<br>
+      - NetworkModule             网络模块<br>
       - ResourcesModule           资源模块<br>
       - SceneModule               场景模块<br>
       - SoundModule               声音模块<br>
@@ -162,39 +162,47 @@ UI工具使用说明<br>
       - UIModule                  UI模块<br>
     - StartApp                    APP的启动脚本<br>
   - Common                        公用类<br>
+    - Base                        基础类（射线基类、单例基类、观察者基类）<br>
+    - Editor                      <br>
+      - ScriptingDefineSymbols    脚本宏<br>
     - Observer                    观察者模式基类<br>
     - SingleToneMgr               单例模式基类<br>
     - PathUtils                   单例模式基类<br>
-    - Editor                      <br>
-      - ScriptingDefineSymbols    脚本宏<br>
+    - Extensions                  扩展脚本<br>
+      - Algorithm                 计算扩展<br>
+      - Collection                集合扩展<br>
+      - Object                    Object扩展<br>
+      - Other                     其他扩展<br>
+      - Random                    随机扩展<br>
+      - UGUIExtensions            Image扩展<br>
+    - LitJson                     LitJson<br>
+    - LogTool                     日志工具<br>
+    - ObjectPool                  对象池<br>
   - ExcelTool                     表格导出工具(用于导出.cs|.xml|.json|.lua文件)<br>
-  - Extensions                    扩展功能脚本<br>
-  - GenerateScriptTool            创建脚本工具<br>
-  - LogTool                       日志工具，集成了宏命令可开启和关闭Log<br>
-  - OpenPath                      打开指定路径文件夹<br>
-  - SmallFunctions                小功能<br>
-  - SplitImg                      图片自动裁切留白区域，需要此EXE【../Tools/SplitImg/SplitImg.exe】<br>
-  - Spotlight                     焦点工具、用于搜索对象<br>
+  - Managers                      管理器（协程、Sqlite、通用状态机、任务）<br>
+  - Runtime                       跳过Unity Logo<br>
   - Toolbox                       工具箱<br>
-    - Application                 控制Android状态栏<br>
-    - ColliderGizmo               编辑器下碰撞器显示绘制边框<br>
-    - DownloadFile                下载文件<br>
-    - Effect                      效果<br>
-      - Arrow                     箭头工具<br>
-      - Billboard                 广告牌<br>
-      - Camera                    摄像机（旋转、漫游）<br>
-      - FPS                       FPS计数器<br>
-      - Ripple                    UI点击后波浪效果<br>
-      - Screen                    屏幕适配<br>
-      - ScreenLogger              Log显示在屏幕上<br>
-      - TextTools                 Text工具<br>
-      - VibrationUtil             震动<br>
-    - Http                        Http工具用来快速访问网络、调用API<br>
-    - LitJson                     JSON工具<br>
-    - LoadImage                   加载Image<br>
-    - ScriptableObject            <br>
-      - ColorPalette              调色板<br>
+    - Application                 Android状态栏<br>
+    - Assembly                    程序集工具<br>
+    - 碰撞器绘制                   在编辑器窗口看碰撞器框（编辑是使用）<br>
+    - Encrypt                     加墨解密工具<br>
+    - GenerateScriptTool          生成脚本用工具<br>
+    - OpenPath                    打开指定路径工具<br>
+    - SmallFunctions              小功能<br>
+    - SplitImg                    图片自动裁切留白区域，需要此EXE【../Tools/SplitImg/SplitImg.exe】<br>
+    - Spotlight                   焦点工具、用于搜索对象<br>
     - Timer                       计时器<br>
+  - Toolbox                       工具箱<br>
+    - Arrow                       箭头工具<br>
+    - Billboard                   广告牌<br>
+    - Camera                      摄像机（旋转、漫游）<br>
+    - FPS                         FPS计数器<br>
+    - Ripple                      UI点击后波浪效果<br>
+    - Screen                      屏幕适配<br>
+    - ScreenLogger                Log显示在屏幕上<br>
+    - TextTools                   Text工具<br>
+    - VibrationUtil               震动<br>
 - Scenes                          场景文件夹<br>
 - Scripts                         脚本文件夹<br>
 - Settings                        URP配置文件<br>
+- StreamingAssets                 流文件夹<br>
