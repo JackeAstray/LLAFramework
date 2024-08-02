@@ -184,7 +184,7 @@ UI工具使用说明<br>
   - Toolbox                       |工具箱<br>
     - Application                 |Android状态栏<br>
     - Assembly                    |程序集工具<br>
-    - 碰撞器绘制                   |在编辑器窗口看碰撞器框（编辑是使用）<br>
+    - ColliderGizmo               |碰撞器绘制 在编辑器窗口看碰撞器框（编辑是使用）<br>
     - Encrypt                     |加墨解密工具<br>
     - GenerateScriptTool          |生成脚本用工具<br>
     - OpenPath                    |打开指定路径工具<br>
