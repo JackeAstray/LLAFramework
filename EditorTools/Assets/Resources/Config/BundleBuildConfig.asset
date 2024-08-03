@@ -1,0 +1,302 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ce91b17c92145649aa4ffff367f9ade, type: 3}
+  m_Name: BundleBuildConfig
+  m_EditorClassIdentifier: 
+  ManifestVersion: 1
+  TargetPlatforms: 13000000
+  Options: 1
+  GlobalCompress: 2
+  GlobalEncrypt: 1
+  OutputRootDirectory: ./Library/AssetBundlesOutput
+  IsCopyToReadOnlyDirectory: 0
+  CopyGroup: Base
+  Directories:
+  - directoryName: Assets/ResourcesFile/Animation
+    DirectoryObj: {fileID: 102900000, guid: d2f2cb0771aae074ea6e11d94b15eec9, type: 3}
+    BuildRuleName: NAssetToOneBundle
+    Filter: 
+    Regex: 
+    Group: Base
+    CompressOption: 0
+    EncryptOption: 0
+  - directoryName: Assets/ResourcesFile/Config
+    DirectoryObj: {fileID: 102900000, guid: d190092c29e59c841a4fd7d21982d0e1, type: 3}
+    BuildRuleName: NAssetToNRawBundle
+    Filter: 
+    Regex: 
+    Group: Base
+    CompressOption: 0
+    EncryptOption: 0
+  - directoryName: Assets/ResourcesFile/Fonts
+    DirectoryObj: {fileID: 102900000, guid: bb55ddfc332588e4b93a322d4aabfb21, type: 3}
+    BuildRuleName: NAssetToOneBundle
+    Filter: 
+    Regex: 
+    Group: Base
+    CompressOption: 0
+    EncryptOption: 0
+  - directoryName: Assets/ResourcesFile/Materials
+    DirectoryObj: {fileID: 102900000, guid: d893046e42e92614581227cf5cc85680, type: 3}
+    BuildRuleName: NAssetToOneBundle
+    Filter: 
+    Regex: 
+    Group: Base
+    CompressOption: 0
+    EncryptOption: 0
+  - directoryName: Assets/ResourcesFile/Models
+    DirectoryObj: {fileID: 102900000, guid: 83ef9d2f25d9ea14fab4d767cbc86102, type: 3}
+    BuildRuleName: NAssetToOneBundle
+    Filter: 
+    Regex: 
+    Group: Base
+    CompressOption: 0
+    EncryptOption: 0
+  - directoryName: Assets/ResourcesFile/Prefabs
+    DirectoryObj: {fileID: 102900000, guid: c0a9c4e2a58cb174f81b89bb5ff2fb2c, type: 3}
+    BuildRuleName: NAssetToOneBundle
+    Filter: 
+    Regex: 
+    Group: Base
+    CompressOption: 0
+    EncryptOption: 0
+  - directoryName: Assets/ResourcesFile/Scenes
+    DirectoryObj: {fileID: 102900000, guid: 1a895a1756ec43c4580d1ac6accf5bb4, type: 3}
+    BuildRuleName: NAssetToOneBundle
+    Filter: 
+    Regex: 
+    Group: Base
+    CompressOption: 0
+    EncryptOption: 0
+  - directoryName: Assets/ResourcesFile/ScriptableObjects
+    DirectoryObj: {fileID: 102900000, guid: 9a891d85b2baa834591f46c2a1748672, type: 3}
+    BuildRuleName: NAssetToOneBundle
+    Filter: 
+    Regex: 
+    Group: Base
+    CompressOption: 0
+    EncryptOption: 0
+  - directoryName: Assets/ResourcesFile/Scripts
+    DirectoryObj: {fileID: 102900000, guid: 37756e4a0751f724aab409e23fc6bd31, type: 3}
+    BuildRuleName: NAssetToOneBundle
+    Filter: 
+    Regex: 
+    Group: Base
+    CompressOption: 0
+    EncryptOption: 0
+  - directoryName: Assets/ResourcesFile/Shader
+    DirectoryObj: {fileID: 102900000, guid: 975869c54d8c8a9409bf464a8793da2f, type: 3}
+    BuildRuleName: NAssetToOneBundle
+    Filter: 
+    Regex: 
+    Group: Base
+    CompressOption: 0
+    EncryptOption: 0
+  - directoryName: Assets/ResourcesFile/Sound
+    DirectoryObj: {fileID: 102900000, guid: 46235e3355ee54d419ccd75dcfc7c588, type: 3}
+    BuildRuleName: NAssetToOneBundle
+    Filter: 
+    Regex: 
+    Group: Base
+    CompressOption: 0
+    EncryptOption: 0
+  - directoryName: Assets/ResourcesFile/Sprites
+    DirectoryObj: {fileID: 102900000, guid: 1c779dba08171dd44afaf9dd3b6c2e12, type: 3}
+    BuildRuleName: NAssetToOneBundle
+    Filter: 
+    Regex: 
+    Group: Base
+    CompressOption: 0
+    EncryptOption: 0
+  - directoryName: Assets/ResourcesFile/Terrain
+    DirectoryObj: {fileID: 102900000, guid: 531b4bcf6cacad342940757c5f4a1bf5, type: 3}
+    BuildRuleName: NAssetToOneBundle
+    Filter: 
+    Regex: 
+    Group: Base
+    CompressOption: 0
+    EncryptOption: 0
+  - directoryName: Assets/ResourcesFile/Voide
+    DirectoryObj: {fileID: 102900000, guid: 526eae8cc9da6f14490f92576a8cc274, type: 3}
+    BuildRuleName: NAssetToOneBundle
+    Filter: 
+    Regex: 
+    Group: Base
+    CompressOption: 0
+    EncryptOption: 0
+  Bundles:
+  - DirectoryName: ResourcesFile
+    BundleName: Animation.bundle
+    BundleIdentifyName: ResourcesFile/Animation.bundle
+    Group: Base
+    IsRaw: 0
+    AssetsLength: 0
+    CompressOption: 2
+    EncryptOption: 1
+    Assets:
+    - Name: "Assets/ResourcesFile/Animation/\u52A8\u753B.ignore"
+      Length: 0
+  - DirectoryName: ResourcesFile/Config
+    BundleName: "\u914D\u7F6E\u8868.ignore"
+    BundleIdentifyName: "ResourcesFile/Config/\u914D\u7F6E\u8868.ignore"
+    Group: Base
+    IsRaw: 1
+    AssetsLength: 0
+    CompressOption: 2
+    EncryptOption: 1
+    Assets:
+    - Name: "Assets/ResourcesFile/Config/\u914D\u7F6E\u8868.ignore"
+      Length: 0
+  - DirectoryName: ResourcesFile
+    BundleName: Fonts.bundle
+    BundleIdentifyName: ResourcesFile/Fonts.bundle
+    Group: Base
+    IsRaw: 0
+    AssetsLength: 0
+    CompressOption: 2
+    EncryptOption: 1
+    Assets:
+    - Name: "Assets/ResourcesFile/Fonts/\u5B57\u4F53.ignore"
+      Length: 0
+  - DirectoryName: ResourcesFile
+    BundleName: Materials.bundle
+    BundleIdentifyName: ResourcesFile/Materials.bundle
+    Group: Base
+    IsRaw: 0
+    AssetsLength: 0
+    CompressOption: 2
+    EncryptOption: 1
+    Assets:
+    - Name: "Assets/ResourcesFile/Materials/\u6750\u8D28.ignore"
+      Length: 0
+  - DirectoryName: ResourcesFile
+    BundleName: Models.bundle
+    BundleIdentifyName: ResourcesFile/Models.bundle
+    Group: Base
+    IsRaw: 0
+    AssetsLength: 0
+    CompressOption: 2
+    EncryptOption: 1
+    Assets:
+    - Name: "Assets/ResourcesFile/Models/Materials/\u6750\u8D28.ignore"
+      Length: 0
+    - Name: "Assets/ResourcesFile/Models/Meshs/\u7F51\u683C.ignore"
+      Length: 0
+    - Name: "Assets/ResourcesFile/Models/Shaders/\u7740\u8272\u5668.ignore"
+      Length: 0
+    - Name: "Assets/ResourcesFile/Models/Textures/\u8D34\u56FE.ignore"
+      Length: 0
+    - Name: "Assets/ResourcesFile/Models/\u6A21\u578B.ignore"
+      Length: 0
+  - DirectoryName: ResourcesFile
+    BundleName: Prefabs.bundle
+    BundleIdentifyName: ResourcesFile/Prefabs.bundle
+    Group: Base
+    IsRaw: 0
+    AssetsLength: 0
+    CompressOption: 2
+    EncryptOption: 1
+    Assets:
+    - Name: "Assets/ResourcesFile/Prefabs/\u9884\u5236\u4F53.ignore"
+      Length: 0
+  - DirectoryName: ResourcesFile
+    BundleName: Scenes.bundle
+    BundleIdentifyName: ResourcesFile/Scenes.bundle
+    Group: Base
+    IsRaw: 0
+    AssetsLength: 0
+    CompressOption: 2
+    EncryptOption: 1
+    Assets:
+    - Name: "Assets/ResourcesFile/Scenes/\u573A\u666F.ignore"
+      Length: 0
+  - DirectoryName: ResourcesFile
+    BundleName: ScriptableObjects.bundle
+    BundleIdentifyName: ResourcesFile/ScriptableObjects.bundle
+    Group: Base
+    IsRaw: 0
+    AssetsLength: 0
+    CompressOption: 2
+    EncryptOption: 1
+    Assets:
+    - Name: "Assets/ResourcesFile/ScriptableObjects/\u53EF\u7F16\u5199\u811A\u672C\u7684\u5BF9\u8C61.ignore"
+      Length: 0
+  - DirectoryName: ResourcesFile
+    BundleName: Scripts.bundle
+    BundleIdentifyName: ResourcesFile/Scripts.bundle
+    Group: Base
+    IsRaw: 0
+    AssetsLength: 0
+    CompressOption: 2
+    EncryptOption: 1
+    Assets:
+    - Name: "Assets/ResourcesFile/Scripts/\u811A\u672C.ignore"
+      Length: 0
+  - DirectoryName: ResourcesFile
+    BundleName: Shader.bundle
+    BundleIdentifyName: ResourcesFile/Shader.bundle
+    Group: Base
+    IsRaw: 0
+    AssetsLength: 0
+    CompressOption: 2
+    EncryptOption: 1
+    Assets:
+    - Name: "Assets/ResourcesFile/Shader/\u7740\u8272\u5668.ignore"
+      Length: 0
+  - DirectoryName: ResourcesFile
+    BundleName: Sound.bundle
+    BundleIdentifyName: ResourcesFile/Sound.bundle
+    Group: Base
+    IsRaw: 0
+    AssetsLength: 0
+    CompressOption: 2
+    EncryptOption: 1
+    Assets:
+    - Name: "Assets/ResourcesFile/Sound/\u58F0\u97F3.ignore"
+      Length: 0
+  - DirectoryName: ResourcesFile
+    BundleName: Sprites.bundle
+    BundleIdentifyName: ResourcesFile/Sprites.bundle
+    Group: Base
+    IsRaw: 0
+    AssetsLength: 0
+    CompressOption: 2
+    EncryptOption: 1
+    Assets:
+    - Name: "Assets/ResourcesFile/Sprites/\u7CBE\u7075.ignore"
+      Length: 0
+  - DirectoryName: ResourcesFile
+    BundleName: Terrain.bundle
+    BundleIdentifyName: ResourcesFile/Terrain.bundle
+    Group: Base
+    IsRaw: 0
+    AssetsLength: 0
+    CompressOption: 2
+    EncryptOption: 1
+    Assets:
+    - Name: "Assets/ResourcesFile/Terrain/\u5730\u5F62.ignore"
+      Length: 0
+  - DirectoryName: ResourcesFile
+    BundleName: Voide.bundle
+    BundleIdentifyName: ResourcesFile/Voide.bundle
+    Group: Base
+    IsRaw: 0
+    AssetsLength: 0
+    CompressOption: 2
+    EncryptOption: 1
+    Assets:
+    - Name: "Assets/ResourcesFile/Voide/\u89C6\u9891.ignore"
+      Length: 0
+  BundleCount: 14
+  AssetCount: 18
+  IsExactTextureSize: 0
+  IsDrawDesc: 0

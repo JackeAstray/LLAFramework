@@ -8,8 +8,7 @@ using UnityEngine;
 namespace GameLogic.AssetsModule
 {
     /// <summary>
-    /// AB包管理器(该模块拷贝的 https://github.com/SadPandaStudios/AssetBundleManager )
-    /// 目前没有测试
+    /// AB包管理器
     /// </summary>
     public class AssetBundleModule : CustommModuleInitialize
     {
@@ -24,7 +23,7 @@ namespace GameLogic.AssetsModule
         #endregion
 
         #region 数据
-        private AssetBundleManager bundleManager;
+
         #endregion
 
         /// <summary>
@@ -38,8 +37,6 @@ namespace GameLogic.AssetsModule
             initProgress = 100;
             IsInited = true;
             Log.Debug("AssetBundleModule 初始化完成");
-
-            bundleManager = new AssetBundleManager();
         }
 
         /// <summary>
@@ -49,40 +46,7 @@ namespace GameLogic.AssetsModule
         {
             Log.Debug("AssetBundleModule 清除数据");
         }
-
-        public void SetBaseUri(string uri)
-        {
-            bundleManager.SetBaseUri(uri);
-            bundleManager.Initialize(OnAssetBundleManagerInitialized);
-        }
-
-        private void OnAssetBundleManagerInitialized(bool success)
-        {
-            if (success)
-            {
-                bundleManager.GetBundle("BundleNameHere", OnAssetBundleDownloaded, OnProgress);
-            }
-            else
-            {
-                Debug.LogError("Error initializing ABM.");
-            }
-        }
-
-        private void OnAssetBundleDownloaded(AssetBundle bundle)
-        {
-            if (bundle != null)
-            {
-                // Do something with the bundle
-                bundleManager.UnloadBundle(bundle);
-            }
-
-            bundleManager.Dispose();
-        }
-
-        private void OnProgress(float progress)
-        {
-            Debug.Log("Current Progress: " + Math.Round(progress * 100, 2) + "%");
-        }
+      
 
         /// <summary>
         /// 更新
