@@ -1,3 +1,4 @@
+using GameLogic.AssetsModule;
 using GameLogic.Download;
 using GameLogic.Http;
 using System;
@@ -29,6 +30,7 @@ namespace GameLogic
             modules.Add(DownloadImageModule.Instance);
             modules.Add(DownloadFileModule.Instance);
             modules.Add(MessageModule.Instance);
+            modules.Add(AssetBundleModule.Instance);
 
             return modules;
         }
