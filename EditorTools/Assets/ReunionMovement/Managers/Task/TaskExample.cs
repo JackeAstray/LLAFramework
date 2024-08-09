@@ -15,10 +15,6 @@ namespace GameLogic.Example
             Invoke("Init", 3);
         }
 
-        public void Update()
-        {
-        }
-
         public void Init()
         {
             // 示例1：启动一个简单的任务

@@ -16,12 +16,6 @@ namespace GameLogic.Example
 #endif
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-
         private void StartSync()
         {
             DataService ds = new DataService(SqliteConfig.UserDBName);
