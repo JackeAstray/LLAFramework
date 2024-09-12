@@ -64,7 +64,7 @@ namespace GameLogic
     /// <summary>
     /// 协程管理器
     /// </summary>
-    public class CoroutinerMgr : SingleToneMgr<CoroutinerMgr>
+    public class CoroutinerMgr : SingletonMgr<CoroutinerMgr>
     {
         public long taskIndex = 0;
         private readonly object taskLock = new object();

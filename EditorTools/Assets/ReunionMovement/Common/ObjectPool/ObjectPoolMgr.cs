@@ -9,7 +9,7 @@ namespace GameLogic
     /// <summary>
     /// 对象池管理器
     /// </summary>
-    public class ObjectPoolMgr : SingleToneMgr<ObjectPoolMgr>
+    public class ObjectPoolMgr : SingletonMgr<ObjectPoolMgr>
     {
         /// <summary>
         /// 所有对象池

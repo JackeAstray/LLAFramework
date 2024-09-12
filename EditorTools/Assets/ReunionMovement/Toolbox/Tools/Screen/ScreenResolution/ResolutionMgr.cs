@@ -10,7 +10,7 @@ namespace GameLogic
     /// <summary>
     /// 分辨率管理
     /// </summary>
-    public class ResolutionMgr : SingleToneMgr<ResolutionMgr>
+    public class ResolutionMgr : SingletonMgr<ResolutionMgr>
     {
         public enum AspectRatio
         {

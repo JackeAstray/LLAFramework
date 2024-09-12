@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace GameLogic
 {
-    public class TaskMgr : SingleToneMgr<TaskMgr>
+    public class TaskMgr : SingletonMgr<TaskMgr>
     {
         /// <summary>
         /// 开始任务

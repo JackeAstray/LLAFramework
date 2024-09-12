@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace GameLogic
 {
-    public abstract class AppGame : SingleToneMgr<AppGame>, IAppEntry
+    public abstract class AppGame : SingletonMgr<AppGame>, IAppEntry
     {
         /// <summary>
         /// 创建一个模块，里面有一些新类

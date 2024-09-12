@@ -10,7 +10,7 @@ namespace GameLogic
     /// <summary>
     /// App引擎
     /// </summary>
-    public class AppEngine : SingleToneMgr<AppEngine>
+    public class AppEngine : SingletonMgr<AppEngine>
     {
         /// <summary>
         /// 所有自定义游戏逻辑模块
