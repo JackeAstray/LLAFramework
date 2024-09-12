@@ -189,14 +189,14 @@ namespace GameLogic.Http
         /// <param name="onSuccess"></param>
         /// <param name="onError"></param>
         /// <param name="onNetworkError"></param>
-        internal void Send(IHttpRequest request, 
+        internal void Send(IHttpRequest request,
             Action<HttpResponse> onSuccess = null,
             Action<HttpResponse> onError = null,
             Action<HttpResponse> onNetworkError = null
          )
         {
             sendRequest = request;
-            CoroutinerMgr.Instance.AddCoroutine(SendCoroutine(sendRequest, onSuccess, onError, onNetworkError), SendCallback);
+            CoroutinerMgr.Instance.AddRoutine(SendCoroutine(sendRequest, onSuccess, onError, onNetworkError), SendCallback);
         }
 
         private void SendCallback(Coroutine coroutine)
@@ -232,7 +232,7 @@ namespace GameLogic.Http
 
             if (httpRequests.TryGetValue(request, out Coroutine coroutine))
             {
-                StartApp.Instance.StopCoroutine(coroutine);
+                CoroutinerMgr.Instance.StopTargetRoutine(coroutine);
                 httpRequests.Remove(request);
             }
         }
@@ -243,7 +243,7 @@ namespace GameLogic.Http
         /// <param name="realElapseSeconds"></param>
         public void UpdateTime(float elapseSeconds, float realElapseSeconds)
         {
-            if(httpRequests != null && httpRequests.Count > 0)
+            if (httpRequests != null && httpRequests.Count > 0)
             {
                 var keys = new List<IHttpRequest>(httpRequests.Keys);
                 foreach (var httpRequest in keys)

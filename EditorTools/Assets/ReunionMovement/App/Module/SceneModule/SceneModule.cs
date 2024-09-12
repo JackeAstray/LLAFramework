@@ -134,7 +134,7 @@ namespace GameLogic
             if (openLoad)
             {
                 //先异步加载 Loading 界面
-                CoroutinerMgr.Instance.AddCoroutine(OnLoadingScene(strLoadSceneName, OnLoadingSceneLoaded, LoadSceneMode.Single), LoadingSceneCallback);
+                CoroutinerMgr.Instance.AddRoutine(OnLoadingScene(strLoadSceneName, OnLoadingSceneLoaded, LoadSceneMode.Single), LoadingSceneCallback);
             }
             else
             {
@@ -184,7 +184,7 @@ namespace GameLogic
         private void OnLoadingSceneLoaded()
         {
             // 过渡场景加载完成后加载下一个场景
-            CoroutinerMgr.Instance.AddCoroutine(OnLoadTargetScene(strTargetSceneName, LoadSceneMode.Single), LoadTargetSceneCallback);
+            CoroutinerMgr.Instance.AddRoutine(OnLoadTargetScene(strTargetSceneName, LoadSceneMode.Single), LoadTargetSceneCallback);
         }
 
         /// <summary>

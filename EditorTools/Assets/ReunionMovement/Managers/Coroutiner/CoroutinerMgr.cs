@@ -93,7 +93,7 @@ namespace GameLogic
         void Update()
         {
             // 更新事件
-            RefreshCoroutineTasks();
+            RefreshRoutineTasks();
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace GameLogic
         /// </summary>
         /// <param name="routine"></param>
         /// <param name="callback"></param>
-        public void AddCoroutine(IEnumerator routine, Action<Coroutine> callback)
+        public void AddRoutine(IEnumerator routine, Action<Coroutine> callback)
         {
             var task = taskPool.Get();
             task.Enumerator = routine;
@@ -119,9 +119,9 @@ namespace GameLogic
         /// </summary>
         /// <param name="handler"></param>
         /// <returns></returns>
-        public Coroutine StartCoroutine(Action handler)
+        public Coroutine StartRoutine(Action handler)
         {
-            return StartCoroutine(EnumCoroutine(handler));
+            return StartCoroutine(ExecuteRoutine(handler));
         }
 
         /// <summary>
@@ -130,15 +130,15 @@ namespace GameLogic
         /// <param name="handler"></param>
         /// <param name="callback"></param>
         /// <returns></returns>
-        public Coroutine StartCoroutine(Action handler, Action callback)
+        public Coroutine StartRoutine(Action handler, Action callback)
         {
-            return StartCoroutine(EnumCoroutine(handler, callback));
+            return StartCoroutine(ExecuteRoutine(handler, callback));
         }
 
         /// <summary>
         /// 停止所有协程
         /// </summary>
-        public new void StopAllCoroutines()
+        public void StopAllRoutine()
         {
             base.StopAllCoroutines();
         }
@@ -147,7 +147,7 @@ namespace GameLogic
         /// 停止目标协程
         /// </summary>
         /// <param name="enumerator"></param>
-        public void StopTargetCoroutine(IEnumerator enumerator)
+        public void StopTargetRoutine(IEnumerator enumerator)
         {
             base.StopCoroutine(enumerator);
         }
@@ -156,7 +156,7 @@ namespace GameLogic
         /// 停止目标协程
         /// </summary>
         /// <param name="coroutine"></param>
-        public void StopTargetCoroutine(Coroutine coroutine)
+        public void StopTargetRoutine(Coroutine coroutine)
         {
             base.StopCoroutine(coroutine);
         }
@@ -167,7 +167,7 @@ namespace GameLogic
         /// <param name="routine"></param>
         /// <param name="callBack"></param>
         /// <returns></returns>
-        IEnumerator EnumCoroutine(Coroutine routine, Action callBack)
+        IEnumerator ExecuteRoutine(Coroutine routine, Action callBack)
         {
             yield return routine;
             callBack?.Invoke();
@@ -178,7 +178,7 @@ namespace GameLogic
         /// </summary>
         /// <param name="handler"></param>
         /// <returns></returns>
-        IEnumerator EnumCoroutine(Action handler)
+        IEnumerator ExecuteRoutine(Action handler)
         {
             handler?.Invoke();
             yield return null;
@@ -190,9 +190,9 @@ namespace GameLogic
         /// <param name="handler"></param>
         /// <param name="callack"></param>
         /// <returns></returns>
-        IEnumerator EnumCoroutine(Action handler, Action callack)
+        IEnumerator ExecuteRoutine(Action handler, Action callack)
         {
-            yield return StartCoroutine(handler);
+            yield return StartRoutine(handler);
             callack?.Invoke();
         }
 
@@ -202,7 +202,7 @@ namespace GameLogic
         /// <param name="handler"></param>
         /// <param name="callBack"></param>
         /// <returns></returns>
-        IEnumerator EnumPredicateCoroutine(Func<bool> handler, Action callBack)
+        IEnumerator ExecutePredicateRoutine(Func<bool> handler, Action callBack)
         {
             yield return new WaitUntil(handler);
             callBack();
@@ -211,7 +211,7 @@ namespace GameLogic
         /// <summary>
         /// 协程任务
         /// </summary>
-        void RefreshCoroutineTasks()
+        void RefreshRoutineTasks()
         {
             lock (taskLock)
             {
@@ -247,7 +247,7 @@ namespace GameLogic
         /// 取消协程任务
         /// </summary>
         /// <param name="taskId"></param>
-        public void CancelCoroutineTask(long taskId)
+        public void CancelRoutineTask(long taskId)
         {
             lock (taskLock)
             {
