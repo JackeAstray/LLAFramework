@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2848,7 +2847,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
-  drawShape: 7
+  drawShape: 6
   imageType: 3
   materialMode: 0
   strokeWidth: 0
@@ -2882,7 +2881,7 @@ MonoBehaviour:
     tipRadius: {x: 1, y: 1}
     uniformTipRadius: 0
   nStarPolygon:
-    sideCount: 3.52
+    sideCount: 3
     inset: 2
     cornerRadius: 0
     offset: {x: 0, y: 0}
