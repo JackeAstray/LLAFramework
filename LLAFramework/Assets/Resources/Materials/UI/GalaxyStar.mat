@@ -1,0 +1,266 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: GalaxyStar
+  m_Shader: {fileID: 4800000, guid: b6685f0899e312c499e748e0ff01a826, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _RIMENABLED_ON
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3000
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BaseMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CloudTexture:
+        m_Texture: {fileID: 2800000, guid: 2221b317f9621394e942eccef9723239, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CloudsRamp:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CloudsTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Cube:
+        m_Texture: {fileID: 8900000, guid: 3cf4d52b14bd4254d9f4fd063f8d9bfd, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Cubemap:
+        m_Texture: {fileID: 8900000, guid: 950fe9248ec095e4a8fcfcc9492d73ed, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DarkCloudsTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FringeTexture:
+        m_Texture: {fileID: 2800000, guid: fc2679c53c135d6439749bc914f017c7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RimNoiseDistortionTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RimNoiseTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SpecGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _StarsTexture:
+        m_Texture: {fileID: 8900000, guid: 950fe9248ec095e4a8fcfcc9492d73ed, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SunViewGrad:
+        m_Texture: {fileID: 2800000, guid: 2221b317f9621394e942eccef9723239, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SunZenithGrad:
+        m_Texture: {fileID: 2800000, guid: 2221b317f9621394e942eccef9723239, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ViewZenithGrad:
+        m_Texture: {fileID: 2800000, guid: 2221b317f9621394e942eccef9723239, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _texcoord:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _Alpha: 1
+    - _AlphaClip: 0
+    - _AlphaCutoff: 0.5
+    - _Blend: 0
+    - _Brightness: 1
+    - _BumpScale: 1
+    - _ClearCoatMask: 0
+    - _ClearCoatSmoothness: 0
+    - _CloudHeight: 0
+    - _CloudOpacity: 0
+    - _CloudsEmissionPower: 1
+    - _CloudsOpacityExp: 1
+    - _CloudsOpacityPower: 1
+    - _CloudsRampOffsetExp: 1
+    - _CloudsRampOffsetExp2: 1
+    - _CloudsRotationSpeed: 0.1
+    - _Cull: 2
+    - _Cutoff: 0.5
+    - _DARKCLOUDSENABLED: 0
+    - _DarkCloudsEdgesGlowClamp: 2
+    - _DarkCloudsEdgesGlowExp: 1
+    - _DarkCloudsEdgesGlowPower: 50
+    - _DarkCloudsEdgesGlowStyle: 0
+    - _DarkCloudsLighten: 1
+    - _DarkCloudsRotationSpeed: 0.1
+    - _DarkCloudsThicker: 1
+    - _DetailAlbedoMapScale: 1
+    - _DetailNormalMapScale: 1
+    - _DstBlend: 0
+    - _EnvironmentReflections: 1
+    - _Eta: -0.1
+    - _EtaAAEdgesFix: 0
+    - _EtaFresnelExp: 3
+    - _EtaFresnelExp2: 1
+    - _FinalPower: 4
+    - _FringeMultiplier: 5
+    - _GlossMapScale: 0
+    - _Glossiness: 0
+    - _GlossyReflections: 0
+    - _Latitude: -21.4
+    - _MaxDistortion: 0.5
+    - _Metallic: 0
+    - _MinDistortion: 0.4
+    - _MoonExposure: -16
+    - _MoonRadius: 0
+    - _NoiseAmplitude: 2
+    - _NoiseWavelength: 0.2
+    - _NormalAmount: 1
+    - _OcclusionStrength: 1
+    - _Parallax: 0.005
+    - _QueueOffset: 0
+    - _RIMENABLED: 1
+    - _RIMNOISECAENABLED: 0
+    - _ReceiveShadows: 1
+    - _ReflectAmount: 1
+    - _Refract: 0
+    - _RefractAmount: 1
+    - _RefractRatio: 1.31
+    - _RimAddOrMultiply: 0
+    - _RimEmissionPower: 1
+    - _RimExp: 4
+    - _RimExp2: 2
+    - _RimNoiseAmount: -2.5
+    - _RimNoiseCAAmount: 0.1
+    - _RimNoiseCARimMaskExp: 4
+    - _RimNoiseCAU: 1
+    - _RimNoiseCAV: 0
+    - _RimNoiseDistortionAmount: 0
+    - _RimNoiseDistortionTilingU: 2
+    - _RimNoiseDistortionTilingV: 4
+    - _RimNoiseRefraction: 0
+    - _RimNoiseScrollSpeed: 0.1
+    - _RimNoiseSpherize: 0
+    - _RimNoiseTilingU: 1
+    - _RimNoiseTilingV: 1
+    - _RimNoiseTwistAmount: 0
+    - _RotationClouds: 0
+    - _RotationDarkClouds: 0
+    - _RotationStars: 0
+    - _Smoothness: 0.5
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _StarExposure: -16
+    - _StarPower: 1
+    - _StarSpeed: 1
+    - _StarsEmissionPower: 4
+    - _StarsRotationSpeed: 0.1
+    - _StarsTextureScale: 5
+    - _SunRadius: 0
+    - _Surface: 0
+    - _TimeScale: 0.1
+    - _UVScale: 2
+    - _WorkflowMode: 1
+    - _ZWrite: 1
+    m_Colors:
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _CloudMovement: {r: 1, g: 0, b: 0, a: 0}
+    - _CloudsRampColorTint: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _ReflectColor: {r: 1, g: 1, b: 1, a: 1}
+    - _RefractColor: {r: 1, g: 1, b: 1, a: 1}
+    - _RimColor: {r: 1, g: 1, b: 1, a: 1}
+    - _RimNoiseSpherizePosition: {r: 0, g: 0, b: 0, a: 0}
+    - _RotationAxis: {r: 0, g: 1, b: 0, a: 0}
+    - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _Tint: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+--- !u!114 &3055227843276239277
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 5
