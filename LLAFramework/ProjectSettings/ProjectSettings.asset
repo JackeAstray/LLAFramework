@@ -804,11 +804,11 @@ PlayerSettings:
   webGLMemoryGeometricGrowthCap: 96
   webGLPowerPreference: 2
   scriptingDefineSymbols:
-    Android: ENABLE_LOG;USE_INPUT_SYSTEM
-    Standalone: ENABLE_LOG;USE_INPUT_SYSTEM
-    WebGL: ENABLE_LOG
-    Windows Store Apps: ENABLE_LOG
-    iPhone: ENABLE_LOG
+    Android: ENABLE_LOG;USE_INPUT_SYSTEM;UNITY_PHYSICS_ENABLED
+    Standalone: ENABLE_LOG;USE_INPUT_SYSTEM;UNITY_PHYSICS_ENABLED
+    WebGL: ENABLE_LOG;UNITY_PHYSICS_ENABLED
+    Windows Store Apps: ENABLE_LOG;UNITY_PHYSICS_ENABLED
+    iPhone: ENABLE_LOG;UNITY_PHYSICS_ENABLED
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:
