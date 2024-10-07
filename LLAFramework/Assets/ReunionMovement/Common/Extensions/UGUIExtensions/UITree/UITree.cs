@@ -20,6 +20,8 @@ namespace GameLogic
         public Sprite closeIcon = null;
         // 最后一层图标
         public Sprite lastLayerIcon = null;
+
+        public List<Color> colors = new List<Color>();
         #endregion
 
         #region external call interface

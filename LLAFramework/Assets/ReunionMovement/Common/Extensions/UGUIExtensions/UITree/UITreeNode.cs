@@ -15,10 +15,12 @@ namespace GameLogic
     public class UITreeNode : UIBehaviour
     {
         #region 属性
+        public int layer = 0;
         private UITreeData treeData = null;
         private UITree uiTree = null;
         private Toggle toggle = null;
         private Image icon = null;
+        private Image bg = null;
         private Text text = null;
         private Transform toggleTransform = null;
         private Transform myTransform = null;
@@ -33,6 +35,7 @@ namespace GameLogic
         private void GetComponent()
         {
             myTransform = this.transform;
+            bg = myTransform.GetComponent<Image>();
             container = myTransform.Find("Container");
             toggle = container.Find("Toggle").GetComponent<Toggle>();
             icon = container.Find("IconContainer/Icon").GetComponent<Image>();
@@ -49,7 +52,6 @@ namespace GameLogic
             toggleTransform.localEulerAngles = new Vector3(0, 0, 90);
             toggleTransform.gameObject.SetActive(true);
         }
-
         #endregion
 
         #region 外部调用接口
@@ -78,7 +80,10 @@ namespace GameLogic
             {
                 icon.sprite = toggle.isOn ? uiTree.openIcon : uiTree.closeIcon;
             }
+
+            SetColor(data.layer);
         }
+
         /// <summary>
         /// 设置数据
         /// </summary>
@@ -104,8 +109,23 @@ namespace GameLogic
             {
                 icon.sprite = toggle.isOn ? uiTree.openIcon : uiTree.closeIcon;
             }
+
+            SetColor(data.layer);
         }
 
+        /// <summary>
+        /// 设置颜色
+        /// </summary>
+        /// <param name="layer"></param>
+        public void SetColor(int layer)
+        {
+            this.layer = layer;
+
+            if (layer < uiTree.colors.Count)
+            {
+                bg.color = uiTree.colors[layer];
+            }
+        }
         #endregion
 
         #region 折叠 展开
