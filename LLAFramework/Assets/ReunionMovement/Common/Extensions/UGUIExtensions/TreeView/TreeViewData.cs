@@ -9,29 +9,29 @@ namespace GameLogic
     /// <summary>
     /// 树节点数据
     /// </summary>
-    public class UITreeData
+    public class TreeViewData
     {
         #region 属性
-        public UITreeData parent;
-        public List<UITreeData> childNodes;
+        public TreeViewData parent;
+        public List<TreeViewData> childNodes;
         public int layer = 0;
         public string name = string.Empty;
 
-        public UITreeData() { }
-        public UITreeData(string name, int layer = 0)
+        public TreeViewData() { }
+        public TreeViewData(string name, int layer = 0)
         {
             this.name = name;
             this.layer = layer;
             parent = null;
-            childNodes = new List<UITreeData>();
+            childNodes = new List<TreeViewData>();
         }
-        public UITreeData(string name, List<UITreeData> childNodes, int layer = 0)
+        public TreeViewData(string name, List<TreeViewData> childNodes, int layer = 0)
         {
             this.name = name;
             parent = null;
             this.childNodes = childNodes;
             if (null == this.childNodes)
-                this.childNodes = new List<UITreeData>();
+                this.childNodes = new List<TreeViewData>();
             this.layer = layer;
             ResetChildren(this);
         }
@@ -43,7 +43,7 @@ namespace GameLogic
         /// 设置父节点
         /// </summary>
         /// <param name="parent"></param>
-        public void SetParent(UITreeData parent)
+        public void SetParent(TreeViewData parent)
         {
             if (null != this.parent)
                 this.parent.RemoveChild(this);
@@ -57,18 +57,18 @@ namespace GameLogic
         /// 添加子节点
         /// </summary>
         /// <param name="child"></param>
-        public void AddChild(UITreeData child)
+        public void AddChild(TreeViewData child)
         {
-            AddChild(new UITreeData[] { child });
+            AddChild(new TreeViewData[] { child });
         }
 
         /// <summary>
         /// 添加子节点
         /// </summary>
         /// <param name="children"></param>
-        public void AddChild(IEnumerable<UITreeData> children)
+        public void AddChild(IEnumerable<TreeViewData> children)
         {
-            foreach (UITreeData child in children)
+            foreach (TreeViewData child in children)
                 child.SetParent(this);
         }
 
@@ -76,18 +76,18 @@ namespace GameLogic
         /// 移除子节点
         /// </summary>
         /// <param name="child"></param>
-        public void RemoveChild(UITreeData child)
+        public void RemoveChild(TreeViewData child)
         {
-            RemoveChild(new UITreeData[] { child });
+            RemoveChild(new TreeViewData[] { child });
         }
 
         /// <summary>
         /// 移除子节点
         /// </summary>
         /// <param name="children"></param>
-        public void RemoveChild(IEnumerable<UITreeData> children)
+        public void RemoveChild(IEnumerable<TreeViewData> children)
         {
-            foreach (UITreeData child in children)
+            foreach (TreeViewData child in children)
             {
                 for (int i = 0; i < childNodes.Count; i++)
                     if (child == childNodes[i])
@@ -110,11 +110,11 @@ namespace GameLogic
         /// 重置子节点的父节点和层级
         /// </summary>
         /// <param name="treeData"></param>
-        private void ResetChildren(UITreeData treeData)
+        private void ResetChildren(TreeViewData treeData)
         {
             for (int i = 0; i < treeData.childNodes.Count; i++)
             {
-                UITreeData node = treeData.childNodes[i];
+                TreeViewData node = treeData.childNodes[i];
                 node.parent = treeData;
                 node.layer = treeData.layer + 1;
                 ResetChildren(node);
@@ -131,7 +131,7 @@ namespace GameLogic
         /// <returns></returns>
         public override bool Equals(object obj)
         {
-            UITreeData other = obj as UITreeData;
+            TreeViewData other = obj as TreeViewData;
             if (null == other) return false;
             return other.name.Equals(name) && other.layer.Equals(layer);
         }

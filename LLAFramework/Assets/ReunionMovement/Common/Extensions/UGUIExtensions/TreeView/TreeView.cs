@@ -11,7 +11,7 @@ namespace GameLogic
     /// <summary>
     /// 树形视图
     /// </summary>
-    public class UITree : UIBehaviour
+    public class TreeView : UIBehaviour
     {
         #region 属性
         // 打开图标
@@ -29,7 +29,7 @@ namespace GameLogic
         /// 插入数据
         /// </summary>
         /// <param name="rootData"></param>
-        public void Insert(UITreeData rootData)
+        public void Insert(TreeViewData rootData)
         {
             if (null == container)
             {
@@ -46,7 +46,7 @@ namespace GameLogic
         //}
 
         //[Obsolete("This method is replaced by Inject.")]
-        public void SetData(UITreeData rootData)
+        public void SetData(TreeViewData rootData)
         {
             if (null == container)
             {
@@ -60,7 +60,7 @@ namespace GameLogic
         #region private && public members
 
         [HideInInspector]
-        public UITreeNode treeRootNode = null;
+        public TreeViewNode treeRootNode = null;
         private Transform container = null;
         private GameObject nodePrefab = null;
         public GameObject NodePrefab
@@ -80,7 +80,7 @@ namespace GameLogic
             {
                 throw new Exception("UITreeNode Template can not be null! Create a Template!");
             }
-            treeRootNode = container.GetChild(0).GetComponent<UITreeNode>();
+            treeRootNode = container.GetChild(0).GetComponent<TreeViewNode>();
         }
 
         #endregion
@@ -90,14 +90,14 @@ namespace GameLogic
         private readonly List<GameObject> pool = new List<GameObject>();
         private Transform poolParent = null;
 
-        public List<GameObject> Pop(List<UITreeData> datas, int siblingIndex)
+        public List<GameObject> Pop(List<TreeViewData> datas, int siblingIndex)
         {
             List<GameObject> result = new List<GameObject>();
             for (int i = datas.Count - 1; i >= 0; i--)
                 result.Add(Pop(datas[i], siblingIndex));
             return result;
         }
-        public GameObject Pop(UITreeData data, int siblingIndex)
+        public GameObject Pop(TreeViewData data, int siblingIndex)
         {
             GameObject treeNode = null;
             if (pool.Count > 0)
@@ -110,7 +110,7 @@ namespace GameLogic
             treeNode.transform.SetParent(container);
             treeNode.SetActive(true);
             //treeNode.GetComponent<UITreeNode>().SetData(data);
-            treeNode.GetComponent<UITreeNode>().Insert(data);
+            treeNode.GetComponent<TreeViewNode>().Insert(data);
             treeNode.transform.SetSiblingIndex(siblingIndex + 1);
             return treeNode;
         }

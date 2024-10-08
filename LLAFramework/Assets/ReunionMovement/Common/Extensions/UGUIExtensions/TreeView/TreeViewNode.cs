@@ -12,12 +12,12 @@ namespace GameLogic
     /// <summary>
     /// 树节点
     /// </summary>
-    public class UITreeNode : UIBehaviour
+    public class TreeViewNode : UIBehaviour
     {
         #region 属性
         public int layer = 0;
-        private UITreeData treeData = null;
-        private UITree uiTree = null;
+        private TreeViewData treeData = null;
+        private TreeView uiTree = null;
         private Toggle toggle = null;
         private Image icon = null;
         private Image bg = null;
@@ -41,7 +41,7 @@ namespace GameLogic
             icon = container.Find("IconContainer/Icon").GetComponent<Image>();
             text = container.Find("Text").GetComponent<Text>();
             toggleTransform = toggle.transform.Find("Image");
-            uiTree = myTransform.parent.parent.parent.GetComponent<UITree>();
+            uiTree = myTransform.parent.parent.parent.GetComponent<TreeView>();
         }
         /// <summary>
         /// 重置组件
@@ -59,7 +59,7 @@ namespace GameLogic
         /// 插入数据
         /// </summary>
         /// <param name="data"></param>
-        public void Insert(UITreeData data)
+        public void Insert(TreeViewData data)
         {
             if (myTransform == null)
             {
@@ -88,7 +88,7 @@ namespace GameLogic
         /// 设置数据
         /// </summary>
         /// <param name="data"></param>
-        public void SetData(UITreeData data)
+        public void SetData(TreeViewData data)
         {
             if (null == myTransform)
             {
@@ -154,7 +154,7 @@ namespace GameLogic
         {
             for (int i = 0; i < children.Count; i++)
             {
-                UITreeNode node = children[i].GetComponent<UITreeNode>();
+                TreeViewNode node = children[i].GetComponent<TreeViewNode>();
                 node.RemoveListener();
                 node.CloseChildren();
             }
