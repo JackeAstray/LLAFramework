@@ -65,7 +65,7 @@ namespace GameLogic.AssetsModule
         {
             Log.Debug("AssetBundleModule 清除数据");
         }
-        
+
         /// <summary>
         /// 验证版本号
         /// </summary>
@@ -85,8 +85,8 @@ namespace GameLogic.AssetsModule
         {
             ABVersion webVersion = JsonMapper.ToObject<ABVersion>(response.Text);
             int manifestVersion = webVersion.ManifestVersion;
-            DateTime start = EngineExtensions.GetDateTimeByString(webVersion.StartLimitTime);
-            DateTime end = EngineExtensions.GetDateTimeByString(webVersion.EndLimitTime);
+            DateTime start = DateTimeExtensions.GetDateTimeByString(webVersion.StartLimitTime);
+            DateTime end = DateTimeExtensions.GetDateTimeByString(webVersion.EndLimitTime);
             bool isUpdate = webVersion.IsUpdate;
 
             string uriPrefix = $"{assetServerIP}/StandaloneWindows64/{manifestVersion}";

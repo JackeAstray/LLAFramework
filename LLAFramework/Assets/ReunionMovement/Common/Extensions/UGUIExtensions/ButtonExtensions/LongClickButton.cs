@@ -9,7 +9,7 @@ using UnityEngine.UI;
 namespace GameLogic
 {
     /// <summary>
-    /// 长按按钮
+    /// 闀挎寜鎸夐挳
     /// </summary>
     public class LongClickButton : Button
     {
@@ -22,13 +22,13 @@ namespace GameLogic
             set { longClick = value; }
         }
 
-        //按下时间
+        //鎸変笅鏃堕棿
         private DateTime firstTime = default(DateTime);
-        //抬起时间
+        //鎶捣鏃堕棿
         private DateTime secondTime = default(DateTime);
 
         /// <summary>
-        /// 长按
+        /// 闀挎寜
         /// </summary>
         private void Press()
         {
@@ -40,7 +40,7 @@ namespace GameLogic
         }
 
         /// <summary>
-        /// 按下
+        /// 鎸変笅
         /// </summary>
         /// <param name="eventData"></param>
         public override void OnPointerDown(PointerEventData eventData)
@@ -53,7 +53,7 @@ namespace GameLogic
         }
 
         /// <summary>
-        /// 抬起
+        /// 鎶捣
         /// </summary>
         /// <param name="eventData"></param>
         public override void OnPointerUp(PointerEventData eventData)
@@ -80,7 +80,7 @@ namespace GameLogic
         }
 
         /// <summary>
-        /// 离开
+        /// 绂诲紑
         /// </summary>
         /// <param name="eventData"></param>
         public override void OnPointerExit(PointerEventData eventData)
@@ -90,7 +90,7 @@ namespace GameLogic
         }
 
         /// <summary>
-        /// 重置时间
+        /// 閲嶇疆鏃堕棿
         /// </summary>
         private void resetTime()
         {

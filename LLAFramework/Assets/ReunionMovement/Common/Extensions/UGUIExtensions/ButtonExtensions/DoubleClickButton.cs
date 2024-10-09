@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace GameLogic
 {
-    //双击按钮
+    //鍙屽嚮鎸夐挳
     public class DoubleClickButton : Button
     {
         [SerializeField]
@@ -23,7 +23,7 @@ namespace GameLogic
         private DateTime secondTime;
 
         /// <summary>
-        /// 双击
+        /// 鍙屽嚮
         /// </summary>
         private void Press()
         {
@@ -35,7 +35,7 @@ namespace GameLogic
         }
 
         /// <summary>
-        /// 按下
+        /// 鎸変笅
         /// </summary>
         /// <param name="eventData"></param>
         public override void OnPointerDown(PointerEventData eventData)
@@ -52,7 +52,7 @@ namespace GameLogic
         }
 
         /// <summary>
-        /// 抬起
+        /// 鎶捣
         /// </summary>
         /// <param name="eventData"></param>
         public override void OnPointerUp(PointerEventData eventData)
@@ -74,7 +74,7 @@ namespace GameLogic
         }
 
         /// <summary>
-        /// 离开
+        /// 绂诲紑
         /// </summary>
         /// <param name="eventData"></param>
         public override void OnPointerExit(PointerEventData eventData)
@@ -84,7 +84,7 @@ namespace GameLogic
         }
 
         /// <summary>
-        /// 重置时间
+        /// 閲嶇疆鏃堕棿
         /// </summary>
         private void resetTime()
         {

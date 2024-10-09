@@ -12,11 +12,11 @@ public class DoubleLongClickButton : MonoBehaviour
     {
         DoubleClickButton.onDoubleClick.AddListener(() =>
         {
-            Debug.Log("Double click button");
+            Debug.Log("双击按钮");
         });
         LongClickButton.onLongClick.AddListener(() =>
         {
-            Debug.Log("Long click button");
+            Debug.Log("长按按钮");
         });
     }
 }
