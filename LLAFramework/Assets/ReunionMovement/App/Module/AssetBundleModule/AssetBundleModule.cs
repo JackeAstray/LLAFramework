@@ -54,7 +54,7 @@ namespace GameLogic.AssetsModule
             yield return null;
             initProgress = 100;
             IsInited = true;
-            VerifyVersionNumber();
+            //VerifyVersionNumber();
             Log.Debug("AssetBundleModule 初始化完成");
         }
 
@@ -81,6 +81,10 @@ namespace GameLogic.AssetsModule
                 .Send();
         }
 
+        /// <summary>
+        /// 获取版本
+        /// </summary>
+        /// <param name="response"></param>
         public void GetVersion(HttpResponse response)
         {
             ABVersion webVersion = JsonMapper.ToObject<ABVersion>(response.Text);
