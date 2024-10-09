@@ -125,8 +125,7 @@ namespace GameLogic
         {
             var obj = Load<T>(path);
             var go = GameObject.Instantiate<T>(obj);
-            if (go == null)
-                Log.Error(string.Format("实例化 {0} 失败!", obj));
+            if (go == null) Log.Error(string.Format("实例化 {0} 失败!", obj));
             return go;
         }
 

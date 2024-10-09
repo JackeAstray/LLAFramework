@@ -9,7 +9,7 @@ namespace GameLogic
     /// <summary>
     /// 数据库模块
     /// </summary>
-    public class DatabaseModule : CustommModuleInitialize 
+    public class DatabaseModule : CustommModuleInitialize
     {
         #region 实例与初始化
         public static DatabaseModule Instance = new DatabaseModule();

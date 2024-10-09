@@ -16,7 +16,7 @@ namespace GameLogic
         #endregion
 
         Keyboard keyboard;
-        
+
         public TerminalRequest terminalRequest { get; private set; }
 
         public IEnumerator Init()
@@ -64,9 +64,12 @@ namespace GameLogic
 
             if (keyboard[Key.Escape].wasPressedThisFrame)
             {
-                if (UIModule.Instance.IsOpen("TerminalUIPlane"))
+                if (UIModule.Instance != null)
                 {
-                    UIModule.Instance.CloseWindow("TerminalUIPlane");
+                    if (UIModule.Instance.IsOpen("TerminalUIPlane"))
+                    {
+                        UIModule.Instance.CloseWindow("TerminalUIPlane");
+                    }
                 }
             }
         }

@@ -16,41 +16,19 @@ namespace GameLogic
 
         #region 每个界面都有一个Canvas
         private Canvas canvas;
-        public Canvas Canvas
-        {
-            get
-            {
-                if (canvas == null && gameObject)
-                {
-                    canvas = gameObject.GetComponent<Canvas>();
-                }
-
-                return canvas;
-            }
-        }
+        public Canvas Canvas => canvas ??= gameObject.GetComponent<Canvas>();
         #endregion
 
         #region 每个界面都有一个UIWindowAsset
         private UIWindowAsset windowAsset;
-        public UIWindowAsset WindowAsset
-        {
-            get
-            {
-                if (windowAsset == null && gameObject)
-                {
-                    windowAsset = gameObject.GetComponent<UIWindowAsset>();
-                }
-
-                return windowAsset;
-            }
-        }
+        public UIWindowAsset WindowAsset => windowAsset ??= gameObject.GetComponent<UIWindowAsset>();
         #endregion
 
         private bool isVisiable;
         public bool IsVisiable
         {
-            get { return isVisiable; }
-            set { isVisiable = value; }
+            get => isVisiable;
+            set => isVisiable = value;
         }
 
         public virtual void OnInit()
@@ -60,7 +38,7 @@ namespace GameLogic
 
         public virtual void BeforeOpen(object[] onOpenArgs, Action doOpen)
         {
-            doOpen();
+            doOpen?.Invoke();
         }
 
         public virtual void OnOpen(params object[] args)
@@ -75,40 +53,6 @@ namespace GameLogic
         public virtual void OnClose()
         {
             IsVisiable = false;
-        }
-
-        /// <summary>
-        /// 输入uri搜寻控件
-        /// findTrans默认参数null时使用this.transform
-        /// </summary>
-        public T GetControl<T>(string uri, Transform findTrans = null, bool isLog = true) where T : UnityEngine.Object
-        {
-            return (T)GetControl(typeof(T), uri, findTrans, isLog);
-        }
-
-        public object GetControl(Type type, string uri, Transform findTrans = null, bool isLog = true)
-        {
-            if (findTrans == null)
-            {
-                findTrans = transform;
-            }
-
-            Transform trans = findTrans.Find(uri);
-            if (trans == null)
-            {
-                if (isLog)
-                {
-                    Log.Error(string.Format("Get UI<{0}> Control Error: " + uri, this));
-                }
-                return null;
-            }
-
-            if (type == typeof(GameObject))
-            {
-                return trans.gameObject;
-            }
-
-            return trans.GetComponent(type);
         }
 
         /// <summary>
@@ -135,6 +79,39 @@ namespace GameLogic
         }
 
         #region 功能
+        /// <summary>
+        /// 输入uri搜寻控件
+        /// findTrans默认参数null时使用this.transform
+        /// </summary>
+        public T GetControl<T>(string uri, Transform findTrans = null, bool isLog = true) where T : UnityEngine.Object
+        {
+            return (T)GetControl(typeof(T), uri, findTrans, isLog);
+        }
+        /// <summary>
+        /// 输入uri搜寻控件
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="uri"></param>
+        /// <param name="findTrans"></param>
+        /// <param name="isLog"></param>
+        /// <returns></returns>
+        public object GetControl(Type type, string uri, Transform findTrans = null, bool isLog = true)
+        {
+            findTrans ??= transform;
+
+            Transform trans = findTrans.Find(uri);
+            if (trans == null)
+            {
+                if (isLog)
+                {
+                    Log.Error($"Get UI<{type.Name}> Control Error: {uri}");
+                }
+                return null;
+            }
+
+            return type == typeof(GameObject) ? trans.gameObject : trans.GetComponent(type);
+        }
+
         /// <summary>
         /// 查找控件
         /// </summary>

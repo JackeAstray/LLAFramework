@@ -63,15 +63,8 @@ namespace GameLogic
 
         public int LoadingUICount
         {
-            get { return loadingUICount; }
-            set
-            {
-                loadingUICount = value;
-                if (loadingUICount < 0)
-                {
-                    Log.Error("Error ---- LoadingUICount < 0");
-                }
-            }
+            get => loadingUICount;
+            set => loadingUICount = value;
         }
 
         #region 创建根路径
@@ -252,7 +245,7 @@ namespace GameLogic
             if (uiStateCache.TryGetValue(uiName, out UILoadState uiState))
             {
                 // 加载，这样就有UIState了, 但注意因为没参数，不要随意执行OnOpen
-                uiState = LoadWindow(uiName, false); 
+                uiState = LoadWindow(uiName, false);
                 uiStateCache[uiName] = uiState;
             }
 
@@ -408,11 +401,11 @@ namespace GameLogic
             if (!uiStateCache.TryGetValue(name, out uiState))
             {
                 Log.Error($"[CloseWindow]没有加载的UIWindow: {name}");
-                return; 
+                return;
             }
 
             // Loading中
-            if (uiState.isLoading) 
+            if (uiState.isLoading)
             {
                 Log.Error($"[CloseWindow]是加载中的{name}");
                 uiState.openWhenFinish = false;

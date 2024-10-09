@@ -19,7 +19,7 @@ namespace GameLogic
 
         LanguageSubject subject = new LanguageSubject();
         Multilingual multilingual;
-        
+
         public IEnumerator Init()
         {
             initProgress = 0;

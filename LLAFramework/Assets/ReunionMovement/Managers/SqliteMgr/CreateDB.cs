@@ -6,8 +6,13 @@ using System;
 
 namespace GameLogic.Example
 {
+    /// <summary>
+    /// 创建数据库 示例
+    /// </summary>
     public class CreateDB : MonoBehaviour
     {
+        private SqliteMgr sqliteMgr;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -18,40 +23,77 @@ namespace GameLogic.Example
 
         private void StartSync()
         {
-            DataService ds = new DataService(SqliteConfig.UserDBName);
-            ds.CreateDB();
+            sqliteMgr.Initialize(SqliteConfig.UserDBName);
 
-            IEnumerable<UserInfo> userInfos = ds.Query<UserInfo>();
-            
+            var userInfos = sqliteMgr.GetAllUsers();
             foreach (var userInfo in userInfos)
             {
                 Debug.Log(userInfo.ToString());
             }
 
-            var users = ds.Query<UserInfo>("SELECT * FROM UserInfo WHERE Account = ?", "admin");
+            var users = sqliteMgr.GetUsersByAccount("admin");
             foreach (var user in users)
             {
                 Debug.Log($"Account: {user.Account}, Name: {user.Name}");
             }
 
-            users = ds.Query<UserInfo>("SELECT * FROM UserInfo WHERE Name LIKE '%admin%'");
+            users = sqliteMgr.GetUsersByName("admin");
             foreach (var user in users)
             {
                 Debug.Log($"Account: {user.Account}, Name: {user.Name}");
             }
 
-            ds.Execute("INSERT INTO UserInfo (Account, Password, Name, Nickname, UniqueID, Avatar) VALUES (?, ?, ?, ?, ?, ?)",
-                       "user1", "password1", "User One", "user1", Guid.NewGuid().ToString(), "");
+            var newUser = new UserInfo
+            {
+                Account = "user1",
+                Password = "password1",
+                Name = "User One",
+                Nickname = "user1",
+                UniqueID = Guid.NewGuid().ToString(),
+                Avatar = ""
+            };
+            sqliteMgr.InsertUser(newUser);
 
-            ds.Execute("INSERT INTO UserInfo (Account, Password, Name, Nickname, UniqueID, Avatar) VALUES (?, ?, ?, ?, ?, ?)",
-                       "user2", "password2", "User One", "user2", Guid.NewGuid().ToString(), "");
+            newUser.Password = "newpassword";
+            sqliteMgr.UpdateUser(newUser);
 
-            ds.Execute("INSERT INTO UserInfo (Account, Password, Name, Nickname, UniqueID, Avatar) VALUES (?, ?, ?, ?, ?, ?)",
-                "user3", "password3", "User One", "user3", Guid.NewGuid().ToString(), "");
+            sqliteMgr.DeleteUser(newUser);
 
-            ds.Execute("UPDATE UserInfo SET Password = ? WHERE Account = ?", "newpassword", "user2");
+            sqliteMgr.Close();
+            //DataService ds = new DataService(SqliteConfig.UserDBName);
+            //ds.CreateDB();
 
-            ds.Execute("DELETE FROM UserInfo WHERE Account = ?", "user3");
+            //IEnumerable<UserInfo> userInfos = ds.Query<UserInfo>();
+
+            //foreach (var userInfo in userInfos)
+            //{
+            //    Debug.Log(userInfo.ToString());
+            //}
+
+            //var users = ds.Query<UserInfo>("SELECT * FROM UserInfo WHERE Account = ?", "admin");
+            //foreach (var user in users)
+            //{
+            //    Debug.Log($"Account: {user.Account}, Name: {user.Name}");
+            //}
+
+            //users = ds.Query<UserInfo>("SELECT * FROM UserInfo WHERE Name LIKE '%admin%'");
+            //foreach (var user in users)
+            //{
+            //    Debug.Log($"Account: {user.Account}, Name: {user.Name}");
+            //}
+
+            //ds.Execute("INSERT INTO UserInfo (Account, Password, Name, Nickname, UniqueID, Avatar) VALUES (?, ?, ?, ?, ?, ?)",
+            //           "user1", "password1", "User One", "user1", Guid.NewGuid().ToString(), "");
+
+            //ds.Execute("INSERT INTO UserInfo (Account, Password, Name, Nickname, UniqueID, Avatar) VALUES (?, ?, ?, ?, ?, ?)",
+            //           "user2", "password2", "User One", "user2", Guid.NewGuid().ToString(), "");
+
+            //ds.Execute("INSERT INTO UserInfo (Account, Password, Name, Nickname, UniqueID, Avatar) VALUES (?, ?, ?, ?, ?, ?)",
+            //    "user3", "password3", "User One", "user3", Guid.NewGuid().ToString(), "");
+
+            //ds.Execute("UPDATE UserInfo SET Password = ? WHERE Account = ?", "newpassword", "user2");
+
+            //ds.Execute("DELETE FROM UserInfo WHERE Account = ?", "user3");
         }
     }
 }

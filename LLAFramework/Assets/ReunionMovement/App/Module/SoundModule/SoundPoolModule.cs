@@ -28,7 +28,7 @@ namespace GameLogic
         //特效音
         GameObject effectSoundPoolRoot;
         public GameObject effectSoundPoolTempRoot;
-        
+
         //启动对象池用
         public List<StartupPool> startupPools = new List<StartupPool>();
         //临时列表
@@ -84,7 +84,7 @@ namespace GameLogic
             voicePoolTempRoot.transform.localPosition = Vector3.zero;
             voicePoolTempRoot.transform.localRotation = Quaternion.identity;
             voicePoolTempRoot.transform.localScale = Vector3.one;
-            
+
             effectSoundPoolRoot = new GameObject("EffectSoundPoolRoot");
             effectSoundPoolRoot.transform.localPosition = Vector3.zero;
             effectSoundPoolRoot.transform.localRotation = Quaternion.identity;
@@ -500,7 +500,7 @@ namespace GameLogic
         /// <returns></returns>
         public bool IsSpawned(GameObject obj, PoolType poolType)
         {
-            switch(poolType)
+            switch (poolType)
             {
                 case PoolType.Voice:
                     return spawnedVoiceSoundObjects.ContainsKey(obj);
@@ -572,7 +572,7 @@ namespace GameLogic
                 list.Clear();
             }
 
-            switch(poolType)
+            switch (poolType)
             {
                 case PoolType.Voice:
                     foreach (var item in spawnedVoiceSoundObjects)
