@@ -154,7 +154,7 @@ namespace GameLogic
         /// <param name="u">水平插值参数（介于0和1之间）</param>
         /// <param name="v">垂直插值参数（介于0和1之间）</param>
         /// <returns></returns>
-        public static float Bilerp(float a, float b, float c, float d, 
+        public static float Bilerp(float a, float b, float c, float d,
                                    float u, float v)
         {
             // 在a和b之间进行线性插值
@@ -748,7 +748,7 @@ namespace GameLogic
                 // 计算每个点的位置
                 points[i] = pAnchorPos + direction;
                 // 更新方向向量以指向下一个点
-                direction = rotation * direction; 
+                direction = rotation * direction;
             }
 
             return points;
@@ -1186,6 +1186,121 @@ namespace GameLogic
 
             Array.Resize(ref dstArray, idx);
             return dstArray;
+        }
+        #endregion
+
+        #region 波浪数
+        /// <summary>
+        /// 波浪随机数整数版
+        /// </summary>
+        /// <param name="waveNumberStr"></param>
+        /// <returns></returns>
+        public static int GetWaveRandomNumberInt(string waveNumberStr)
+        {
+            FromToNumber from = ParseMinMaxNumber(waveNumberStr);
+            return (int)UnityEngine.Random.Range(from.From, from.To + 1);
+        }
+
+        /// <summary>
+        /// 获取波浪随机数,   即填“1”或填“1~2”这样的字符串中返回一个数！
+        /// 如填"1"，直接返回1
+        /// 如果填"1~10"这样的，那么随机返回1~10中间一个数
+        /// </summary>
+        /// <param name="waveNumberStr"></param>
+        /// <returns></returns>
+        public static float GetWaveRandomNumber(string waveNumberStr)
+        {
+            FromToNumber from = ParseMinMaxNumber(waveNumberStr);
+            return UnityEngine.Random.Range(from.From, from.To);
+        }
+
+        public struct FromToNumber
+        {
+            public float From;
+            public float To;
+        }
+
+        /// <summary>
+        /// 获取波浪随机数的最大最小
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static FromToNumber ParseMinMaxNumber(string str)
+        {
+            var strs = str.Split('-', '~');
+            var number = new FromToNumber();
+            if (strs.Length > 0)
+            {
+                number.From = strs[0].ToInt32();
+            }
+            if (strs.Length > 1)
+            {
+                number.To = strs[1].ToInt32();
+            }
+            return number;
+        }
+
+        /// <summary>
+        /// 是否在波浪数之间
+        /// </summary>
+        /// <param name="waveNumberStr"></param>
+        /// <param name="testNumber"></param>
+        /// <returns></returns>
+        public static bool IsBetweenWave(string waveNumberStr, int testNumber)
+        {
+            FromToNumber from = ParseMinMaxNumber(waveNumberStr);
+            return testNumber >= from.From && testNumber <= from.To;
+        }
+        #endregion
+
+        #region 随机
+        /// <summary>
+        /// 随机数
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        public static T Random<T>(T min, T max) where T : IComparable<T>
+        {
+            if (typeof(T) == typeof(int))
+            {
+                int imin = Convert.ToInt32(min);
+                int imax = Convert.ToInt32(max);
+                return (T)(object)UnityEngine.Random.Range(imin, imax + 1);
+            }
+            else if (typeof(T) == typeof(float))
+            {
+                float fmin = Convert.ToSingle(min);
+                float fmax = Convert.ToSingle(max);
+                return (T)(object)UnityEngine.Random.Range(fmin, fmax);
+            }
+            else
+            {
+                throw new ArgumentException("不支持的类型");
+            }
+        }
+
+        /// <summary>
+        /// 从一个List中随机获取
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static T GetRandomItemFromList<T>(IList<T> list)
+        {
+            if (list == null)
+            {
+                throw new ArgumentNullException(nameof(list));
+            }
+
+            if (list.Count == 0)
+            {
+                return default(T);
+            }
+
+            return list[UnityEngine.Random.Range(0, list.Count)];
         }
         #endregion
     }
