@@ -25,11 +25,14 @@ namespace GameLogic
         Dictionary<int, Languages> languages = new Dictionary<int, Languages>();
         // 声音配置表
         Dictionary<int, SoundConfig> sounds = new Dictionary<int, SoundConfig>();
+        // 问题配置表
+        Dictionary<int, QuestionConfig> questions = new Dictionary<int, QuestionConfig>();
 
         string filePath = AppConfig.DatabasePath;
         string gameConfig_FileName = "GameConfig.json";
         string languages_FileName = "Languages.json";
         string audios_FileName = "SoundConfig.json";
+        string questions_FileName = "QuestionConfig.json";
 
         public IEnumerator Init()
         {
@@ -47,7 +50,9 @@ namespace GameLogic
             Log.Debug("DataBaseModule 清除数据");
         }
 
-        ////-------------------------------------
+        /// <summary>
+        /// 初始化配置
+        /// </summary>
         void InitConfig()
         {
             LoadGameConfig();
@@ -55,6 +60,8 @@ namespace GameLogic
             LoadLanguages();
             //------------------------------------
             LoadSoundConfig();
+            //------------------------------------
+            LoadQuestionConfig();
         }
 
         /// <summary>
@@ -116,6 +123,18 @@ namespace GameLogic
                 sounds.Add(tempData.Id, tempData);
             }
         }
+
+        public void LoadQuestionConfig()
+        {
+            List<QuestionConfig> configs = new List<QuestionConfig>();
+            TextAsset json = ResourcesModule.Instance.Load<TextAsset>("AutoDatabase/QuestionConfig");
+            configs = JsonMapper.ToObject<List<QuestionConfig>>(json.text);
+
+            foreach (QuestionConfig tempData in configs)
+            {
+                questions.Add(tempData.Id, tempData);
+            }
+        }
         #endregion
 
         #region 获取数据
@@ -158,6 +177,29 @@ namespace GameLogic
             }
             return null;
         }
+
+        /// <summary>
+        /// 获取问题配置表数据
+        /// </summary>
+        /// <returns></returns>
+        public Dictionary<int, QuestionConfig> GetQuestionConfig()
+        {
+            return questions;
+        }
+
+        /// <summary>
+        /// 获取问题配置表数据
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public QuestionConfig GetQuestionConfig(int index)
+        {
+            if (questions.ContainsKey(index))
+            {
+                return questions[index];
+            }
+            return null;
+        }
         #endregion
 
         #region 保存
@@ -180,6 +222,13 @@ namespace GameLogic
             List<SoundConfig> tempList = sounds.Values.ToList();
             string jsonStr = JsonMapper.ToJson(tempList, true);
             PathUtils.WriteFile(jsonStr, filePath, audios_FileName);
+        }
+
+        public void SaveQuestionConfig()
+        {
+            List<QuestionConfig> tempList = questions.Values.ToList();
+            string jsonStr = JsonMapper.ToJson(tempList, true);
+            PathUtils.WriteFile(jsonStr, filePath, questions_FileName);
         }
         #endregion
     }

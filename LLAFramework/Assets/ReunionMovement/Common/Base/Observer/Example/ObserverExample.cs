@@ -31,7 +31,7 @@ namespace GameLogic.Example
             player.Attach(this);
         }
 
-        public override void UpdateData()
+        public override void UpdateData(params object[] args)
         {
             // 当 Player 的状态改变时，更新 HealthBar 的显示
             Debug.Log("Player's health has changed!");

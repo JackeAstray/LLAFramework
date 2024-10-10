@@ -11,9 +11,9 @@ namespace GameLogic.Base
     {
         private List<Observer> observers = new List<Observer>();
 
-        public void SetState()
+        public void SetState(params object[] args)
         {
-            NotifyAllObservers();
+            NotifyAllObservers(args);
         }
 
         public void Attach(Observer observer)
@@ -21,13 +21,13 @@ namespace GameLogic.Base
             observers.Add(observer);
         }
 
-        public void NotifyAllObservers()
+        public void NotifyAllObservers(params object[] args)
         {
             foreach (Observer observer in observers)
             {
                 if (observer != null)
                 {
-                    observer.UpdateData();
+                    observer.UpdateData(args);
                 }
             }
         }

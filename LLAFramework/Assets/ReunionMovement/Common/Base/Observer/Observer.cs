@@ -10,6 +10,6 @@ namespace GameLogic.Base
     public abstract class Observer : MonoBehaviour
     {
         protected Observed subject;
-        public abstract void UpdateData();
+        public abstract void UpdateData(params object[] args);
     }
 }

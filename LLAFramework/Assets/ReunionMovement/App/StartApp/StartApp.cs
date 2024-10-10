@@ -69,6 +69,8 @@ namespace GameLogic
         {
             //SoundModule.Instance.PlayMusic(110010);
 
+            UIModule.Instance.OpenWindow("StartAppUIPlane");
+
             //SoundModule.Instance.PlaySound(120012, PoolType.Voice);
             //SoundModule.Instance.PlaySound(120019, PoolType.EffectSound);
 
