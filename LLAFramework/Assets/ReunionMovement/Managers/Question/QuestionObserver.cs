@@ -60,6 +60,11 @@ namespace GameLogic
 
             submit.onClick.AddListener(() =>
             {
+                if (questionItem.isAnswered)
+                {
+                    return;
+                }
+
                 userAnswer = "";
 
                 for (int i = 0; i < answers.Count; i++)

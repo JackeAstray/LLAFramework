@@ -1,4 +1,3 @@
-using GameLogic.EditorTools;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,9 +9,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using Tools = GameLogic.EditorTools.Tools;
 
-namespace GameLogic.Editor
+namespace GameLogic.EditorTools
 {
     public class CreateUIPlane : EditorWindow
     {
