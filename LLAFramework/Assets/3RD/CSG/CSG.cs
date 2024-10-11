@@ -15,17 +15,17 @@ namespace GameLogic
             Subtraction
         }
 
-        const float k_DefaultEpsilon = 0.00001f;
-        static float s_Epsilon = k_DefaultEpsilon;
+        const float defaultEpsilon = 0.00001f;
+        static float epsilon = defaultEpsilon;
 
         /// <summary>
         /// 使用的公差确定平面是否重合
         /// <see cref="Plane.SplitPolygon"/> 
         /// </summary>
-        public static float epsilon
+        public static float Epsilon
         {
-            get => s_Epsilon;
-            set => s_Epsilon = value;
+            get => epsilon;
+            set => epsilon = value;
         }
 
         /// <summary>

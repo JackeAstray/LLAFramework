@@ -9,117 +9,117 @@ namespace GameLogic
     /// </summary>
     public struct Vertex
     {
-        Vector3 m_Position;
-        Color m_Color;
-        Vector3 m_Normal;
-        Vector4 m_Tangent;
-        Vector2 m_UV0;
-        Vector2 m_UV2;
-        Vector4 m_UV3;
-        Vector4 m_UV4;
-        VertexAttributes m_Attributes;
+        Vector3 position;
+        Color color;
+        Vector3 normal;
+        Vector4 tangent;
+        Vector2 uv0;
+        Vector2 uv2;
+        Vector4 uv3;
+        Vector4 uv4;
+        VertexAttributes attributes;
 
         /// <value>
         /// 模型空间中的位置
         /// </value>
-        public Vector3 position
+        public Vector3 Position
         {
-            get { return m_Position; }
+            get { return position; }
             set
             {
-                hasPosition = true;
-                m_Position = value;
+                HasPosition = true;
+                position = value;
             }
         }
 
         /// <value>
         /// 顶点颜色
         /// </value>
-        public Color color
+        public Color Color
         {
-            get { return m_Color; }
+            get { return color; }
             set
             {
-                hasColor = true;
-                m_Color = value;
+                HasColor = true;
+                color = value;
             }
         }
 
         /// <value>
         /// 单位向量法线
         /// </value>
-        public Vector3 normal
+        public Vector3 Normal
         {
-            get { return m_Normal; }
+            get { return normal; }
             set
             {
-                hasNormal = true;
-                m_Normal = value;
+                HasNormal = true;
+                normal = value;
             }
         }
 
         /// <value>
         /// 顶点切线（有时称为binormal）
         /// </value>
-        public Vector4 tangent
+        public Vector4 Tangent
         {
-            get { return m_Tangent; }
+            get { return tangent; }
             set
             {
-                hasTangent = true;
-                m_Tangent = value;
+                HasTangent = true;
+                tangent = value;
             }
         }
 
         /// <value>
         /// UV 0 通道. 也称为纹理
         /// </value>
-        public Vector2 uv0
+        public Vector2 UV0
         {
-            get { return m_UV0; }
+            get { return uv0; }
             set
             {
-                hasUV0 = true;
-                m_UV0 = value;
+                HasUV0 = true;
+                uv0 = value;
             }
         }
 
         /// <value>
         /// UV 2 通道.
         /// </value>
-        public Vector2 uv2
+        public Vector2 UV2
         {
-            get { return m_UV2; }
+            get { return uv2; }
             set
             {
-                hasUV2 = true;
-                m_UV2 = value;
+                HasUV2 = true;
+                uv2 = value;
             }
         }
 
         /// <value>
         /// UV 3 通道.
         /// </value>
-        public Vector4 uv3
+        public Vector4 UV3
         {
-            get { return m_UV3; }
+            get { return uv3; }
             set
             {
-                hasUV3 = true;
-                m_UV3 = value;
+                HasUV3 = true;
+                uv3 = value;
             }
         }
 
         /// <value>
         /// UV 4 通道.
         /// </value>
-        public Vector4 uv4
+        public Vector4 UV4
         {
-            get { return m_UV4; }
+            get { return uv4; }
             set
             {
-                hasUV4 = true;
-                m_UV4 = value;
+                HasUV4 = true;
+                uv4 = value;
             }
         }
 
@@ -130,78 +130,78 @@ namespace GameLogic
         /// <returns>如果此顶点设置了指定的属性，则为True，如果这些属性是默认值，则为false</returns>
         public bool HasArrays(VertexAttributes attribute)
         {
-            return (m_Attributes & attribute) == attribute;
+            return (attributes & attribute) == attribute;
         }
 
         /// <summary>
         /// 是否有位置
         /// </summary>
-        public bool hasPosition
+        public bool HasPosition
         {
-            get { return (m_Attributes & VertexAttributes.Position) == VertexAttributes.Position; }
-            private set { m_Attributes = value ? (m_Attributes | VertexAttributes.Position) : (m_Attributes & ~(VertexAttributes.Position)); }
+            get { return (attributes & VertexAttributes.Position) == VertexAttributes.Position; }
+            private set { attributes = value ? (attributes | VertexAttributes.Position) : (attributes & ~(VertexAttributes.Position)); }
         }
 
         /// <summary>
         /// 是否有颜色
         /// </summary>
-        public bool hasColor
+        public bool HasColor
         {
-            get { return (m_Attributes & VertexAttributes.Color) == VertexAttributes.Color; }
-            private set { m_Attributes = value ? (m_Attributes | VertexAttributes.Color) : (m_Attributes & ~(VertexAttributes.Color)); }
+            get { return (attributes & VertexAttributes.Color) == VertexAttributes.Color; }
+            private set { attributes = value ? (attributes | VertexAttributes.Color) : (attributes & ~(VertexAttributes.Color)); }
         }
 
         /// <summary>
         /// 是否有法线
         /// </summary>
-        public bool hasNormal
+        public bool HasNormal
         {
-            get { return (m_Attributes & VertexAttributes.Normal) == VertexAttributes.Normal; }
-            private set { m_Attributes = value ? (m_Attributes | VertexAttributes.Normal) : (m_Attributes & ~(VertexAttributes.Normal)); }
+            get { return (attributes & VertexAttributes.Normal) == VertexAttributes.Normal; }
+            private set { attributes = value ? (attributes | VertexAttributes.Normal) : (attributes & ~(VertexAttributes.Normal)); }
         }
 
         /// <summary>
         /// 是否有切线
         /// </summary>
-        public bool hasTangent
+        public bool HasTangent
         {
-            get { return (m_Attributes & VertexAttributes.Tangent) == VertexAttributes.Tangent; }
-            private set { m_Attributes = value ? (m_Attributes | VertexAttributes.Tangent) : (m_Attributes & ~(VertexAttributes.Tangent)); }
+            get { return (attributes & VertexAttributes.Tangent) == VertexAttributes.Tangent; }
+            private set { attributes = value ? (attributes | VertexAttributes.Tangent) : (attributes & ~(VertexAttributes.Tangent)); }
         }
 
         /// <summary>
         /// 是否有UV0
         /// </summary>
-        public bool hasUV0
+        public bool HasUV0
         {
-            get { return (m_Attributes & VertexAttributes.Texture0) == VertexAttributes.Texture0; }
-            private set { m_Attributes = value ? (m_Attributes | VertexAttributes.Texture0) : (m_Attributes & ~(VertexAttributes.Texture0)); }
+            get { return (attributes & VertexAttributes.Texture0) == VertexAttributes.Texture0; }
+            private set { attributes = value ? (attributes | VertexAttributes.Texture0) : (attributes & ~(VertexAttributes.Texture0)); }
         }
 
         /// <summary>
         /// 是否有UV1
         /// </summary>
-        public bool hasUV2
+        public bool HasUV2
         {
-            get { return (m_Attributes & VertexAttributes.Texture1) == VertexAttributes.Texture1; }
-            private set { m_Attributes = value ? (m_Attributes | VertexAttributes.Texture1) : (m_Attributes & ~(VertexAttributes.Texture1)); }
+            get { return (attributes & VertexAttributes.Texture1) == VertexAttributes.Texture1; }
+            private set { attributes = value ? (attributes | VertexAttributes.Texture1) : (attributes & ~(VertexAttributes.Texture1)); }
         }
 
         /// <summary>
         /// 是否有UV3
         /// </summary>
-        public bool hasUV3
+        public bool HasUV3
         {
-            get { return (m_Attributes & VertexAttributes.Texture2) == VertexAttributes.Texture2; }
-            private set { m_Attributes = value ? (m_Attributes | VertexAttributes.Texture2) : (m_Attributes & ~(VertexAttributes.Texture2)); }
+            get { return (attributes & VertexAttributes.Texture2) == VertexAttributes.Texture2; }
+            private set { attributes = value ? (attributes | VertexAttributes.Texture2) : (attributes & ~(VertexAttributes.Texture2)); }
         }
         /// <summary>
         /// 是否有UV4
         /// </summary>
-        public bool hasUV4
+        public bool HasUV4
         {
-            get { return (m_Attributes & VertexAttributes.Texture3) == VertexAttributes.Texture3; }
-            private set { m_Attributes = value ? (m_Attributes | VertexAttributes.Texture3) : (m_Attributes & ~(VertexAttributes.Texture3)); }
+            get { return (attributes & VertexAttributes.Texture3) == VertexAttributes.Texture3; }
+            private set { attributes = value ? (attributes | VertexAttributes.Texture3) : (attributes & ~(VertexAttributes.Texture3)); }
         }
 
         /// <summary>
@@ -209,11 +209,11 @@ namespace GameLogic
         /// </summary>
         public void Flip()
         {
-            if (hasNormal)
-                m_Normal *= -1f;
+            if (HasNormal)
+                normal *= -1f;
 
-            if (hasTangent)
-                m_Tangent *= -1f;
+            if (HasTangent)
+                tangent *= -1f;
         }
     }
 }

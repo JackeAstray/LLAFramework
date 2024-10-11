@@ -7,10 +7,10 @@ namespace GameLogic
     static class VertexUtility
     {
         /// <summary>
-        /// Allocate and fill all attribute arrays. This method will fill all arrays, regardless of whether or not real data populates the values (check what attributes a Vertex contains with HasAttribute()).
+        /// 分配并填充所有属性数组。此方法将填充所有数组，无论实际数据是否填充值（使用HasAttribute()检查顶点包含哪些属性）。
         /// </summary>
         /// <remarks>
-        /// If you are using this function to rebuild a mesh, use SetMesh instead. SetMesh handles setting null arrays where appropriate for you.
+        /// 如果使用此函数重建网格，请改用SetMesh。SetMesh处理在适当的地方设置空数组。
         /// </remarks>
         /// <seealso cref="SetMesh"/>
         /// <param name="vertices">The source vertices.</param>
@@ -37,10 +37,10 @@ namespace GameLogic
         }
 
         /// <summary>
-        /// Allocate and fill the requested attribute arrays.
+        /// 分配并填充所请求的属性数组
         /// </summary>
         /// <remarks>
-        /// If you are using this function to rebuild a mesh, use SetMesh instead. SetMesh handles setting null arrays where appropriate for you.
+        /// 如果使用此函数重建网格，请改用SetMesh。SetMesh处理在适当的地方设置空数组。
         /// </remarks>
         /// <seealso cref="SetMesh"/>
         /// <param name="vertices">The source vertices.</param>
@@ -72,14 +72,14 @@ namespace GameLogic
             int vc = vertices.Count;
             var first = vc < 1 ? new Vertex() : vertices[0];
 
-            bool hasPosition = ((attributes & VertexAttributes.Position) == VertexAttributes.Position) && first.hasPosition;
-            bool hasColor = ((attributes & VertexAttributes.Color) == VertexAttributes.Color) && first.hasColor;
-            bool hasUv0 = ((attributes & VertexAttributes.Texture0) == VertexAttributes.Texture0) && first.hasUV0;
-            bool hasNormal = ((attributes & VertexAttributes.Normal) == VertexAttributes.Normal) && first.hasNormal;
-            bool hasTangent = ((attributes & VertexAttributes.Tangent) == VertexAttributes.Tangent) && first.hasTangent;
-            bool hasUv2 = ((attributes & VertexAttributes.Texture1) == VertexAttributes.Texture1) && first.hasUV2;
-            bool hasUv3 = ((attributes & VertexAttributes.Texture2) == VertexAttributes.Texture2) && first.hasUV3;
-            bool hasUv4 = ((attributes & VertexAttributes.Texture3) == VertexAttributes.Texture3) && first.hasUV4;
+            bool hasPosition = ((attributes & VertexAttributes.Position) == VertexAttributes.Position) && first.HasPosition;
+            bool hasColor = ((attributes & VertexAttributes.Color) == VertexAttributes.Color) && first.HasColor;
+            bool hasUv0 = ((attributes & VertexAttributes.Texture0) == VertexAttributes.Texture0) && first.HasUV0;
+            bool hasNormal = ((attributes & VertexAttributes.Normal) == VertexAttributes.Normal) && first.HasNormal;
+            bool hasTangent = ((attributes & VertexAttributes.Tangent) == VertexAttributes.Tangent) && first.HasTangent;
+            bool hasUv2 = ((attributes & VertexAttributes.Texture1) == VertexAttributes.Texture1) && first.HasUV2;
+            bool hasUv3 = ((attributes & VertexAttributes.Texture2) == VertexAttributes.Texture2) && first.HasUV3;
+            bool hasUv4 = ((attributes & VertexAttributes.Texture3) == VertexAttributes.Texture3) && first.HasUV4;
 
             position = hasPosition ? new Vector3[vc] : null;
             color = hasColor ? new Color[vc] : null;
@@ -93,24 +93,29 @@ namespace GameLogic
             for (int i = 0; i < vc; i++)
             {
                 if (hasPosition)
-                    position[i] = vertices[i].position;
+                    position[i] = vertices[i].Position;
                 if (hasColor)
-                    color[i] = vertices[i].color;
+                    color[i] = vertices[i].Color;
                 if (hasUv0)
-                    uv0[i] = vertices[i].uv0;
+                    uv0[i] = vertices[i].UV0;
                 if (hasNormal)
-                    normal[i] = vertices[i].normal;
+                    normal[i] = vertices[i].Normal;
                 if (hasTangent)
-                    tangent[i] = vertices[i].tangent;
+                    tangent[i] = vertices[i].Tangent;
                 if (hasUv2)
-                    uv2[i] = vertices[i].uv2;
+                    uv2[i] = vertices[i].UV2;
                 if (hasUv3)
-                    uv3.Add(vertices[i].uv3);
+                    uv3.Add(vertices[i].UV3);
                 if (hasUv4)
-                    uv4.Add(vertices[i].uv4);
+                    uv4.Add(vertices[i].UV4);
             }
         }
 
+        /// <summary>
+        /// 获取网格的顶点数组
+        /// </summary>
+        /// <param name="mesh"></param>
+        /// <returns></returns>
         public static Vertex[] GetVertices(this Mesh mesh)
         {
             if (mesh == null)
@@ -130,49 +135,50 @@ namespace GameLogic
             mesh.GetUVs(2, uv3s);
             mesh.GetUVs(3, uv4s);
 
-            bool _hasPositions = positions != null && positions.Length == vertexCount;
-            bool _hasColors = colors != null && colors.Length == vertexCount;
-            bool _hasNormals = normals != null && normals.Length == vertexCount;
-            bool _hasTangents = tangents != null && tangents.Length == vertexCount;
-            bool _hasUv0 = uv0s != null && uv0s.Length == vertexCount;
-            bool _hasUv2 = uv2s != null && uv2s.Length == vertexCount;
-            bool _hasUv3 = uv3s.Count == vertexCount;
-            bool _hasUv4 = uv4s.Count == vertexCount;
+            bool hasPositions = positions != null && positions.Length == vertexCount;
+            bool hasColors = colors != null && colors.Length == vertexCount;
+            bool hasNormals = normals != null && normals.Length == vertexCount;
+            bool hasTangents = tangents != null && tangents.Length == vertexCount;
+            bool hasUv0 = uv0s != null && uv0s.Length == vertexCount;
+            bool hasUv2 = uv2s != null && uv2s.Length == vertexCount;
+            bool hasUv3 = uv3s.Count == vertexCount;
+            bool hasUv4 = uv4s.Count == vertexCount;
 
             for (int i = 0; i < vertexCount; i++)
             {
                 v[i] = new Vertex();
 
-                if (_hasPositions)
-                    v[i].position = positions[i];
+                if (hasPositions)
+                    v[i].Position = positions[i];
 
-                if (_hasColors)
-                    v[i].color = colors[i];
+                if (hasColors)
+                    v[i].Color = colors[i];
 
-                if (_hasNormals)
-                    v[i].normal = normals[i];
+                if (hasNormals)
+                    v[i].Normal = normals[i];
 
-                if (_hasTangents)
-                    v[i].tangent = tangents[i];
+                if (hasTangents)
+                    v[i].Tangent = tangents[i];
 
-                if (_hasUv0)
-                    v[i].uv0 = uv0s[i];
+                if (hasUv0)
+                    v[i].UV0 = uv0s[i];
 
-                if (_hasUv2)
-                    v[i].uv2 = uv2s[i];
+                if (hasUv2)
+                    v[i].UV2 = uv2s[i];
 
-                if (_hasUv3)
-                    v[i].uv3 = uv3s[i];
+                if (hasUv3)
+                    v[i].UV3 = uv3s[i];
 
-                if (_hasUv4)
-                    v[i].uv4 = uv4s[i];
+                if (hasUv4)
+                    v[i].UV4 = uv4s[i];
             }
 
             return v;
         }
 
         /// <summary>
-        /// Replace mesh values with vertex array. Mesh is cleared during this function, so be sure to set the triangles after calling.
+        /// 将网格值替换为顶点数组。
+        /// 此函数期间会清除网格，因此请务必在调用后设置三角形。
         /// </summary>
         /// <param name="mesh">The target mesh.</param>
         /// <param name="vertices">The vertices to replace the mesh attributes with.</param>
@@ -206,22 +212,22 @@ namespace GameLogic
 
             Vertex first = vertices[0];
 
-            if (first.hasPosition) mesh.vertices = positions;
-            if (first.hasColor) mesh.colors = colors;
-            if (first.hasUV0) mesh.uv = uv0s;
-            if (first.hasNormal) mesh.normals = normals;
-            if (first.hasTangent) mesh.tangents = tangents;
-            if (first.hasUV2) mesh.uv2 = uv2s;
-            if (first.hasUV3)
+            if (first.HasPosition) mesh.vertices = positions;
+            if (first.HasColor) mesh.colors = colors;
+            if (first.HasUV0) mesh.uv = uv0s;
+            if (first.HasNormal) mesh.normals = normals;
+            if (first.HasTangent) mesh.tangents = tangents;
+            if (first.HasUV2) mesh.uv2 = uv2s;
+            if (first.HasUV3)
                 if (uv3s != null)
                     mesh.SetUVs(2, uv3s);
-            if (first.hasUV4)
+            if (first.HasUV4)
                 if (uv4s != null)
                     mesh.SetUVs(3, uv4s);
         }
 
         /// <summary>
-        /// Linearly interpolate between two vertices.
+        /// 在两个顶点之间进行线性插值
         /// </summary>
         /// <param name="x">Left parameter.</param>
         /// <param name="y">Right parameter.</param>
@@ -233,62 +239,62 @@ namespace GameLogic
 
             Vertex v = new Vertex();
 
-            v.position = x.position * i + y.position * weight;
+            v.Position = x.Position * i + y.Position * weight;
 
-            if (x.hasColor && y.hasColor)
-                v.color = x.color * i + y.color * weight;
-            else if (x.hasColor)
-                v.color = x.color;
-            else if (y.hasColor)
-                v.color = y.color;
+            if (x.HasColor && y.HasColor)
+                v.Color = x.Color * i + y.Color * weight;
+            else if (x.HasColor)
+                v.Color = x.Color;
+            else if (y.HasColor)
+                v.Color = y.Color;
 
-            if (x.hasNormal && y.hasNormal)
-                v.normal = x.normal * i + y.normal * weight;
-            else if (x.hasNormal)
-                v.normal = x.normal;
-            else if (y.hasNormal)
-                v.normal = y.normal;
+            if (x.HasNormal && y.HasNormal)
+                v.Normal = x.Normal * i + y.Normal * weight;
+            else if (x.HasNormal)
+                v.Normal = x.Normal;
+            else if (y.HasNormal)
+                v.Normal = y.Normal;
 
-            if (x.hasTangent && y.hasTangent)
-                v.tangent = x.tangent * i + y.tangent * weight;
-            else if (x.hasTangent)
-                v.tangent = x.tangent;
-            else if (y.hasTangent)
-                v.tangent = y.tangent;
+            if (x.HasTangent && y.HasTangent)
+                v.Tangent = x.Tangent * i + y.Tangent * weight;
+            else if (x.HasTangent)
+                v.Tangent = x.Tangent;
+            else if (y.HasTangent)
+                v.Tangent = y.Tangent;
 
-            if (x.hasUV0 && y.hasUV0)
-                v.uv0 = x.uv0 * i + y.uv0 * weight;
-            else if (x.hasUV0)
-                v.uv0 = x.uv0;
-            else if (y.hasUV0)
-                v.uv0 = y.uv0;
+            if (x.HasUV0 && y.HasUV0)
+                v.UV0 = x.UV0 * i + y.UV0 * weight;
+            else if (x.HasUV0)
+                v.UV0 = x.UV0;
+            else if (y.HasUV0)
+                v.UV0 = y.UV0;
 
-            if (x.hasUV2 && y.hasUV2)
-                v.uv2 = x.uv2 * i + y.uv2 * weight;
-            else if (x.hasUV2)
-                v.uv2 = x.uv2;
-            else if (y.hasUV2)
-                v.uv2 = y.uv2;
+            if (x.HasUV2 && y.HasUV2)
+                v.UV2 = x.UV2 * i + y.UV2 * weight;
+            else if (x.HasUV2)
+                v.UV2 = x.UV2;
+            else if (y.HasUV2)
+                v.UV2 = y.UV2;
 
-            if (x.hasUV3 && y.hasUV3)
-                v.uv3 = x.uv3 * i + y.uv3 * weight;
-            else if (x.hasUV3)
-                v.uv3 = x.uv3;
-            else if (y.hasUV3)
-                v.uv3 = y.uv3;
+            if (x.HasUV3 && y.HasUV3)
+                v.UV3 = x.UV3 * i + y.UV3 * weight;
+            else if (x.HasUV3)
+                v.UV3 = x.UV3;
+            else if (y.HasUV3)
+                v.UV3 = y.UV3;
 
-            if (x.hasUV4 && y.hasUV4)
-                v.uv4 = x.uv4 * i + y.uv4 * weight;
-            else if (x.hasUV4)
-                v.uv4 = x.uv4;
-            else if (y.hasUV4)
-                v.uv4 = y.uv4;
+            if (x.HasUV4 && y.HasUV4)
+                v.UV4 = x.UV4 * i + y.UV4 * weight;
+            else if (x.HasUV4)
+                v.UV4 = x.UV4;
+            else if (y.HasUV4)
+                v.UV4 = y.UV4;
 
             return v;
         }
 
         /// <summary>
-        /// Transform a vertex into world space.
+        /// 将顶点转换为世界空间
         /// </summary>
         /// <param name="transform">The transform to apply.</param>
         /// <param name="vertex">A model space vertex.</param>
@@ -298,28 +304,28 @@ namespace GameLogic
             var v = new Vertex();
 
             if (vertex.HasArrays(VertexAttributes.Position))
-                v.position = transform.TransformPoint(vertex.position);
+                v.Position = transform.TransformPoint(vertex.Position);
 
             if (vertex.HasArrays(VertexAttributes.Color))
-                v.color = vertex.color;
+                v.Color = vertex.Color;
 
             if (vertex.HasArrays(VertexAttributes.Normal))
-                v.normal = transform.TransformDirection(vertex.normal);
+                v.Normal = transform.TransformDirection(vertex.Normal);
 
             if (vertex.HasArrays(VertexAttributes.Tangent))
-                v.tangent = transform.rotation * vertex.tangent;
+                v.Tangent = transform.rotation * vertex.Tangent;
 
             if (vertex.HasArrays(VertexAttributes.Texture0))
-                v.uv0 = vertex.uv0;
+                v.UV0 = vertex.UV0;
 
             if (vertex.HasArrays(VertexAttributes.Texture1))
-                v.uv2 = vertex.uv2;
+                v.UV2 = vertex.UV2;
 
             if (vertex.HasArrays(VertexAttributes.Texture2))
-                v.uv3 = vertex.uv3;
+                v.UV3 = vertex.UV3;
 
             if (vertex.HasArrays(VertexAttributes.Texture3))
-                v.uv4 = vertex.uv4;
+                v.UV4 = vertex.UV4;
 
             return v;
         }

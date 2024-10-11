@@ -14,7 +14,7 @@ namespace GameLogic
         List<Material> m_Materials;
         List<List<int>> m_Indices;
 
-        public List<Material> materials
+        public List<Material> Materials
         {
             get { return m_Materials; }
             set { m_Materials = value; }

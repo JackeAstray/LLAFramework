@@ -22,8 +22,8 @@ namespace GameLogic.Example
             Model result = CSG.Perform(Operation, lhs, rhs);
             var composite = new GameObject();
             composite.AddComponent<MeshFilter>().sharedMesh = result.mesh;
-            result.materials.Add(material);
-            composite.AddComponent<MeshRenderer>().sharedMaterials = result.materials.ToArray();
+            result.Materials.Add(material);
+            composite.AddComponent<MeshRenderer>().sharedMaterials = result.Materials.ToArray();
             composite.name = Operation.ToString() + " Object";
         }
     }

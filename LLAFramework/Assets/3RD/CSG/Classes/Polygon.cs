@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace GameLogic
 {
     /// <summary>
-    /// Represents a polygon face with an arbitrary number of vertices.
+    /// 表示具有任意数量顶点的多边形面
     /// </summary>
     sealed class Polygon
     {
@@ -15,7 +15,7 @@ namespace GameLogic
         public Polygon(List<Vertex> list, Material mat)
         {
             vertices = list;
-            plane = new Plane(list[0].position, list[1].position, list[2].position);
+            plane = new Plane(list[0].Position, list[1].Position, list[2].Position);
             material = mat;
         }
 
