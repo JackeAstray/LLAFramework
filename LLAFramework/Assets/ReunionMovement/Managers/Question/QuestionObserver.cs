@@ -1,5 +1,6 @@
 ﻿using GameLogic.Base;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -37,6 +38,9 @@ namespace GameLogic
         QuestionItem questionItem;
 
         public string userAnswer;
+
+        private float submitCooldown = 5f; // 提交按钮的冷却时间
+        private bool canSubmit = false; // 是否可以提交
         #endregion
 
         #region 重写父类方法
@@ -60,7 +64,7 @@ namespace GameLogic
 
             submit.onClick.AddListener(() =>
             {
-                if (questionItem.isAnswered)
+                if (questionItem.isAnswered || !canSubmit)
                 {
                     return;
                 }
@@ -82,6 +86,28 @@ namespace GameLogic
             {
                 QuestionMgr.Instance.Send();
             });
+
+            if (submitCooldown > 0)
+            {
+                StartCoroutine(EnableSubmitButtonAfterDelay(submitCooldown));
+            }
+            else
+            {
+                canSubmit = true;
+            }
+        }
+
+        private IEnumerator EnableSubmitButtonAfterDelay(float delay)
+        {
+            float remainingTime = delay;
+            while (remainingTime > 0)
+            {
+                submit.GetComponentInChildren<Text>().text = $"提交 ({remainingTime:F1}s)";
+                yield return new WaitForSeconds(0.1f);
+                remainingTime -= 0.1f;
+            }
+            submit.GetComponentInChildren<Text>().text = "提交";
+            canSubmit = true;
         }
 
         /// <summary>

@@ -15,7 +15,6 @@ namespace GameLogic
         private double initProgress = 0;
         public double InitProgress { get { return initProgress; } }
 
-        private Dictionary<string, GameObject> uiPool = new Dictionary<string, GameObject>();
         private Dictionary<string, UILoadState> uiStateCache = new Dictionary<string, UILoadState>();
         #endregion
         //----------------------------------
