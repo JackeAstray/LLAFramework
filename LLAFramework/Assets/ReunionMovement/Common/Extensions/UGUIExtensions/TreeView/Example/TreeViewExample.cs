@@ -9,45 +9,136 @@ public class TreeViewExample : MonoBehaviour
 
     public void Awake()
     {
-        var data = new TreeViewData("Test", new List<TreeViewData>()
+        List<TreeViewData> rootData = new List<TreeViewData>();
+        var data = new TreeViewData("空调", new List<TreeViewData>()
         {
-            new TreeViewData("Button",new List<TreeViewData>()
+            new TreeViewData("二级结构",new List<TreeViewData>()
             {
-                new TreeViewData("DoubleClickButton",2),
-                new TreeViewData("LongClickButton")
-            }),
-            new TreeViewData("Pie"),
-            new TreeViewData("DatePicker"),
-            new TreeViewData("C#",new List<TreeViewData>()
+            },
+            null),
+            new TreeViewData("电路图",new List<TreeViewData>()
             {
-                new TreeViewData("high-level syntax",new List<TreeViewData>()
-                {
-                    new TreeViewData("Action",new List<TreeViewData>()
-                        {
-                            new TreeViewData("One parameter"),
-                            new TreeViewData("Two parameter"),
-                            new TreeViewData("Three parameter"),
-                            new TreeViewData("Four parameter"),
-                            new TreeViewData("Action2",new List<TreeViewData>()
-                            {
-                                new TreeViewData("One parameter"),
-                                new TreeViewData("Two parameter"),
-                                new TreeViewData("Three parameter"),
-                                   new TreeViewData("Action3",new List<TreeViewData>()
-                                    {
-                                        new TreeViewData("One parameter"),
-                                        new TreeViewData("Two parameter"),
-                                        new TreeViewData("Three parameter"),
-                                    })
-                            })
-                        }),
-                    new TreeViewData("Func"),
-                    new TreeViewData("delegate")
-                }),
-                new TreeViewData("Reflect")
-            })
-        });
-        //UITree.SetData(data);
-        UITree.Insert(data);
+            },
+            ()=>{ Debug.Log("测试"); })
+        },
+        null);
+        rootData.Add(data);
+        data = new TreeViewData("蓄电池", new List<TreeViewData>()
+        {
+            new TreeViewData("二级结构",new List<TreeViewData>()
+            {
+            },
+            null),
+            new TreeViewData("电路图",new List<TreeViewData>()
+            {
+            },
+            null)
+        },
+        null);
+        rootData.Add(data);
+        data = new TreeViewData("逆变器", new List<TreeViewData>()
+        {
+            new TreeViewData("二级结构",new List<TreeViewData>()
+            {
+            },
+            null),
+            new TreeViewData("电路图",new List<TreeViewData>()
+            {
+            },
+            null)
+        },
+        null);
+        rootData.Add(data);
+        data = new TreeViewData("照明设备", new List<TreeViewData>()
+        {
+            new TreeViewData("二级结构",new List<TreeViewData>()
+            {
+            },
+            null),
+            new TreeViewData("电路图",new List<TreeViewData>()
+            {
+            },
+            null)
+        },
+        null);
+        rootData.Add(data);
+        data = new TreeViewData("真空集便器", new List<TreeViewData>()
+        {
+            new TreeViewData("二级结构",new List<TreeViewData>()
+            {
+            },
+            null),
+            new TreeViewData("电路图",new List<TreeViewData>()
+            {
+            },
+            null)
+        },
+        null);
+        rootData.Add(data);
+        data = new TreeViewData("控制柜", new List<TreeViewData>()
+        {
+            new TreeViewData("二级结构",new List<TreeViewData>()
+            {
+            },
+            null),
+            new TreeViewData("电路图",new List<TreeViewData>()
+            {
+            },
+            null)
+        },
+        null);
+        rootData.Add(data);
+        data = new TreeViewData("充电器", new List<TreeViewData>()
+        {
+            new TreeViewData("二级结构",new List<TreeViewData>()
+            {
+            },
+            null),
+            new TreeViewData("电路图",new List<TreeViewData>()
+            {
+            },
+            null)
+        },
+        null);
+        rootData.Add(data);
+        data = new TreeViewData("塞拉门", new List<TreeViewData>()
+        {
+            new TreeViewData("二级结构",new List<TreeViewData>()
+            {
+            },
+            null),
+            new TreeViewData("电路图",new List<TreeViewData>()
+            {
+            },
+            null)
+        },
+        null);
+        rootData.Add(data);
+        data = new TreeViewData("电子防滑器", new List<TreeViewData>()
+        {
+            new TreeViewData("二级结构",new List<TreeViewData>()
+            {
+            },
+            null),
+            new TreeViewData("电路图",new List<TreeViewData>()
+            {
+            },
+            null)
+        },
+        null);
+        rootData.Add(data);
+        data = new TreeViewData("轴温报警装置", new List<TreeViewData>()
+        {
+            new TreeViewData("二级结构",new List<TreeViewData>()
+            {
+            },
+            null),
+            new TreeViewData("电路图",new List<TreeViewData>()
+            {
+            },
+            null)
+        },
+        null);
+        UITree.Insert(rootData);
     }
 }

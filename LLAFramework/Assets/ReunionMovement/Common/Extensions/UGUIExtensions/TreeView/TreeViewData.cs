@@ -16,6 +16,7 @@ namespace GameLogic
         public List<TreeViewData> childNodes;
         public int layer = 0;
         public string name = string.Empty;
+        public Action action = null;
 
         public TreeViewData() { }
         public TreeViewData(string name, int layer = 0)
@@ -25,13 +26,16 @@ namespace GameLogic
             parent = null;
             childNodes = new List<TreeViewData>();
         }
-        public TreeViewData(string name, List<TreeViewData> childNodes, int layer = 0)
+        public TreeViewData(string name, List<TreeViewData> childNodes, Action action, int layer = 0)
         {
             this.name = name;
             parent = null;
             this.childNodes = childNodes;
+            this.action = action;
             if (null == this.childNodes)
+            {
                 this.childNodes = new List<TreeViewData>();
+            }
             this.layer = layer;
             ResetChildren(this);
         }
@@ -46,7 +50,9 @@ namespace GameLogic
         public void SetParent(TreeViewData parent)
         {
             if (null != this.parent)
+            {
                 this.parent.RemoveChild(this);
+            }
             this.parent = parent;
             this.layer = parent.layer + 1;
             parent.childNodes.Add(this);
@@ -69,7 +75,9 @@ namespace GameLogic
         public void AddChild(IEnumerable<TreeViewData> children)
         {
             foreach (TreeViewData child in children)
+            {
                 child.SetParent(this);
+            }
         }
 
         /// <summary>
@@ -90,11 +98,13 @@ namespace GameLogic
             foreach (TreeViewData child in children)
             {
                 for (int i = 0; i < childNodes.Count; i++)
+                {
                     if (child == childNodes[i])
                     {
                         childNodes.Remove(childNodes[i]);
                         break;
                     }
+                }
             }
         }
 
@@ -132,7 +142,10 @@ namespace GameLogic
         public override bool Equals(object obj)
         {
             TreeViewData other = obj as TreeViewData;
-            if (null == other) return false;
+            if (null == other)
+            {
+                return false;
+            }
             return other.name.Equals(name) && other.layer.Equals(layer);
         }
 

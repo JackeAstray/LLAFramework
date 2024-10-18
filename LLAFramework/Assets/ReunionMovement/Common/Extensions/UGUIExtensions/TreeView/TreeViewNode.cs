@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -16,6 +17,8 @@ namespace GameLogic
     {
         #region 属性
         public int layer = 0;
+        public Sprite transparent;
+        public Sprite arrow;
         private TreeViewData treeData = null;
         private TreeView uiTree = null;
         private Toggle toggle = null;
@@ -26,6 +29,7 @@ namespace GameLogic
         private Transform myTransform = null;
         private Transform container = null;
         private List<GameObject> children = new List<GameObject>();
+        private Action action = null;
         #endregion
 
         #region 方法
@@ -38,9 +42,10 @@ namespace GameLogic
             bg = myTransform.GetComponent<Image>();
             container = myTransform.Find("Container");
             toggle = container.Find("Toggle").GetComponent<Toggle>();
-            icon = container.Find("IconContainer/Icon").GetComponent<Image>();
+            //icon = container.Find("IconContainer/Icon").GetComponent<Image>();
             text = container.Find("Text").GetComponent<Text>();
             toggleTransform = toggle.transform.Find("Image");
+            icon = toggle.transform.Find("Image").GetComponent<Image>();
             uiTree = myTransform.parent.parent.parent.GetComponent<TreeView>();
         }
         /// <summary>
@@ -50,7 +55,8 @@ namespace GameLogic
         {
             container.localPosition = new Vector3(0, container.localPosition.y, 0);
             toggleTransform.localEulerAngles = new Vector3(0, 0, 90);
-            toggleTransform.gameObject.SetActive(true);
+            //toggleTransform.gameObject.SetActive(true);
+            icon.sprite = arrow;
         }
         #endregion
 
@@ -73,13 +79,16 @@ namespace GameLogic
             container.localPosition += new Vector3(container.GetComponent<RectTransform>().sizeDelta.y * treeData.layer, 0, 0);
             if (data.childNodes.Count.Equals(0))
             {
-                toggleTransform.gameObject.SetActive(false);
-                icon.sprite = uiTree.lastLayerIcon;
+                icon.sprite = transparent;
+                //toggleTransform.gameObject.SetActive(false);
+                //icon.sprite = uiTree.lastLayerIcon;
             }
             else
             {
-                icon.sprite = toggle.isOn ? uiTree.openIcon : uiTree.closeIcon;
+                //icon.sprite = toggle.isOn ? uiTree.openIcon : uiTree.closeIcon;
             }
+
+            action = data.action;
 
             SetColor(data.layer);
         }
@@ -102,13 +111,16 @@ namespace GameLogic
             container.localPosition += new Vector3(container.GetComponent<RectTransform>().sizeDelta.y * treeData.layer, 0, 0);
             if (data.childNodes.Count.Equals(0))
             {
-                toggleTransform.gameObject.SetActive(false);
-                icon.sprite = uiTree.lastLayerIcon;
+                icon.sprite = transparent;
+                //toggleTransform.gameObject.SetActive(false);
+                //icon.sprite = uiTree.lastLayerIcon;
             }
             else
             {
-                icon.sprite = toggle.isOn ? uiTree.openIcon : uiTree.closeIcon;
+                //icon.sprite = toggle.isOn ? uiTree.openIcon : uiTree.closeIcon;
             }
+
+            action = data.action;
 
             SetColor(data.layer);
         }
@@ -138,7 +150,9 @@ namespace GameLogic
             if (isOn) OpenChildren();
             else CloseChildren();
             toggleTransform.localEulerAngles = isOn ? new Vector3(0, 0, 0) : new Vector3(0, 0, 90);
-            icon.sprite = toggle.isOn ? uiTree.openIcon : uiTree.closeIcon;
+            //icon.sprite = toggle.isOn ? uiTree.openIcon : uiTree.closeIcon;
+
+            action?.Invoke();
         }
         /// <summary>
         /// 展开子节点

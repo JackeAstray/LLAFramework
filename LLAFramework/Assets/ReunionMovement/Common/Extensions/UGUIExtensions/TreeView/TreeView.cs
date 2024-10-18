@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using static UnityEditor.PlayerSettings;
 
 namespace GameLogic
 {
@@ -22,6 +23,18 @@ namespace GameLogic
         public Sprite lastLayerIcon = null;
 
         public List<Color> colors = new List<Color>();
+
+        // 预制体
+        public TreeViewNode tvObj = null;
+        // 跟节点
+        public List<TreeViewNode> treeRootNodes = null;
+        private Transform container = null;
+        private GameObject nodePrefab = null;
+        public GameObject NodePrefab
+        {
+            get { return nodePrefab ?? (nodePrefab = container.GetChild(0).gameObject); }
+            set { nodePrefab = value; }
+        }
         #endregion
 
         #region external call interface
@@ -29,13 +42,19 @@ namespace GameLogic
         /// 插入数据
         /// </summary>
         /// <param name="rootData"></param>
-        public void Insert(TreeViewData rootData)
+        public void Insert(List<TreeViewData> rootData)
         {
             if (null == container)
             {
                 GetComponent();
             }
-            treeRootNode.Insert(rootData);
+
+            foreach (var item in rootData)
+            {
+                TreeViewNode treeView = Instantiate<TreeViewNode>(tvObj, container);
+                treeView.Insert(item);
+                treeRootNodes.Add(treeView);
+            }
         }
 
         //// insert new node method. The next version will add this funcion.
@@ -46,27 +65,19 @@ namespace GameLogic
         //}
 
         //[Obsolete("This method is replaced by Inject.")]
-        public void SetData(TreeViewData rootData)
+        public void SetData(List<TreeViewData> rootData)
         {
             if (null == container)
             {
                 GetComponent();
             }
-            treeRootNode.SetData(rootData);
-        }
 
-        #endregion
-
-        #region private && public members
-
-        [HideInInspector]
-        public TreeViewNode treeRootNode = null;
-        private Transform container = null;
-        private GameObject nodePrefab = null;
-        public GameObject NodePrefab
-        {
-            get { return nodePrefab ?? (nodePrefab = container.GetChild(0).gameObject); }
-            set { nodePrefab = value; }
+            foreach (var item in rootData)
+            {
+                TreeViewNode treeView = Instantiate<TreeViewNode>(tvObj, container);
+                treeView.Insert(item);
+                treeRootNodes.Add(treeView);
+            }
         }
 
         #endregion
@@ -76,11 +87,11 @@ namespace GameLogic
         private void GetComponent()
         {
             container = transform.Find("Viewport/Content");
-            if (container.childCount.Equals(0))
-            {
-                throw new Exception("UITreeNode Template can not be null! Create a Template!");
-            }
-            treeRootNode = container.GetChild(0).GetComponent<TreeViewNode>();
+            //if (container.childCount.Equals(0))
+            //{
+            //    throw new Exception("UITreeNode Template can not be null! Create a Template!");
+            //}
+            //treeRootNode = container.GetChild(0).GetComponent<TreeViewNode>();
         }
 
         #endregion
@@ -94,7 +105,9 @@ namespace GameLogic
         {
             List<GameObject> result = new List<GameObject>();
             for (int i = datas.Count - 1; i >= 0; i--)
+            {
                 result.Add(Pop(datas[i], siblingIndex));
+            }
             return result;
         }
         public GameObject Pop(TreeViewData data, int siblingIndex)
@@ -106,7 +119,9 @@ namespace GameLogic
                 pool.RemoveAt(0);
             }
             else
+            {
                 treeNode = CloneTreeNode();
+            }
             treeNode.transform.SetParent(container);
             treeNode.SetActive(true);
             //treeNode.GetComponent<UITreeNode>().SetData(data);
