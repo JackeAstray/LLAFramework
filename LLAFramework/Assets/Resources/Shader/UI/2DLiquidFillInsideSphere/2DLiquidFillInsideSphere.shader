@@ -1,0 +1,104 @@
+Shader "ReunionMovement/UI/2DLiquidFillInsideSphere"
+{
+    Properties
+    {
+        _MainTex ("Texture", 2D) = "white" {}
+        _Resolution ("Resolution", Vector) = (1, 1, 1, 1)
+        _Mouse ("Mouse", Vector) = (0, 0, 0, 0)
+        _Color ("Color", Color) = (1, 1, 1, 1) // 自定义颜色
+        _EdgeColor ("Edge Color", Color) = (1, 1, 1, 1) // 自定义边缘颜色
+        _FillHeight ("Fill Height", Range(0, 1)) = 0.5 // 自定义液体高度
+        _LiquidBackgroundColor ("Liquid Background Color", Range(0, 1)) = 0.5 // 自定义液体背景
+        _LiquidEdgeColor ("Liquid Edge Color", Range(0, 1)) = 0.5 // 自定义液体边缘颜色
+    }
+    SubShader
+    {
+        Tags { "RenderType"="Transparent" }
+        Pass
+        {
+            Blend SrcAlpha OneMinusSrcAlpha
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #include "UnityCG.cginc"
+
+            #define PI 3.14
+            #define step(b, a) smoothstep(a, a - (fwidth(b) * 2.0), b)
+
+            struct appdata
+            {
+                float4 vertex : POSITION;
+                float2 uv : TEXCOORD0;
+            };
+
+            struct v2f
+            {
+                float2 uv : TEXCOORD0;
+                float4 vertex : SV_POSITION;
+            };
+
+            sampler2D _MainTex;
+            float4 _Resolution;
+            float4 _Mouse;
+            float4 _Color; // 自定义颜色
+            float4 _EdgeColor; // 自定义边缘颜色
+            float _FillHeight; // 自定义液体高度
+            float _LiquidBackgroundColor; // 自定义液体背景
+            float _LiquidEdgeColor; // 自定义液体边缘颜色
+
+            v2f vert (appdata v)
+            {
+                v2f o;
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.uv = v.uv;
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                float2 uv = i.uv;
+                float3 r = _Resolution.xyz;
+                uv = ((2.0 * uv) - r.xy) / r.y;
+
+                float sdf = length(uv);
+                float c = step(sdf, 0.85);
+
+                float vB = smoothstep(0.1, 0.9, sin(uv.x + (PI * 0.5)) - 0.3);
+                float vBA = vB * sin(_Time.y * 4.0) * 0.1;
+
+                float fW = (sin(((_Time.y * 2.0) + uv.x) * 2.0) * 0.05) + vBA;
+                float bW = (sin(((_Time.y * -2.0) + uv.x) * 2.0 + PI) * 0.05) - vBA;
+
+                float fA = (sin(_Time.y * 4.0) * 0.05) * vB;
+
+                float fV = lerp(-0.2, ((_Mouse.y / r.y) - 0.5) * 2.0, step(0.0, _Mouse.w));
+                float fP = fV + (sin((_Time.y) * PI) * 0.1);
+
+                // 使用 _FillHeight 属性来控制液体高度
+                float fF = step(uv.y, (fA + fW) + fP + _FillHeight - 0.5) * c;
+                float bF = step(uv.y, (-fA + bW) + fP + _FillHeight - 0.5) * c;
+
+                fixed4 col = _Color * (
+                    (step(sdf, 1.0) - step(sdf, 1)) +
+                    (fF + (clamp(bF - fF, _LiquidBackgroundColor, 1.0) * 0.8)) +
+                    clamp(pow((sdf + 0.01) * ((1.0 - (fF + bF)) * c), 7.0), 1.0, _LiquidEdgeColor)
+                );
+
+                // 添加自定义颜色的边缘
+                fixed4 edgeColor = _EdgeColor;
+                // 边缘宽度，可以根据需要调整
+                float edgeWidth = 0.05; 
+                float edgeFactor = smoothstep(0.85 - edgeWidth, 0.85, sdf);
+                col = lerp(col, edgeColor, edgeFactor);
+
+                // // 确保外圈是圆形的
+                // float outerEdgeFactor = smoothstep(0.9, 1.0, sdf);
+                // col = lerp(col, edgeColor, outerEdgeFactor);
+
+                return col;
+            }
+            ENDCG
+        }
+    }
+    FallBack "Diffuse"
+}
