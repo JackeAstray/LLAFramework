@@ -42,8 +42,8 @@ namespace GameLogic
             bg = myTransform.GetComponent<Image>();
             container = myTransform.Find("Container");
             toggle = container.Find("Toggle").GetComponent<Toggle>();
-            //icon = container.Find("IconContainer/Icon").GetComponent<Image>();
-            text = container.Find("Text").GetComponent<Text>();
+            //icon = container.Find("Toggle/Icon").GetComponent<Image>();
+            text = container.Find("Toggle/Text").GetComponent<Text>();
             toggleTransform = toggle.transform.Find("Image");
             icon = toggle.transform.Find("Image").GetComponent<Image>();
             uiTree = myTransform.parent.parent.parent.GetComponent<TreeView>();
