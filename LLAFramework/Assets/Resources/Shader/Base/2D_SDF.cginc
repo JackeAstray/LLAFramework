@@ -97,8 +97,8 @@ float sampleSdf(float _sdf, float _offset)
     return sdf;
 }
 
-//用于计算一个2D的有向距离场（SDF）条纹样本的函数。
-//这是一个在计算机图形学中常用的技术，用于创建复杂的2D和3D形状。
+// 用于计算一个2D的有向距离场（SDF）条纹样本的函数。
+// 这是一个在计算机图形学中常用的技术，用于创建复杂的2D和3D形状。
 float sampleSdfStrip(float _sdf, float _stripWidth, float _offset)
 {
     float l = (_stripWidth + 1.0 / _offset) / 2.0;
@@ -123,13 +123,13 @@ float sdfDifference(float _a, float _b)
     return max(_a, -_b);
 }
 
-//将一个范围内的值映射到另一个范围
+// 将一个范围内的值映射到另一个范围
 float map(float value, float start1, float stop1, float start2, float stop2)
 {
     return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));
 }
 
-//十字
+// 十字
 float sdCross(float2 p, float2 b, float r)
 {
     p = abs(p);
@@ -142,7 +142,7 @@ float sdCross(float2 p, float2 b, float r)
     return ((k > 0.0) ? d : -d) + r;
 }
 
-//馅饼
+// 馅饼
 float sdPie(float2 p, float2 c, in float r)
 {
     p.x = abs(p.x);
@@ -151,7 +151,7 @@ float sdPie(float2 p, float2 c, in float r)
     return max(l, m * sign(c.y * p.x - c.x * p.y));
 }
 
-//环形
+// 环形
 float sdRing(float2 p, float2 n, float r, float th)
 {
     p.x = abs(p.x);
@@ -162,7 +162,7 @@ float sdRing(float2 p, float2 n, float r, float th)
     return max(abs(length(p) - r) - th * 0.5, length(float2(p.x, max(0.0, abs(r - p.y) - th * 0.5))) * sign(p.x));
 }
 
-//月亮
+// 月亮
 float sdMoon(float2 p, float d, float ra, float rb)
 {
     p.y = abs(p.y);
@@ -177,12 +177,39 @@ float sdMoon(float2 p, float d, float ra, float rb)
     return max((length(p) - ra), -(length(p - float2(d, 0)) - rb));
 }
 
-//胆囊
+// 胆囊
 float sdVesica(float2 p, float r, float d)
 {
     p = abs(p);
 
     float b = sqrt(r * r - d * d); // can delay this sqrt by rewriting the comparison
     return ((p.y - b) * d > p.x * b) ? length(p - float2(0.0, b)) * sign(d) : length(p - float2(-d, 0.0)) - r;
+}
+
+// 布洛比十字架
+float sdBlobbyCross(float2 pos, float he)
+{
+    pos = abs(pos);
+    pos = float2(abs(pos.x - pos.y), 1.0 - pos.x - pos.y) / sqrt(2.0);
+    
+    float p = (he - pos.y - 0.25 / he) / (6.0 * he);
+    float q = pos.x / (he * he * 16.0);
+    float h = q * q - p * p * p;
+    
+    float x;
+    if (h > 0.0)
+    {
+        float r = sqrt(h);
+        x = pow(q + r, 1.0 / 3.0) - pow(abs(q - r), 1.0 / 3.0) * sign(r - q);
+    }
+    else
+    {
+        float r = sqrt(p);
+        x = 2.0 * r * cos(acos(q / (p * r)) / 3.0);
+    }
+    x = min(x, sqrt(2.0) / 2.0);
+    
+    float2 z = float2(x, he * (1.0 - 2.0 * x * x)) - pos;
+    return length(z) * sign(z.y);
 }
 #endif
