@@ -4,12 +4,11 @@ Shader "ReunionMovement/UI/2DLiquidFillInsideSphere"
     {
         _MainTex ("Texture", 2D) = "white" {}
         _Resolution ("Resolution", Vector) = (1, 1, 1, 1)
-        _Mouse ("Mouse", Vector) = (0, 0, 0, 0)
         _Color ("Color", Color) = (1, 1, 1, 1) // 自定义颜色
         _EdgeColor ("Edge Color", Color) = (1, 1, 1, 1) // 自定义边缘颜色
         _FillHeight ("Fill Height", Range(0, 1)) = 0.5 // 自定义液体高度
-        _LiquidBackgroundColor ("Liquid Background Color", Range(0, 1)) = 0.5 // 自定义液体背景
-        _LiquidEdgeColor ("Liquid Edge Color", Range(0, 1)) = 0.5 // 自定义液体边缘颜色
+        _LiquidBackgroundColor ("Liquid Background Color Range", Range(0, 1)) = 0.5 // 自定义液体背景
+        _LiquidEdgeColor ("Liquid Edge Color Range", Range(0, 1)) = 0.5 // 自定义液体边缘颜色
     }
     SubShader
     {
@@ -39,7 +38,6 @@ Shader "ReunionMovement/UI/2DLiquidFillInsideSphere"
 
             sampler2D _MainTex;
             float4 _Resolution;
-            float4 _Mouse;
             float4 _Color; // 自定义颜色
             float4 _EdgeColor; // 自定义边缘颜色
             float _FillHeight; // 自定义液体高度
@@ -71,12 +69,9 @@ Shader "ReunionMovement/UI/2DLiquidFillInsideSphere"
 
                 float fA = (sin(_Time.y * 4.0) * 0.05) * vB;
 
-                float fV = lerp(-0.2, ((_Mouse.y / r.y) - 0.5) * 2.0, step(0.0, _Mouse.w));
-                float fP = fV + (sin((_Time.y) * PI) * 0.1);
-
                 // 使用 _FillHeight 属性来控制液体高度
-                float fF = step(uv.y, (fA + fW) + fP + _FillHeight - 0.5) * c;
-                float bF = step(uv.y, (-fA + bW) + fP + _FillHeight - 0.5) * c;
+                float fF = step(uv.y, (fA + fW) + (_FillHeight * 2.0 - 1.0)) * c;
+                float bF = step(uv.y, (-fA + bW) + (_FillHeight * 2.0 - 1.0)) * c;
 
                 fixed4 col = _Color * (
                     (step(sdf, 1.0) - step(sdf, 1)) +
@@ -90,10 +85,6 @@ Shader "ReunionMovement/UI/2DLiquidFillInsideSphere"
                 float edgeWidth = 0.05; 
                 float edgeFactor = smoothstep(0.85 - edgeWidth, 0.85, sdf);
                 col = lerp(col, edgeColor, edgeFactor);
-
-                // // 确保外圈是圆形的
-                // float outerEdgeFactor = smoothstep(0.9, 1.0, sdf);
-                // col = lerp(col, edgeColor, outerEdgeFactor);
 
                 return col;
             }

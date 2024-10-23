@@ -19,7 +19,7 @@ Material:
   m_CustomRenderQueue: 3000
   stringTagMap: {}
   disabledShaderPasses: []
-  m_LockedProperties: 
+  m_LockedProperties: _MainTex
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -99,12 +99,12 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
-    - _FillHeight: 0.5
+    - _FillHeight: 0.552
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _LiquidBackgroundColor: 0
-    - _LiquidEdgeColor: 0
+    - _LiquidBackgroundColor: 0.241
+    - _LiquidEdgeColor: 0.119
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
