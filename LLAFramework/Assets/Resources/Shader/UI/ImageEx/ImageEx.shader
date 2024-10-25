@@ -69,6 +69,8 @@ Shader "ReunionMovement/UI/Procedural Image"
         
         _ColorMask ("Color Mask", Float) = 15
         
+        _BlobbyCrossTime ("Blobby Cross Time", float) = 0
+
         [Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip ("Use Alpha Clip", Float) = 0
     }
     
@@ -107,7 +109,7 @@ Shader "ReunionMovement/UI/Procedural Image"
             #pragma multi_compile_local _ UNITY_UI_CLIP_RECT
             #pragma multi_compile_local _ UNITY_UI_ALPHACLIP
             
-            #pragma multi_compile_local _ CIRCLE TRIANGLE RECTANGLE PENTAGON HEXAGON NSTAR_POLYGON HEART
+            #pragma multi_compile_local _ CIRCLE TRIANGLE RECTANGLE PENTAGON HEXAGON NSTAR_POLYGON HEART BLOBBYCROSS
             
             #pragma multi_compile_local _ STROKE OUTLINED OUTLINED_STROKE
             #pragma multi_compile_local _ GRADIENT_LINEAR GRADIENT_RADIAL GRADIENT_CORNER
@@ -221,7 +223,9 @@ Shader "ReunionMovement/UI/Procedural Image"
                 half4 _CornerGradientColor3;
             #endif
             
-            
+            #if BLOBBYCROSS
+                float _BlobbyCrossTime;
+            #endif
             
             
             //渐变
@@ -506,7 +510,7 @@ Shader "ReunionMovement/UI/Procedural Image"
                 half heartScene(float4 _additionalData)
                 {
                     //得到纹理坐标
-                    float2 _texcoord = _additionalData.xy;
+                    float2 texcoord = _additionalData.xy;
                     //得到宽
                     float width = _additionalData.z;
                     //得到高
@@ -514,9 +518,34 @@ Shader "ReunionMovement/UI/Procedural Image"
 
                     float radius = min(width, height) * 0.7;
 
-                    float2 value = _texcoord - float2(width * 0.5, height * 0.1);
+                    float2 value = texcoord - float2(width * 0.5, height * 0.1);
                     half sdf = sdHeart(value, radius);
                     return sdf;
+                }
+            #endif
+
+            //
+            #if BLOBBYCROSS
+                half blobbyCrossScene(float4 _additionalData)
+                {
+                     //得到纹理坐标
+                    float2 texcoord = _additionalData.xy;
+                    //得到宽
+                    float width = _additionalData.z;
+                    //得到高
+                    float height = _additionalData.w;
+
+                    float2 p = (2.0 * texcoord - _additionalData.zw) / width;
+                    p *= 2.0;
+
+                    float time = _BlobbyCrossTime;
+                    float he = sin(time * 0.43 + 4.0);
+                    he = (0.001 + abs(he)) * ((he >= 0.0) ? 1.0 : -1.0);
+                    float ra = 0.1 + 0.5 * (0.5 + 0.5 * sin(time * 1.7)) + max(0.0, he - 0.7);
+
+                    float d = sdBlobbyCross(p, he) - ra;
+
+                    return d;
                 }
             #endif
 
@@ -610,7 +639,7 @@ Shader "ReunionMovement/UI/Procedural Image"
                     color *= finalCol;
                 #endif
                 
-                #if RECTANGLE || CIRCLE || PENTAGON || TRIANGLE || HEXAGON || NSTAR_POLYGON || HEART
+                #if RECTANGLE || CIRCLE || PENTAGON || TRIANGLE || HEXAGON || NSTAR_POLYGON || HEART || BLOBBYCROSS
                     float sdfData = 0;
                     float pixelScale = clamp(1.0/_FalloffDistance, 1.0/2048.0, 2048.0);
                     #if RECTANGLE
@@ -627,6 +656,8 @@ Shader "ReunionMovement/UI/Procedural Image"
                         sdfData = nStarPolygonScene(IN.shapeData);
                     #elif HEART
                         sdfData = heartScene(IN.shapeData);
+                    #elif BLOBBYCROSS
+                        sdfData = blobbyCrossScene(IN.shapeData);
                     #endif
                 
                     #if !OUTLINED && !STROKE && !OUTLINED_STROKE

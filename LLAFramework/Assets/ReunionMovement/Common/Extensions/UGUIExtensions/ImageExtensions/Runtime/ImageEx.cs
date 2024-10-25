@@ -39,6 +39,7 @@ namespace GameLogic.UI.ImageExtensions
         [SerializeField] private HexagonImg hexagon = new HexagonImg();
         [SerializeField] private NStarPolygonImg nStarPolygon = new NStarPolygonImg();
         [SerializeField] private HeartImg heart = new HeartImg();
+        [SerializeField] private BlobbyCrossImg blobbyCross = new BlobbyCrossImg();
 
         [SerializeField] private GradientEffect gradientEffect = new GradientEffect();
         #endregion
@@ -411,6 +412,16 @@ namespace GameLogic.UI.ImageExtensions
             }
         }
 
+        public BlobbyCrossImg BlobbyCross
+        {
+            get => blobbyCross;
+            set
+            {
+                blobbyCross = value;
+                SetMaterialDirty();
+            }
+        }
+
         public GradientEffect GradientEffect
         {
             get => gradientEffect;
@@ -494,6 +505,7 @@ namespace GameLogic.UI.ImageExtensions
             hexagon.OnValidate();
             nStarPolygon.OnValidate();
             heart.OnValidate();
+            blobbyCross.OnValidate();
 
             gradientEffect.OnValidate();
 
@@ -513,6 +525,7 @@ namespace GameLogic.UI.ImageExtensions
             hexagon.Init(m_Material, material, rectTransform);
             nStarPolygon.Init(m_Material, material, rectTransform);
             heart.Init(m_Material, material, rectTransform);
+            blobbyCross.Init(m_Material, material, rectTransform);
             gradientEffect.Init(m_Material, material, rectTransform);
         }
 
@@ -583,6 +596,7 @@ namespace GameLogic.UI.ImageExtensions
                 hexagon.onComponentSettingsChanged += OnComponentSettingsChanged;
                 nStarPolygon.onComponentSettingsChanged += OnComponentSettingsChanged;
                 heart.onComponentSettingsChanged += OnComponentSettingsChanged;
+                blobbyCross.onComponentSettingsChanged += OnComponentSettingsChanged;
                 gradientEffect.onComponentSettingsChanged += OnComponentSettingsChanged;
             }
             else
@@ -594,6 +608,7 @@ namespace GameLogic.UI.ImageExtensions
                 hexagon.onComponentSettingsChanged -= OnComponentSettingsChanged;
                 nStarPolygon.onComponentSettingsChanged -= OnComponentSettingsChanged;
                 heart.onComponentSettingsChanged -= OnComponentSettingsChanged;
+                blobbyCross.onComponentSettingsChanged -= OnComponentSettingsChanged;
                 gradientEffect.onComponentSettingsChanged -= OnComponentSettingsChanged;
             }
         }
@@ -711,6 +726,7 @@ namespace GameLogic.UI.ImageExtensions
             hexagon.ModifyMaterial(ref mat);
             nStarPolygon.ModifyMaterial(ref mat);
             heart.ModifyMaterial(ref mat);
+            blobbyCross.ModifyMaterial(ref mat);
 
             gradientEffect.ModifyMaterial(ref mat);
 
@@ -725,6 +741,7 @@ namespace GameLogic.UI.ImageExtensions
                     mat.DisableKeyword("HEXAGON");
                     mat.DisableKeyword("NSTAR_POLYGON");
                     mat.DisableKeyword("HEART");
+                    mat.DisableKeyword("BLOBBYCROSS");
                     break;
                 case DrawShape.Circle:
                     mat.EnableKeyword("CIRCLE");
@@ -746,6 +763,9 @@ namespace GameLogic.UI.ImageExtensions
                     break;
                 case DrawShape.Heart:
                     mat.EnableKeyword("HEART");
+                    break;
+                case DrawShape.BlobbyCross:
+                    mat.EnableKeyword("BLOBBYCROSS");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -776,7 +796,8 @@ namespace GameLogic.UI.ImageExtensions
             mat.DisableKeyword("PENTAGON");
             mat.DisableKeyword("HEXAGON");
             mat.DisableKeyword("NSTAR_POLYGON");
-            mat.DisableKeyword("Heart");
+            mat.DisableKeyword("HEART");
+            mat.DisableKeyword("BLOBBYCROSS");
 
             mat.DisableKeyword("STROKE");
             mat.DisableKeyword("OUTLINED");
@@ -816,6 +837,7 @@ namespace GameLogic.UI.ImageExtensions
             hexagon.InitValuesFromMaterial(ref mat);
             nStarPolygon.InitValuesFromMaterial(ref mat);
             heart.InitValuesFromMaterial(ref mat);
+            blobbyCross.InitValuesFromMaterial(ref mat);
 
             //GradientEffect
             gradientEffect.InitValuesFromMaterial(ref mat);

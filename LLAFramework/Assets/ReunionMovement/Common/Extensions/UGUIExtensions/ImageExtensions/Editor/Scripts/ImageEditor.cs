@@ -14,7 +14,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
     public class ImageExEditor : ImageEditor
     {
         private SerializedProperty spSprite;
-        private SerializedProperty spCircle, spTriangle, spRectangle, spPentagon, spHexagon, spNStarPolygon, spHeart;
+        private SerializedProperty spCircle, spTriangle, spRectangle, spPentagon, spHexagon, spNStarPolygon, spHeart, spBlobbyCross;
         private SerializedProperty spPreserveAspect;
         private SerializedProperty spFillMethod, spFillOrigin, spFillAmount, spFillClockwise;
         private SerializedProperty spAlphaThreshold;
@@ -68,6 +68,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
             spHexagon = serializedObject.FindProperty("hexagon");
             spNStarPolygon = serializedObject.FindProperty("nStarPolygon");
             spHeart = serializedObject.FindProperty("heart");
+            spBlobbyCross = serializedObject.FindProperty("blobbyCross");
 
             spPreserveAspect = serializedObject.FindProperty("m_PreserveAspect");
 
@@ -112,6 +113,9 @@ namespace GameLogic.UI.ImageExtensions.Editor
                             break;
                         case DrawShape.Heart:
                             EditorGUILayout.PropertyField(spHeart);
+                            break;
+                        case DrawShape.BlobbyCross:
+                            EditorGUILayout.PropertyField(spBlobbyCross);
                             break;
 
                         default:
@@ -536,7 +540,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
 
                 EditorGUI.BeginDisabledGroup(spMaterial.objectReferenceValue != null);
                 {
-                    if (GUI.Button(new Rect(rect.x + rect.width - 55, rect.y, 55, EditorGUIUtility.singleLineHeight),"创建"))
+                    if (GUI.Button(new Rect(rect.x + rect.width - 55, rect.y, 55, EditorGUIUtility.singleLineHeight), "创建"))
                     {
                         Material mat = ((ImageEx)target).CreateMaterialAssetFromComponentSettings();
                         spMaterial.objectReferenceValue = mat;

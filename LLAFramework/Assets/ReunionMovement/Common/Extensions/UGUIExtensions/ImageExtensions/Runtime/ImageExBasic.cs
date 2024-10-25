@@ -280,6 +280,7 @@ namespace GameLogic.UI.ImageExtensions
                     case DrawShape.Hexagon:
                     case DrawShape.NStarPolygon:
                     case DrawShape.Heart:
+                    case DrawShape.BlobbyCross:
                         return Materials.GetMaterial(3, strokeWidth > 0f, outlineWidth > 0f);
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -368,9 +369,9 @@ namespace GameLogic.UI.ImageExtensions
             Rect r = GetPixelAdjustedRect();
             stream.Uv1 = new Vector2(r.width + falloffDistance, r.height + falloffDistance);
 
-            float packedRotData = PackRotationData(shapeRotation, 
-                                                   constrainRotation, 
-                                                   flipHorizontal, 
+            float packedRotData = PackRotationData(shapeRotation,
+                                                   constrainRotation,
+                                                   flipHorizontal,
                                                    flipVertical);
 
             stream.Uv3 = new Vector2(packedRotData, (float)cornerStyle);

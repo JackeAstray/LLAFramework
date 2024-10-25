@@ -50,7 +50,7 @@ Shader "ReunionMovement/UI/Basic Procedural Image"
             #pragma multi_compile_local _ UNITY_UI_CLIP_RECT
             #pragma multi_compile_local _ UNITY_UI_ALPHACLIP
             
-            #pragma multi_compile_local _ CIRCLE TRIANGLE RECTANGLE NSTAR_POLYGON HEART
+            #pragma multi_compile_local _ CIRCLE TRIANGLE RECTANGLE NSTAR_POLYGON
             #pragma multi_compile_local _ STROKE OUTLINED OUTLINED_STROKE
             
             struct appdata_t
