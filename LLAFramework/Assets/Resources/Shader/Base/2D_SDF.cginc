@@ -77,6 +77,8 @@ float sdHeart(float2 p, float scale)
     return sqrt(min(dot2(p - float2(0.00, 1.00)), dot2(p - 0.5 * max(p.x + p.y, 0.0)))) * sign(p.x - p.y);
 }
 //EndCredit
+//https://www.shadertoy.com/view/DtjXDG
+//https://www.shadertoy.com/view/7stcR4
 
 //https://www.shadertoy.com/view/4ssyzj
 //https://www.shadertoy.com/view/wdlGWn
