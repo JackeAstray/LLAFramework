@@ -9,6 +9,10 @@ Shader "ReunionMovement/UI/2DLiquidFillInsideSphere"
         _FillHeight ("Fill Height", Range(0, 1)) = 0.5 // 自定义液体高度
         _LiquidBackgroundColor ("Liquid Background Color Range", Range(0, 1)) = 0.5 // 自定义液体背景
         _LiquidEdgeColor ("Liquid Edge Color Range", Range(0, 1)) = 0.5 // 自定义液体边缘颜色
+        _Shape ("Shape", Int) = 0 // 形状选择：0-圆形，1-方形，2-三角形
+        _WaveFrequency ("Wave Frequency", Range(0.1, 10.0)) = 1.0 // 波浪频率
+        _WaveAmplitude ("Wave Amplitude", Range(0.0, 1.0)) = 0.05 // 波浪幅度
+        _WaveCount ("Wave Count", Range(1, 10)) = 3 // 波浪数量
     }
     SubShader
     {
@@ -43,6 +47,10 @@ Shader "ReunionMovement/UI/2DLiquidFillInsideSphere"
             float _FillHeight; // 自定义液体高度
             float _LiquidBackgroundColor; // 自定义液体背景
             float _LiquidEdgeColor; // 自定义液体边缘颜色
+            int _Shape; // 形状选择
+            float _WaveFrequency; // 波浪频率
+            float _WaveAmplitude; // 波浪幅度
+            int _WaveCount; // 波浪数量
 
             v2f vert (appdata v)
             {
@@ -52,22 +60,36 @@ Shader "ReunionMovement/UI/2DLiquidFillInsideSphere"
                 return o;
             }
 
+            float shapeSDF(float2 uv, int shape)
+            {
+                if (shape == 1) // 方形
+                {
+                    float2 d = abs(uv) - 0.5;
+                    return length(max(d, 0.0)) + min(max(d.x, d.y), 0.0);
+                }
+                else // 圆形
+                {
+                    return length(uv) - 0.5;
+                }
+            }
+
             fixed4 frag (v2f i) : SV_Target
             {
                 float2 uv = i.uv;
                 float3 r = _Resolution.xyz;
                 uv = ((2.0 * uv) - r.xy) / r.y;
 
-                float sdf = length(uv);
-                float c = step(sdf, 0.85);
+                float sdf = shapeSDF(uv, _Shape);
+                float c = step(sdf, 0.0);
 
                 float vB = smoothstep(0.1, 0.9, sin(uv.x + (PI * 0.5)) - 0.3);
-                float vBA = vB * sin(_Time.y * 4.0) * 0.1;
+                float vBA = vB * sin(_Time.y * 4.0 * _WaveFrequency) * 0.1;
 
-                float fW = (sin(((_Time.y * 2.0) + uv.x) * 2.0) * 0.05) + vBA;
-                float bW = (sin(((_Time.y * -2.0) + uv.x) * 2.0 + PI) * 0.05) - vBA;
+                float waveFactor = _WaveCount * 2.0; // 增加波浪数量的因子
+                float fW = (sin(((_Time.y * waveFactor * _WaveFrequency) + uv.x) * waveFactor) * _WaveAmplitude) + vBA;
+                float bW = (sin(((_Time.y * -waveFactor * _WaveFrequency) + uv.x) * waveFactor + PI) * _WaveAmplitude) - vBA;
 
-                float fA = (sin(_Time.y * 4.0) * 0.05) * vB;
+                float fA = (sin(_Time.y * 4.0 * _WaveFrequency) * _WaveAmplitude) * vB;
 
                 // 使用 _FillHeight 属性来控制液体高度
                 float fF = step(uv.y, (fA + fW) + (_FillHeight * 2.0 - 1.0)) * c;
@@ -83,7 +105,7 @@ Shader "ReunionMovement/UI/2DLiquidFillInsideSphere"
                 fixed4 edgeColor = _EdgeColor;
                 // 边缘宽度，可以根据需要调整
                 float edgeWidth = 0.05; 
-                float edgeFactor = smoothstep(0.85 - edgeWidth, 0.85, sdf);
+                float edgeFactor = smoothstep(0.0 - edgeWidth, 0.0, sdf);
                 col = lerp(col, edgeColor, edgeFactor);
 
                 return col;

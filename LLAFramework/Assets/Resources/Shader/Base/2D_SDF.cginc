@@ -214,4 +214,45 @@ float sdBlobbyCross(float2 pos, float he)
     float2 z = float2(x, he * (1.0 - 2.0 * x * x)) - pos;
     return length(z) * sign(z.y);
 }
+
+float sdSquircle(float2 p, float n)
+{
+    p = abs(p);
+    if (p.y > p.x)
+        p = p.yx;
+    n = 2.0 / n;
+
+    float xa = 0.0, xb = 6.283185 / 8.0;
+    for (int i = 0; i < 6; i++)
+    {
+        float x = 0.5 * (xa + xb);
+        float c = cos(x);
+        float s = sin(x);
+        float cn = pow(c, n);
+        float sn = pow(s, n);
+        float y = (p.x - cn) * cn * s * s - (p.y - sn) * sn * c * c;
+
+        if (y < 0.0)
+            xa = x;
+        else
+            xb = x;
+    }
+
+    float2 qa = pow(float2(cos(xa), sin(xa)), n);
+    float2 qb = pow(float2(cos(xb), sin(xb)), n);
+    float2 pa = p - qa, ba = qb - qa;
+    float h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+    return length(pa - ba * h) * sign(pa.x * ba.y - pa.y * ba.x);
+}
+
+float approx_sdSquircle(float2 p, float n)
+{
+    p = abs(p);
+    if (p.y > p.x)
+        p = p.yx;
+    float w = pow(p.x, n) + pow(p.y, n);
+    float b = 2.0 * n - 2.0;
+    float a = 1.0 - 1.0 / n;
+    return (w - pow(w, a)) * rsqrt(pow(p.x, b) + pow(p.y, b));
+}
 #endif
