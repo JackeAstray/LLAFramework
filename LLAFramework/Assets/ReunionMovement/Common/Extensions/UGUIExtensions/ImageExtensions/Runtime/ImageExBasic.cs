@@ -281,6 +281,7 @@ namespace GameLogic.UI.ImageExtensions
                     case DrawShape.NStarPolygon:
                     case DrawShape.Heart:
                     case DrawShape.BlobbyCross:
+                    case DrawShape.Squircle:
                         return Materials.GetMaterial(3, strokeWidth > 0f, outlineWidth > 0f);
                     default:
                         throw new ArgumentOutOfRangeException();

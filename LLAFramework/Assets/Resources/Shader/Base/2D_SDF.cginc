@@ -188,7 +188,7 @@ float sdVesica(float2 p, float r, float d)
     return ((p.y - b) * d > p.x * b) ? length(p - float2(0.0, b)) * sign(d) : length(p - float2(-d, 0.0)) - r;
 }
 
-// 布洛比十字架
+// 水滴十字
 float sdBlobbyCross(float2 pos, float he)
 {
     pos = abs(pos);
@@ -215,6 +215,7 @@ float sdBlobbyCross(float2 pos, float he)
     return length(z) * sign(z.y);
 }
 
+//方圆
 float sdSquircle(float2 p, float n)
 {
     p = abs(p);
@@ -244,7 +245,7 @@ float sdSquircle(float2 p, float n)
     float h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
     return length(pa - ba * h) * sign(pa.x * ba.y - pa.y * ba.x);
 }
-
+//方圆
 float approx_sdSquircle(float2 p, float n)
 {
     p = abs(p);

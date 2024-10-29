@@ -15,7 +15,8 @@ namespace GameLogic.UI.ImageExtensions
         Hexagon,        //六边形
         NStarPolygon,   //N星多边形
         Heart,          //心形
-        BlobbyCross,    //BlobbyCross
+        BlobbyCross,    //滴状十字
+        Squircle,       //方圆形
     }
 
     //渐变类型

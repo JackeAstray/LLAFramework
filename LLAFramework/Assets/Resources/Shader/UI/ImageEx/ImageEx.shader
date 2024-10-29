@@ -69,7 +69,9 @@ Shader "ReunionMovement/UI/Procedural Image"
         
         _ColorMask ("Color Mask", Float) = 15
         
-        _BlobbyCrossTime ("Blobby Cross Time", float) = 0
+        _BlobbyCrossTime ("Blobby Cross Time", Float) = 0
+
+        _SquircleTime ("Squircle Time", Float) = 1
 
         [Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip ("Use Alpha Clip", Float) = 0
     }
@@ -109,7 +111,7 @@ Shader "ReunionMovement/UI/Procedural Image"
             #pragma multi_compile_local _ UNITY_UI_CLIP_RECT
             #pragma multi_compile_local _ UNITY_UI_ALPHACLIP
             
-            #pragma multi_compile_local _ CIRCLE TRIANGLE RECTANGLE PENTAGON HEXAGON NSTAR_POLYGON HEART BLOBBYCROSS
+            #pragma multi_compile_local _ CIRCLE TRIANGLE RECTANGLE PENTAGON HEXAGON NSTAR_POLYGON HEART BLOBBYCROSS SQUIRCLE
             
             #pragma multi_compile_local _ STROKE OUTLINED OUTLINED_STROKE
             #pragma multi_compile_local _ GRADIENT_LINEAR GRADIENT_RADIAL GRADIENT_CORNER
@@ -227,6 +229,9 @@ Shader "ReunionMovement/UI/Procedural Image"
                 float _BlobbyCrossTime;
             #endif
             
+            #if SQUIRCLE
+                float _SquircleTime;
+            #endif
             
             //渐变
             #if GRADIENT_LINEAR || GRADIENT_RADIAL
@@ -524,7 +529,7 @@ Shader "ReunionMovement/UI/Procedural Image"
                 }
             #endif
 
-            //
+            //水滴十字
             #if BLOBBYCROSS
                 half blobbyCrossScene(float4 _additionalData)
                 {
@@ -544,6 +549,26 @@ Shader "ReunionMovement/UI/Procedural Image"
                     float ra = 0.1 + 0.5 * (0.5 + 0.5 * sin(time * 1.7)) + max(0.0, he - 0.7);
 
                     float d = sdBlobbyCross(p, he) - ra;
+
+                    return d;
+                }
+            #endif
+
+            //方圆
+            #if SQUIRCLE
+                half squircleScene(float4 _additionalData)
+                {
+                     //得到纹理坐标
+                    float2 texcoord = _additionalData.xy;
+                    //得到宽
+                    float width = _additionalData.z;
+                    //得到高
+                    float height = _additionalData.w;
+
+                    float2 p = (2.0 * texcoord - _additionalData.zw) / width;
+                    p *= 2.0;
+                    float n = 3.0 + 2.5 * sin(6.283185 * _SquircleTime / 3.0);
+                    float d = (p.y < p.x) ? sdSquircle(p, n) : approx_sdSquircle(p, n);
 
                     return d;
                 }
@@ -639,7 +664,7 @@ Shader "ReunionMovement/UI/Procedural Image"
                     color *= finalCol;
                 #endif
                 
-                #if RECTANGLE || CIRCLE || PENTAGON || TRIANGLE || HEXAGON || NSTAR_POLYGON || HEART || BLOBBYCROSS
+                #if RECTANGLE || CIRCLE || PENTAGON || TRIANGLE || HEXAGON || NSTAR_POLYGON || HEART || BLOBBYCROSS || SQUIRCLE
                     float sdfData = 0;
                     float pixelScale = clamp(1.0/_FalloffDistance, 1.0/2048.0, 2048.0);
                     #if RECTANGLE
@@ -658,6 +683,8 @@ Shader "ReunionMovement/UI/Procedural Image"
                         sdfData = heartScene(IN.shapeData);
                     #elif BLOBBYCROSS
                         sdfData = blobbyCrossScene(IN.shapeData);
+                    #elif SQUIRCLE
+                        sdfData = squircleScene(IN.shapeData);
                     #endif
                 
                     #if !OUTLINED && !STROKE && !OUTLINED_STROKE

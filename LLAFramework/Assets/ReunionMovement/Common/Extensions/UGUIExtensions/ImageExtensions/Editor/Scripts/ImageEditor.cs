@@ -14,7 +14,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
     public class ImageExEditor : ImageEditor
     {
         private SerializedProperty spSprite;
-        private SerializedProperty spCircle, spTriangle, spRectangle, spPentagon, spHexagon, spNStarPolygon, spHeart, spBlobbyCross;
+        private SerializedProperty spCircle, spTriangle, spRectangle, spPentagon, spHexagon, spNStarPolygon, spHeart, spBlobbyCross, spSquircle;
         private SerializedProperty spPreserveAspect;
         private SerializedProperty spFillMethod, spFillOrigin, spFillAmount, spFillClockwise;
         private SerializedProperty spAlphaThreshold;
@@ -69,6 +69,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
             spNStarPolygon = serializedObject.FindProperty("nStarPolygon");
             spHeart = serializedObject.FindProperty("heart");
             spBlobbyCross = serializedObject.FindProperty("blobbyCross");
+            spSquircle = serializedObject.FindProperty("squircle");
 
             spPreserveAspect = serializedObject.FindProperty("m_PreserveAspect");
 
@@ -116,6 +117,9 @@ namespace GameLogic.UI.ImageExtensions.Editor
                             break;
                         case DrawShape.BlobbyCross:
                             EditorGUILayout.PropertyField(spBlobbyCross);
+                            break;
+                        case DrawShape.Squircle:
+                            EditorGUILayout.PropertyField(spSquircle);
                             break;
 
                         default:
