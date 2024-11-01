@@ -26,5 +26,15 @@ namespace GameLogic
             Ray ray = camera.ScreenPointToRay(screenPoint);
             return Physics.Raycast(ray, out hitInfo, Mathf.Infinity, layerMask);
         }
+
+        public void SetCamera(Camera camera)
+        {
+            this.camera = camera;
+        }
+
+        public void SetLayerName(string layerName)
+        {
+            layerMask = 1 << LayerMask.NameToLayer(layerName);
+        }
     }
 }
