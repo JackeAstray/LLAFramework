@@ -891,7 +891,8 @@ namespace LitJson
             }
 
 #if UNITY_2018_3_OR_NEWER
-            if (obj is IDictionary dictionary) {
+            if (obj is IDictionary dictionary)
+            {
 #else
             if (obj is IDictionary)
             {
@@ -988,7 +989,7 @@ namespace LitJson
         #endregion
 
 
-        public static string ToJson(object obj, bool prettyPrint = true)
+        public static string ToJson(object obj, bool prettyPrint = false)
         {
             lock (static_writer_lock)
             {
