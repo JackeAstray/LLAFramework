@@ -15,14 +15,14 @@ namespace GameLogic
             Subtraction
         }
 
-        const float defaultEpsilon = 0.00001f;
-        static float epsilon = defaultEpsilon;
+        const double defaultEpsilon = 0.0000001f;
+        static double epsilon = defaultEpsilon;
 
         /// <summary>
         /// 使用的公差确定平面是否重合
         /// <see cref="Plane.SplitPolygon"/> 
         /// </summary>
-        public static float Epsilon
+        public static double Epsilon
         {
             get => epsilon;
             set => epsilon = value;
