@@ -17,6 +17,8 @@ namespace GameLogic
         public int layer = 0;
         public string name = string.Empty;
         public Action action = null;
+        public bool enableAction = false;
+        public bool displayDecorate = false;
 
         public TreeViewData() { }
         public TreeViewData(string name, int layer = 0)
@@ -26,7 +28,7 @@ namespace GameLogic
             parent = null;
             childNodes = new List<TreeViewData>();
         }
-        public TreeViewData(string name, List<TreeViewData> childNodes, Action action, int layer = 0)
+        public TreeViewData(string name, List<TreeViewData> childNodes, Action action, int layer = 0, bool enableAction = false, bool displayDecorate = false)
         {
             this.name = name;
             parent = null;
@@ -37,7 +39,9 @@ namespace GameLogic
                 this.childNodes = new List<TreeViewData>();
             }
             this.layer = layer;
+            this.enableAction = enableAction;
             ResetChildren(this);
+            this.displayDecorate = displayDecorate;
         }
 
         #endregion

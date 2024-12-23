@@ -29,7 +29,9 @@ namespace GameLogic
         private Transform myTransform = null;
         private Transform container = null;
         private List<GameObject> children = new List<GameObject>();
+
         private Action action = null;
+        private bool enableAction = false;
         #endregion
 
         #region 方法
@@ -88,6 +90,7 @@ namespace GameLogic
                 //icon.sprite = toggle.isOn ? uiTree.openIcon : uiTree.closeIcon;
             }
 
+            enableAction = data.enableAction;
             action = data.action;
 
             SetColor(data.layer);
@@ -99,30 +102,30 @@ namespace GameLogic
         /// <param name="data"></param>
         public void SetData(TreeViewData data)
         {
-            if (null == myTransform)
-            {
-                GetComponent();
-            }
-            ResetComponent();
-            treeData = data;
-            text.text = data.name;
-            toggle.isOn = false;
-            toggle.onValueChanged.AddListener(OpenOrClose);
-            container.localPosition += new Vector3(container.GetComponent<RectTransform>().sizeDelta.y * treeData.layer, 0, 0);
-            if (data.childNodes.Count.Equals(0))
-            {
-                icon.sprite = transparent;
-                //toggleTransform.gameObject.SetActive(false);
-                //icon.sprite = uiTree.lastLayerIcon;
-            }
-            else
-            {
-                //icon.sprite = toggle.isOn ? uiTree.openIcon : uiTree.closeIcon;
-            }
+            //if (null == myTransform)
+            //{
+            //    GetComponent();
+            //}
+            //ResetComponent();
+            //treeData = data;
+            //text.text = data.name;
+            //toggle.isOn = false;
+            //toggle.onValueChanged.AddListener(OpenOrClose);
+            //container.localPosition += new Vector3(container.GetComponent<RectTransform>().sizeDelta.y * treeData.layer, 0, 0);
+            //if (data.childNodes.Count.Equals(0))
+            //{
+            //    icon.sprite = transparent;
+            //    //toggleTransform.gameObject.SetActive(false);
+            //    //icon.sprite = uiTree.lastLayerIcon;
+            //}
+            //else
+            //{
+            //    //icon.sprite = toggle.isOn ? uiTree.openIcon : uiTree.closeIcon;
+            //}
 
-            action = data.action;
+            //action = data.action;
 
-            SetColor(data.layer);
+            //SetColor(data.layer);
         }
 
         /// <summary>
@@ -138,6 +141,24 @@ namespace GameLogic
                 bg.color = uiTree.colors[layer];
             }
         }
+
+        public void UpdateDisplayDecorate(bool displayDecorate)
+        {
+            // 根据 displayDecorate 的值更新节点的显示
+            if (displayDecorate)
+            {
+                // 显示装饰
+            }
+            else
+            {
+                // 隐藏装饰
+            }
+        }
+
+        public TreeViewData GetTreeData()
+        {
+            return treeData;
+        }
         #endregion
 
         #region 折叠 展开
@@ -152,13 +173,21 @@ namespace GameLogic
             toggleTransform.localEulerAngles = isOn ? new Vector3(0, 0, 0) : new Vector3(0, 0, 90);
             //icon.sprite = toggle.isOn ? uiTree.openIcon : uiTree.closeIcon;
 
-            action?.Invoke();
+            if (enableAction)
+            {
+                action?.Invoke();
+            }
         }
         /// <summary>
         /// 展开子节点
         /// </summary>
         private void OpenChildren()
         {
+            if (!enableAction)
+            {
+                action?.Invoke();
+            }
+
             children = uiTree.Pop(treeData.childNodes, transform.GetSiblingIndex());
         }
         /// <summary>

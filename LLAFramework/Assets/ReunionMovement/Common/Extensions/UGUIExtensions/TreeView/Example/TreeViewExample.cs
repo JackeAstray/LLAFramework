@@ -6,20 +6,20 @@ using UnityEngine;
 public class TreeViewExample : MonoBehaviour
 {
     public TreeView UITree = null;
+    List<TreeViewData> rootData = new List<TreeViewData>();
 
     public void Awake()
     {
-        List<TreeViewData> rootData = new List<TreeViewData>();
         var data = new TreeViewData("空调", new List<TreeViewData>()
         {
             new TreeViewData("二级结构",new List<TreeViewData>()
             {
-            },
+                new TreeViewData("电路图",new List<TreeViewData>()
+                {
+                },
+                ()=>{ Debug.Log("测试"); })
+                },
             null),
-            new TreeViewData("电路图",new List<TreeViewData>()
-            {
-            },
-            ()=>{ Debug.Log("测试"); })
         },
         null);
         rootData.Add(data);
@@ -140,5 +140,17 @@ public class TreeViewExample : MonoBehaviour
         },
         null);
         UITree.Insert(rootData);
+    }
+
+    public void UpdateNodeDisplayDecorate(TreeViewData data, bool displayDecorate)
+    {
+        // 遍历所有的 TreeViewNode 并更新 displayDecorate
+        foreach (var node in UITree.treeRootNodes)
+        {
+            if (node.GetTreeData() == data)
+            {
+                node.UpdateDisplayDecorate(displayDecorate);
+            }
+        }
     }
 }

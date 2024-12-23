@@ -67,17 +67,17 @@ namespace GameLogic
         //[Obsolete("This method is replaced by Inject.")]
         public void SetData(List<TreeViewData> rootData)
         {
-            if (null == container)
-            {
-                GetComponent();
-            }
+            //if (null == container)
+            //{
+            //    GetComponent();
+            //}
 
-            foreach (var item in rootData)
-            {
-                TreeViewNode treeView = Instantiate<TreeViewNode>(tvObj, container);
-                treeView.Insert(item);
-                treeRootNodes.Add(treeView);
-            }
+            //foreach (var item in rootData)
+            //{
+            //    TreeViewNode treeView = Instantiate<TreeViewNode>(tvObj, container);
+            //    treeView.Insert(item);
+            //    treeRootNodes.Add(treeView);
+            //}
         }
 
         #endregion
