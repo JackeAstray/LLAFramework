@@ -17,12 +17,20 @@ namespace GameLogic.EditorTools
         Int,
         //Int数组
         Ints,
+
         Float,
         //Float数组
         Floats,
+
+        Double,
+        //Double数组
+        Doubles,
+
         Long,
         //Long数组
         Longs,
+
+        //向量
         Vector2,
         Vector3,
         Vector4,

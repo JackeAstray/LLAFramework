@@ -480,6 +480,14 @@ namespace GameLogic
                     case "float":
                         type = FieldTypes.Float;
                         break;
+                    case "double":
+                        type = FieldTypes.Double;
+                        break;
+                    case "doubles":
+                    case "double[]":
+                    case "[double]":
+                        type = FieldTypes.Doubles;
+                        break;
                     case "floats":
                     case "float[]":
                     case "[float]":
@@ -551,6 +559,12 @@ namespace GameLogic
                     break;
                 case FieldTypes.Floats:
                     result = "List<float>";
+                    break;
+                case FieldTypes.Double:
+                    result = "double";
+                    break;
+                case FieldTypes.Doubles:
+                    result = "List<double>";
                     break;
                 case FieldTypes.Long:
                     result = "long";
