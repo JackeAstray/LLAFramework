@@ -22,11 +22,6 @@ namespace GameLogic
         /// </summary>
         public IAppEntry appEntry { get; private set; }
 
-        ///// <summary>
-        ///// 用于标识是否从Unity添加
-        ///// </summary>
-        //private bool isNewByStatic = false;
-
         /// <summary>
         /// 是否初始化完成
         /// </summary>
@@ -72,16 +67,15 @@ namespace GameLogic
         public static AppEngine New(GameObject gameObjectToAttach, IAppEntry entry, IList<CustommModuleInitialize> modules)
         {
             AppEngine appEngine = gameObjectToAttach.AddComponent<AppEngine>();
-            //appEngine.isNewByStatic = true;
             appEngine.gameModules = modules;
             appEngine.appEntry = entry;
 
             return appEngine;
         }
 
-        private void Awake()
+        protected override void Awake()
         {
-            Instance = this;
+            base.Awake();
             Init();
         }
 

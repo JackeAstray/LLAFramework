@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TouchScript.Examples.Tap;
 using UnityEngine;
 
 namespace GameLogic.Example
@@ -48,7 +47,7 @@ namespace GameLogic.Example
             go.SetActive(true);
         }
 
-        public void OnDespawn(GameObject go) 
+        public void OnDespawn(GameObject go)
         {
             go.SetActive(false);
         }

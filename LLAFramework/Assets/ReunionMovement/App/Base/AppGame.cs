@@ -20,10 +20,10 @@ namespace GameLogic
             };
         }
 
-        public void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             DontDestroyOnLoad(this.gameObject);
-            Instance = this;
             AppEngine.New(gameObject, this, CreateModules());
         }
 

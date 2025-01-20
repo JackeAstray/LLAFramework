@@ -15,6 +15,7 @@ namespace GameLogic
         // 时间戳
         private static readonly DateTimeOffset UnixEpoch = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
+        // 时间类型
         public enum TimeType
         {
             Seconds = 1,
@@ -26,26 +27,29 @@ namespace GameLogic
         /// <summary>
         /// 获得增加时间后的时间
         /// </summary>
+        /// <param name="time">时间</param>
         /// <param name="type">1、秒 2、分钟 3、小时 4、天</param>
         /// <param name="value">索要添加的数值</param>
         /// <returns></returns>
-        public static DateTime GetAddTime(TimeType type, int value)
+        public static DateTime GetAddTime(this DateTime time, TimeType type, int value)
         {
-            DateTime time = DateTime.Now;
-            DateTime result = DateTime.Now;
-
             switch (type)
             {
+                // 秒
                 case TimeType.Seconds:
                     return time.AddSeconds(value);
+                // 分钟
                 case TimeType.Minutes:
                     return time.AddMinutes(value);
+                // 小时
                 case TimeType.Hours:
                     return time.AddHours(value);
+                // 天
                 case TimeType.Days:
                     return time.AddDays(value);
+                // 默认 秒
                 default:
-                    throw new ArgumentException("无效的时间类型.");
+                    return time.AddSeconds(value);
             }
         }
 
@@ -104,8 +108,6 @@ namespace GameLogic
             return timeStr;
         }
 
-
-
         /// <summary>
         /// 秒数据换算为日期
         /// </summary>
@@ -127,11 +129,11 @@ namespace GameLogic
         public static long GetTimestamp(this DateTime dateTime, bool totalMilliseconds = false)
         {
             var dateTimeOffset = new DateTimeOffset(dateTime);
-            return totalMilliseconds ? dateTimeOffset.ToUnixTimeMilliseconds() : dateTimeOffset.ToUnixTimeSeconds();
+            return dateTimeOffset.GetTimestamp(totalMilliseconds);
         }
 
         /// <summary>
-        /// 获取当前时间戳
+        /// 获取时间戳
         /// </summary>
         /// <param name="totalMilliseconds"></param>
         /// <returns></returns>
@@ -150,10 +152,10 @@ namespace GameLogic
         {
             string[] formats = new string[]
             {
-            "yyyy-MM-dd HH:mm:ss",
-            "yyyy/MM/dd HH:mm:ss",
-            "yyyy-MM-dd",
-            "yyyy/MM/dd",
+                "yyyy-MM-dd HH:mm:ss",
+                "yyyy/MM/dd HH:mm:ss",
+                "yyyy-MM-dd",
+                "yyyy/MM/dd",
             };
 
             if (DateTime.TryParseExact(dateTime, formats, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out DateTime result))

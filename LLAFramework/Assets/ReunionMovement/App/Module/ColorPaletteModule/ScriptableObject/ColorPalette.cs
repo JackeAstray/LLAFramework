@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 using GameLogic;
-using TouchScript.Examples.Colors;
 
 [CreateAssetMenu(fileName = "ColorPalette", menuName = "创建调色板", order = 0)]
 public class ColorPalette : ScriptableObject

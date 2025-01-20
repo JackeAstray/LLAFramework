@@ -40,7 +40,7 @@ namespace GameLogic.AssetsModule
 
         #region 数据
         public string assetServerIP;
-        private bool isChcked;
+        //private bool isChcked;
         string versionTxtUri;
         #endregion
 
@@ -71,7 +71,7 @@ namespace GameLogic.AssetsModule
         /// </summary>
         public void VerifyVersionNumber()
         {
-            isChcked = false;
+            //isChcked = false;
             assetServerIP = "192.168.18.37:8081";
             versionTxtUri = assetServerIP + "/version.txt";
 
@@ -141,7 +141,7 @@ namespace GameLogic.AssetsModule
             }
 
             Debug.Log($"资源版本检查成功：{result}");
-            isChcked = true;
+            //isChcked = true;
 
             //遍历所有资源组的更新器
             List<GroupInfo> groups = CatAssetManager.GetAllGroupInfo();
