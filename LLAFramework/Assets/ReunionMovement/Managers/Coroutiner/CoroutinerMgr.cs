@@ -215,8 +215,11 @@ namespace GameLogic
         {
             lock (taskLock)
             {
-                tasksToProcess.AddRange(coroutineTasks);
-                coroutineTasks.Clear();
+                if (coroutineTasks.Count > 0)
+                {
+                    tasksToProcess.AddRange(coroutineTasks);
+                    coroutineTasks.Clear();
+                }
             }
 
             // 处理任务

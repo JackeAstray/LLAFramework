@@ -103,7 +103,6 @@ namespace GameLogic
                 yield return StartCoroutine(appEntry.OnBeforeInit());
             }
 
-
             isOnInit = true;
             yield return StartCoroutine(DoInitModules(gameModules));
 
@@ -111,7 +110,6 @@ namespace GameLogic
             if (appEntry != null)
             {
                 yield return StartCoroutine(appEntry.OnGameStart());
-
             }
 
             isInited = true;
@@ -124,14 +122,12 @@ namespace GameLogic
         /// <returns></returns>
         private IEnumerator DoInitModules(IList<CustommModuleInitialize> modules)
         {
-            var startInitTime = 0f;
-            var startMem = 0f;
             foreach (CustommModuleInitialize initModule in modules)
             {
                 if (isWindowsEditor)
                 {
-                    startInitTime = Time.time;
-                    startMem = GC.GetTotalMemory(false);
+                    var startInitTime = Time.time;
+                    var startMem = GC.GetTotalMemory(false);
                 }
 
                 yield return StartCoroutine(initModule.Init());
@@ -158,12 +154,9 @@ namespace GameLogic
                 updatePer300msEvent?.Invoke();
             }
 
-            if (gameModules.Count > 0)
+            foreach (CustommModuleInitialize module in gameModules)
             {
-                foreach (CustommModuleInitialize module in gameModules)
-                {
-                    module.UpdateTime(Time.deltaTime, Time.unscaledDeltaTime);
-                }
+                module.UpdateTime(Time.deltaTime, Time.unscaledDeltaTime);
             }
         }
 
@@ -189,8 +182,7 @@ namespace GameLogic
         /// </summary>
         public void ClearModuleData()
         {
-            var modules = gameModules;
-            foreach (CustommModuleInitialize initModule in modules)
+            foreach (CustommModuleInitialize initModule in gameModules)
             {
                 initModule.ClearData();
             }

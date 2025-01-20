@@ -21,17 +21,9 @@ namespace GameLogic
                 await ExecuteTask(() => { action?.Invoke(); return true; }, timeout, cancellationToken);
                 callback?.Invoke();
             }
-            catch (OperationCanceledException)
-            {
-                Debug.Log("任务被取消");
-            }
-            catch (TimeoutException ex)
-            {
-                Debug.Log($"任务超时: {ex.Message}");
-            }
             catch (Exception ex)
             {
-                Debug.Log($"任务异常: {ex.Message}");
+                HandleTaskException(ex);
             }
         }
 
@@ -48,17 +40,9 @@ namespace GameLogic
                 T result = await ExecuteTask(func, timeout, cancellationToken);
                 callback?.Invoke(result);
             }
-            catch (OperationCanceledException)
-            {
-                Debug.Log("任务被取消");
-            }
-            catch (TimeoutException ex)
-            {
-                Debug.Log($"任务超时: {ex.Message}");
-            }
             catch (Exception ex)
             {
-                Debug.Log($"任务异常: {ex.Message}");
+                HandleTaskException(ex);
             }
         }
 
@@ -67,9 +51,8 @@ namespace GameLogic
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="func"></param>
-        /// <param name="callback"></param>
-        /// <param name="cancellationToken"></param>
         /// <param name="timeout"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         private async Task<T> ExecuteTask<T>(Func<T> func, TimeSpan? timeout = null, CancellationToken cancellationToken = default)
         {
@@ -78,33 +61,46 @@ namespace GameLogic
                 throw new OperationCanceledException(cancellationToken);
             }
 
-            try
+            Task<T> task = Task.Run(func, cancellationToken);
+
+            if (timeout.HasValue)
             {
-                Task<T> task = Task.Run(func, cancellationToken);
+                Task delayTask = Task.Delay(timeout.Value, cancellationToken);
+                Task completedTask = await Task.WhenAny(task, delayTask);
 
-                if (timeout.HasValue)
+                if (completedTask == delayTask)
                 {
-                    Task delayTask = Task.Delay(timeout.Value, cancellationToken);
-                    Task completedTask = await Task.WhenAny(task, delayTask);
-
-                    if (completedTask == delayTask)
+                    if (cancellationToken.IsCancellationRequested)
                     {
-                        if (cancellationToken.IsCancellationRequested)
-                        {
-                            throw new OperationCanceledException(cancellationToken);
-                        }
-                        else
-                        {
-                            throw new TimeoutException("任务超时");
-                        }
+                        throw new OperationCanceledException(cancellationToken);
+                    }
+                    else
+                    {
+                        throw new TimeoutException("任务超时");
                     }
                 }
-
-                return await task;
             }
-            catch (OperationCanceledException)
+
+            return await task;
+        }
+
+        /// <summary>
+        /// 处理任务异常
+        /// </summary>
+        /// <param name="ex"></param>
+        private void HandleTaskException(Exception ex)
+        {
+            switch (ex)
             {
-                throw;
+                case OperationCanceledException:
+                    Debug.Log("任务被取消");
+                    break;
+                case TimeoutException timeoutEx:
+                    Debug.Log($"任务超时: {timeoutEx.Message}");
+                    break;
+                default:
+                    Debug.Log($"任务异常: {ex.Message}");
+                    break;
             }
         }
     }

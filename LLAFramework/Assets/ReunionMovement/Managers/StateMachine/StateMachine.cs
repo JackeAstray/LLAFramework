@@ -35,7 +35,7 @@ namespace GameLogic
                 this.onStop = onStop;
 
                 this.priority = priority;
-                
+
                 this.timeout = timeout;
                 this.elapsedTime = 0f;
             }
@@ -64,9 +64,7 @@ namespace GameLogic
 
         public TLabel CurrentState
         {
-            get {
-                return currentState.label;
-            }
+            get => currentState.label;
             set => ChangeState(value);
         }
 
@@ -112,6 +110,7 @@ namespace GameLogic
                 state.onUpdate?.Invoke();
             }
         }
+
         /// <summary>
         /// 添加状态
         /// </summary>
@@ -119,7 +118,7 @@ namespace GameLogic
         /// <param name="label"></param>
         /// <param name="subMachine"></param>
         /// <param name="subMachineStartState"></param>
-        public void AddState<TSubStateLabel>(TLabel label, StateMachine<TSubStateLabel> subMachine,TSubStateLabel subMachineStartState)
+        public void AddState<TSubStateLabel>(TLabel label, StateMachine<TSubStateLabel> subMachine, TSubStateLabel subMachineStartState)
         {
             AddState(label, () => subMachine.ChangeState(subMachineStartState), subMachine.Update);
         }
@@ -166,15 +165,23 @@ namespace GameLogic
         /// <param name="newState"></param>
         private void ChangeState(TLabel newState)
         {
+            if (currentState != null && !IsTransitionConditionsMet(newState))
+            {
+                Debug.LogError($"无法从状态 {currentState.label} 转换到 {newState}，条件未满足。");
+                return;
+            }
+
+            PerformStateChange(newState);
+        }
+
+        /// <summary>
+        /// 执行状态切换
+        /// </summary>
+        /// <param name="newState"></param>
+        private void PerformStateChange(TLabel newState)
+        {
             try
             {
-                if (currentState != null && IsTransitionConditions(newState))
-                {
-                    Debug.LogError($"无法从状态 {currentState.label} 转换到 {newState}，条件未满足。");
-                    return;
-                }
-
-                //Debug.Log($"状态从 {currentState.label} 转换到 {newState}");
                 currentState?.onStop?.Invoke();
                 onStateExit?.Invoke(currentState.label);
                 stateHistory.Push(currentState);
@@ -204,9 +211,9 @@ namespace GameLogic
         /// </summary>
         /// <param name="newState"></param>
         /// <returns></returns>
-        private bool IsTransitionConditions(TLabel newState)
+        private bool IsTransitionConditionsMet(TLabel newState)
         {
-            return transitionConditions.TryGetValue((currentState.label, newState), out var condition) && !condition();
+            return transitionConditions.TryGetValue((currentState.label, newState), out var condition) && condition();
         }
 
         /// <summary>
@@ -234,7 +241,6 @@ namespace GameLogic
                 currentState?.onStart?.Invoke();
             }
         }
-
 
         /// <summary>
         /// 暂停状态机
