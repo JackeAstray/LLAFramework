@@ -672,13 +672,13 @@ public static class TransformExtensions
 
     public static void RotateXYZ(this Transform transform, float x, float y, float z)
     {
+        Matrix4x4 rzmat = RotZMat(z * Mathf.Deg2Rad);
         Matrix4x4 rxmat = RotXMat(x * Mathf.Deg2Rad);
         Matrix4x4 rymat = RotYMat(y * Mathf.Deg2Rad);
-        Matrix4x4 rzmat = RotZMat(z * Mathf.Deg2Rad);
 
         Matrix4x4 combinedRotation;
 
-        combinedRotation = rxmat * rymat * rzmat;
+        combinedRotation = rzmat * rxmat * rymat;
 
         Quaternion quaternion = combinedRotation.rotation;
 
