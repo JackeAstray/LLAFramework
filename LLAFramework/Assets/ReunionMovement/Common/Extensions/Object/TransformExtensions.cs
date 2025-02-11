@@ -622,7 +622,7 @@ public static class TransformExtensions
         if (!check_visible)
         {
             // 如果不检查可见性且未找到匹配项，直接返回null
-            return null; 
+            return null;
         }
 
         foreach (Transform t in trans)
@@ -666,4 +666,58 @@ public static class TransformExtensions
         }
         path.Append(current.name);
     }
+
+
+    #region 处理万象锁
+
+    public static void RotateXYZ(this Transform transform, float x, float y, float z)
+    {
+        Matrix4x4 rxmat = RotXMat(x);
+        Matrix4x4 rymat = RotYMat(y);
+        Matrix4x4 rzmat = RotZMat(z);
+
+        Matrix4x4 combinedRotation;
+
+        combinedRotation = rxmat * rymat * rzmat;
+
+        Quaternion quaternion = combinedRotation.rotation;
+
+        Debug.Log("Quaternion.eulerAngles: " + quaternion.eulerAngles);
+
+        transform.rotation = quaternion;
+    }
+
+    static Matrix4x4 RotXMat(float angle)
+    {
+        Matrix4x4 rxmat = new Matrix4x4();
+        rxmat.SetRow(0, new Vector4(1f, 0f, 0f, 0f));
+        rxmat.SetRow(1, new Vector4(0f, Mathf.Cos(angle), -Mathf.Sin(angle), 0f));
+        rxmat.SetRow(2, new Vector4(0f, Mathf.Sin(angle), Mathf.Cos(angle), 0f));
+        rxmat.SetRow(3, new Vector4(0f, 0f, 0f, 1f));
+
+        return rxmat;
+    }
+
+    static Matrix4x4 RotYMat(float angle)
+    {
+        Matrix4x4 rymat = new Matrix4x4();
+        rymat.SetRow(0, new Vector4(Mathf.Cos(angle), 0f, Mathf.Sin(angle), 0f));
+        rymat.SetRow(1, new Vector4(0f, 1f, 0f, 0f));
+        rymat.SetRow(2, new Vector4(-Mathf.Sin(angle), 0f, Mathf.Cos(angle), 0f));
+        rymat.SetRow(3, new Vector4(0f, 0f, 0f, 1f));
+
+        return rymat;
+    }
+
+    static Matrix4x4 RotZMat(float angle)
+    {
+        Matrix4x4 rzmat = new Matrix4x4();
+        rzmat.SetRow(0, new Vector4(Mathf.Cos(angle), -Mathf.Sin(angle), 0f, 0f));
+        rzmat.SetRow(1, new Vector4(Mathf.Sin(angle), Mathf.Cos(angle), 0f, 0f));
+        rzmat.SetRow(2, new Vector4(0f, 0f, 1f, 0f));
+        rzmat.SetRow(3, new Vector4(0f, 0f, 0f, 1f));
+
+        return rzmat;
+    }
+    #endregion
 }
