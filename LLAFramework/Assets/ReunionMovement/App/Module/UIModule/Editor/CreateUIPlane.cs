@@ -326,6 +326,9 @@ namespace GameLogic.UI
 {
     public class {_0_} : UIController
     {
+        string openWindow;
+        string closeWindow;
+
         public override void OnInit()
         {
             base.OnInit();
@@ -349,6 +352,18 @@ namespace GameLogic.UI
         public void OnDestroy()
         {
 
+        }
+        
+        //打开窗口
+        public void OpenWindow()
+        {
+            UIModule.Instance.OpenWindow(openWindow);
+        }
+
+        //关闭窗口
+        public void CloseWindow()
+        {
+            UIModule.Instance.CloseWindow(closeWindow);
         }
     }
 }
