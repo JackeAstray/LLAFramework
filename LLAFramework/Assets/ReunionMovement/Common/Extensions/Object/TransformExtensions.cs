@@ -670,19 +670,103 @@ public static class TransformExtensions
 
     #region 处理万象锁
 
-    public static void RotateXYZ(this Transform transform, float x, float y, float z)
+    public static void RotateXYZ(this Transform transform, Vector3 v3, XYZOrder order, XYZAlgorithmType algorithmType = XYZAlgorithmType.Quaternion)
     {
-        Matrix4x4 rzmat = RotZMat(z * Mathf.Deg2Rad);
-        Matrix4x4 rxmat = RotXMat(x * Mathf.Deg2Rad);
-        Matrix4x4 rymat = RotYMat(y * Mathf.Deg2Rad);
+        if (algorithmType == XYZAlgorithmType.Quaternion)
+        {
+            transform.rotation = RotateXYZ_Quaternion(v3, order);
+        }
+        else
+        {
+            transform.rotation = RotateXYZ_Matrix4x4(v3, order);
+        }
+    }
+
+    /// <summary>
+    /// 旋转物体，处理万象锁 采用四元数计算
+    /// </summary>
+    /// <param name="v3"></param>
+    /// <param name="order"></param>
+    /// <returns></returns>
+    public static Quaternion RotateXYZ_Quaternion(Vector3 v3, XYZOrder order)
+    {
+        Quaternion xRot = Quaternion.AngleAxis(v3.x, Vector3.right);
+        Quaternion yRot = Quaternion.AngleAxis(v3.y, Vector3.up);
+        Quaternion zRot = Quaternion.AngleAxis(v3.z, Vector3.forward);
+
+        Quaternion combinedRotation;
+
+        switch (order)
+        {
+            case XYZOrder.XYZ:
+                combinedRotation = xRot * yRot * zRot;
+                break;
+            case XYZOrder.XZY:
+                combinedRotation = xRot * zRot * yRot;
+                break;
+            case XYZOrder.YXZ:
+                combinedRotation = yRot * xRot * zRot;
+                break;
+            case XYZOrder.YZX:
+                combinedRotation = yRot * zRot * xRot;
+                break;
+            case XYZOrder.ZXY:
+                combinedRotation = zRot * xRot * yRot;
+                break;
+            case XYZOrder.ZYX:
+                combinedRotation = zRot * yRot * xRot;
+                break;
+            // 与unity inspector中的顺序一致
+            default:
+                combinedRotation = yRot * xRot * zRot;
+                break;
+        }
+
+        return combinedRotation;
+    }
+
+    /// <summary>
+    /// 旋转物体，处理万象锁 采用矩阵计算
+    /// </summary>
+    /// <param name="transform"></param>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <param name="z"></param>
+    public static Quaternion RotateXYZ_Matrix4x4(Vector3 v3, XYZOrder order)
+    {
+        Matrix4x4 xRot = RotXMat(v3.x * Mathf.Deg2Rad);
+        Matrix4x4 yRot = RotYMat(v3.y * Mathf.Deg2Rad);
+        Matrix4x4 zRot = RotZMat(v3.z * Mathf.Deg2Rad);
 
         Matrix4x4 combinedRotation;
 
-        combinedRotation = rzmat * rxmat * rymat;
+        switch (order)
+        {
+            case XYZOrder.XYZ:
+                combinedRotation = xRot * yRot * zRot;
+                break;
+            case XYZOrder.XZY:
+                combinedRotation = xRot * zRot * yRot;
+                break;
+            case XYZOrder.YXZ:
+                combinedRotation = yRot * xRot * zRot;
+                break;
+            case XYZOrder.YZX:
+                combinedRotation = yRot * zRot * xRot;
+                break;
+            case XYZOrder.ZXY:
+                combinedRotation = zRot * xRot * yRot;
+                break;
+            case XYZOrder.ZYX:
+                combinedRotation = zRot * yRot * xRot;
+                break;
+            // 与unity inspector中的顺序一致
+            default:
+                combinedRotation = yRot * xRot * zRot;
+                break;
+        }
 
-        Quaternion quaternion = combinedRotation.rotation;
-
-        transform.rotation = quaternion;
+        return combinedRotation.rotation;
     }
 
     static Matrix4x4 RotXMat(float angle)

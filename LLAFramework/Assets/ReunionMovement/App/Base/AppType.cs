@@ -143,4 +143,27 @@ namespace GameLogic
         /// </summary>
         StretchRight,
     }
+
+    /// <summary>
+    /// 旋转顺序
+    /// </summary>
+    public enum XYZOrder
+    {
+        XYZ,
+        XZY,
+
+        YXZ,
+        YZX,
+
+        ZXY,
+        ZYX
+    }
+    /// <summary>
+    /// 旋转算法类型
+    /// </summary>
+    public enum XYZAlgorithmType
+    {
+        Quaternion,
+        Matrix4x4,
+    }
 }
