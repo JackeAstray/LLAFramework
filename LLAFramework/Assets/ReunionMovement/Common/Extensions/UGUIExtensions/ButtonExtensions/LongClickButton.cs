@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -32,21 +34,28 @@ namespace GameLogic
             set { buttonUp = value; }
         }
 
+        // 新增的长按未抬起事件
+        [SerializeField]
+        private ButtonClickEvent longPressing = new ButtonClickEvent();
+
+        public ButtonClickEvent onLongPressing
+        {
+            get { return longPressing; }
+            set { longPressing = value; }
+        }
+
         //按下时间
-        private DateTime firstTime = default(DateTime);
-        //抬起时间
-        private DateTime secondTime = default(DateTime);
+        private DateTime pressStartTime;
+        //长按取消令牌
+        private CancellationTokenSource longPressCts;
 
         /// <summary>
         /// 长按
         /// </summary>
-        private void Press()
+        private void TriggerLongClick()
         {
-            if (onLongClick != null)
-            {
-                onLongClick.Invoke();
-            }
-            resetTime();
+            onLongClick?.Invoke();
+            ResetPressTime();
         }
 
         /// <summary>
@@ -56,9 +65,11 @@ namespace GameLogic
         public override void OnPointerDown(PointerEventData eventData)
         {
             base.OnPointerDown(eventData);
-            if (firstTime.Equals(default(DateTime)))
+            if (pressStartTime == default)
             {
-                firstTime = DateTime.Now;
+                pressStartTime = DateTime.Now;
+                longPressCts = new CancellationTokenSource();
+                StartLongPressingCoroutine(longPressCts.Token);
             }
         }
 
@@ -69,30 +80,24 @@ namespace GameLogic
         public override void OnPointerUp(PointerEventData eventData)
         {
             base.OnPointerUp(eventData);
-            if (!firstTime.Equals(default(DateTime)))
-            {
-                secondTime = DateTime.Now;
-            }
+            longPressCts?.Cancel();
+            longPressCts = null;
 
-            if (!firstTime.Equals(default(DateTime)) && !secondTime.Equals(default(DateTime)))
+            if (pressStartTime != default)
             {
-                var intervalTime = secondTime - firstTime;
-                int milliSeconds = intervalTime.Seconds * 1000 + intervalTime.Milliseconds;
-                if (milliSeconds > 600)
+                var pressDuration = DateTime.Now - pressStartTime;
+                if (pressDuration.TotalMilliseconds > 600)
                 {
-                    Press();
+                    TriggerLongClick();
                 }
                 else
                 {
-                    resetTime();
+                    ResetPressTime();
                 }
             }
 
             // 触发按钮抬起事件
-            if (onButtonUp != null)
-            {
-                onButtonUp.Invoke();
-            }
+            onButtonUp?.Invoke();
         }
 
         /// <summary>
@@ -102,16 +107,33 @@ namespace GameLogic
         public override void OnPointerExit(PointerEventData eventData)
         {
             base.OnPointerExit(eventData);
-            resetTime();
+            longPressCts?.Cancel();
+            longPressCts = null;
+            ResetPressTime();
         }
 
         /// <summary>
         /// 重置时间
         /// </summary>
-        private void resetTime()
+        private void ResetPressTime()
         {
-            firstTime = default(DateTime);
-            secondTime = default(DateTime);
+            pressStartTime = default;
+        }
+
+        /// <summary>
+        /// 长按未抬起协程
+        /// </summary>
+        private async void StartLongPressingCoroutine(CancellationToken token)
+        {
+            try
+            {
+                await Task.Delay(600, token);
+                onLongPressing?.Invoke();
+            }
+            catch (TaskCanceledException)
+            {
+                // Ignore the exception if the task is canceled
+            }
         }
     }
 }
