@@ -22,6 +22,16 @@ namespace GameLogic
             set { longClick = value; }
         }
 
+        // 新增的按钮抬起事件
+        [SerializeField]
+        private ButtonClickEvent buttonUp = new ButtonClickEvent();
+
+        public ButtonClickEvent onButtonUp
+        {
+            get { return buttonUp; }
+            set { buttonUp = value; }
+        }
+
         //按下时间
         private DateTime firstTime = default(DateTime);
         //抬起时间
@@ -76,6 +86,12 @@ namespace GameLogic
                 {
                     resetTime();
                 }
+            }
+
+            // 触发按钮抬起事件
+            if (onButtonUp != null)
+            {
+                onButtonUp.Invoke();
             }
         }
 
