@@ -112,28 +112,33 @@ namespace GameLogic
     {
         #region 属性
         // 计分信息
-        private ScoreInfo scortInfo = new ScoreInfo();
+        protected ScoreInfo scortInfo = new ScoreInfo();
         // 问题IDs
-        private List<QuestionItem> questionItems = new List<QuestionItem>();
+        protected List<QuestionItem> questionItems = new List<QuestionItem>();
         // 被观察者
-        QuestionObserved questionObserved = new QuestionObserved();
+        protected QuestionObserved questionObserved = new QuestionObserved();
 
-        QuestionItem currentQuestionItem = new QuestionItem();
+        protected QuestionItem currentQuestionItem = new QuestionItem();
 
-        private int currentIndex = -1; // 当前问题索引
+        protected int currentIndex = -1; // 当前问题索引
         #endregion
 
         #region 方法
 
-        public void Start()
+        //public void Start()
+        //{
+        //    //Invoke("Example", 2f);
+        //}
+
+        public virtual void Init()
         {
-            Invoke("Example", 2f);
+            //SetQuestionItems(new List<int> { 100001, 100002 });
         }
 
-        public void Example()
-        {
-            SetQuestionItems(new List<int> { 100001, 100002 });
-        }
+        //public void Example()
+        //{
+        //    SetQuestionItems(new List<int> { 100001, 100002 });
+        //}
 
         /// <summary>
         /// 设置问题
@@ -189,7 +194,7 @@ namespace GameLogic
         /// <summary>
         /// 提交
         /// </summary>
-        public void Submit(string userAnswer)
+        public virtual void Submit(string userAnswer)
         {
             if (currentQuestionItem != null && !currentQuestionItem.isAnswered)
             {
@@ -227,7 +232,7 @@ namespace GameLogic
         /// <summary>
         /// 发送（上传到第三方）
         /// </summary>
-        public void Send()
+        public virtual void Send()
         {
 
         }
