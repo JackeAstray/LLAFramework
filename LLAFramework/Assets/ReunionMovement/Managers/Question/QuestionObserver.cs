@@ -48,18 +48,18 @@ namespace GameLogic
         {
             if (questionObserved == null)
             {
-                questionObserved = QuestionMgr.Instance.GetQuestionObserved();
+                questionObserved = QuestionMgrBase.Instance.GetQuestionObserved();
                 questionObserved.Attach(this);
             }
 
             previous.onClick.AddListener(() =>
             {
-                QuestionMgr.Instance.Previous();
+                QuestionMgrBase.Instance.Previous();
             });
 
             next.onClick.AddListener(() =>
             {
-                QuestionMgr.Instance.Next();
+                QuestionMgrBase.Instance.Next();
             });
 
             submit.onClick.AddListener(() =>
@@ -79,12 +79,12 @@ namespace GameLogic
                     }
                 }
 
-                QuestionMgr.Instance.Submit(userAnswer);
+                QuestionMgrBase.Instance.Submit(userAnswer);
             });
 
             send.onClick.AddListener(() =>
             {
-                QuestionMgr.Instance.Send();
+                QuestionMgrBase.Instance.Send();
             });
 
             if (submitCooldown > 0)

@@ -108,37 +108,25 @@ namespace GameLogic
     /// <summary>
     /// 问题模块
     /// </summary>
-    public class QuestionMgr : SingletonMgr<QuestionMgr>
+    public class QuestionMgrBase : SingletonMgr<QuestionMgrBase>
     {
-        #region 属性
         // 计分信息
         protected ScoreInfo scortInfo = new ScoreInfo();
         // 问题IDs
         protected List<QuestionItem> questionItems = new List<QuestionItem>();
+        // 问题ID到索引的映射
+        protected Dictionary<int, int> questionIdToIndexMap = new Dictionary<int, int>();
         // 被观察者
         protected QuestionObserved questionObserved = new QuestionObserved();
 
         protected QuestionItem currentQuestionItem = new QuestionItem();
 
         protected int currentIndex = -1; // 当前问题索引
-        #endregion
-
-        #region 方法
-
-        //public void Start()
-        //{
-        //    //Invoke("Example", 2f);
-        //}
 
         public virtual void Init()
         {
-            //SetQuestionItems(new List<int> { 100001, 100002 });
-        }
 
-        //public void Example()
-        //{
-        //    SetQuestionItems(new List<int> { 100001, 100002 });
-        //}
+        }
 
         /// <summary>
         /// 设置问题
@@ -147,12 +135,15 @@ namespace GameLogic
         public void SetQuestionItems(List<int> indexs)
         {
             questionItems.Clear();
-            foreach (var item in indexs)
+            questionIdToIndexMap.Clear();
+            for (int i = 0; i < indexs.Count; i++)
             {
+                int itemId = indexs[i];
                 QuestionItem questionItem = new QuestionItem();
                 questionItem.isAnswered = false;
-                questionItem.questionConfig = DatabaseModule.Instance.GetQuestionConfig(item);
+                questionItem.questionConfig = DatabaseModule.Instance.GetQuestionConfig(itemId);
                 questionItems.Add(questionItem);
+                questionIdToIndexMap[itemId] = i;
             }
 
             currentIndex = 0; // 初始化当前索引
@@ -165,9 +156,6 @@ namespace GameLogic
             questionObserved.UpdateState("Init", currentQuestionItem);
         }
 
-        /// <summary>
-        /// 上一题
-        /// </summary>
         public void Previous()
         {
             if (currentIndex > 0)
@@ -178,9 +166,6 @@ namespace GameLogic
             }
         }
 
-        /// <summary>
-        /// 下一题
-        /// </summary>
         public void Next()
         {
             if (currentIndex < questionItems.Count - 1)
@@ -192,8 +177,32 @@ namespace GameLogic
         }
 
         /// <summary>
-        /// 提交
+        /// 跳转到指定题目
         /// </summary>
+        /// <param name="index"></param>
+        public void ToIndex(int index)
+        {
+            if (index >= 0 && index < questionItems.Count)
+            {
+                currentIndex = index;
+                currentQuestionItem = questionItems[currentIndex];
+                questionObserved.UpdateState("ToIndex", currentQuestionItem);
+            }
+        }
+
+        /// <summary>
+        /// 根据ID跳转到指定题目
+        /// </summary>
+        public void ToIndexById(int id)
+        {
+            if (questionIdToIndexMap.TryGetValue(id, out int index))
+            {
+                currentIndex = index;
+                currentQuestionItem = questionItems[currentIndex];
+                questionObserved.UpdateState("ToIndex", currentQuestionItem);
+            }
+        }
+
         public virtual void Submit(string userAnswer)
         {
             if (currentQuestionItem != null && !currentQuestionItem.isAnswered)
@@ -229,22 +238,14 @@ namespace GameLogic
             }
         }
 
-        /// <summary>
-        /// 发送（上传到第三方）
-        /// </summary>
         public virtual void Send()
         {
 
         }
 
-        /// <summary>
-        /// 获得被观察者
-        /// </summary>
-        /// <returns></returns>
-        public QuestionObserved GetQuestionObserved()
+        public virtual QuestionObserved GetQuestionObserved()
         {
             return questionObserved;
         }
-        #endregion
     }
 }
