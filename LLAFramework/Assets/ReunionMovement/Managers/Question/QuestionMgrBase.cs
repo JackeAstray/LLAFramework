@@ -108,7 +108,7 @@ namespace GameLogic
     /// <summary>
     /// 问题模块
     /// </summary>
-    public class QuestionMgrBase : SingletonMgr<QuestionMgrBase>
+    public class QuestionMgrBase : MonoBehaviour
     {
         // 计分信息
         protected ScoreInfo scortInfo = new ScoreInfo();
