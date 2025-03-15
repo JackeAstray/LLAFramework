@@ -36,6 +36,7 @@ namespace GameLogic
         private QuestionObserved questionObserved;
 
         QuestionItem questionItem;
+        public QuestionMgrBase questionMgrBase;
 
         public string userAnswer;
 
@@ -48,28 +49,28 @@ namespace GameLogic
         {
             if (questionObserved == null)
             {
-                questionObserved = QuestionMgrBase.Instance.GetQuestionObserved();
+                questionObserved = questionMgrBase.GetQuestionObserved();
                 questionObserved.Attach(this);
             }
 
             previous.onClick.AddListener(() =>
             {
-                QuestionMgrBase.Instance.Previous();
+                questionMgrBase.Previous();
             });
 
             next.onClick.AddListener(() =>
             {
-                QuestionMgrBase.Instance.Next();
+                questionMgrBase.Next();
             });
 
             submit.onClick.AddListener(() =>
             {
+                userAnswer = "";
+
                 if (questionItem.isAnswered || !canSubmit)
                 {
                     return;
                 }
-
-                userAnswer = "";
 
                 for (int i = 0; i < answers.Count; i++)
                 {
@@ -79,12 +80,12 @@ namespace GameLogic
                     }
                 }
 
-                QuestionMgrBase.Instance.Submit(userAnswer);
+                questionMgrBase.Submit(userAnswer);
             });
 
             send.onClick.AddListener(() =>
             {
-                QuestionMgrBase.Instance.Send();
+                questionMgrBase.Send();
             });
 
             if (submitCooldown > 0)
