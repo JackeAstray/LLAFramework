@@ -1,84 +1,47 @@
 using UnityEngine;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using Object = UnityEngine.Object;
 
 /// <summary>
-/// 允许您在不使用<see cref=“Coroutine”/>或<see cref=“MonoBehavior”/>的情况下延迟运行事件。
-/// 要创建并启动计时器，请使用<see-cref=“Register”/>方法。
+/// 允许您在不使用<see cref="Coroutine"/>或<see cref="MonoBehaviour"/>的情况下延迟运行事件。
+/// 要创建并启动计时器，请使用<see cref="Register"/>方法。
 /// </summary>
 namespace GameLogic
 {
     public class Timer
     {
         #region 公共 属性/字段
-        /// <summary>
-        /// 计时器从开始到结束需要多长时间。
-        /// </summary>
+        // 计时器从开始到结束需要多长时间。
         public float duration { get; private set; }
 
-        /// <summary>
-        /// 计时器是否会在完成后再次运行。
-        /// </summary>
+        // 计时器是否会在完成后再次运行。
         public bool isLooped { get; set; }
 
-        /// <summary>
-        /// 计时器是否已完成运行。如果计时器被取消，则为false。
-        /// </summary>
+        // 计时器是否已完成运行。如果计时器被取消，则为false。
         public bool isCompleted { get; private set; }
 
-        /// <summary>
-        /// 无论计时器使用实时时间还是游戏时间。实时性不受游戏时间尺度变化的影响（例如暂停、慢速移动），而游戏时间则受到影响。
-        /// </summary>
+        // 无论计时器使用实时时间还是游戏时间。实时性不受游戏时间尺度变化的影响（例如暂停、慢速移动），而游戏时间则受到影响。
         public bool usesRealTime { get; private set; }
 
-        /// <summary>
-        /// 计时器当前是否已暂停。
-        /// </summary>
-        public bool isPaused
-        {
-            get
-            {
-                return this.timeElapsedBeforePause.HasValue;
-            }
-        }
+        // 计时器当前是否已暂停。
+        public bool isPaused => this.timeElapsedBeforePause.HasValue;
 
-        /// <summary>
-        /// 计时器是否已取消。
-        /// </summary>
-        public bool isCancelled
-        {
-            get
-            {
-                return this.timeElapsedBeforeCancel.HasValue;
-            }
-        }
+        // 计时器是否已取消。
+        public bool isCancelled => this.timeElapsedBeforeCancel.HasValue;
 
-        /// <summary>
-        /// 获取计时器是否由于任何原因已完成运行。
-        /// </summary>
-        public bool isDone
-        {
-            get
-            {
-                return this.isCompleted || this.isCancelled || this.isOwnerDestroyed;
-            }
-        }
+        // 获取计时器是否由于任何原因已完成运行。
+        public bool isDone => this.isCompleted || this.isCancelled || this.isOwnerDestroyed;
         #endregion
 
         #region 私有静态 属性/字段
-
         // 负责更新所有注册的定时器
         private static TimerManager manager;
         #endregion
 
         #region 私有 属性/字段
-        private bool isOwnerDestroyed
-        {
-            get { return this.hasAutoDestroyOwner && this.autoDestroyOwner == null; }
-        }
+        private bool isOwnerDestroyed => this.hasAutoDestroyOwner && this.autoDestroyOwner == null;
 
         private readonly Action onComplete;
         private readonly Action<float> onUpdate;
@@ -86,17 +49,10 @@ namespace GameLogic
         private float lastUpdateTime;
 
         // 对于暂停，我们将开始时间提前一段时间。
-        // 如果我们只检查开始时间与当前世界时间的对比，
-        // 那么当我们被取消或暂停时，
-        // 所花费的时间就会变得混乱，
-        // 所以我们需要缓存在暂停/取消之前所花费的
         private float? timeElapsedBeforeCancel;
         private float? timeElapsedBeforePause;
 
-        // 在自动销毁所有者被销毁后，
-        // 计时器将过期，
-        // 这样你就不会遇到任何恼人的错误，
-        // 因为计时器在对象被销毁后运行和访问对象
+        // 在自动销毁所有者被销毁后，计时器将过期
         private readonly MonoBehaviour autoDestroyOwner;
         private readonly bool hasAutoDestroyOwner;
         #endregion
@@ -148,9 +104,7 @@ namespace GameLogic
         /// </summary>
         /// <returns>
         /// 自该计时器的当前循环开始以来所经过的秒数，即，如果计时器已循环，则为当前循环，如果计时器未循环则为启动。
-        ///
         /// 如果计时器已经结束运行，则这等于持续时间。
-        ///
         /// 如果计时器被取消/暂停，则等于从计时器启动到取消/暂停之间经过的秒数。
         /// </returns>
         public float GetTimeElapsed()
@@ -181,7 +135,7 @@ namespace GameLogic
         /// <summary>
         /// 以比率的形式获取计时器从开始到结束的进度。
         /// </summary>
-        /// <returns>一个从0到1的值，指示计时器的持续时间已经过去了多少.</returns>
+        /// <returns>一个从0到1的值，指示计时器的持续时间已经过去了多少。</returns>
         public float GetRatioComplete()
         {
             return GetTimeElapsed() / duration;
@@ -200,7 +154,6 @@ namespace GameLogic
         #region 公共静态方法
         /// <summary>
         /// 注册一个新的计时器，该计时器应在经过一定时间后触发事件。
-        ///
         /// 场景更改时，已注册的计时器将被销毁。
         /// </summary>
         /// <param name="duration">计时器启动之前等待的时间，以秒为单位。</param>
@@ -213,7 +166,7 @@ namespace GameLogic
         /// <param name="autoDestroyOwner">
         /// 要将此计时器附加到的对象。
         /// 对象被销毁后，计时器将过期而不会执行。
-        /// 这使您可以通过阻止计时器在父级被销毁后运行和访问其父级组件来避免令人讨厌的<see cref=“NullReferenceException”/>。
+        /// 这使您可以通过阻止计时器在父级被销毁后运行和访问其父级组件来避免令人讨厌的<see cref="NullReferenceException"/>。
         /// </param>
         /// <returns>
         /// 一个计时器对象，允许您检查统计数据并停止/恢复进度。
@@ -223,8 +176,7 @@ namespace GameLogic
                                      Action<float> onUpdate = null,
                                      bool isLooped = false,
                                      bool useRealTime = false,
-                                     MonoBehaviour autoDestroyOwner = null
-        )
+                                     MonoBehaviour autoDestroyOwner = null)
         {
             // 创建一个管理器对象来更新所有计时器（如果还不存在）。
             if (Timer.manager == null)
@@ -248,41 +200,32 @@ namespace GameLogic
 
         /// <summary>
         /// 取消计时器。与实例上的方法相比，这样做的主要好处是，
-        /// 如果计时器为null，则不会得到<see cref=“NullReferenceException”/>。
+        /// 如果计时器为null，则不会得到<see cref="NullReferenceException"/>。
         /// </summary>
         /// <param name="timer">要取消的计时器。</param>
         public static void Cancel(Timer timer)
         {
-            if (timer != null)
-            {
-                timer.Cancel();
-            }
+            timer?.Cancel();
         }
 
         /// <summary>
         /// 暂停计时器。与实例上的方法相比，这样做的主要好处是，
-        /// 如果计时器为null，则不会得到<see cref=“NullReferenceException”/>。
+        /// 如果计时器为null，则不会得到<see cref="NullReferenceException"/>。
         /// </summary>
         /// <param name="timer">要暂停的计时器。</param>
         public static void Pause(Timer timer)
         {
-            if (timer != null)
-            {
-                timer.Pause();
-            }
+            timer?.Pause();
         }
 
         /// <summary>
         /// 恢复计时器。与实例上的方法相比，这样做的主要好处是，
-        /// 如果计时器为null，则不会得到<see cref=“NullReferenceException”/>。
+        /// 如果计时器为null，则不会得到<see cref="NullReferenceException"/>。
         /// </summary>
         /// <param name="timer">要恢复的计时器。</param>
         public static void Resume(Timer timer)
         {
-            if (timer != null)
-            {
-                timer.Resume();
-            }
+            timer?.Resume();
         }
 
         /// <summary>
@@ -290,11 +233,7 @@ namespace GameLogic
         /// </summary>
         public static void CancelAllRegisteredTimers()
         {
-            if (Timer.manager != null)
-            {
-                Timer.manager.CancelAllTimers();
-            }
-            // 如果管理员不存在，我们还没有任何注册的计时器，所以在这种情况下不需要做任何事情
+            Timer.manager?.CancelAllTimers();
         }
 
         /// <summary>
@@ -302,11 +241,7 @@ namespace GameLogic
         /// </summary>
         public static void PauseAllRegisteredTimers()
         {
-            if (Timer.manager != null)
-            {
-                Timer.manager.PauseAllTimers();
-            }
-            // 如果管理员不存在，我们还没有任何注册的计时器，所以在这种情况下不需要做任何事情
+            Timer.manager?.PauseAllTimers();
         }
 
         /// <summary>
@@ -314,11 +249,7 @@ namespace GameLogic
         /// </summary>
         public static void ResumeAllRegisteredTimers()
         {
-            if (Timer.manager != null)
-            {
-                Timer.manager.ResumeAllTimers();
-            }
-            // 如果管理员不存在，我们还没有任何注册的计时器，所以在这种情况下不需要做任何事情
+            Timer.manager?.ResumeAllTimers();
         }
         #endregion
 
@@ -329,8 +260,7 @@ namespace GameLogic
                       Action<float> onUpdate,
                       bool isLooped,
                       bool usesRealTime,
-                      MonoBehaviour autoDestroyOwner
-        )
+                      MonoBehaviour autoDestroyOwner)
         {
             this.duration = duration;
             this.onComplete = onComplete;
@@ -352,7 +282,7 @@ namespace GameLogic
         /// <summary>
         /// 获取世界时间
         /// </summary>
-        /// <returns></returns>
+        /// <returns>当前的世界时间</returns>
         private float GetWorldTime()
         {
             return usesRealTime ? Time.realtimeSinceStartup : Time.time;
@@ -361,7 +291,7 @@ namespace GameLogic
         /// <summary>
         /// 获取点火时间
         /// </summary>
-        /// <returns></returns>
+        /// <returns>计时器触发的时间</returns>
         private float GetFireTime()
         {
             return startTime + duration;
@@ -370,14 +300,14 @@ namespace GameLogic
         /// <summary>
         /// 获取时间增量
         /// </summary>
-        /// <returns></returns>
+        /// <returns>自上次更新以来经过的时间</returns>
         private float GetTimeDelta()
         {
             return GetWorldTime() - lastUpdateTime;
         }
 
         /// <summary>
-        /// 更新
+        /// 更新计时器状态
         /// </summary>
         private void Update()
         {
@@ -412,20 +342,20 @@ namespace GameLogic
 
         #region Manager类（实现细节，自动生成并更新所有注册的定时器）
         /// <summary>
-        /// 管理更新应用程序中运行的所有<see cref=“Timer”/>。
+        /// 管理更新应用程序中运行的所有<see cref="Timer"/>。
         /// 这将在您第一次创建计时器时实例化——您不需要手动将其添加到场景中。
         /// </summary>
         private class TimerManager : MonoBehaviour
         {
-            private List<Timer> timers = new List<Timer>();
+            private readonly List<Timer> timers = new List<Timer>();
 
             // 缓冲区添加计时器，这样我们就不会在迭代过程中编辑集合
-            private List<Timer> timersToAdd = new List<Timer>();
+            private readonly List<Timer> timersToAdd = new List<Timer>();
 
             /// <summary>
             /// 注册计时器
             /// </summary>
-            /// <param name="timer"></param>
+            /// <param name="timer">要注册的计时器</param>
             public void RegisterTimer(Timer timer)
             {
                 timersToAdd.Add(timer);
