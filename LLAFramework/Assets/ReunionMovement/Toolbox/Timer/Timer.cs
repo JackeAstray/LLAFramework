@@ -23,7 +23,7 @@ namespace GameLogic
         #endregion
 
         #region 私有 属性/字段
-        private bool isOwnerDestroyed => this.hasAutoDestroyOwner && this.autoDestroyOwner == null; // 是否拥有自动销毁的对象
+        private readonly bool isOwnerDestroyed;                                                     // 是否拥有自动销毁的对象
 
         private readonly Action onComplete;                                                         // 完成时的回调
         private readonly Action<float> onUpdate;                                                    // 更新时的回调
@@ -128,10 +128,17 @@ namespace GameLogic
         /// </summary>
         /// <param name="isStopwatch"> true 正计时 false 倒计时 </param>
         /// <param name="duration"> 倒计时持续时间 </param>
-        public void StartTimer(bool isStopwatch, float duration = 0)
+        public void StartTimer(bool isStopwatch, float duration)
         {
             this.isStopwatch = isStopwatch;
-            this.duration = duration;
+            if (isStopwatch)
+            {
+                this.duration = this.duration > 0 ? this.duration : duration;
+            }
+            else
+            {
+                this.duration = duration;
+            }
             this.startTime = this.GetWorldTime();
             this.lastUpdateTime = this.startTime;
         }
@@ -252,6 +259,7 @@ namespace GameLogic
 
             this.autoDestroyOwner = autoDestroyOwner;
             this.hasAutoDestroyOwner = autoDestroyOwner != null;
+            this.isOwnerDestroyed = this.hasAutoDestroyOwner && this.autoDestroyOwner == null;
 
             this.startTime = this.GetWorldTime();
             this.lastUpdateTime = this.startTime;
@@ -296,32 +304,26 @@ namespace GameLogic
 
             if (isStopwatch)
             {
-                if (GetWorldTime() >= GetFireTime())
-                {
-                    onComplete?.Invoke();
-                    if (isLooped)
-                    {
-                        startTime = GetWorldTime();
-                    }
-                    else
-                    {
-                        isCompleted = true;
-                    }
-                }
+                CheckCompletion(GetTimeElapsed() >= duration);
             }
             else
             {
-                if (GetTimeRemaining() <= 0)
+                CheckCompletion(GetTimeRemaining() <= 0);
+            }
+        }
+
+        private void CheckCompletion(bool condition)
+        {
+            if (condition)
+            {
+                onComplete?.Invoke();
+                if (isLooped)
                 {
-                    onComplete?.Invoke();
-                    if (isLooped)
-                    {
-                        startTime = GetWorldTime();
-                    }
-                    else
-                    {
-                        isCompleted = true;
-                    }
+                    startTime = GetWorldTime();
+                }
+                else
+                {
+                    isCompleted = true;
                 }
             }
         }
