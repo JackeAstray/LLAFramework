@@ -43,7 +43,7 @@ namespace GameLogic
         /// </summary>
         public static void EnsureCreated()
         {
-            if (Instance != null)
+            if (Instance == null)
             {
                 GameObject obj = new GameObject("MainThreadDispatcher");
                 Instance = obj.AddComponent<UnityMainThreadDispatcher>();
