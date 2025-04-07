@@ -41,7 +41,7 @@ namespace GameLogic.EditorTools
             if (!Tools.CheckClassName(className))
             {
                 string msg = string.Format("Excel文件“{0}”无效，因为xlsx文件的名称应为类名！", path);
-                Log.Error(msg); 
+                Log.Error(msg);
                 return;
             }
 
@@ -357,7 +357,7 @@ namespace GameLogic.EditorTools
                 }
             }
             //生成Json字符串
-            string json = JsonMapper.ToJson(table,true);
+            string json = JsonMapper.ToJson(table, true);
             //把当字符串的数组 重新处理成数组
             json = json.Replace("\"[", "[").Replace("]\"", "]");
             json = json.Replace("\\\"", "\"");

@@ -1,4 +1,4 @@
-//此脚本为工具生成，请勿手动创建 2024-10-10 07:57:34.587 <ExcelTo>
+//此脚本为工具生成，请勿手动创建 2025-04-07 16:35:33.797 <ExcelTo>
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,34 +7,32 @@ using UnityEngine.Scripting;
 
 namespace GameLogic
 {
-    
     [Serializable]
     public class QuestionConfig
     {
         
-        public int Id { get; set; }    //索引
-        public int Type { get; set; }    //类型
-        public string Title { get; set; }    //题目
-        public string CorrectAnswer { get; set; }    //正确答案
-        public int Score { get; set; }    //分数
-        public string A { get; set; }    //选项A
-        public string B { get; set; }    //选项B
-        public string C { get; set; }    //选项C
-        public string D { get; set; }    //选项D
-        public string E { get; set; }    //选项E
-        public string F { get; set; }    //选项F
-        public string G { get; set; }    //选项G
-        public string H { get; set; }    //选项H
-        public string TitlePicture { get; set; }    //标题图片
-        public string APicture { get; set; }    //A答案图片
-        public string BPicture { get; set; }    //B答案图片
-        public string CPicture { get; set; }    //C答案图片
-        public string DPicture { get; set; }    //D答案图片
-        public string EPicture { get; set; }    //E答案图片
-        public string FPicture { get; set; }    //F答案图片
-        public string GPicture { get; set; }    //G答案图片
-        public string HPicture { get; set; }    //H答案图片
-
+        public int Id;    //索引
+        public int Type;    //类型
+        public string Title;    //题目
+        public string CorrectAnswer;    //正确答案
+        public int Score;    //分数
+        public string A;    //选项A
+        public string B;    //选项B
+        public string C;    //选项C
+        public string D;    //选项D
+        public string E;    //选项E
+        public string F;    //选项F
+        public string G;    //选项G
+        public string H;    //选项H
+        public string TitlePicture;    //标题图片
+        public string APicture;    //A答案图片
+        public string BPicture;    //B答案图片
+        public string CPicture;    //C答案图片
+        public string DPicture;    //D答案图片
+        public string EPicture;    //E答案图片
+        public string FPicture;    //F答案图片
+        public string GPicture;    //G答案图片
+        public string HPicture;    //H答案图片
 
         public override string ToString()
         {

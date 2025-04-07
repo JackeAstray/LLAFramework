@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using System.Linq;
+using System.Reflection;
+using Codice.Client.BaseCommands;
 
 namespace GameLogic.EditorTools
 {
@@ -21,6 +23,7 @@ namespace GameLogic.EditorTools
         static readonly string toDir = "Assets/ReunionMovement/ExcelTool/Editor/Resources/ExcelTools";  // 源文件路径
         static readonly string scriptOutPutPath = "Assets/Scripts/AutoScripts/";             // 脚本输出路径
         static readonly string dataOutPutPath = "Assets/Resources/AutoDatabase/";            // 数据表输出路径
+        static readonly string scriptableOutPutPath = "Assets/Resources/ScriptableObjects/"; // 脚本对象输出路径
 
         static int tableRows_Max = 3;                                           // 最大行数
         static int tableRows_1 = 0;                                             // 第一行中文名称
@@ -30,6 +33,18 @@ namespace GameLogic.EditorTools
         #region 表格 -> 脚本
         [MenuItem("工具箱/表格处理/表格 -> 脚本", false, 1)]
         public static void ExcelToScripts()
+        {
+            List<string> xlsxFiles = GetAllConfigFiles();
+
+            foreach (var path in xlsxFiles)
+            {
+                ExcelToScripts(path);
+            }
+            Log.Debug("表格转为脚本完成！");
+        }
+
+        [MenuItem("工具箱/表格处理/表格 -> 脚本（包含ScriptableObject脚本）", false, 2)]
+        public static void ExcelToScripts2()
         {
             List<string> xlsxFiles = GetAllConfigFiles();
 
@@ -153,6 +168,7 @@ namespace GameLogic.EditorTools
             for (int i = 0; i < sheets.Count; i++)
             {
                 GenerateScript(sheets[i]);
+                GenerateScript2(sheets[i], i);
             }
 
             return true;
@@ -173,12 +189,10 @@ using UnityEngine.Scripting;
 
 namespace GameLogic
 {
-    
     [Serializable]
     public class {_0_}
     {
         {_1_}
-
         public override string ToString()
         {
             return string.Format(
@@ -211,13 +225,13 @@ namespace GameLogic
             string toString_1 = "";
             string toString_2 = "";
 
-            string additional = "{{ get; set; }}";
+            string additional = ";";
 
             for (int i = 0; i < fieldDatas.Count; i++)
             {
                 var typeName = GetFieldTypeString(fieldDatas[i].fieldType, fieldDatas[i].fieldTypeName);
 
-                string attribute = string.Format("        public {0} {1} {2}    //{3}", typeName, fieldDatas[i].fieldName, additional, fieldDatas[i].fieldNotes);
+                string attribute = string.Format("        public {0} {1}{2}    //{3}", typeName, fieldDatas[i].fieldName, additional, fieldDatas[i].fieldNotes);
                 privateType.AppendFormat(attribute);
                 privateType.AppendLine();
 
@@ -240,10 +254,68 @@ namespace GameLogic
             str = str.Replace("{_CREATE_TIME_}", DateTime.UtcNow.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
             return str;
         }
+
+        /// <summary>
+        /// 生成ScriptableObject脚本
+        /// </summary>
+        /// <param name="sheet"></param>
+        static async void GenerateScript2(SheetData sheet, int order)
+        {
+            string ScriptTemplate = @"//此脚本为工具生成，请勿手动创建 {_CREATE_TIME_} <ExcelTo>
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Scripting;
+
+namespace GameLogic
+{
+    [CreateAssetMenu(fileName = ""{_0_}Container"", menuName = ""ScriptableObjects/{_1_}Container"", order = {_2_})]
+    public class {_3_}Container : ScriptableObject
+    {
+        {_4_}
+    }
+}
+";
+            var dataName = sheet.itemClassName;
+            var str = GenerateDataScript2(ScriptTemplate, dataName, sheet.fields, order);
+            await Tools.SaveFile(scriptOutPutPath + dataName + "Container.cs", str);
+
+            AssetDatabase.Refresh();
+        }
+
+        /// <summary>
+        /// 创建ScriptableObject脚本
+        /// </summary>
+        /// <param name="template"></param>
+        /// <param name="scriptName"></param>
+        /// <param name="fieldDatas"></param>
+        /// <returns></returns>
+        static string GenerateDataScript2(string template, string scriptName, List<FieldData> fieldDatas, int order)
+        {
+            StringBuilder privateType = new StringBuilder();
+            privateType.AppendLine();
+
+            string additional = ";";
+
+            var typeName = scriptName;
+
+            string attribute = string.Format("        public List<{0}> {1}{2}", scriptName, "configs", additional);
+            privateType.AppendFormat(attribute);
+
+            string str = template;
+            str = str.Replace("{_0_}", scriptName);
+            str = str.Replace("{_1_}", scriptName);
+            str = str.Replace("{_2_}", order.ToString());
+            str = str.Replace("{_3_}", scriptName);
+            str = str.Replace("{_4_}", privateType.ToString());
+            str = str.Replace("{_CREATE_TIME_}", DateTime.UtcNow.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
+            return str;
+        }
         #endregion
 
         #region 表格 -> Json
-        [MenuItem("工具箱/表格处理/表格 -> JSON", false, 2)]
+        [MenuItem("工具箱/表格处理/表格 -> JSON", false, 3)]
         public static void ExcelToJson()
         {
             List<string> xlsxFiles = GetAllConfigFiles();
@@ -251,7 +323,7 @@ namespace GameLogic
             if (xlsxFiles.Count <= 0)
             {
                 Log.Error("未找到任何表格！");
-                return; 
+                return;
             }
 
             foreach (var path in xlsxFiles)
@@ -303,7 +375,7 @@ namespace GameLogic
         #endregion
 
         #region 表格 -> Xml
-        [MenuItem("工具箱/表格处理/表格 -> XML", false, 3)]
+        [MenuItem("工具箱/表格处理/表格 -> XML", false, 4)]
         public static void ExcelToXml()
         {
             List<string> xlsxFiles = GetAllConfigFiles();
@@ -355,9 +427,8 @@ namespace GameLogic
         }
         #endregion
 
-
         #region 表格 -> LUA
-        [MenuItem("工具箱/表格处理/表格 -> LUA", false, 4)]
+        [MenuItem("工具箱/表格处理/表格 -> LUA", false, 5)]
         public static void ExcelToLua()
         {
             List<string> xlsxFiles = GetAllConfigFiles();
@@ -402,12 +473,144 @@ namespace GameLogic
             List<string> strArray = path.Split('\\').ToList();
             string output = dataOutPutPath + strArray[strArray.Count - 1];
             output = output.Replace(".xlsx", ".lua");
-            excel.ConvertToLua(output,Encoding.UTF8);
+            excel.ConvertToLua(output, Encoding.UTF8);
 
             //刷新本地资源
             AssetDatabase.Refresh();
         }
         #endregion
+
+        #region 表格 -> ScriptableObject
+        [MenuItem("工具箱/表格处理/表格 -> ScriptableObject", false, 6)]
+        public static void ExcelToScriptableObject()
+        {
+            List<string> xlsxFiles = GetAllConfigFiles();
+
+            foreach (var path in xlsxFiles)
+            {
+                ExcelToScriptableObject(path);
+            }
+
+            Log.Debug("表格转为ScriptableObject完成！");
+        }
+
+        /// <summary>
+        /// Excel 转 ScriptableObject
+        /// </summary>
+        /// <param name="path"></param>
+        public static void ExcelToScriptableObject(string path)
+        {
+            //等待编译结束
+            if (EditorApplication.isCompiling)
+            {
+                EditorUtility.DisplayDialog("警告", "等待编译结束。", "OK");
+                return;
+            }
+
+            //查看路径是否存在
+            if (Directory.Exists(scriptableOutPutPath) == false)
+            {
+                Directory.CreateDirectory(scriptableOutPutPath);
+            }
+
+            //构造Excel工具类
+            ExcelUtility excel = new ExcelUtility(path);
+
+            if (excel.ResultSet == null)
+            {
+                string msg = string.Format("文件“{0}”不是表格！", path);
+                Log.Warning(msg);
+                return;
+            }
+
+            foreach (DataTable table in excel.ResultSet.Tables)
+            {
+                string tableName = table.TableName.Trim();
+                if (tableName.StartsWith("#"))
+                {
+                    continue;
+                }
+
+                if (table.Rows.Count < tableRows_Max)
+                {
+                    EditorUtility.ClearProgressBar();
+                    string msg = string.Format("无法分析“{0}”。1、检查行数：Excel文件应至少包含三行（第一行：中文名称，第二行：数据类型，第三行：英文名称）!\n2、检查Sheet是否存在多个！", path);
+                    EditorUtility.DisplayDialog("ExcelTools", msg, "OK");
+                    return;
+                }
+
+                string assetPath = scriptableOutPutPath + tableName + "Container.asset";
+                Type containerType = Type.GetType($"GameLogic.{tableName}Container, Assembly-CSharp");
+                if (containerType == null)
+                {
+                    Log.Error($"无法获取类型：GameLogic.{tableName}Container, Assembly-CSharp");
+                    continue;
+                }
+
+                ScriptableObject asset = ScriptableObject.CreateInstance(containerType);
+
+                Type configType = Type.GetType($"GameLogic.{tableName}, Assembly-CSharp");
+                if (configType == null)
+                {
+                    Log.Error($"无法获取类型：GameLogic.{tableName}, Assembly-CSharp");
+                    continue;
+                }
+
+                IList configs = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(configType));
+
+                for (int i = tableRows_Max; i < table.Rows.Count; i++)
+                {
+                    DataRow row = table.Rows[i];
+                    var config = Activator.CreateInstance(configType);
+                    if (config == null)
+                    {
+                        Log.Error($"无法创建实例：{tableName}");
+                        continue;
+                    }
+
+                    foreach (DataColumn column in table.Columns)
+                    {
+                        string fieldName = table.Rows[tableRows_3][column].ToString().Trim();
+                        string fieldValue = row[column].ToString().Trim();
+                        FieldInfo field = config.GetType().GetField(fieldName);
+                        if (field != null)
+                        {
+                            try
+                            {
+                                object value = Convert.ChangeType(fieldValue, field.FieldType);
+                                field.SetValue(config, value);
+                            }
+                            catch (Exception ex)
+                            {
+                                Log.Error($"字段赋值失败：{fieldName}, 值：{fieldValue}, 错误：{ex.Message}");
+                            }
+                        }
+                        else
+                        {
+                            Log.Warning($"字段未找到：{fieldName}");
+                        }
+                    }
+                    configs.Add(config);
+                }
+
+                FieldInfo configsField = containerType.GetField("configs");
+                if (configsField != null)
+                {
+                    configsField.SetValue(asset, configs);
+                }
+                else
+                {
+                    Log.Error($"字段 'configs' 未找到：{tableName}Container");
+                }
+
+                AssetDatabase.CreateAsset(asset, assetPath);
+            }
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
+        #endregion
+
         //----------------------工具----------------------
 
         /// <summary>
@@ -442,7 +645,7 @@ namespace GameLogic
                 tableList.Add(path);
             }
 
-            if(tableList.Count <= 0)
+            if (tableList.Count <= 0)
             {
                 Log.Error("没有找到表格！");
             }
