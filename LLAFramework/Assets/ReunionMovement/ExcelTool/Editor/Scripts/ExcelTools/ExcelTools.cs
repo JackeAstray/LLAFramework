@@ -10,9 +10,7 @@ using UnityEditor;
 using UnityEngine;
 using System.Linq;
 using System.Reflection;
-using Codice.Client.BaseCommands;
 using GameLogic.Sqlite;
-using System.Reflection.Emit;
 
 namespace GameLogic.EditorTools
 {
@@ -46,7 +44,7 @@ namespace GameLogic.EditorTools
         }
 
         [MenuItem("工具箱/表格处理/表格 -> 脚本（包含ScriptableObject脚本）", false, 2)]
-        public static void ExcelToScripts2()
+        public static void ExcelToScripts_ScriptableObject()
         {
             List<string> xlsxFiles = GetAllConfigFiles();
 
@@ -56,12 +54,34 @@ namespace GameLogic.EditorTools
             }
             Log.Debug("表格转为脚本完成！");
         }
+
+        [MenuItem("工具箱/表格处理/表格 -> 脚本（包含SQLite管理脚本）", false, 2)]
+        public static void ExcelToScripts_SQLite()
+        {
+            List<string> xlsxFiles = GetAllConfigFiles();
+
+            List<SheetData> sheets = new List<SheetData>();
+
+            foreach (var path in xlsxFiles)
+            {
+                var sheetData = ExcelToScripts(path);
+                if (sheetData != null)
+                {
+                    sheets.AddRange(sheetData);
+                }
+            }
+
+            // 生成 SqliteMgr 脚本
+            GenerateSqliteMgrScript(sheets);
+
+            Log.Debug("表格转为脚本完成！");
+        }
         /// <summary>
         /// Excel到脚本
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        static bool ExcelToScripts(string path, bool createScriptableObjects = false)
+        static List<SheetData> ExcelToScripts(string path, bool createScriptableObjects = false)
         {
             //构造Excel工具类
             ExcelUtility excel = new ExcelUtility(path);
@@ -70,7 +90,7 @@ namespace GameLogic.EditorTools
             {
                 string msg = string.Format("无法读取“{0}”。似乎这不是一个xlsx文件!", path);
                 EditorUtility.DisplayDialog("ExcelTools", msg, "OK");
-                return false;
+                return null;
             }
 
             List<SheetData> sheets = new List<SheetData>();
@@ -92,7 +112,7 @@ namespace GameLogic.EditorTools
                     EditorUtility.ClearProgressBar();
                     string msg = string.Format("无法分析“{0}”。1、检查行数：Excel文件应至少包含三行（第一行：中文名称，第二行：数据类型，第三行：英文名称）!\n2、检查Sheet是否存在多个！", path);
                     EditorUtility.DisplayDialog("ExcelTools", msg, "OK");
-                    return false;
+                    return null;
                 }
                 //设置类名
                 sheet.itemClassName = tableName;
@@ -102,7 +122,7 @@ namespace GameLogic.EditorTools
                     EditorUtility.ClearProgressBar();
                     string msg = string.Format("工作表名称“{0}”无效，因为该工作表的名称应为类名!", sheet.itemClassName);
                     EditorUtility.DisplayDialog("ExcelTools", msg, "OK");
-                    return false;
+                    return null;
                 }
                 //字段名称
                 object[] fieldNames;
@@ -129,7 +149,7 @@ namespace GameLogic.EditorTools
                         EditorUtility.ClearProgressBar();
                         string msg = string.Format("无法分析“{0}”，因为字段名“{1}”无效!", path, fieldNameStr);
                         EditorUtility.DisplayDialog("ExcelTools", msg, "OK");
-                        return false;
+                        return null;
                     }
 
                     //解析类型
@@ -178,7 +198,7 @@ namespace GameLogic.EditorTools
                 }
             }
 
-            return true;
+            return sheets;
         }
 
         /// <summary>
@@ -465,6 +485,87 @@ namespace GameLogic
             str = str.Replace("{_4_}", privateType.ToString());
             str = str.Replace("{_CREATE_TIME_}", DateTime.UtcNow.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
             return str;
+        }
+
+        /// <summary>
+        /// 生成 SqliteMgr 脚本
+        /// </summary>
+        /// <param name="sheets"></param>
+        static async void GenerateSqliteMgrScript(List<SheetData> sheets)
+        {
+            string ScriptTemplate = @"//此脚本为工具生成，请勿手动创建 {_CREATE_TIME_} <ExcelTo>
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using GameLogic.Base;
+
+namespace GameLogic.Sqlite
+{
+    public class SqliteMgr : SingletonMgr<SqliteMgr>
+    {
+        private DataService dataService;
+
+        // 初始化数据库
+        public void Initialize(string dbName, string password = null)
+        {
+            dataService = new DataService(dbName, password);
+        }
+
+        {_METHODS_}
+
+        // 关闭数据库连接
+        public void Close()
+        {
+            dataService.Close();
+        }
+    }
+}
+";
+
+            StringBuilder methodsBuilder = new StringBuilder();
+
+            foreach (var sheet in sheets)
+            {
+                var dataName = sheet.itemClassName;
+
+                methodsBuilder.AppendLine($@"
+        // 查询所有{dataName}
+        public IEnumerable<{dataName}> GetAll{dataName}()
+        {{
+            return dataService.Query<{dataName}>();
+        }}
+
+        // 根据条件查询{dataName}
+        public IEnumerable<{dataName}> Get{dataName}ByCondition(string condition, params object[] args)
+        {{
+            return dataService.Query<{dataName}>(condition, args);
+        }}
+
+        // 插入{dataName}
+        public void Insert{dataName}({dataName} obj)
+        {{
+            dataService.Insert(obj);
+        }}
+
+        // 更新{dataName}
+        public void Update{dataName}({dataName} obj)
+        {{
+            dataService.Update(obj);
+        }}
+
+        // 删除{dataName}
+        public void Delete{dataName}({dataName} obj)
+        {{
+            dataService.Delete(obj);
+        }}
+        ");
+            }
+
+            var str = ScriptTemplate.Replace("{_METHODS_}", methodsBuilder.ToString());
+            str = str.Replace("{_CREATE_TIME_}", DateTime.UtcNow.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
+            await Tools.SaveFile(scriptOutPutPath + "SqliteMgr.cs", str);
+
+            AssetDatabase.Refresh();
         }
         #endregion
 
@@ -812,6 +913,21 @@ namespace GameLogic
         {
             List<string> xlsxFiles = GetAllConfigFiles();
 
+            // 删除现有数据库文件
+            string databasePath = Path.Combine(Application.persistentDataPath, SqliteConfig.GameDatabaseName);
+            if (File.Exists(databasePath))
+            {
+                File.Delete(databasePath);
+                Log.Debug($"已删除现有数据库文件：{databasePath}");
+            }
+
+            databasePath = Path.Combine(Application.streamingAssetsPath, SqliteConfig.GameDatabaseName);
+            if (File.Exists(databasePath))
+            {
+                File.Delete(databasePath);
+                Log.Debug($"已删除现有数据库文件：{databasePath}");
+            }
+
             foreach (var path in xlsxFiles)
             {
                 ExcelToDatabase(path);
@@ -836,13 +952,12 @@ namespace GameLogic
                 return;
             }
 
-            // 数据库名称
-            string databaseName = SqliteConfig.GameDatabaseName;
+            // 数据库密码
             //string password = SqliteConfig.GameDatabasePassword;
             string password = null;
 
             // 初始化数据库服务
-            DataService dataService = new DataService(databaseName, password);
+            DataService dataService = new DataService(SqliteConfig.GameDatabaseName, password);
 
             foreach (DataTable table in excel.ResultSet.Tables)
             {

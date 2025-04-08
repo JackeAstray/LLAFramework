@@ -49,7 +49,7 @@ namespace GameLogic.Sqlite
                     break;
 
                 case RuntimePlatform.WebGLPlayer:
-                    Debug.LogError("WebGLPlayer不能直接操作Sqlite");
+                    Log.Error("WebGLPlayer不能直接操作Sqlite");
                     return;
 
                 default:
