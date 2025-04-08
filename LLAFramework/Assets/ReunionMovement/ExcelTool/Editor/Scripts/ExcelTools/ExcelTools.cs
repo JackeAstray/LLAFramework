@@ -838,7 +838,8 @@ namespace GameLogic
 
             // 数据库名称
             string databaseName = SqliteConfig.GameDatabaseName;
-            string password = SqliteConfig.GameDatabasePassword;
+            //string password = SqliteConfig.GameDatabasePassword;
+            string password = null;
 
             // 初始化数据库服务
             DataService dataService = new DataService(databaseName, password);
@@ -860,15 +861,18 @@ namespace GameLogic
                     return;
                 }
 
-                // 动态生成表对应的类
-                Type tableType = GenerateTableClass(tableName, table);
+                Type tableType = Type.GetType($"GameLogic.{tableName}, Assembly-CSharp");
+
+                if (tableType == null)
+                {
+                    throw new Exception($"类型 GameLogic.{tableName} 不存在，请检查类定义！");
+                }
 
                 // 使用反射调用 CreateTable<T>() 方法
                 MethodInfo createTableMethod = typeof(DataService).GetMethod("CreateTable").MakeGenericMethod(tableType);
                 createTableMethod.Invoke(dataService, null);
 
-                // 插入数据
-                List<object> records = new List<object>();
+                var records = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(tableType));
                 for (int i = tableRows_Max; i < table.Rows.Count; i++)
                 {
                     DataRow row = table.Rows[i];
@@ -879,79 +883,33 @@ namespace GameLogic
                         string fieldName = table.Rows[tableRows_3][column].ToString().Trim();
                         string fieldValue = row[column].ToString().Trim();
 
-                        FieldInfo field = tableType.GetField(fieldName);
-                        if (field != null)
+                        // 获取属性信息
+                        PropertyInfo property = tableType.GetProperty(fieldName, BindingFlags.Public | BindingFlags.Instance);
+                        if (property != null && property.CanWrite)
                         {
                             try
                             {
-                                object value = Convert.ChangeType(fieldValue, field.FieldType);
-                                field.SetValue(record, value);
+                                object value = Convert.ChangeType(fieldValue, property.PropertyType);
+                                property.SetValue(record, value);
                             }
                             catch (Exception ex)
                             {
-                                Log.Error($"字段赋值失败：{fieldName}, 值：{fieldValue}, 错误：{ex.Message}");
+                                Log.Error($"属性赋值失败：{fieldName}, 值：{fieldValue}, 错误：{ex.Message}");
                             }
                         }
+                        else
+                        {
+                            Log.Warning($"属性未找到或不可写：{fieldName}");
+                        }
                     }
-
                     records.Add(record);
                 }
-
                 // 使用反射调用 InsertAll<T>() 方法
                 MethodInfo insertAllMethod = typeof(DataService).GetMethod("InsertAll").MakeGenericMethod(tableType);
                 insertAllMethod.Invoke(dataService, new object[] { records });
             }
-
             dataService.Close();
         }
-
-        /// <summary>
-        /// 动态生成表对应的类
-        /// </summary>
-        /// <param name="tableName">表名</param>
-        /// <param name="table">表数据</param>
-        /// <returns>动态生成的类型</returns>
-        private static Type GenerateTableClass(string tableName, DataTable table)
-        {
-            AssemblyName assemblyName = new AssemblyName("SQLite");
-            AssemblyBuilder assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
-            ModuleBuilder moduleBuilder = assemblyBuilder.DefineDynamicModule("SQLite");
-            TypeBuilder typeBuilder = moduleBuilder.DefineType(tableName, TypeAttributes.Public);
-
-            object[] fieldNames = table.Rows[tableRows_3].ItemArray;
-            object[] fieldTypes = table.Rows[tableRows_2].ItemArray;
-
-            for (int i = 0; i < fieldNames.Length; i++)
-            {
-                string fieldName = fieldNames[i].ToString().Trim();
-                string fieldTypeStr = fieldTypes[i].ToString().Trim();
-
-                Type fieldType = GetFieldTypeFromString(fieldTypeStr);
-                FieldBuilder fieldBuilder = typeBuilder.DefineField(fieldName, fieldType, FieldAttributes.Public);
-            }
-
-            return typeBuilder.CreateType();
-        }
-
-        /// <summary>
-        /// 根据字段类型字符串获取对应的 .NET 类型
-        /// </summary>
-        /// <param name="fieldTypeStr">字段类型字符串</param>
-        /// <returns>对应的 .NET 类型</returns>
-        private static Type GetFieldTypeFromString(string fieldTypeStr)
-        {
-            switch (fieldTypeStr.ToLower())
-            {
-                case "bool": return typeof(bool);
-                case "int": return typeof(int);
-                case "float": return typeof(float);
-                case "double": return typeof(double);
-                case "long": return typeof(long);
-                case "string": return typeof(string);
-                default: return typeof(string); // 默认使用 string 类型
-            }
-        }
-
         #endregion
 
         //----------------------工具----------------------
