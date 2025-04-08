@@ -12,19 +12,19 @@ namespace GameLogic
     [UnityEngine.Scripting.Preserve]
     public class Languages
     {
-        
-        [PrimaryKey][AutoIncrement] public int Id{ get; set; }    //索引
-        public int Number{ get; set; }    //编号
-        public string ZH{ get; set; }    //中文
-        public string EN{ get; set; }    //英文
-        public string RU{ get; set; }    //俄文
-        public string FR{ get; set; }    //法文
-        public string DE{ get; set; }    //德文
-        public string ES{ get; set; }    //西班牙文
-        public string IT{ get; set; }    //意大利文
-        public string PT{ get; set; }    //葡萄牙文
-        public string JP{ get; set; }    //日文
-        public string KR{ get; set; }    //韩文
+
+        [PrimaryKey][AutoIncrement] public int Id { get; set; }    //索引
+        public int Number { get; set; }    //编号
+        public string ZH { get; set; }    //中文
+        public string EN { get; set; }    //英文
+        public string RU { get; set; }    //俄文
+        public string FR { get; set; }    //法文
+        public string DE { get; set; }    //德文
+        public string ES { get; set; }    //西班牙文
+        public string IT { get; set; }    //意大利文
+        public string PT { get; set; }    //葡萄牙文
+        public string JP { get; set; }    //日文
+        public string KR { get; set; }    //韩文
 
         public override string ToString()
         {

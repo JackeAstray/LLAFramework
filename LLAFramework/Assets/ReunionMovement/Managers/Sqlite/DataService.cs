@@ -260,36 +260,5 @@ namespace GameLogic.Sqlite
             connection.Execute(query, args);
         }
         #endregion
-
-
-        #region 例子
-        public void CreateDB()
-        {
-            DropTable<UserInfo>();
-            CreateTable<UserInfo>();
-
-            InsertAll(new[]
-            {
-                new UserInfo
-                {
-                    Account = "admin",
-                    Password = "admin",
-                    Name = "admin",
-                    Nickname = "admin",
-                    UniqueID = Guid.NewGuid().ToString(),
-                    Avatar = ""
-                },
-                new UserInfo
-                {
-                    Account = "admin2",
-                    Password = "admin2",
-                    Name = "admin2",
-                    Nickname = "admin2",
-                    UniqueID = Guid.NewGuid().ToString(),
-                    Avatar = ""
-                }
-            });
-        }
-        #endregion
     }
 }
