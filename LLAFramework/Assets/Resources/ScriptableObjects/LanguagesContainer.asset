@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: LanguagesContainer
   m_EditorClassIdentifier: 
   configs:
-  - Number: 100001
+  - Id: 1
+    Number: 100001
     ZH: "\u5F00\u59CB\u6E38\u620F"
     EN: Start Game
     RU: Null
@@ -24,7 +25,8 @@ MonoBehaviour:
     PT: Null
     JP: Null
     KR: Null
-  - Number: 100002
+  - Id: 2
+    Number: 100002
     ZH: "\u8BBE\u7F6E"
     EN: Options
     RU: Null
@@ -35,7 +37,8 @@ MonoBehaviour:
     PT: Null
     JP: Null
     KR: Null
-  - Number: 100003
+  - Id: 3
+    Number: 100003
     ZH: "\u9000\u51FA\u6E38\u620F"
     EN: Exit Game
     RU: Null
@@ -46,7 +49,8 @@ MonoBehaviour:
     PT: Null
     JP: Null
     KR: Null
-  - Number: 100004
+  - Id: 4
+    Number: 100004
     ZH: "\u7248\u672C\u53F7"
     EN: Version Number
     RU: Null
@@ -57,7 +61,8 @@ MonoBehaviour:
     PT: Null
     JP: Null
     KR: Null
-  - Number: 100005
+  - Id: 5
+    Number: 100005
     ZH: "\u5168\u5C4F"
     EN: Full Screen
     RU: Null
@@ -68,7 +73,8 @@ MonoBehaviour:
     PT: Null
     JP: Null
     KR: Null
-  - Number: 100006
+  - Id: 6
+    Number: 100006
     ZH: "\u5206\u8FA8\u7387"
     EN: Screen Resolution
     RU: Null
@@ -79,7 +85,8 @@ MonoBehaviour:
     PT: Null
     JP: Null
     KR: Null
-  - Number: 100007
+  - Id: 7
+    Number: 100007
     ZH: "\u8BED\u8A00\u5207\u6362"
     EN: Language Switch
     RU: Null
@@ -90,7 +97,8 @@ MonoBehaviour:
     PT: Null
     JP: Null
     KR: Null
-  - Number: 100008
+  - Id: 8
+    Number: 100008
     ZH: "\u80CC\u666F\u97F3\u4E50"
     EN: Background Music
     RU: Null
@@ -101,7 +109,8 @@ MonoBehaviour:
     PT: Null
     JP: Null
     KR: Null
-  - Number: 100009
+  - Id: 9
+    Number: 100009
     ZH: "\u80CC\u666F\u97F3\u4E50\u97F3\u91CF"
     EN: Background Music Volume
     RU: Null
@@ -112,7 +121,8 @@ MonoBehaviour:
     PT: Null
     JP: Null
     KR: Null
-  - Number: 100010
+  - Id: 10
+    Number: 100010
     ZH: "\u58F0\u97F3\u7279\u6548"
     EN: Sound Effects
     RU: Null
@@ -123,7 +133,8 @@ MonoBehaviour:
     PT: Null
     JP: Null
     KR: Null
-  - Number: 100011
+  - Id: 11
+    Number: 100011
     ZH: "\u58F0\u97F3\u7279\u6548\u97F3\u97F3\u91CF"
     EN: Sound Effect Volume
     RU: Null
@@ -134,7 +145,8 @@ MonoBehaviour:
     PT: Null
     JP: Null
     KR: Null
-  - Number: 100012
+  - Id: 12
+    Number: 100012
     ZH: "\u5F00\u542F"
     EN: ON
     RU: Null
@@ -145,7 +157,8 @@ MonoBehaviour:
     PT: Null
     JP: Null
     KR: Null
-  - Number: 100013
+  - Id: 13
+    Number: 100013
     ZH: "\u5173\u95ED"
     EN: OFF
     RU: Null

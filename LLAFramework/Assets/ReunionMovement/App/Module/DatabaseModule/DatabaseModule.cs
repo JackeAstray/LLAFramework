@@ -62,6 +62,8 @@ namespace GameLogic
             LoadSoundConfig();
             //------------------------------------
             LoadQuestionConfig();
+
+            //LoadScriptableObject<GameConfigContainer>("ScriptableObjects/GameConfigContainer");
         }
 
         /// <summary>
@@ -134,6 +136,23 @@ namespace GameLogic
             {
                 questions.Add(tempData.Id, tempData);
             }
+        }
+
+        /// <summary>
+        /// 加载ScriptableObject
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="resourcePath"></param>
+        /// <returns></returns>
+        public T LoadScriptableObject<T>(string resourcePath) where T : ScriptableObject
+        {
+            // 使用 Resources.Load 加载 ScriptableObject
+            T scriptableObject = ResourcesModule.Instance.Load<T>(resourcePath);
+            if (scriptableObject == null)
+            {
+                Debug.LogError($"无法加载 ScriptableObject：{resourcePath}");
+            }
+            return scriptableObject;
         }
         #endregion
 

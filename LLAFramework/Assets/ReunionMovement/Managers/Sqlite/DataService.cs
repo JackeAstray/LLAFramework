@@ -1,4 +1,4 @@
-using SqlCipher4Unity3D;
+using SQLite;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +7,7 @@ using GameLogic.Download;
 using GameLogic.Http;
 using GameLogic.Http.Service;
 using System;
-using TreeEditor;
+using SqlCipher4Unity3D;
 
 namespace GameLogic.Sqlite
 {
@@ -43,11 +43,11 @@ namespace GameLogic.Sqlite
                 case RuntimePlatform.IPhonePlayer:
                     HandlePlayerPlatform();
                     break;
-   
+
                 case RuntimePlatform.Android:
                     HandleAndroidPlatform();
                     break;
- 
+
                 case RuntimePlatform.WebGLPlayer:
                     Debug.LogError("WebGLPlayer不能直接操作Sqlite");
                     return;
@@ -268,7 +268,7 @@ namespace GameLogic.Sqlite
             DropTable<UserInfo>();
             CreateTable<UserInfo>();
 
-            InsertAll(new[] 
+            InsertAll(new[]
             {
                 new UserInfo
                 {

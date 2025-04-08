@@ -1,4 +1,4 @@
-//此脚本为工具生成，请勿手动创建 2025-04-08 15:46:40.572 <ExcelTo>
+//此脚本为工具生成，请勿手动创建 2025-04-08 15:46:40.577 <ExcelTo>
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,15 +9,14 @@ using SQLite.Attributes;
 namespace GameLogic
 {
     [Serializable]
-    [UnityEngine.Scripting.Preserve]
-    public class GameConfig
+    public class GameConfigDTO
     {
         
-       [PrimaryKey][AutoIncrement] public int Id{ get; set; }    //索引
-        public int Number{ get; set; }    //编号
-        public int LanguageID{ get; set; }    //语言ID
-        public string Title{ get; set; }    //文本介绍
-        public string Value{ get; set; }    //值
+        public int Id;    //索引
+        public int Number;    //编号
+        public int LanguageID;    //语言ID
+        public string Title;    //文本介绍
+        public string Value;    //值
 
         public override string ToString()
         {

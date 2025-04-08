@@ -13,35 +13,43 @@ MonoBehaviour:
   m_Name: GameConfigContainer
   m_EditorClassIdentifier: 
   configs:
-  - Number: 100001
+  - Id: 1
+    Number: 100001
     LanguageID: 100004
     Title: "\u7248\u672C\u53F7"
     Value: V1.0.0
-  - Number: 100002
+  - Id: 2
+    Number: 100002
     LanguageID: 100005
     Title: "\u5168\u5C4F"
     Value: TRUE
-  - Number: 100003
+  - Id: 3
+    Number: 100003
     LanguageID: 100006
     Title: "\u5206\u8FA8\u7387"
     Value: 2
-  - Number: 100004
+  - Id: 4
+    Number: 100004
     LanguageID: 100007
     Title: "\u8BED\u8A00\u5207\u6362"
     Value: 0
-  - Number: 100005
+  - Id: 5
+    Number: 100005
     LanguageID: 100008
     Title: "\u80CC\u666F\u97F3\u4E50"
     Value: FALSE
-  - Number: 100006
+  - Id: 6
+    Number: 100006
     LanguageID: 100009
     Title: "\u80CC\u666F\u97F3\u4E50\u97F3\u91CF"
     Value: 0.1
-  - Number: 100007
+  - Id: 7
+    Number: 100007
     LanguageID: 100010
     Title: "\u58F0\u97F3\u7279\u6548"
     Value: FALSE
-  - Number: 100008
+  - Id: 8
+    Number: 100008
     LanguageID: 100011
     Title: "\u58F0\u97F3\u7279\u6548\u97F3\u97F3\u91CF"
     Value: 0.1

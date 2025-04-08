@@ -11,6 +11,8 @@ using UnityEngine;
 using System.Linq;
 using System.Reflection;
 using Codice.Client.BaseCommands;
+using GameLogic.Sqlite;
+using System.Reflection.Emit;
 
 namespace GameLogic.EditorTools
 {
@@ -50,7 +52,7 @@ namespace GameLogic.EditorTools
 
             foreach (var path in xlsxFiles)
             {
-                ExcelToScripts(path);
+                ExcelToScripts(path, true);
             }
             Log.Debug("表格转为脚本完成！");
         }
@@ -59,7 +61,7 @@ namespace GameLogic.EditorTools
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        static bool ExcelToScripts(string path)
+        static bool ExcelToScripts(string path, bool createScriptableObjects = false)
         {
             //构造Excel工具类
             ExcelUtility excel = new ExcelUtility(path);
@@ -168,7 +170,12 @@ namespace GameLogic.EditorTools
             for (int i = 0; i < sheets.Count; i++)
             {
                 GenerateScript(sheets[i]);
-                GenerateScript2(sheets[i], i);
+
+                if (createScriptableObjects)
+                {
+                    GenerateScriptDTO(sheets[i]);
+                    GenerateScript_ScriptableObjectList(sheets[i], i);
+                }
             }
 
             return true;
@@ -228,10 +235,7 @@ namespace GameLogic
             string toString_2 = "";
 
             // 附加
-            string additional1 = ";";
-            string additional2 = "{{ get; set; }}";
-
-
+            string additional = "{{ get; set; }}";
 
             for (int i = 0; i < fieldDatas.Count; i++)
             {
@@ -242,11 +246,11 @@ namespace GameLogic
 
                 if (fieldDatas[i].fieldName == "Id")
                 {
-                    attribute = string.Format("       [PrimaryKey][AutoIncrement] public {0} {1}{2}    //{3}", typeName, fieldDatas[i].fieldName, additional2, fieldDatas[i].fieldNotes);
+                    attribute = string.Format("       [PrimaryKey][AutoIncrement] public {0} {1}{2}    //{3}", typeName, fieldDatas[i].fieldName, additional, fieldDatas[i].fieldNotes);
                 }
                 else
                 {
-                    attribute = string.Format("        public {0} {1}{2}    //{3}", typeName, fieldDatas[i].fieldName, additional1, fieldDatas[i].fieldNotes);
+                    attribute = string.Format("        public {0} {1}{2}    //{3}", typeName, fieldDatas[i].fieldName, additional, fieldDatas[i].fieldNotes);
                 }
 
                 privateType.AppendFormat(attribute);
@@ -276,10 +280,101 @@ namespace GameLogic
         }
 
         /// <summary>
+        /// 生成脚本
+        /// </summary>
+        /// <param name="sheet"></param>
+        static async void GenerateScriptDTO(SheetData sheet)
+        {
+            string ScriptTemplate = @"//此脚本为工具生成，请勿手动创建 {_CREATE_TIME_} <ExcelTo>
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Scripting;
+using SQLite.Attributes;
+
+namespace GameLogic
+{
+    [Serializable]
+    public class {_0_}DTO
+    {
+        {_1_}
+        public override string ToString()
+        {
+            return string.Format(
+                {_2_},
+                {_3_}
+            );
+        }
+    }
+}
+";
+            var dataName = sheet.itemClassName;
+            var str = GenerateDataScriptDTO(ScriptTemplate, dataName, sheet.fields);
+            await Tools.SaveFile(scriptOutPutPath + dataName + "DTO.cs", str);
+
+            AssetDatabase.Refresh();
+        }
+
+        /// <summary>
+        /// 创建数据结构脚本
+        /// </summary>
+        /// <param name="template"></param>
+        /// <param name="scriptName"></param>
+        /// <param name="fieldDatas"></param>
+        /// <returns></returns>
+        static string GenerateDataScriptDTO(string template, string scriptName, List<FieldData> fieldDatas)
+        {
+            StringBuilder privateType = new StringBuilder();
+            privateType.AppendLine();
+
+            string toString_1 = "";
+            string toString_2 = "";
+
+            // 附加
+            string additional = ";";
+
+            for (int i = 0; i < fieldDatas.Count; i++)
+            {
+                var typeName = GetFieldTypeString(fieldDatas[i].fieldType, fieldDatas[i].fieldTypeName);
+
+                // 属性
+                string attribute = "";
+
+                attribute = string.Format("        public {0} {1}{2}    //{3}", typeName, fieldDatas[i].fieldName, additional, fieldDatas[i].fieldNotes);
+
+                privateType.AppendFormat(attribute);
+                privateType.AppendLine();
+
+                int value = i + 1;
+                toString_1 += fieldDatas[i].fieldName + "={" + value + "}";
+                if (i < fieldDatas.Count - 1)
+                {
+                    toString_1 += ",";
+                }
+
+                toString_2 += "this." + fieldDatas[i].fieldName;
+                if (i < fieldDatas.Count - 1)
+                {
+                    toString_2 += ",\r\n                ";
+                }
+            }
+
+            string str = template;
+            str = str.Replace("{_0_}", scriptName);
+            str = str.Replace("{_1_}", privateType.ToString());
+            str = str.Replace("{_2_}", "\"[" + toString_1 + "]\"");
+            str = str.Replace("{_3_}", toString_2);
+            str = str.Replace("{_CREATE_TIME_}", DateTime.UtcNow.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
+            return str;
+        }
+
+
+        /// <summary>
         /// 生成ScriptableObject脚本
         /// </summary>
         /// <param name="sheet"></param>
-        static async void GenerateScript2(SheetData sheet, int order)
+        static async void GenerateScript_ScriptableObjectList(SheetData sheet, int order)
         {
             string ScriptTemplate = @"//此脚本为工具生成，请勿手动创建 {_CREATE_TIME_} <ExcelTo>
 using System;
@@ -298,7 +393,7 @@ namespace GameLogic
 }
 ";
             var dataName = sheet.itemClassName;
-            var str = GenerateDataScript2(ScriptTemplate, dataName, sheet.fields, order);
+            var str = GenerateDataScript_ScriptableObjectList(ScriptTemplate, dataName, sheet.fields, order);
             await Tools.SaveFile(scriptOutPutPath + dataName + "Container.cs", str);
 
             AssetDatabase.Refresh();
@@ -311,7 +406,7 @@ namespace GameLogic
         /// <param name="scriptName"></param>
         /// <param name="fieldDatas"></param>
         /// <returns></returns>
-        static string GenerateDataScript2(string template, string scriptName, List<FieldData> fieldDatas, int order)
+        static string GenerateDataScript_ScriptableObjectList(string template, string scriptName, List<FieldData> fieldDatas, int order)
         {
             StringBuilder privateType = new StringBuilder();
             privateType.AppendLine();
@@ -320,7 +415,7 @@ namespace GameLogic
 
             var typeName = scriptName;
 
-            string attribute = string.Format("        public List<{0}> {1}{2}", scriptName, "configs", additional);
+            string attribute = string.Format("        public List<{0}> {1}{2}", scriptName + "DTO", "configs", additional);
             privateType.AppendFormat(attribute);
 
             string str = template;
@@ -520,20 +615,20 @@ namespace GameLogic
         /// <param name="path"></param>
         public static void ExcelToScriptableObject(string path)
         {
-            //等待编译结束
+            // 等待编译结束
             if (EditorApplication.isCompiling)
             {
                 EditorUtility.DisplayDialog("警告", "等待编译结束。", "OK");
                 return;
             }
 
-            //查看路径是否存在
+            // 查看路径是否存在
             if (Directory.Exists(scriptableOutPutPath) == false)
             {
                 Directory.CreateDirectory(scriptableOutPutPath);
             }
 
-            //构造Excel工具类
+            // 构造 Excel 工具类
             ExcelUtility excel = new ExcelUtility(path);
 
             if (excel.ResultSet == null)
@@ -548,7 +643,7 @@ namespace GameLogic
                 string tableName = table.TableName.Trim();
                 if (tableName.StartsWith("#"))
                 {
-                    continue;
+                    continue; // 忽略以 # 开头的表
                 }
 
                 if (table.Rows.Count < tableRows_Max)
@@ -559,7 +654,10 @@ namespace GameLogic
                     return;
                 }
 
+                // 动态生成 ScriptableObject 文件路径
                 string assetPath = scriptableOutPutPath + tableName + "Container.asset";
+
+                // 动态获取容器类类型
                 Type containerType = Type.GetType($"GameLogic.{tableName}Container, Assembly-CSharp");
                 if (containerType == null)
                 {
@@ -567,6 +665,7 @@ namespace GameLogic
                     continue;
                 }
 
+                // 动态创建容器实例
                 ScriptableObject asset = ScriptableObject.CreateInstance(containerType);
 
                 Type configType = Type.GetType($"GameLogic.{tableName}, Assembly-CSharp");
@@ -575,9 +674,18 @@ namespace GameLogic
                     Log.Error($"无法获取类型：GameLogic.{tableName}, Assembly-CSharp");
                     continue;
                 }
+                // 动态获取 DTO 类类型
+                Type configTypeDTO = Type.GetType($"GameLogic.{tableName}DTO, Assembly-CSharp");
+                if (configTypeDTO == null)
+                {
+                    Log.Error($"无法获取类型：GameLogic.{tableName}DTO, Assembly-CSharp");
+                    continue;
+                }
 
-                IList configs = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(configType));
+                // 创建 DTO 列表
+                IList configs = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(configTypeDTO));
 
+                // 遍历表数据并填充 DTO 列表
                 for (int i = tableRows_Max; i < table.Rows.Count; i++)
                 {
                     DataRow row = table.Rows[i];
@@ -592,27 +700,53 @@ namespace GameLogic
                     {
                         string fieldName = table.Rows[tableRows_3][column].ToString().Trim();
                         string fieldValue = row[column].ToString().Trim();
-                        FieldInfo field = config.GetType().GetField(fieldName);
-                        if (field != null)
+
+                        // 获取属性信息
+                        PropertyInfo property = config.GetType().GetProperty(fieldName, BindingFlags.Public | BindingFlags.Instance);
+                        if (property != null && property.CanWrite)
                         {
                             try
                             {
-                                object value = Convert.ChangeType(fieldValue, field.FieldType);
-                                field.SetValue(config, value);
+                                object value = Convert.ChangeType(fieldValue, property.PropertyType);
+                                property.SetValue(config, value);
                             }
                             catch (Exception ex)
                             {
-                                Log.Error($"字段赋值失败：{fieldName}, 值：{fieldValue}, 错误：{ex.Message}");
+                                Log.Error($"属性赋值失败：{fieldName}, 值：{fieldValue}, 错误：{ex.Message}");
                             }
                         }
                         else
                         {
-                            Log.Warning($"字段未找到：{fieldName}");
+                            Log.Warning($"属性未找到或不可写：{fieldName}");
                         }
                     }
-                    configs.Add(config);
+
+                    // 创建 DTO 实例
+                    var configDTO = Activator.CreateInstance(configTypeDTO);
+
+                    // 遍历 GameConfig 的属性并赋值给 GameConfigDTO
+                    foreach (PropertyInfo property in config.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
+                    {
+                        var dtoProperty = configDTO.GetType().GetField(property.Name, BindingFlags.Public | BindingFlags.Instance);
+                        if (dtoProperty != null)
+                        {
+                            try
+                            {
+                                var value = property.GetValue(config);
+                                dtoProperty.SetValue(configDTO, value);
+                            }
+                            catch (Exception ex)
+                            {
+                                Log.Error($"属性赋值失败：{property.Name}, 错误：{ex.Message}");
+                            }
+                        }
+                    }
+
+                    // 将 DTO 添加到列表
+                    configs.Add(configDTO);
                 }
 
+                // 将 DTO 列表赋值给容器
                 FieldInfo configsField = containerType.GetField("configs");
                 if (configsField != null)
                 {
@@ -623,12 +757,162 @@ namespace GameLogic
                     Log.Error($"字段 'configs' 未找到：{tableName}Container");
                 }
 
+                // 保存 ScriptableObject
                 AssetDatabase.CreateAsset(asset, assetPath);
             }
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
+        #endregion
+
+        #region 表格 -> 数据库
+        // 添加菜单项
+        [MenuItem("工具箱/表格处理/表格 -> 数据库", false, 7)]
+        public static void ExcelToDatabase()
+        {
+            List<string> xlsxFiles = GetAllConfigFiles();
+
+            foreach (var path in xlsxFiles)
+            {
+                ExcelToDatabase(path);
+            }
+
+            Log.Debug("表格导出到数据库完成！");
+        }
+
+        /// <summary>
+        /// 将 Excel 数据导出到数据库
+        /// </summary>
+        /// <param name="path"></param>
+        public static void ExcelToDatabase(string path)
+        {
+            // 构造 Excel 工具类
+            ExcelUtility excel = new ExcelUtility(path);
+
+            if (excel.ResultSet == null)
+            {
+                string msg = string.Format("无法读取“{0}”。似乎这不是一个有效的 Excel 文件!", path);
+                EditorUtility.DisplayDialog("ExcelTools", msg, "OK");
+                return;
+            }
+
+            // 数据库名称
+            string databaseName = SqliteConfig.GameDatabaseName;
+            string password = SqliteConfig.GameDatabasePassword;
+
+            // 初始化数据库服务
+            DataService dataService = new DataService(databaseName, password);
+
+            foreach (DataTable table in excel.ResultSet.Tables)
+            {
+                string tableName = table.TableName.Trim();
+
+                // 忽略以 # 开头的表
+                if (tableName.StartsWith("#"))
+                {
+                    continue;
+                }
+
+                if (table.Rows.Count < tableRows_Max)
+                {
+                    string msg = string.Format("无法分析“{0}”。表格至少需要包含三行（第一行：中文名称，第二行：数据类型，第三行：英文名称）!", path);
+                    EditorUtility.DisplayDialog("ExcelTools", msg, "OK");
+                    return;
+                }
+
+                // 动态生成表对应的类
+                Type tableType = GenerateTableClass(tableName, table);
+
+                // 使用反射调用 CreateTable<T>() 方法
+                MethodInfo createTableMethod = typeof(DataService).GetMethod("CreateTable").MakeGenericMethod(tableType);
+                createTableMethod.Invoke(dataService, null);
+
+                // 插入数据
+                List<object> records = new List<object>();
+                for (int i = tableRows_Max; i < table.Rows.Count; i++)
+                {
+                    DataRow row = table.Rows[i];
+                    object record = Activator.CreateInstance(tableType);
+
+                    foreach (DataColumn column in table.Columns)
+                    {
+                        string fieldName = table.Rows[tableRows_3][column].ToString().Trim();
+                        string fieldValue = row[column].ToString().Trim();
+
+                        FieldInfo field = tableType.GetField(fieldName);
+                        if (field != null)
+                        {
+                            try
+                            {
+                                object value = Convert.ChangeType(fieldValue, field.FieldType);
+                                field.SetValue(record, value);
+                            }
+                            catch (Exception ex)
+                            {
+                                Log.Error($"字段赋值失败：{fieldName}, 值：{fieldValue}, 错误：{ex.Message}");
+                            }
+                        }
+                    }
+
+                    records.Add(record);
+                }
+
+                // 使用反射调用 InsertAll<T>() 方法
+                MethodInfo insertAllMethod = typeof(DataService).GetMethod("InsertAll").MakeGenericMethod(tableType);
+                insertAllMethod.Invoke(dataService, new object[] { records });
+            }
+
+            dataService.Close();
+        }
+
+        /// <summary>
+        /// 动态生成表对应的类
+        /// </summary>
+        /// <param name="tableName">表名</param>
+        /// <param name="table">表数据</param>
+        /// <returns>动态生成的类型</returns>
+        private static Type GenerateTableClass(string tableName, DataTable table)
+        {
+            AssemblyName assemblyName = new AssemblyName("SQLite");
+            AssemblyBuilder assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
+            ModuleBuilder moduleBuilder = assemblyBuilder.DefineDynamicModule("SQLite");
+            TypeBuilder typeBuilder = moduleBuilder.DefineType(tableName, TypeAttributes.Public);
+
+            object[] fieldNames = table.Rows[tableRows_3].ItemArray;
+            object[] fieldTypes = table.Rows[tableRows_2].ItemArray;
+
+            for (int i = 0; i < fieldNames.Length; i++)
+            {
+                string fieldName = fieldNames[i].ToString().Trim();
+                string fieldTypeStr = fieldTypes[i].ToString().Trim();
+
+                Type fieldType = GetFieldTypeFromString(fieldTypeStr);
+                FieldBuilder fieldBuilder = typeBuilder.DefineField(fieldName, fieldType, FieldAttributes.Public);
+            }
+
+            return typeBuilder.CreateType();
+        }
+
+        /// <summary>
+        /// 根据字段类型字符串获取对应的 .NET 类型
+        /// </summary>
+        /// <param name="fieldTypeStr">字段类型字符串</param>
+        /// <returns>对应的 .NET 类型</returns>
+        private static Type GetFieldTypeFromString(string fieldTypeStr)
+        {
+            switch (fieldTypeStr.ToLower())
+            {
+                case "bool": return typeof(bool);
+                case "int": return typeof(int);
+                case "float": return typeof(float);
+                case "double": return typeof(double);
+                case "long": return typeof(long);
+                case "string": return typeof(string);
+                default: return typeof(string); // 默认使用 string 类型
+            }
+        }
+
         #endregion
 
         //----------------------工具----------------------

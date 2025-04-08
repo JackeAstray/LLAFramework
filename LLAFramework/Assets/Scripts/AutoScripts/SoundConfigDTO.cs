@@ -9,16 +9,15 @@ using SQLite.Attributes;
 namespace GameLogic
 {
     [Serializable]
-    [UnityEngine.Scripting.Preserve]
-    public class SoundConfig
+    public class SoundConfigDTO
     {
         
-       [PrimaryKey][AutoIncrement] public int Id{ get; set; }    //索引
-        public int Number{ get; set; }    //编号
-        public string Path{ get; set; }    //路径
-        public string Name{ get; set; }    //名称
-        public int Type{ get; set; }    //类型
-        public string Detailed{ get; set; }    //介绍
+        public int Id;    //索引
+        public int Number;    //编号
+        public string Path;    //路径
+        public string Name;    //名称
+        public int Type;    //类型
+        public string Detailed;    //介绍
 
         public override string ToString()
         {

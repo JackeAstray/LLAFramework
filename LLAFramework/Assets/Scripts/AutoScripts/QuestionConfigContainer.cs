@@ -1,4 +1,4 @@
-//此脚本为工具生成，请勿手动创建 2025-04-08 11:29:56.113 <ExcelTo>
+//此脚本为工具生成，请勿手动创建 2025-04-08 15:46:40.591 <ExcelTo>
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,6 +11,6 @@ namespace GameLogic
     public class QuestionConfigContainer : ScriptableObject
     {
         
-        public List<QuestionConfig> configs;
+        public List<QuestionConfigDTO> configs;
     }
 }

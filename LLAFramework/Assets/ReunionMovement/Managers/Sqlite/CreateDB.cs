@@ -23,7 +23,7 @@ namespace GameLogic.Example
 
         private void StartSync()
         {
-            sqliteMgr.Initialize(SqliteConfig.DataBaseDBName);
+            sqliteMgr.Initialize(SqliteConfig.GameDatabaseName);
 
             var userInfos = sqliteMgr.GetAllUsers();
             foreach (var userInfo in userInfos)

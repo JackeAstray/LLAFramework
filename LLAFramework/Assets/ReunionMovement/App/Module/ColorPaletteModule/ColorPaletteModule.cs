@@ -34,7 +34,7 @@ namespace GameLogic
 
         void InitConfig()
         {
-            colorPalette = ResourcesModule.Instance.Load<ColorPalette>("ScriptableObject/ColorPalette");
+            colorPalette = ResourcesModule.Instance.Load<ColorPalette>("ScriptableObjects/ColorPalette");
             //Color color = colorPalette.GetColor("西瓜", ColorPaletteScheme.CommonlyUsed);
             //Log.Debug(color);
         }

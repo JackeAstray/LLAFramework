@@ -1,4 +1,4 @@
-//此脚本为工具生成，请勿手动创建 2025-04-08 11:29:56.106 <ExcelTo>
+//此脚本为工具生成，请勿手动创建 2025-04-08 15:46:40.584 <ExcelTo>
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,6 +11,6 @@ namespace GameLogic
     public class LanguagesContainer : ScriptableObject
     {
         
-        public List<Languages> configs;
+        public List<LanguagesDTO> configs;
     }
 }
