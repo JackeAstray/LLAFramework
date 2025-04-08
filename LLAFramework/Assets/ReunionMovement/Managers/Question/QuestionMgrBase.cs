@@ -141,7 +141,7 @@ namespace GameLogic
                 int itemId = indexs[i];
                 QuestionItem questionItem = new QuestionItem();
                 questionItem.isAnswered = false;
-                questionItem.questionConfig = DatabaseModule.Instance.GetQuestionConfig(itemId);
+                questionItem.questionConfig = JsonDatabaseModule.Instance.GetQuestionConfigByNumber(itemId);
                 questionItems.Add(questionItem);
                 questionIdToIndexMap[itemId] = i;
             }

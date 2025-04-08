@@ -74,7 +74,7 @@ namespace GameLogic
         {
             if (sourceAS.clip == null || !sourceAS.isPlaying)
             {
-                SoundConfig soundConfig = DatabaseModule.Instance.GetSoundConfig(index);
+                SoundConfig soundConfig = JsonDatabaseModule.Instance.GetSoundConfigByNumber(index);
 
                 if (soundConfig != null)
                 {
@@ -226,7 +226,7 @@ namespace GameLogic
         /// <param name="poolType"></param>
         void ProcessingPlaySound(int index, Transform emitter, bool loop, PoolType poolType)
         {
-            SoundConfig soundConfig = DatabaseModule.Instance.GetSoundConfig(index);
+            SoundConfig soundConfig = JsonDatabaseModule.Instance.GetSoundConfigByNumber(index);
             if (soundConfig != null)
             {
                 AudioClip clip = ResourcesModule.Instance.Load<AudioClip>(soundConfig.Path + soundConfig.Name);

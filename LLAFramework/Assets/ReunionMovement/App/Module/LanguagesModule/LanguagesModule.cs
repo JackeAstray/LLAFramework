@@ -97,7 +97,7 @@ namespace GameLogic
             string text = "";
 
             Languages language;
-            if (DatabaseModule.Instance.GetLanguages().TryGetValue(index, out language))
+            if (JsonDatabaseModule.Instance.GetLanguages().TryGetValue(index, out language))
             {
                 switch (multilingual)
                 {

@@ -24,6 +24,7 @@ namespace GameLogic.EditorTools
         static readonly string scriptOutPutPath = "Assets/Scripts/AutoScripts/";             // 脚本输出路径
         static readonly string dataOutPutPath = "Assets/Resources/AutoDatabase/";            // 数据表输出路径
         static readonly string scriptableOutPutPath = "Assets/Resources/ScriptableObjects/"; // 脚本对象输出路径
+        static readonly string jsonMgrOutPutPath = "Assets/ReunionMovement/App/Module/DatabaseModule/JsonDatabaseModule.cs"; // 脚本对象输出路径
 
         static int tableRows_Max = 3;                                           // 最大行数
         static int tableRows_1 = 0;                                             // 第一行中文名称
@@ -31,19 +32,28 @@ namespace GameLogic.EditorTools
         static int tableRows_3 = 2;                                             // 第三行英文名称
 
         #region 表格 -> 脚本
-        [MenuItem("工具箱/表格处理/表格 -> 脚本", false, 1)]
+        [MenuItem("工具箱/表格处理/表格 -> 脚本（同时重写JsonDatabaseModule）", false, 1)]
         public static void ExcelToScripts()
         {
             List<string> xlsxFiles = GetAllConfigFiles();
 
+            List<SheetData> sheets = new List<SheetData>();
+
             foreach (var path in xlsxFiles)
             {
-                ExcelToScripts(path);
+                var sheetData = ExcelToScripts(path);
+                if (sheetData != null)
+                {
+                    sheets.AddRange(sheetData);
+                }
             }
+
+            // 生成 JsonDatabaseModule 脚本
+            GenerateJsonDatabaseModuleScript(sheets);
             Log.Debug("表格转为脚本完成！");
         }
 
-        [MenuItem("工具箱/表格处理/表格 -> 脚本（包含ScriptableObject脚本）", false, 2)]
+        [MenuItem("工具箱/表格处理/表格 -> 脚本（包含ScriptableObject对象生成）", false, 2)]
         public static void ExcelToScripts_ScriptableObject()
         {
             List<string> xlsxFiles = GetAllConfigFiles();
@@ -55,7 +65,7 @@ namespace GameLogic.EditorTools
             Log.Debug("表格转为脚本完成！");
         }
 
-        [MenuItem("工具箱/表格处理/表格 -> 脚本（包含SQLite管理脚本）", false, 2)]
+        [MenuItem("工具箱/表格处理/表格 -> 脚本（包含SQLite管理脚本生成）", false, 2)]
         public static void ExcelToScripts_SQLite()
         {
             List<string> xlsxFiles = GetAllConfigFiles();
@@ -71,7 +81,7 @@ namespace GameLogic.EditorTools
                 }
             }
 
-            // 生成 SqliteMgr 脚本
+            // 动态生成 SqliteMgr 脚本
             GenerateSqliteMgrScript(sheets);
 
             Log.Debug("表格转为脚本完成！");
@@ -202,7 +212,7 @@ namespace GameLogic.EditorTools
         }
 
         /// <summary>
-        /// 生成脚本
+        /// 生成Json、数据库通用脚本
         /// </summary>
         /// <param name="sheet"></param>
         static async void GenerateScript(SheetData sheet)
@@ -240,7 +250,7 @@ namespace GameLogic
         }
 
         /// <summary>
-        /// 创建数据结构脚本
+        /// 生成Json、数据库通用脚本
         /// </summary>
         /// <param name="template"></param>
         /// <param name="scriptName"></param>
@@ -300,7 +310,7 @@ namespace GameLogic
         }
 
         /// <summary>
-        /// 生成脚本
+        /// 生成ScriptableObject用脚本
         /// </summary>
         /// <param name="sheet"></param>
         static async void GenerateScriptDTO(SheetData sheet)
@@ -359,7 +369,7 @@ namespace GameLogic
         }
 
         /// <summary>
-        /// 创建数据结构脚本
+        /// 生成ScriptableObject用脚本
         /// </summary>
         /// <param name="template"></param>
         /// <param name="scriptName"></param>
@@ -430,7 +440,7 @@ namespace GameLogic
 
 
         /// <summary>
-        /// 生成ScriptableObject脚本
+        /// 生成ScriptableObjectList脚本
         /// </summary>
         /// <param name="sheet"></param>
         static async void GenerateScript_ScriptableObjectList(SheetData sheet, int order)
@@ -459,7 +469,7 @@ namespace GameLogic
         }
 
         /// <summary>
-        /// 创建ScriptableObject脚本
+        /// 创建ScriptableObjectList脚本
         /// </summary>
         /// <param name="template"></param>
         /// <param name="scriptName"></param>
@@ -565,6 +575,146 @@ namespace GameLogic.Sqlite
             str = str.Replace("{_CREATE_TIME_}", DateTime.UtcNow.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
             await Tools.SaveFile(scriptOutPutPath + "SqliteMgr.cs", str);
 
+            AssetDatabase.Refresh();
+        }
+
+        /// <summary>
+        /// 生成 JsonDatabaseModule 脚本
+        /// </summary>
+        /// <param name="sheets"></param>
+        static void GenerateJsonDatabaseModuleScript(List<SheetData> sheets)
+        {
+            StringBuilder scriptBuilder = new StringBuilder();
+            scriptBuilder.AppendLine("using System.Collections;");
+            scriptBuilder.AppendLine("using System.Collections.Generic;");
+            scriptBuilder.AppendLine("using UnityEngine;");
+            scriptBuilder.AppendLine("using System.Linq;");
+            scriptBuilder.AppendLine("using LitJson;");
+            scriptBuilder.AppendLine();
+            scriptBuilder.AppendLine("namespace GameLogic");
+            scriptBuilder.AppendLine("{");
+            scriptBuilder.AppendLine("    public class JsonDatabaseModule : CustommModuleInitialize");
+            scriptBuilder.AppendLine("    {");
+            scriptBuilder.AppendLine("        public static JsonDatabaseModule Instance = new JsonDatabaseModule();");
+            scriptBuilder.AppendLine("        public bool IsInited { get; private set; }");
+            scriptBuilder.AppendLine("        private double initProgress = 0;");
+            scriptBuilder.AppendLine("        public double InitProgress { get { return initProgress; } }");
+            scriptBuilder.AppendLine();
+
+            foreach (var sheet in sheets)
+            {
+                scriptBuilder.AppendLine($"        // {sheet.itemClassName} 配置表");
+                scriptBuilder.AppendLine($"        Dictionary<int, {sheet.itemClassName}> {sheet.itemClassName.ToLower()}s = new Dictionary<int, {sheet.itemClassName}>();");
+            }
+
+            scriptBuilder.AppendLine();
+            scriptBuilder.AppendLine("        string filePath = AppConfig.DatabasePath;");
+            foreach (var sheet in sheets)
+            {
+                scriptBuilder.AppendLine($"        string {sheet.itemClassName.ToLower()}_FileName = \"{sheet.itemClassName}.json\";");
+            }
+            scriptBuilder.AppendLine();
+            scriptBuilder.AppendLine("        public IEnumerator Init()");
+            scriptBuilder.AppendLine("        {");
+            scriptBuilder.AppendLine("            initProgress = 0;");
+            scriptBuilder.AppendLine("            InitConfig();");
+            scriptBuilder.AppendLine("            yield return null;");
+            scriptBuilder.AppendLine("            initProgress = 100;");
+            scriptBuilder.AppendLine("            IsInited = true;");
+            scriptBuilder.AppendLine("            Log.Debug(\"JsonDatabaseModule 初始化完成\");");
+            scriptBuilder.AppendLine("        }");
+            scriptBuilder.AppendLine();
+            scriptBuilder.AppendLine("        public void ClearData()");
+            scriptBuilder.AppendLine("        {");
+            foreach (var sheet in sheets)
+            {
+                scriptBuilder.AppendLine($"            {sheet.itemClassName.ToLower()}s.Clear();");
+            }
+            scriptBuilder.AppendLine("            Log.Debug(\"JsonDatabaseModule 清除数据\");");
+            scriptBuilder.AppendLine("        }");
+            scriptBuilder.AppendLine();
+            scriptBuilder.AppendLine("        void InitConfig()");
+            scriptBuilder.AppendLine("        {");
+            foreach (var sheet in sheets)
+            {
+                scriptBuilder.AppendLine($"            Load{sheet.itemClassName}();");
+            }
+            scriptBuilder.AppendLine("        }");
+            scriptBuilder.AppendLine();
+            scriptBuilder.AppendLine("        public void UpdateTime(float elapseSeconds, float realElapseSeconds)");
+            scriptBuilder.AppendLine("        {");
+            scriptBuilder.AppendLine("        }");
+            scriptBuilder.AppendLine();
+            scriptBuilder.AppendLine("        #region 加载数据");
+            foreach (var sheet in sheets)
+            {
+                scriptBuilder.AppendLine($"        public void Load{sheet.itemClassName}()");
+                scriptBuilder.AppendLine("        {");
+                scriptBuilder.AppendLine($"            List<{sheet.itemClassName}> configs = new List<{sheet.itemClassName}>();");
+                scriptBuilder.AppendLine("            string fullPath;");
+                scriptBuilder.AppendLine($"            bool exists = PathUtils.GetFullPath(filePath + {sheet.itemClassName.ToLower()}_FileName, out fullPath);");
+                scriptBuilder.AppendLine("            if (exists)");
+                scriptBuilder.AppendLine("            {");
+                scriptBuilder.AppendLine($"                string content = PathUtils.ReadFile(filePath, {sheet.itemClassName.ToLower()}_FileName);");
+                scriptBuilder.AppendLine($"                configs = JsonMapper.ToObject<List<{sheet.itemClassName}>>(content);");
+                scriptBuilder.AppendLine("            }");
+                scriptBuilder.AppendLine("            else");
+                scriptBuilder.AppendLine("            {");
+                scriptBuilder.AppendLine($"                TextAsset json = ResourcesModule.Instance.Load<TextAsset>(\"AutoDatabase/{sheet.itemClassName}\");");
+                scriptBuilder.AppendLine($"                PathUtils.WriteFile(json.text, filePath, {sheet.itemClassName.ToLower()}_FileName);");
+                scriptBuilder.AppendLine($"                configs = JsonMapper.ToObject<List<{sheet.itemClassName}>>(json.text);");
+                scriptBuilder.AppendLine("            }");
+                scriptBuilder.AppendLine("            foreach (var tempData in configs)");
+                scriptBuilder.AppendLine("            {");
+                scriptBuilder.AppendLine($"                {sheet.itemClassName.ToLower()}s.Add(tempData.Id, tempData);");
+                scriptBuilder.AppendLine("            }");
+                scriptBuilder.AppendLine("        }");
+                scriptBuilder.AppendLine();
+            }
+            scriptBuilder.AppendLine("        #endregion");
+            scriptBuilder.AppendLine();
+            scriptBuilder.AppendLine("        #region 获取数据");
+            foreach (var sheet in sheets)
+            {
+                scriptBuilder.AppendLine($"        public Dictionary<int, {sheet.itemClassName}> Get{sheet.itemClassName}()");
+                scriptBuilder.AppendLine("        {");
+                scriptBuilder.AppendLine($"            return {sheet.itemClassName.ToLower()}s;");
+                scriptBuilder.AppendLine("        }");
+                scriptBuilder.AppendLine();
+            }
+            scriptBuilder.AppendLine("        #endregion");
+            scriptBuilder.AppendLine();
+            scriptBuilder.AppendLine("        #region 保存");
+            foreach (var sheet in sheets)
+            {
+                scriptBuilder.AppendLine($"        public void Save{sheet.itemClassName}()");
+                scriptBuilder.AppendLine("        {");
+                scriptBuilder.AppendLine($"            List<{sheet.itemClassName}> tempList = {sheet.itemClassName.ToLower()}s.Values.ToList();");
+                scriptBuilder.AppendLine($"            string jsonStr = JsonMapper.ToJson(tempList, true);");
+                scriptBuilder.AppendLine($"            PathUtils.WriteFile(jsonStr, filePath, {sheet.itemClassName.ToLower()}_FileName);");
+                scriptBuilder.AppendLine("        }");
+                scriptBuilder.AppendLine();
+            }
+            scriptBuilder.AppendLine("        #endregion");
+            scriptBuilder.AppendLine();
+            scriptBuilder.AppendLine("        #region 通过索引查询数据");
+            foreach (var sheet in sheets)
+            {
+                scriptBuilder.AppendLine($"        public {sheet.itemClassName} Get{sheet.itemClassName}ByNumber(int number)");
+                scriptBuilder.AppendLine("        {");
+                scriptBuilder.AppendLine($"            if ({sheet.itemClassName.ToLower()}s.TryGetValue(number, out var value))");
+                scriptBuilder.AppendLine("            {");
+                scriptBuilder.AppendLine("                return value;");
+                scriptBuilder.AppendLine("            }");
+                scriptBuilder.AppendLine("            return null;");
+                scriptBuilder.AppendLine("        }");
+                scriptBuilder.AppendLine();
+            }
+            scriptBuilder.AppendLine("        #endregion");
+            scriptBuilder.AppendLine("    }");
+            scriptBuilder.AppendLine("}");
+
+            File.WriteAllText(jsonMgrOutPutPath, scriptBuilder.ToString());
             AssetDatabase.Refresh();
         }
         #endregion

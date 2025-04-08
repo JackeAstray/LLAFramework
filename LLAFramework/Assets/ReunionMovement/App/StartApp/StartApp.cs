@@ -14,7 +14,7 @@ namespace GameLogic
 
             modules.Add(TerminalModule.Instance);
             modules.Add(ResourcesModule.Instance);
-            modules.Add(DatabaseModule.Instance);
+            modules.Add(JsonDatabaseModule.Instance);
             modules.Add(EventModule.Instance);
             modules.Add(LanguagesModule.Instance);
             modules.Add(SoundPoolModule.Instance);
