@@ -186,10 +186,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Scripting;
+using SQLite.Attributes;
 
 namespace GameLogic
 {
     [Serializable]
+    [UnityEngine.Scripting.Preserve]
     public class {_0_}
     {
         {_1_}
@@ -225,25 +227,43 @@ namespace GameLogic
             string toString_1 = "";
             string toString_2 = "";
 
-            string additional = ";";
+            // 附加
+            string additional1 = ";";
+            string additional2 = "{{ get; set; }}";
+
+
 
             for (int i = 0; i < fieldDatas.Count; i++)
             {
                 var typeName = GetFieldTypeString(fieldDatas[i].fieldType, fieldDatas[i].fieldTypeName);
 
-                string attribute = string.Format("        public {0} {1}{2}    //{3}", typeName, fieldDatas[i].fieldName, additional, fieldDatas[i].fieldNotes);
+                // 属性
+                string attribute = "";
+
+                if (fieldDatas[i].fieldName == "Id")
+                {
+                    attribute = string.Format("       [PrimaryKey][AutoIncrement] public {0} {1}{2}    //{3}", typeName, fieldDatas[i].fieldName, additional2, fieldDatas[i].fieldNotes);
+                }
+                else
+                {
+                    attribute = string.Format("        public {0} {1}{2}    //{3}", typeName, fieldDatas[i].fieldName, additional1, fieldDatas[i].fieldNotes);
+                }
+
                 privateType.AppendFormat(attribute);
                 privateType.AppendLine();
 
                 int value = i + 1;
                 toString_1 += fieldDatas[i].fieldName + "={" + value + "}";
                 if (i < fieldDatas.Count - 1)
+                {
                     toString_1 += ",";
+                }
 
                 toString_2 += "this." + fieldDatas[i].fieldName;
                 if (i < fieldDatas.Count - 1)
+                {
                     toString_2 += ",\r\n                ";
-
+                }
             }
 
             string str = template;

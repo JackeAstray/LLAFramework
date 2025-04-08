@@ -1,17 +1,20 @@
-//此脚本为工具生成，请勿手动创建 2025-04-07 16:35:33.797 <ExcelTo>
+//此脚本为工具生成，请勿手动创建 2025-04-08 11:29:56.111 <ExcelTo>
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Scripting;
+using SQLite.Attributes;
 
 namespace GameLogic
 {
     [Serializable]
+    [UnityEngine.Scripting.Preserve]
     public class QuestionConfig
     {
         
-        public int Id;    //索引
+       [PrimaryKey][AutoIncrement] public int Id{ get; set; }    //索引
+        public int Number;    //编号
         public int Type;    //类型
         public string Title;    //题目
         public string CorrectAnswer;    //正确答案
@@ -37,8 +40,9 @@ namespace GameLogic
         public override string ToString()
         {
             return string.Format(
-                "[Id={1},Type={2},Title={3},CorrectAnswer={4},Score={5},A={6},B={7},C={8},D={9},E={10},F={11},G={12},H={13},TitlePicture={14},APicture={15},BPicture={16},CPicture={17},DPicture={18},EPicture={19},FPicture={20},GPicture={21},HPicture={22}]",
+                "[Id={1},Number={2},Type={3},Title={4},CorrectAnswer={5},Score={6},A={7},B={8},C={9},D={10},E={11},F={12},G={13},H={14},TitlePicture={15},APicture={16},BPicture={17},CPicture={18},DPicture={19},EPicture={20},FPicture={21},GPicture={22},HPicture={23}]",
                 this.Id,
+                this.Number,
                 this.Type,
                 this.Title,
                 this.CorrectAnswer,

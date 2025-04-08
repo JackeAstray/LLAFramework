@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: QuestionConfigContainer
   m_EditorClassIdentifier: 
   configs:
-  - Id: 100001
+  - Number: 100001
     Type: 1
     Title: "\u6D4B\u8BD51"
     CorrectAnswer: A
@@ -35,7 +35,7 @@ MonoBehaviour:
     FPicture: Sprites/Common/button_square_01
     GPicture: Sprites/Common/button_square_01
     HPicture: Sprites/Common/button_square_01
-  - Id: 100002
+  - Number: 100002
     Type: 2
     Title: "\u6D4B\u8BD52"
     CorrectAnswer: BC
