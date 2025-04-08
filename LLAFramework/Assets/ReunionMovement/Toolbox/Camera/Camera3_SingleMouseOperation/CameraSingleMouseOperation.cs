@@ -8,22 +8,35 @@ using UnityEngine.InputSystem;
 
 namespace GameLogic
 {
+    /// <summary>
+    /// 相机单鼠标操作
+    /// </summary>
     public class CameraSingleMouseOperation : MonoBehaviour
     {
-        //目标对象
+        // 目标对象
         public Transform targetPos;
 
         #region 摄像机移动
-        //摄像机
+        // 摄像机
         public Camera csmoCamera { get; private set; }
-        //移动速度
+        // 移动速度
         public float csmoCameraSpeed = 50;
-
+        // 如果不为空，摄像机将限制在该盒子碰撞器内
         public BoxCollider restrictedZone;
+        // 鼠标
+        private Mouse mouse;
+        // 射线管理器
+        private RaycastBase raycastBase;
+        // 是否检查鼠标是否在UI上
+        public bool checkPointerOverUI = true;
+
+        public LayerMask layerMask;
         #endregion
 
+        [Space(10)]
+
         #region 摄像机旋转/远近
-        //初始角度
+        // 初始角度
         public float rotX = 0;
         public float rotY = 0;
 
@@ -42,7 +55,20 @@ namespace GameLogic
         private Vector3 relativePosition = Vector3.zero;    //相对位置
         #endregion
 
-        Mouse mouse;
+        [Space(10)]
+
+        #region 旋转控制
+        // 旋转控制变量
+        public bool isRotating = false;
+        public RotationDirection rotationDirection = RotationDirection.None;
+        public float autoRotateSpeed = 15f;                 //自动转速
+        public enum RotationDirection
+        {
+            None,
+            Left,
+            Right
+        }
+        #endregion
 
         void Start()
         {
@@ -52,57 +78,107 @@ namespace GameLogic
             {
                 csmoCamera = transform.Find("Camera").GetComponent<Camera>();
             }
+
+            raycastBase = new RaycastBase(layerMask, csmoCamera);
         }
 
         void Update()
         {
-            if (mouse != null)
+            if (mouse != null && checkPointerOverUI && IsPointerOverUI())
             {
-                if (IsPointerOverUI())
-                {
-                    return;
-                }
+                return;
+            }
 
-                //控制摄像机父对象移动
-                if (mouse.rightButton.isPressed)
-                {
-                    float horz = mouse.delta.x.ReadValue();
-                    float vert = mouse.delta.y.ReadValue();
-                    Vector3 right = csmoCamera.transform.right;
-                    Vector3 up = csmoCamera.transform.up;
-                    Vector3 moveDirection = (right * -horz) + (up * -vert);
-                    moveDirection *= (csmoCameraSpeed * 0.001f);
-                    targetPos.position += moveDirection;
+            HandleCameraMovement();
+            HandleCameraRotation();
+            HandleCameraZoom();
+            HandleAutoRotation();
+            HandleMouseClick();
+            UpdatePosition();
+        }
 
-                    if (restrictedZone != null)
+        /// <summary>
+        /// 处理摄像机移动
+        /// </summary>
+        private void HandleCameraMovement()
+        {
+            if (mouse.rightButton.isPressed)
+            {
+                float horz = mouse.delta.x.ReadValue();
+                float vert = mouse.delta.y.ReadValue();
+                Vector3 moveDirection = (csmoCamera.transform.right * -horz) + (csmoCamera.transform.up * -vert);
+                moveDirection *= (csmoCameraSpeed * 0.001f);
+                targetPos.position += moveDirection;
+
+                if (restrictedZone != null)
+                {
+                    Vector3 newPosition = targetPos.position;
+                    if (restrictedZone.bounds.Contains(newPosition))
                     {
-                        Vector3 newPosition = targetPos.position;
-                        // 检查新的位置是否在盒子碰撞器的边界内
-                        if (restrictedZone.bounds.Contains(newPosition))
-                        {
-                            // 如果在边界内，更新位置
-                            targetPos.position = newPosition;
-                        }
-                        else
-                        {
-                            // 如果在边界外，将位置调整到边界上
-                            targetPos.position = restrictedZone.bounds.ClosestPoint(newPosition);
-                        }
+                        targetPos.position = newPosition;
+                    }
+                    else
+                    {
+                        targetPos.position = restrictedZone.bounds.ClosestPoint(newPosition);
                     }
                 }
+            }
+        }
 
-                //鼠标左键拖拽
-                if (mouse.leftButton.isPressed)
+        /// <summary>
+        /// 处理摄像机旋转
+        /// </summary>
+        private void HandleCameraRotation()
+        {
+            if (mouse.leftButton.isPressed)
+            {
+                float horz = mouse.delta.x.ReadValue();
+                float vert = mouse.delta.y.ReadValue();
+                OrbitCamera(horz, -vert);
+            }
+        }
+
+        /// <summary>
+        /// 处理自动旋转
+        /// </summary>
+        private void HandleAutoRotation()
+        {
+            if (isRotating && !mouse.leftButton.isPressed && !mouse.rightButton.isPressed)
+            {
+                float rotationStep = autoRotateSpeed * Time.deltaTime;
+                if (rotationDirection == RotationDirection.Left)
                 {
-                    float horz = mouse.delta.x.ReadValue();
-                    float vert = mouse.delta.y.ReadValue();
-                    OrbitCamera(horz, -vert);
+                    OrbitCamera(rotationStep, 0);
                 }
+                else if (rotationDirection == RotationDirection.Right)
+                {
+                    OrbitCamera(-rotationStep, 0);
+                }
+            }
+        }
 
-                //滚轮
-                SetZoom();
+        /// <summary>
+        /// 处理摄像机缩放
+        /// </summary>
+        private void HandleCameraZoom()
+        {
+            float value = mouse.scroll.ReadValue().y;
+            float delta = value > 0 ? 1 : (value < 0 ? -1 : 0);
+            SetZoom(delta * -zoomValue);
+        }
 
-                UpdatePosition();
+        /// <summary>
+        /// 处理鼠标点击
+        /// </summary>
+        private void HandleMouseClick()
+        {
+            if (mouse.leftButton.wasPressedThisFrame)
+            {
+                Vector2 mousePosition = mouse.position.ReadValue();
+                if (raycastBase.CastRayFromScreenPoint(mousePosition, out RaycastHit hitInfo))
+                {
+                    Debug.Log("Hit: " + hitInfo.collider.name);
+                }
             }
         }
 
@@ -175,27 +251,6 @@ namespace GameLogic
 #else
             return EventSystem.current.IsPointerOverGameObject();
 #endif
-        }
-
-        public void SetZoom()
-        {
-            float value = mouse.scroll.ReadValue().y;
-            if (value > 0)
-            {
-                value = 1;
-            }
-            else if (value < 0)
-            {
-                value = -1;
-            }
-            else
-            {
-                value = 0;
-            }
-
-            float delta = value * -zoomValue;
-
-            SetZoom(delta);
         }
 
         /// <summary>

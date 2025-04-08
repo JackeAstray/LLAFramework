@@ -20,6 +20,11 @@ namespace GameLogic
             layerMask = 1 << LayerMask.NameToLayer(layerName);
             this.camera = camera;
         }
+        public RaycastBase(LayerMask layerMask, Camera camera)
+        {
+            this.layerMask = layerMask;
+            this.camera = camera;
+        }
 
         public bool CastRayFromScreenPoint(Vector2 screenPoint, out RaycastHit hitInfo)
         {
