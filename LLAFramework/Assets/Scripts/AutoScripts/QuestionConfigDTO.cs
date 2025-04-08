@@ -1,4 +1,4 @@
-//此脚本为工具生成，请勿手动创建 2025-04-08 15:46:40.591 <ExcelTo>
+//此脚本为工具生成，请勿手动创建 2025-04-08 17:12:01.322 <ExcelTo>
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -64,6 +64,74 @@ namespace GameLogic
                 this.GPicture,
                 this.HPicture
             );
+        }
+
+        /// <summary>
+        /// 将 DTO 转换为无 DTO 实例
+        /// </summary>
+        public QuestionConfig ToEntity()
+        {
+            return new QuestionConfig
+            {
+                Id            = this.Id,
+                Number        = this.Number,
+                Type          = this.Type,
+                Title         = this.Title,
+                CorrectAnswer = this.CorrectAnswer,
+                Score         = this.Score,
+                A             = this.A,
+                B             = this.B,
+                C             = this.C,
+                D             = this.D,
+                E             = this.E,
+                F             = this.F,
+                G             = this.G,
+                H             = this.H,
+                TitlePicture  = this.TitlePicture,
+                APicture      = this.APicture,
+                BPicture      = this.BPicture,
+                CPicture      = this.CPicture,
+                DPicture      = this.DPicture,
+                EPicture      = this.EPicture,
+                FPicture      = this.FPicture,
+                GPicture      = this.GPicture,
+                HPicture      = this.HPicture,
+
+            };
+        }
+
+        /// <summary>
+        /// 从无 DTO 实例转换为 DTO
+        /// </summary>
+        public static QuestionConfigDTO FromEntity(QuestionConfig entity)
+        {
+            return new QuestionConfigDTO
+            {
+                Id            = entity.Id,
+                Number        = entity.Number,
+                Type          = entity.Type,
+                Title         = entity.Title,
+                CorrectAnswer = entity.CorrectAnswer,
+                Score         = entity.Score,
+                A             = entity.A,
+                B             = entity.B,
+                C             = entity.C,
+                D             = entity.D,
+                E             = entity.E,
+                F             = entity.F,
+                G             = entity.G,
+                H             = entity.H,
+                TitlePicture  = entity.TitlePicture,
+                APicture      = entity.APicture,
+                BPicture      = entity.BPicture,
+                CPicture      = entity.CPicture,
+                DPicture      = entity.DPicture,
+                EPicture      = entity.EPicture,
+                FPicture      = entity.FPicture,
+                GPicture      = entity.GPicture,
+                HPicture      = entity.HPicture,
+
+            };
         }
     }
 }

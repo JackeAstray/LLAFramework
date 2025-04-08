@@ -246,7 +246,7 @@ namespace GameLogic
 
                 if (fieldDatas[i].fieldName == "Id")
                 {
-                    attribute = string.Format("       [PrimaryKey][AutoIncrement] public {0} {1}{2}    //{3}", typeName, fieldDatas[i].fieldName, additional, fieldDatas[i].fieldNotes);
+                    attribute = string.Format("        [PrimaryKey][AutoIncrement] public {0} {1}{2}    //{3}", typeName, fieldDatas[i].fieldName, additional, fieldDatas[i].fieldNotes);
                 }
                 else
                 {
@@ -306,6 +306,28 @@ namespace GameLogic
                 {_3_}
             );
         }
+
+        /// <summary>
+        /// 将 DTO 转换为无 DTO 实例
+        /// </summary>
+        public {_0_} ToEntity()
+        {
+            return new {_0_}
+            {
+                {_4_}
+            };
+        }
+
+        /// <summary>
+        /// 从无 DTO 实例转换为 DTO
+        /// </summary>
+        public static {_0_}DTO FromEntity({_0_} entity)
+        {
+            return new {_0_}DTO
+            {
+                {_5_}
+            };
+        }
     }
 }
 ";
@@ -328,23 +350,38 @@ namespace GameLogic
             StringBuilder privateType = new StringBuilder();
             privateType.AppendLine();
 
+            StringBuilder toEntityAssignments = new StringBuilder();
+            StringBuilder fromEntityAssignments = new StringBuilder();
+
             string toString_1 = "";
             string toString_2 = "";
 
             // 附加
             string additional = ";";
 
+            // 计算字段名的最大长度，用于对齐
+            int maxFieldNameLength = fieldDatas.Max(f => f.fieldName.Length);
+
             for (int i = 0; i < fieldDatas.Count; i++)
             {
                 var typeName = GetFieldTypeString(fieldDatas[i].fieldType, fieldDatas[i].fieldTypeName);
 
                 // 属性
-                string attribute = "";
-
-                attribute = string.Format("        public {0} {1}{2}    //{3}", typeName, fieldDatas[i].fieldName, additional, fieldDatas[i].fieldNotes);
-
+                string attribute = string.Format("        public {0} {1}{2}    //{3}", typeName, fieldDatas[i].fieldName, additional, fieldDatas[i].fieldNotes);
                 privateType.AppendFormat(attribute);
                 privateType.AppendLine();
+
+                string space = "                ";
+                if (i == 0)
+                {
+                    space = "";
+                }
+
+                // DTO -> Entity
+                toEntityAssignments.AppendLine($"{space}{fieldDatas[i].fieldName.PadRight(maxFieldNameLength)} = this.{fieldDatas[i].fieldName},");
+
+                // Entity -> DTO
+                fromEntityAssignments.AppendLine($"{space}{fieldDatas[i].fieldName.PadRight(maxFieldNameLength)} = entity.{fieldDatas[i].fieldName},");
 
                 int value = i + 1;
                 toString_1 += fieldDatas[i].fieldName + "={" + value + "}";
@@ -365,6 +402,8 @@ namespace GameLogic
             str = str.Replace("{_1_}", privateType.ToString());
             str = str.Replace("{_2_}", "\"[" + toString_1 + "]\"");
             str = str.Replace("{_3_}", toString_2);
+            str = str.Replace("{_4_}", toEntityAssignments.ToString().TrimEnd(','));
+            str = str.Replace("{_5_}", fromEntityAssignments.ToString().TrimEnd(','));
             str = str.Replace("{_CREATE_TIME_}", DateTime.UtcNow.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
             return str;
         }

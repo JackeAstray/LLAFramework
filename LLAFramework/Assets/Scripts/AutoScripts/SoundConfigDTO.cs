@@ -1,4 +1,4 @@
-//此脚本为工具生成，请勿手动创建 2025-04-08 15:46:40.597 <ExcelTo>
+//此脚本为工具生成，请勿手动创建 2025-04-08 17:12:01.328 <ExcelTo>
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ namespace GameLogic
     [Serializable]
     public class SoundConfigDTO
     {
-        
+
         public int Id;    //索引
         public int Number;    //编号
         public string Path;    //路径
@@ -30,6 +30,40 @@ namespace GameLogic
                 this.Type,
                 this.Detailed
             );
+        }
+
+        /// <summary>
+        /// 将 DTO 转换为无 DTO 实例
+        /// </summary>
+        public SoundConfig ToEntity()
+        {
+            return new SoundConfig
+            {
+                Id = this.Id,
+                Number = this.Number,
+                Path = this.Path,
+                Name = this.Name,
+                Type = this.Type,
+                Detailed = this.Detailed,
+
+            };
+        }
+
+        /// <summary>
+        /// 从无 DTO 实例转换为 DTO
+        /// </summary>
+        public static SoundConfigDTO FromEntity(SoundConfig entity)
+        {
+            return new SoundConfigDTO
+            {
+                Id = entity.Id,
+                Number = entity.Number,
+                Path = entity.Path,
+                Name = entity.Name,
+                Type = entity.Type,
+                Detailed = entity.Detailed,
+
+            };
         }
     }
 }

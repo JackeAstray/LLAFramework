@@ -1,4 +1,4 @@
-//此脚本为工具生成，请勿手动创建 2025-04-08 15:46:40.591 <ExcelTo>
+//此脚本为工具生成，请勿手动创建 2025-04-08 17:12:01.322 <ExcelTo>
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ namespace GameLogic
     public class QuestionConfig
     {
         
-       [PrimaryKey][AutoIncrement] public int Id{ get; set; }    //索引
+        [PrimaryKey][AutoIncrement] public int Id{ get; set; }    //索引
         public int Number{ get; set; }    //编号
         public int Type{ get; set; }    //类型
         public string Title{ get; set; }    //题目

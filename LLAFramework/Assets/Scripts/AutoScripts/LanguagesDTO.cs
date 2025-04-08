@@ -1,4 +1,4 @@
-//此脚本为工具生成，请勿手动创建 2025-04-08 15:46:40.584 <ExcelTo>
+//此脚本为工具生成，请勿手动创建 2025-04-08 17:12:01.315 <ExcelTo>
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -42,6 +42,52 @@ namespace GameLogic
                 this.JP,
                 this.KR
             );
+        }
+
+        /// <summary>
+        /// 将 DTO 转换为无 DTO 实例
+        /// </summary>
+        public Languages ToEntity()
+        {
+            return new Languages
+            {
+                Id     = this.Id,
+                Number = this.Number,
+                ZH     = this.ZH,
+                EN     = this.EN,
+                RU     = this.RU,
+                FR     = this.FR,
+                DE     = this.DE,
+                ES     = this.ES,
+                IT     = this.IT,
+                PT     = this.PT,
+                JP     = this.JP,
+                KR     = this.KR,
+
+            };
+        }
+
+        /// <summary>
+        /// 从无 DTO 实例转换为 DTO
+        /// </summary>
+        public static LanguagesDTO FromEntity(Languages entity)
+        {
+            return new LanguagesDTO
+            {
+                Id     = entity.Id,
+                Number = entity.Number,
+                ZH     = entity.ZH,
+                EN     = entity.EN,
+                RU     = entity.RU,
+                FR     = entity.FR,
+                DE     = entity.DE,
+                ES     = entity.ES,
+                IT     = entity.IT,
+                PT     = entity.PT,
+                JP     = entity.JP,
+                KR     = entity.KR,
+
+            };
         }
     }
 }
