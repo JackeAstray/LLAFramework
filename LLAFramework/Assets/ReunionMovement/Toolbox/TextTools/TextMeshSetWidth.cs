@@ -4,31 +4,34 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TextMeshSetWidth : MonoBehaviour
+namespace GameLogic
 {
-    private TextMeshProUGUI text;
-    private RectTransform rect;
-    private Vector2 previousSize;
-
-    void Start()
+    public class TextMeshSetWidth : MonoBehaviour
     {
-        text = GetComponent<TextMeshProUGUI>();
-        rect = GetComponent<RectTransform>();
-        previousSize = rect.rect.size;
-    }
+        private TextMeshProUGUI text;
+        private RectTransform rect;
+        private Vector2 previousSize;
 
-    void Update()
-    {
-        Vector2 currentSize = rect.rect.size;
-        if (currentSize != previousSize)
+        void Start()
         {
-            SetSize();
-            previousSize = currentSize;
+            text = GetComponent<TextMeshProUGUI>();
+            rect = GetComponent<RectTransform>();
+            previousSize = rect.rect.size;
         }
-    }
 
-    public void SetSize()
-    {
-        rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, text.preferredHeight);
+        void Update()
+        {
+            Vector2 currentSize = rect.rect.size;
+            if (currentSize != previousSize)
+            {
+                SetSize();
+                previousSize = currentSize;
+            }
+        }
+
+        public void SetSize()
+        {
+            rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, text.preferredHeight);
+        }
     }
 }
