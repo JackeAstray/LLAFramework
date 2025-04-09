@@ -16,7 +16,7 @@ namespace GameLogic.EditorTools
     {
         static string scriptOutPutPath = "Assets/ReunionMovement/GenerateScript/App/UI/UIPlane/";// 脚本输出路径
         static string prefabsOutPutPath = "Assets/Resources/Prefabs/UIs/";// 场景导出UI路径
-        static string sceneOutPutPath = "Assets/Editor/Scenes/";// 场景导出UI路径
+        static string sceneOutPutPath = "Assets/ReunionMovement/Editor/Scenes/";// 场景导出UI路径
 
         string className = "ClassName"; // 类名
         string uiResolution = "1920,1080";
