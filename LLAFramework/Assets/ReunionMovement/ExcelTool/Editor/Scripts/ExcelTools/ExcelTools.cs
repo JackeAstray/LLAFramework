@@ -522,6 +522,11 @@ namespace GameLogic.Sqlite
         }
 
         {_METHODS_}
+        //  销毁
+        public void OnDestroy()
+        {
+            Close();
+        }
 
         // 关闭数据库连接
         public void Close()

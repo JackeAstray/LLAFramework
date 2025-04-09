@@ -131,21 +131,15 @@ namespace GameLogic.Sqlite
             InitializeConnection(filepath, password);
         }
 
+        /// <summary>
+        /// 关闭连接
+        /// </summary>
         public void Close()
         {
             connection.Close();
         }
 
-        #region 公用方法
-        /// <summary>
-        /// 删除表
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        public void DropTable<T>()
-        {
-            connection.DropTable<T>();
-        }
-
+        #region 增删改查
         /// <summary>
         /// 创建表
         /// </summary>
@@ -153,6 +147,15 @@ namespace GameLogic.Sqlite
         public void CreateTable<T>()
         {
             connection.CreateTable<T>();
+        }
+
+        /// <summary>
+        /// 删除表
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        public void DropTable<T>()
+        {
+            connection.DropTable<T>();
         }
 
         /// <summary>
@@ -164,6 +167,7 @@ namespace GameLogic.Sqlite
         {
             connection.Insert(obj);
         }
+
         /// <summary>
         /// 批量插入数据
         /// </summary>
@@ -173,24 +177,7 @@ namespace GameLogic.Sqlite
         {
             connection.InsertAll(objs);
         }
-        /// <summary>
-        /// 更新数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="obj"></param>
-        public void Update<T>(T obj)
-        {
-            connection.Update(obj);
-        }
-        /// <summary>
-        /// 批量更新数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="objs"></param>
-        public void UpdateAll<T>(IEnumerable<T> objs)
-        {
-            connection.UpdateAll(objs);
-        }
+
         /// <summary>
         /// 删除数据
         /// </summary>
@@ -200,6 +187,7 @@ namespace GameLogic.Sqlite
         {
             connection.Delete(obj);
         }
+
         /// <summary>
         /// 删除所有数据
         /// </summary>
@@ -207,6 +195,26 @@ namespace GameLogic.Sqlite
         public void DeleteAll<T>()
         {
             connection.DeleteAll<T>();
+        }
+
+        /// <summary>
+        /// 更新数据
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        public void Update<T>(T obj)
+        {
+            connection.Update(obj);
+        }
+
+        /// <summary>
+        /// 批量更新数据
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="objs"></param>
+        public void UpdateAll<T>(IEnumerable<T> objs)
+        {
+            connection.UpdateAll(objs);
         }
 
         /// <summary>
@@ -250,6 +258,7 @@ namespace GameLogic.Sqlite
         {
             connection.Execute(query);
         }
+
         /// <summary>
         /// 执行 - 命令 - 带参数
         /// </summary>
