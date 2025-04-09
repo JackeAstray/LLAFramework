@@ -16,7 +16,7 @@ namespace GameLogic.Sqlite
             dataService = new DataService(dbName, password);
         }
 
-        
+
         // 查询所有GameConfig
         public IEnumerable<GameConfig> GetAllGameConfig()
         {
@@ -46,7 +46,7 @@ namespace GameLogic.Sqlite
         {
             dataService.Delete(obj);
         }
-        
+
 
         // 查询所有Languages
         public IEnumerable<Languages> GetAllLanguages()
@@ -77,7 +77,7 @@ namespace GameLogic.Sqlite
         {
             dataService.Delete(obj);
         }
-        
+
 
         // 查询所有QuestionConfig
         public IEnumerable<QuestionConfig> GetAllQuestionConfig()
@@ -108,7 +108,7 @@ namespace GameLogic.Sqlite
         {
             dataService.Delete(obj);
         }
-        
+
 
         // 查询所有SoundConfig
         public IEnumerable<SoundConfig> GetAllSoundConfig()
@@ -139,7 +139,7 @@ namespace GameLogic.Sqlite
         {
             dataService.Delete(obj);
         }
-        
+
 
         //  销毁
         public void OnDestroy()

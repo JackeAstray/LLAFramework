@@ -21,7 +21,7 @@ namespace GameLogic.EditorTools
     public class ExcelTools
     {
         static readonly string toDir = "Assets/ReunionMovement/ExcelTool/Editor/Resources/ExcelTools";  // 源文件路径
-        static readonly string scriptOutPutPath = "Assets/Scripts/AutoScripts/";             // 脚本输出路径
+        static readonly string scriptOutPutPath = "Assets/ReunionMovement/GenerateScript/AutoScripts/";             // 脚本输出路径
         static readonly string dataOutPutPath = "Assets/Resources/AutoDatabase/";            // 数据表输出路径
         static readonly string scriptableOutPutPath = "Assets/Resources/ScriptableObjects/"; // 脚本对象输出路径
         static readonly string jsonMgrOutPutPath = "Assets/ReunionMovement/App/Module/DatabaseModule/JsonDatabaseModule.cs"; // 脚本对象输出路径

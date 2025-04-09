@@ -15,6 +15,15 @@ namespace GameLogic
     {
         static System.Random random = new System.Random(Guid.NewGuid().GetHashCode());
 
+        //#region 属性
+        //// 哈希查找
+        //public static HashSearch hashSearch { get; } = new HashSearch();
+        //// 快速查找
+        //public static QuickSearch quickSearch { get; } = new QuickSearch();
+        //// 二分查找
+        //public static BinarySearch binarySearch { get; } = new BinarySearch();
+        //#endregion
+
         #region 判断
         /// <summary>
         /// 确定一个整数的符号
@@ -79,6 +88,7 @@ namespace GameLogic
         {
             return Convert.ToBoolean(value & 0x1);
         }
+
         /// <summary>
         /// 数组值比较
         /// </summary>
@@ -234,6 +244,7 @@ namespace GameLogic
             }
             return a;
         }
+
         /// <summary>
         /// 计算两个向量之间的角度 3D
         /// </summary>
@@ -274,11 +285,6 @@ namespace GameLogic
         /// <returns></returns>
         public static Vector3 GetBetweenPoint1(Vector3 start, Vector3 end, float percent)
         {
-            // old
-            // Vector3 normal = (end - start).normalized;
-            // float distance = Vector3.Distance(start, end);
-            // return normal * (distance * percent) + start;
-            // new
             return Vector3.Lerp(start, end, percent);
         }
 
@@ -333,8 +339,7 @@ namespace GameLogic
         /// </summary>
         public static double NormalDistributionProbability(double x, double miu, double sigma)
         {
-            return 1.0 / (x * Math.Sqrt(2 * Math.PI) * sigma) *
-                   Math.Exp(-1 * (Math.Log(x) - miu) * (Math.Log(x) - miu) / (2 * sigma * sigma));
+            return 1.0 / (x * Math.Sqrt(2 * Math.PI) * sigma) * Math.Exp(-1 * (Math.Log(x) - miu) * (Math.Log(x) - miu) / (2 * sigma * sigma));
         }
 
         /// <summary>
@@ -364,11 +369,38 @@ namespace GameLogic
             return random.Next(0, 2) * 2 - 1;
         }
 
+        #region 泛型二分查找
+
+        // 二分查找使用示例
+        // 示例数据：升序数组
+        //List<int> sortedList = new List<int> { 1, 3, 5, 7, 9, 11, 13, 15 };
+
+        //// 目标值
+        //int target = 7;
+
+        //// 使用 BinarySearch 查找目标值的索引
+        //int index = Algorithm.TryFind(sortedList, target, x => x);
+
+        //// 输出结果
+        //if (index != -1)
+        //{
+        //    Debug.Log($"找到目标值 {target}，索引为 {index}");
+        //}
+        //else
+        //{
+        //    Debug.Log($"未找到目标值 {target}");
+        //}
+
         /// <summary>
         /// 泛型二分查找，需要传入升序数组
         /// </summary>
+        /// <typeparam name="T">键的类型</typeparam>
+        /// <typeparam name="K">值的类型</typeparam>
+        /// <param name="array">数组</param>
+        /// <param name="target">目标</param>
+        /// <param name="keySelector">键选择器</param>
         /// <returns>返回对象在数组中的序号，若不存在，则返回-1</returns>
-        public static int BinarySearch<T, K>(IList<T> array, K target, Func<T, K> handler)
+        public static int BinarySearch_TryFind<T, K>(IList<T> array, K target, Func<T, K> keySelector)
             where K : IComparable<K>
         {
             int first = 0;
@@ -376,16 +408,83 @@ namespace GameLogic
             while (first <= last)
             {
                 int mid = first + (last - first) / 2;
-                if (handler(array[mid]).CompareTo(target) > 0)
+                if (keySelector(array[mid]).CompareTo(target) > 0)
+                {
                     last = mid - 1;
-                else if (handler(array[mid]).CompareTo(target) < 0)
+                }
+                else if (keySelector(array[mid]).CompareTo(target) < 0)
+                {
                     first = mid + 1;
+                }
                 else
+                {
                     return mid;
+                }
             }
 
             return -1;
         }
+        #endregion
+
+        #region 泛型查找 （支持哈希查找和快速查找）
+        /// <summary>
+        /// 构建字典（支持哈希查找和快速查找）
+        /// </summary>
+        /// <typeparam name="TKey">键的类型</typeparam>
+        /// <typeparam name="TValue">值的类型</typeparam>
+        /// <param name="source">源数据集合</param>
+        /// <param name="keySelector">键选择器</param>
+        /// <returns>构建的字典</returns>
+        public static Dictionary<TKey, TValue> BuildDictionary<TKey, TValue>(
+            IEnumerable<TValue> source,
+            Func<TValue, TKey> keySelector)
+        {
+            if (source == null)
+            {
+                Log.Error("BuildDictionary() source is null");
+                return null;
+            }
+
+            if (keySelector == null)
+            {
+                Log.Error("BuildDictionary() keySelector is null");
+                return null;
+            }
+
+            var dictionary = new Dictionary<TKey, TValue>();
+            foreach (var item in source)
+            {
+                var key = keySelector(item);
+                if (!dictionary.ContainsKey(key))
+                {
+                    dictionary[key] = item;
+                }
+            }
+            return dictionary;
+        }
+
+        /// <summary>
+        /// 在字典中查找值
+        /// </summary>
+        /// <typeparam name="TKey">键的类型</typeparam>
+        /// <typeparam name="TValue">值的类型</typeparam>
+        /// <param name="dictionary">字典</param>
+        /// <param name="key">要查找的键</param>
+        /// <param name="value">查找到的值</param>
+        /// <returns>是否找到</returns>
+        public static bool TryFindInDictionary<TKey, TValue>(
+            Dictionary<TKey, TValue> dictionary,
+            TKey key,
+            out TValue value)
+        {
+            if (dictionary == null)
+            {
+                throw new ArgumentNullException(nameof(dictionary), "字典不能为空");
+            }
+
+            return dictionary.TryGetValue(key, out value);
+        }
+        #endregion
 
         /// <summary>
         /// 将一个int数组转换为顺序的整数;
@@ -472,19 +571,39 @@ namespace GameLogic
         /// <summary>
         /// 限制一个向量在最大值与最小值之间
         /// </summary>
-        public static Vector3 Clamp(Vector3 value, Vector3 min, Vector3 max)
+        /// <typeparam name="T">向量类型（Vector2 或 Vector3）</typeparam>
+        /// <param name="value">输入向量</param>
+        /// <param name="min">最小值</param>
+        /// <param name="max">最大值</param>
+        /// <returns>限制后的向量</returns>
+        public static T Clamp<T>(T value, T min, T max) where T : struct
         {
-            value.x = Mathf.Clamp(value.x, min.x, max.x);
-            value.y = Mathf.Clamp(value.y, min.y, max.y);
-            value.z = Mathf.Clamp(value.z, min.z, max.z);
-            return value;
-        }
-
-        public static Vector2 Clamp(Vector2 value, Vector2 min, Vector2 max)
-        {
-            value.x = Mathf.Clamp(value.x, min.x, max.x);
-            value.y = Mathf.Clamp(value.y, min.y, max.y);
-            return value;
+            if (typeof(T) == typeof(Vector2))
+            {
+                var v = (Vector2)(object)value;
+                var vMin = (Vector2)(object)min;
+                var vMax = (Vector2)(object)max;
+                return (T)(object)new Vector2(
+                    Mathf.Clamp(v.x, vMin.x, vMax.x),
+                    Mathf.Clamp(v.y, vMin.y, vMax.y)
+                );
+            }
+            else if (typeof(T) == typeof(Vector3))
+            {
+                var v = (Vector3)(object)value;
+                var vMin = (Vector3)(object)min;
+                var vMax = (Vector3)(object)max;
+                return (T)(object)new Vector3(
+                    Mathf.Clamp(v.x, vMin.x, vMax.x),
+                    Mathf.Clamp(v.y, vMin.y, vMax.y),
+                    Mathf.Clamp(v.z, vMin.z, vMax.z)
+                );
+            }
+            else
+            {
+                Log.Error("Clamp: 不支持的类型");
+                return value;
+            }
         }
 
         /// <summary>
@@ -546,7 +665,8 @@ namespace GameLogic
             Vector3 result = Vector3.zero;
             switch (method)
             {
-                case 1://根据BoxCollider中心点和大小来获取随机位置的
+                //根据BoxCollider中心点和大小来获取随机位置的
+                case 1:
                     Vector3 center = collider.bounds.center;
                     Vector3 size = collider.bounds.size;
                     float x = UnityEngine.Random.Range(center.x - size.x / 2, center.x + size.x / 2);
@@ -554,7 +674,8 @@ namespace GameLogic
                     float z = UnityEngine.Random.Range(center.z - size.z / 2, center.z + size.z / 2);
                     result = new Vector3(x, y, z);
                     break;
-                case 2://根据BoxCollider边界获取随机位置的
+                //根据BoxCollider边界获取随机位置的
+                case 2:
                     result = new Vector3(UnityEngine.Random.Range(collider.bounds.min.x, collider.bounds.max.x),
                                          UnityEngine.Random.Range(collider.bounds.min.y, collider.bounds.max.y),
                                          UnityEngine.Random.Range(collider.bounds.min.z, collider.bounds.max.z));
@@ -872,11 +993,13 @@ namespace GameLogic
         /// </summary>
         /// <typeparam name="T">传入的对象类型</typeparam>
         /// <param name="array">传入的数组</param>
-        /// <param name="lhs">序号A</param>
-        /// <param name="rhs">序号B</param>
-        public static void Swap<T>(IList<T> array, int lhs, int rhs)
+        /// <param name="i">序号i</param>
+        /// <param name="j">序号j</param>
+        private static void Swap<T>(IList<T> array, int i, int j)
         {
-            (array[lhs], array[rhs]) = (array[rhs], array[lhs]);
+            T temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
         }
 
         /// <summary>
@@ -914,7 +1037,7 @@ namespace GameLogic
         }
 
         /// <summary>
-        /// 快速排序：降序
+        /// 快速排序
         /// </summary>
         /// <typeparam name="T">数组类型</typeparam>
         /// <typeparam name="K">比较类型</typeparam>
@@ -922,25 +1045,32 @@ namespace GameLogic
         /// <param name="handler">排序条件</param>
         /// <param name="start">起始位</param>
         /// <param name="end">结束位</param>
-        public static void SortByDescend<T, K>(IList<T> array, Func<T, K> handler, int start, int end)
-            where K : IComparable<K>
+        /// <param name="ascending">是否升序（默认升序）</param>
+        public static void QuickSort<T, K>(IList<T> array, Func<T, K> handler, int start, int end, bool ascending = true) where K : IComparable<K>
         {
-            if (array == null)
-                throw new ArgumentNullException("SortByDescend : array is null");
-            if (handler == null)
-                throw new ArgumentNullException("SortByDescend : handler is null");
-            if (start < 0 || end < 0 || start >= end)
+            if (array == null || handler == null || start < 0 || end < 0 || start >= end)
+                return;
+
+            // 切换到插入排序
+            if (end - start <= 10)
             {
+                InsertionSort(array, handler, start, end, ascending);
                 return;
             }
 
-            int pivort = start;
-            T pivortValue = array[pivort];
-            Swap(array, end, pivort);
+            // 三数取中法选择基准点
+            int mid = start + (end - start) / 2;
+            int pivot = MedianOfThree(array, handler, start, mid, end);
+
+            // 分区
+            T pivotValue = array[pivot];
+            Swap(array, pivot, end);
             int storeIndex = start;
-            for (int i = start; i <= end - 1; i++)
+
+            for (int i = start; i < end; i++)
             {
-                if (handler(array[i]).CompareTo(handler(pivortValue)) > 0)
+                int comparison = handler(array[i]).CompareTo(handler(pivotValue));
+                if ((ascending && comparison < 0) || (!ascending && comparison > 0))
                 {
                     Swap(array, i, storeIndex);
                     storeIndex++;
@@ -948,132 +1078,92 @@ namespace GameLogic
             }
 
             Swap(array, storeIndex, end);
-            SortByDescend(array, handler, start, storeIndex - 1);
-            SortByDescend(array, handler, storeIndex + 1, end);
+
+            // 递归排序
+            QuickSort(array, handler, start, storeIndex - 1, ascending);
+            QuickSort(array, handler, storeIndex + 1, end, ascending);
         }
 
         /// <summary>
-        /// 快速排序：升序
+        /// 插入排序
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="K"></typeparam>
+        /// <param name="array"></param>
+        /// <param name="handler"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <param name="ascending"></param>
+        private static void InsertionSort<T, K>(IList<T> array, Func<T, K> handler, int start, int end, bool ascending) where K : IComparable<K>
+        {
+            for (int i = start + 1; i <= end; i++)
+            {
+                T temp = array[i];
+                int j = i - 1;
+                while (j >= start && ((ascending && handler(array[j]).CompareTo(handler(temp)) > 0) || (!ascending && handler(array[j]).CompareTo(handler(temp)) < 0)))
+                {
+                    array[j + 1] = array[j];
+                    j--;
+                }
+                array[j + 1] = temp;
+            }
+        }
+
+        /// <summary>
+        /// 三数取中法选择基准点
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="K"></typeparam>
+        /// <param name="array"></param>
+        /// <param name="handler"></param>
+        /// <param name="start"></param>
+        /// <param name="mid"></param>
+        /// <param name="end"></param>
+        /// <returns></returns>
+        private static int MedianOfThree<T, K>(IList<T> array, Func<T, K> handler, int start, int mid, int end) where K : IComparable<K>
+        {
+            K a = handler(array[start]);
+            K b = handler(array[mid]);
+            K c = handler(array[end]);
+
+            if (a.CompareTo(b) > 0)
+                Swap(array, start, mid);
+            if (a.CompareTo(c) > 0)
+                Swap(array, start, end);
+            if (b.CompareTo(c) > 0)
+                Swap(array, mid, end);
+
+            return mid; // 返回中间值作为基准点
+        }
+
+        /// <summary>
+        /// LINQ排序
         /// </summary>
         /// <typeparam name="T">数组类型</typeparam>
         /// <typeparam name="K">比较类型</typeparam>
         /// <param name="array">需要排序的数组对象</param>
-        /// <param name="handler">排序条件</param>
-        /// <param name="start">起始位</param>
-        /// <param name="end">结束位</param>
-        public static void SortByAscend<T, K>(IList<T> array, Func<T, K> handler, int start, int end)
-            where K : IComparable<K>
+        /// <param name="keySelector">排序条件</param>
+        /// <param name="ascending">是否升序（默认升序）</param>
+        public static void Sort<T, K>(IList<T> array, Func<T, K> keySelector, bool ascending = true) where K : IComparable<K>
         {
             if (array == null)
-                throw new ArgumentNullException("QuickSortByAscend : array is null");
-            if (handler == null)
-                throw new ArgumentNullException("QuickSortByAscend : handler is null");
-            if (start < 0 || end < 0 || start >= end)
             {
+                Log.Error("Sort : array is null");
+                return;
+            }
+            if (keySelector == null)
+            {
+                Log.Error("Sort : keySelector is null");
                 return;
             }
 
-            int pivort = start;
-            T pivortValue = array[pivort];
-            Swap(array, end, pivort);
-            int storeIndex = start;
-            for (int i = start; i <= end - 1; i++)
-            {
-                if (handler(array[i]).CompareTo(handler(pivortValue)) < 0)
-                {
-                    Swap(array, i, storeIndex);
-                    storeIndex++;
-                }
-            }
+            var sorted = ascending
+                ? array.OrderBy(keySelector).ToList()
+                : array.OrderByDescending(keySelector).ToList();
 
-            Swap(array, storeIndex, end);
-            SortByAscend(array, handler, start, storeIndex - 1);
-            SortByAscend(array, handler, storeIndex + 1, end);
-        }
-
-        /// <summary>
-        /// 冒泡排序：升序
-        /// </summary>
-        /// <typeparam name="T">数组类型</typeparam>
-        /// <typeparam name="K">比较类型</typeparam>
-        /// <param name="array">需要排序的数组对象</param>
-        /// <param name="handler">排序条件</param>
-        public static void SortByAscend<T, K>(IList<T> array, Func<T, K> handler)
-            where K : IComparable<K>
-        {
             for (int i = 0; i < array.Count; i++)
             {
-                for (int j = 0; j < array.Count; j++)
-                {
-                    if (handler(array[i]).CompareTo(handler(array[j])) < 0)
-                    {
-                        (array[i], array[j]) = (array[j], array[i]);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// 冒泡排序：降序
-        /// </summary>
-        /// <typeparam name="T">数组类型</typeparam>
-        /// <typeparam name="K">比较类型</typeparam>
-        /// <param name="array">需要排序的数组对象</param>
-        /// <param name="handler">排序条件</param>
-        public static void SortByDescend<T, K>(IList<T> array, Func<T, K> handler)
-            where K : IComparable<K>
-        {
-            for (int i = 0; i < array.Count; i++)
-            {
-                for (int j = 0; j < array.Count; j++)
-                {
-                    if (handler(array[i]).CompareTo(handler(array[j])) > 0)
-                    {
-                        (array[i], array[j]) = (array[j], array[i]);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// 冒泡排序：升序
-        /// </summary>
-        /// <typeparam name="T">数组类型</typeparam>
-        /// <typeparam name="K">比较类型</typeparam>
-        /// <param name="array">需要排序的数组对象</param>
-        /// <param name="comparison">排序条件</param>
-        public static void SortByAscend<T, K>(IList<T> array, Comparison<T> comparison)
-        {
-            for (int i = 0; i < array.Count; i++)
-            {
-                for (int j = 0; j < array.Count; j++)
-                {
-                    if (comparison(array[i], array[j]) < 0)
-                    {
-                        (array[i], array[j]) = (array[j], array[i]);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// 冒泡排序：降序
-        /// </summary>
-        /// <typeparam name="T">数组类型</typeparam>
-        /// <typeparam name="K">比较类型</typeparam>
-        /// <param name="array">需要排序的数组对象</param>
-        /// <param name="comparison">排序条件</param>
-        public static void SortByDescend<T, K>(IList<T> array, Comparison<T> comparison)
-        {
-            for (int i = 0; i < array.Count; i++)
-            {
-                for (int j = 0; j < array.Count; j++)
-                {
-                    if (comparison(array[i], array[j]) > 0)
-                    {
-                        (array[i], array[j]) = (array[j], array[i]);
-                    }
-                }
+                array[i] = sorted[i];
             }
         }
 
@@ -1191,27 +1281,23 @@ namespace GameLogic
 
         #region 波浪数
         /// <summary>
-        /// 波浪随机数整数版
+        /// 获取波浪随机数
         /// </summary>
-        /// <param name="waveNumberStr"></param>
-        /// <returns></returns>
-        public static int GetWaveRandomNumberInt(string waveNumberStr)
+        /// <typeparam name="T">返回类型（int 或 float）</typeparam>
+        /// <param name="waveNumberStr">波浪数字符串</param>
+        /// <returns>随机数</returns>
+        public static T GetWaveRandomNumber<T>(string waveNumberStr) where T : struct
         {
             FromToNumber from = ParseMinMaxNumber(waveNumberStr);
-            return (int)UnityEngine.Random.Range(from.From, from.To + 1);
-        }
-
-        /// <summary>
-        /// 获取波浪随机数,   即填“1”或填“1~2”这样的字符串中返回一个数！
-        /// 如填"1"，直接返回1
-        /// 如果填"1~10"这样的，那么随机返回1~10中间一个数
-        /// </summary>
-        /// <param name="waveNumberStr"></param>
-        /// <returns></returns>
-        public static float GetWaveRandomNumber(string waveNumberStr)
-        {
-            FromToNumber from = ParseMinMaxNumber(waveNumberStr);
-            return UnityEngine.Random.Range(from.From, from.To);
+            if (typeof(T) == typeof(int))
+            {
+                return (T)(object)UnityEngine.Random.Range((int)from.From, (int)from.To + 1);
+            }
+            else if (typeof(T) == typeof(float))
+            {
+                return (T)(object)UnityEngine.Random.Range(from.From, from.To);
+            }
+            throw new ArgumentException("不支持的类型");
         }
 
         public struct FromToNumber

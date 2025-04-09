@@ -14,7 +14,7 @@ namespace GameLogic.EditorTools
 {
     public class CreateUIPlane : EditorWindow
     {
-        static string scriptOutPutPath = "Assets/Scripts/App/UI/UIPlane/";// 脚本输出路径
+        static string scriptOutPutPath = "Assets/ReunionMovement/GenerateScript/App/UI/UIPlane/";// 脚本输出路径
         static string prefabsOutPutPath = "Assets/Resources/Prefabs/UIs/";// 场景导出UI路径
         static string sceneOutPutPath = "Assets/Editor/Scenes/";// 场景导出UI路径
 
