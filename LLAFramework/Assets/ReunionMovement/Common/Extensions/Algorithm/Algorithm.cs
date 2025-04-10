@@ -15,15 +15,6 @@ namespace GameLogic
     {
         static System.Random random = new System.Random(Guid.NewGuid().GetHashCode());
 
-        //#region 属性
-        //// 哈希查找
-        //public static HashSearch hashSearch { get; } = new HashSearch();
-        //// 快速查找
-        //public static QuickSearch quickSearch { get; } = new QuickSearch();
-        //// 二分查找
-        //public static BinarySearch binarySearch { get; } = new BinarySearch();
-        //#endregion
-
         #region 判断
         /// <summary>
         /// 确定一个整数的符号
