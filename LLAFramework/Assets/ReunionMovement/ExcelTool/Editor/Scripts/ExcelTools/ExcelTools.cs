@@ -573,6 +573,12 @@ namespace GameLogic.Sqlite
         {{
             dataService.Delete(obj);
         }}
+
+        // 执行命令{dataName}
+        public void Execute{dataName}(string str)
+        {{
+            dataService.Execute(str);
+        }}
         ");
             }
 
