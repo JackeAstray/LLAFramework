@@ -15,6 +15,8 @@ namespace GameLogic
 
         // GameConfig 配置表
         Dictionary<int, GameConfig> gameconfigs = new Dictionary<int, GameConfig>();
+        // ItemConfig 配置表
+        Dictionary<int, ItemConfig> itemconfigs = new Dictionary<int, ItemConfig>();
         // Languages 配置表
         Dictionary<int, Languages> languagess = new Dictionary<int, Languages>();
         // QuestionConfig 配置表
@@ -24,6 +26,7 @@ namespace GameLogic
 
         string filePath = AppConfig.DatabasePath;
         string gameconfig_FileName = "GameConfig.json";
+        string itemconfig_FileName = "ItemConfig.json";
         string languages_FileName = "Languages.json";
         string questionconfig_FileName = "QuestionConfig.json";
         string soundconfig_FileName = "SoundConfig.json";
@@ -41,6 +44,7 @@ namespace GameLogic
         public void ClearData()
         {
             gameconfigs.Clear();
+            itemconfigs.Clear();
             languagess.Clear();
             questionconfigs.Clear();
             soundconfigs.Clear();
@@ -50,6 +54,7 @@ namespace GameLogic
         void InitConfig()
         {
             LoadGameConfig();
+            LoadItemConfig();
             LoadLanguages();
             LoadQuestionConfig();
             LoadSoundConfig();
@@ -79,6 +84,28 @@ namespace GameLogic
             foreach (var tempData in configs)
             {
                 gameconfigs.Add(tempData.Id, tempData);
+            }
+        }
+
+        public void LoadItemConfig()
+        {
+            List<ItemConfig> configs = new List<ItemConfig>();
+            string fullPath;
+            bool exists = PathUtils.GetFullPath(filePath + itemconfig_FileName, out fullPath);
+            if (exists)
+            {
+                string content = PathUtils.ReadFile(filePath, itemconfig_FileName);
+                configs = JsonMapper.ToObject<List<ItemConfig>>(content);
+            }
+            else
+            {
+                TextAsset json = ResourcesModule.Instance.Load<TextAsset>("AutoDatabase/ItemConfig");
+                PathUtils.WriteFile(json.text, filePath, itemconfig_FileName);
+                configs = JsonMapper.ToObject<List<ItemConfig>>(json.text);
+            }
+            foreach (var tempData in configs)
+            {
+                itemconfigs.Add(tempData.Id, tempData);
             }
         }
 
@@ -156,6 +183,11 @@ namespace GameLogic
             return gameconfigs;
         }
 
+        public Dictionary<int, ItemConfig> GetItemConfig()
+        {
+            return itemconfigs;
+        }
+
         public Dictionary<int, Languages> GetLanguages()
         {
             return languagess;
@@ -179,6 +211,13 @@ namespace GameLogic
             List<GameConfig> tempList = gameconfigs.Values.ToList();
             string jsonStr = JsonMapper.ToJson(tempList, true);
             PathUtils.WriteFile(jsonStr, filePath, gameconfig_FileName);
+        }
+
+        public void SaveItemConfig()
+        {
+            List<ItemConfig> tempList = itemconfigs.Values.ToList();
+            string jsonStr = JsonMapper.ToJson(tempList, true);
+            PathUtils.WriteFile(jsonStr, filePath, itemconfig_FileName);
         }
 
         public void SaveLanguages()
@@ -208,6 +247,15 @@ namespace GameLogic
         public GameConfig GetGameConfigByNumber(int number)
         {
             if (gameconfigs.TryGetValue(number, out var value))
+            {
+                return value;
+            }
+            return null;
+        }
+
+        public ItemConfig GetItemConfigByNumber(int number)
+        {
+            if (itemconfigs.TryGetValue(number, out var value))
             {
                 return value;
             }

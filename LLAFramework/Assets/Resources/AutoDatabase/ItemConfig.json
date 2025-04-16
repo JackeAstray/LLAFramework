@@ -1,0 +1,15 @@
+
+[
+    {
+        "Id" : 1,
+        "Number" : 100001,
+        "Type"   : 2,
+        "Gacha"  : true,
+        "Star"   : 3,
+        "Name"   : "4",
+        "Describe" : "5",
+        "Gold"     : 6.0,
+        "Crystal"  : 7.0,
+        "SkillPoint" : 8
+    }
+]

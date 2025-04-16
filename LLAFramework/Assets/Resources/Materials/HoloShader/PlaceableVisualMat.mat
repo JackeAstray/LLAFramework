@@ -1,0 +1,182 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: PlaceableVisualMat
+  m_Shader: {fileID: 4800000, guid: 29fed12d8547e354e90be987488147c1, type: 3}
+  m_ValidKeywords:
+  - _GLITCH_ON
+  - _GLOW_ON
+  m_InvalidKeywords:
+  - SCANLINES
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Colour_Mask_01:
+        m_Texture: {fileID: 2800000, guid: 21e1e09c0ad6bfc488ceb5122f262dea, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Colour_Mask_02:
+        m_Texture: {fileID: 2800000, guid: 1e4e9659725834246a55cb6ffa1cc7de, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Colour_Multiply:
+        m_Texture: {fileID: 2800000, guid: 9067817c10abdf447a27ef2eb7177267, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Emissive_01:
+        m_Texture: {fileID: 2800000, guid: 03db659f8a637b744943d87d1a6d7c5e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FlickerTex:
+        m_Texture: {fileID: 2800000, guid: a0775ddee39477446bcbcedd7ca1bd22, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Hair_Mask:
+        m_Texture: {fileID: 2800000, guid: 2be28d1396e389247a1f73fc6f3bbb8e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _HoloLines:
+        m_Texture: {fileID: 2800000, guid: 54b3339ded3457f42945715232faa0bc, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _HoloTexture:
+        m_Texture: {fileID: 2800000, guid: 4027f4164cce2ff41ab12607c23fba4a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Hologram_Texture:
+        m_Texture: {fileID: 2800000, guid: 95356b343e2224744965f268254dc212, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _PolygonSciFiPlanets_Texture_01_A:
+        m_Texture: {fileID: 2800000, guid: d44fa91dd607b2243aac51d78b7922dd, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TextureSample0:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _TextureSample1:
+        m_Texture: {fileID: 2800000, guid: 965f16c76090fef4b9826d9a5dfb91e3, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _skin_Mask:
+        m_Texture: {fileID: 2800000, guid: 485dd52fb681701489fc06c092d4ff7e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _texcoord:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _Alpha: 0.35
+    - _BUILTIN_AlphaClip: 1
+    - _BUILTIN_Blend: 0
+    - _BUILTIN_CullMode: 2
+    - _BUILTIN_DstBlend: 10
+    - _BUILTIN_QueueControl: 0
+    - _BUILTIN_QueueOffset: 1
+    - _BUILTIN_SrcBlend: 5
+    - _BUILTIN_Surface: 1
+    - _BUILTIN_ZTest: 4
+    - _BUILTIN_ZWrite: 0
+    - _BUILTIN_ZWriteControl: 0
+    - _Brightness: 1.25
+    - _BumpScale: 1
+    - _Cutoff: 0.5
+    - _DetailNormalMapScale: 1
+    - _DstBlend: 0
+    - _Emission_Power: 0.5
+    - _FlickerSpeed: 18.2
+    - _Fold: 63
+    - _GlitchIntensity: 0.35
+    - _GlitchSpeed: 8
+    - _GlossMapScale: 1
+    - _Glossiness: 0
+    - _GlossyReflections: 1
+    - _GlowSpeed: 10
+    - _GlowTiling: 0.06
+    - _Metallic: 0
+    - _Mode: 0
+    - _OcclusionStrength: 1
+    - _Opacity: 0.8
+    - _Parallax: 0.02
+    - _RimPower: 1.16
+    - _ScanSpeed: -1.84
+    - _ScanTiling: 8.23
+    - _ScrollSpeed: 0.1
+    - _Scroll_Speed: 0.1
+    - _Smoothnes: 0.1
+    - _SmoothnessTextureChannel: 0
+    - _Spec_Metallic: 0.5
+    - _Spec_Smoothness: 0.5
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _UVSec: 0
+    - _ZWrite: 1
+    - __dirty: 1
+    m_Colors:
+    - _BaseColor: {r: 0, g: 0.71729994, b: 1, a: 1}
+    - _Color: {r: 0.07075471, g: 0.7376249, b: 1, a: 0.19607843}
+    - _Colour_Emissive: {r: 0.31617647, g: 0.28362888, b: 0.28362888, a: 0}
+    - _Colour_Hair: {r: 0.30980387, g: 0.25490198, b: 0.18039218, a: 0}
+    - _Colour_Primary: {r: 0.31617647, g: 0.28362888, b: 0.28362888, a: 0}
+    - _Colour_Secondary: {r: 0.31617647, g: 0.28362888, b: 0.28362888, a: 0}
+    - _Colour_Skin: {r: 0.31617647, g: 0.28362888, b: 0.28362888, a: 0}
+    - _Direction: {r: 0, g: 1, b: 0, a: 0}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Fresnel_Color: {r: 0, g: 2.4686356, b: 2.4686356, a: 1}
+    - _HoloTextureTiling: {r: 1, g: 3, b: 0, a: 0}
+    - _Hologram_Tiling: {r: 64, g: 64, b: 0, a: 0}
+    - _MainColor: {r: 0, g: 0.4839999, b: 0.553, a: 1}
+    - _Neon_Colour_01: {r: 0.6965517, g: 1, b: 0, a: 0}
+    - _RimColor: {r: 0.009000003, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
