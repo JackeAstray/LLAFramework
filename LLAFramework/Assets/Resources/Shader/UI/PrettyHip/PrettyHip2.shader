@@ -5,6 +5,8 @@ Shader "ReunionMovement/PrettyHip2"
         _MainTex ("Texture", 2D) = "white" {}
         _GradientColor1 ("渐变色1", Color) = (1, 1, 1, 1)
         _GradientColor2 ("渐变色2", Color) = (1, 1, 1, 1)
+
+        [Toggle(ENABLE_SCREEN_ASPECT_RATIO)] _EnableScreenAspectRatio ("启用屏幕纵横比", Float) = 0
     }
 
     SubShader
@@ -22,6 +24,8 @@ Shader "ReunionMovement/PrettyHip2"
 
             #include "UnityCG.cginc"
             #include "../../Base/Common.cginc"
+
+            #pragma shader_feature _ ENABLE_SCREEN_ASPECT_RATIO
 
             float4 _GradientColor1;
             float4 _GradientColor2;
@@ -53,12 +57,19 @@ Shader "ReunionMovement/PrettyHip2"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                float aspect =  _ScreenParams.y / _ScreenParams.x;
+                float aspect = 1.0;
+
+                #if ENABLE_SCREEN_ASPECT_RATIO
+                aspect =  _ScreenParams.y / _ScreenParams.x;
+                #endif
+
                 // 将UV坐标中心移到(0.5, 0.5)
                 float2 uv = i.uv;
                 uv -= 0.5;
+
                 // 调整UV坐标
                 uv.y *= aspect;
+
                 // 旋转角度，以弧度为单位
                 float angle = radians(30 + _Time.y);
                 // 创建旋转矩阵

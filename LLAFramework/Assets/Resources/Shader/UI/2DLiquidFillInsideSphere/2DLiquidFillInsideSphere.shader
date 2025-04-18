@@ -9,6 +9,7 @@ Shader "ReunionMovement/UI/2DLiquidFillInsideSphere"
         _FillHeight ("Fill Height", Range(0, 1)) = 0.5 // 自定义液体高度
         _LiquidBackgroundColor ("Liquid Background Color Range", Range(0, 1)) = 0.5 // 自定义液体背景
         _LiquidEdgeColor ("Liquid Edge Color Range", Range(0, 1)) = 0.5 // 自定义液体边缘颜色
+        [Enum(Circle, 0, Square, 1, Triangle, 2)]
         _Shape ("Shape", Int) = 0 // 形状选择：0-圆形，1-方形，2-三角形
         _WaveFrequency ("Wave Frequency", Range(0.1, 10.0)) = 1.0 // 波浪频率
         _WaveAmplitude ("Wave Amplitude", Range(0.0, 1.0)) = 0.05 // 波浪幅度
@@ -64,12 +65,22 @@ Shader "ReunionMovement/UI/2DLiquidFillInsideSphere"
             {
                 if (shape == 1) // 方形
                 {
-                    float2 d = abs(uv) - 0.5;
+                    float2 d = abs(uv) - 1;
                     return length(max(d, 0.0)) + min(max(d.x, d.y), 0.0);
+                }
+                else if (shape == 2) // 三角形
+                {
+                    // 等边三角形的SDF
+                    float k = sqrt(3.0); // 三角形的高度比例
+                    uv.y -= -1.5 / k;     // 将三角形的中心向下移动，使底边位于 y = -1
+                    uv.x = abs(uv.x) - 1.0;
+                    if (uv.x + k * uv.y > 0.0) uv = float2(uv.x - k * uv.y, -k * uv.x - uv.y) / 2.0;
+                    uv.x -= clamp(uv.x, -2.0, 0.0);
+                    return -length(uv) * sign(uv.y);
                 }
                 else // 圆形
                 {
-                    return length(uv) - 0.5;
+                    return length(uv) - 1;
                 }
             }
 

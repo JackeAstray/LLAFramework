@@ -102,7 +102,7 @@ Material:
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
-    - _CustomTime: 0.5
+    - _CustomTime: 0.719
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
@@ -118,7 +118,7 @@ Material:
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Rotation: 0.5
+    - _Rotation: 0
     - _Size: 0.705
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
@@ -134,8 +134,8 @@ Material:
     - _BackgroundColor: {r: 1, g: 1, b: 1, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Color1: {r: 0.69776785, g: 1, b: 0.654902, a: 0.19215687}
-    - _Color2: {r: 0.37017846, g: 1, b: 0, a: 1}
+    - _Color1: {r: 1, g: 0.9936679, b: 0.654902, a: 0.6666667}
+    - _Color2: {r: 1, g: 0.57938516, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _MoonColor: {r: 1, g: 0.6738891, b: 0, a: 1}
     - _Mouse: {r: 0, g: 0, b: 0, a: 0}
