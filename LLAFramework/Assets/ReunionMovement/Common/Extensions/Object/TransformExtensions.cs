@@ -668,7 +668,7 @@ public static class TransformExtensions
     }
 
 
-    #region 处理万象锁
+    #region 处理万向锁
 
     public static void RotateXYZ(this Transform transform, Vector3 v3, XYZOrder order, XYZAlgorithmType algorithmType = XYZAlgorithmType.Quaternion)
     {
@@ -683,7 +683,7 @@ public static class TransformExtensions
     }
 
     /// <summary>
-    /// 旋转物体，处理万象锁 采用四元数计算
+    /// 旋转物体，处理万向锁 采用四元数计算
     /// </summary>
     /// <param name="v3"></param>
     /// <param name="order"></param>
@@ -726,7 +726,7 @@ public static class TransformExtensions
     }
 
     /// <summary>
-    /// 旋转物体，处理万象锁 采用矩阵计算
+    /// 旋转物体，处理万向锁 采用矩阵计算
     /// </summary>
     /// <param name="transform"></param>
     /// <param name="x"></param>

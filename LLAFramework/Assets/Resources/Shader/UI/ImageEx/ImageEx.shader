@@ -521,10 +521,10 @@ Shader "ReunionMovement/UI/Procedural Image"
                     //得到高
                     float height = _additionalData.w;
 
-                    float radius = min(width, height) * 0.7;
+                    float radius = min(width, height) * 0.8;
 
                     float2 value = texcoord - float2(width * 0.5, height * 0.1);
-                    half sdf = sdHeart(value, radius);
+                    half sdf = sdHeart(value, radius) * 110;
                     return sdf;
                 }
             #endif
@@ -550,6 +550,8 @@ Shader "ReunionMovement/UI/Procedural Image"
 
                     float d = sdBlobbyCross(p, he) - ra;
 
+                    d = d * 35;
+
                     return d;
                 }
             #endif
@@ -558,17 +560,17 @@ Shader "ReunionMovement/UI/Procedural Image"
             #if SQUIRCLE
                 half squircleScene(float4 _additionalData)
                 {
-                     //得到纹理坐标
                     float2 texcoord = _additionalData.xy;
-                    //得到宽
                     float width = _additionalData.z;
-                    //得到高
                     float height = _additionalData.w;
 
                     float2 p = (2.0 * texcoord - _additionalData.zw) / width;
-                    p *= 2.0;
+                    p *= 1.25;
+
+                    // 增加归一化处理，确保中心区域平滑
                     float n = 3.0 + 2.5 * sin(6.283185 * _SquircleTime / 3.0);
-                    float d = (p.y < p.x) ? sdSquircle(p, n) : approx_sdSquircle(p, n);
+                    float d = sdSquircle(p, n);
+                    d = d * 80;
 
                     return d;
                 }
@@ -720,7 +722,7 @@ Shader "ReunionMovement/UI/Procedural Image"
                 #ifdef UNITY_UI_ALPHACLIP
                     clip(color.a - 0.001);
                 #endif
-                
+
                 return fixed4(color);
             }
             ENDCG
