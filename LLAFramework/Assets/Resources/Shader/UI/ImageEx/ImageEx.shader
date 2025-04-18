@@ -60,7 +60,8 @@ Shader "ReunionMovement/UI/Procedural Image"
         
         _OutlineWidth ("Outline Width", float) = 0
         _OutlineColor ("Outline Color", Color) = (0, 0, 0, 1)
-        
+        _OutlineAsSegments ("Outline As Segments", int) = 0 // 分段开关
+
         _StencilComp ("Stencil Comparison", Float) = 8
         _Stencil ("Stencil ID", Float) = 0
         _StencilOp ("Stencil Operation", Float) = 0
@@ -153,6 +154,7 @@ Shader "ReunionMovement/UI/Procedural Image"
             half _StrokeWidth;
             half _OutlineWidth;
             half4 _OutlineColor;
+            int _OutlineAsSegments; // 分段变量
             half _FalloffDistance;
             half _ShapeRotation;
             half _ConstrainRotation;
@@ -702,6 +704,26 @@ Shader "ReunionMovement/UI/Procedural Image"
                     #if OUTLINED
                         float alpha = sampleSdf(sdfData, pixelScale);
                         float lerpFac = sampleSdf(sdfData + _OutlineWidth, pixelScale);
+
+                        // // 分段逻辑
+                        // if (_OutlineAsSegments >= 0)
+                        // {
+                        //     // 计算片元在轮廓上的位置
+                        //     float distanceToEdge = abs(sdfData); // 距离轮廓的距离
+                        //     float edgeThreshold = 0.5 * pixelScale; // 轮廓的阈值
+                        //     float isEdge = step(edgeThreshold, distanceToEdge) * step(distanceToEdge, edgeThreshold + _OutlineWidth);
+
+                        //     // 计算线段模式
+                        //     float perimeterPosition = atan2(IN.shapeData.y - 0.5, IN.shapeData.x - 0.5) / (2.0 * UNITY_PI);
+                        //     perimeterPosition = frac(perimeterPosition + 1.0); // 将范围限制在 [0, 1]
+
+                        //     float segmentWidth = 0.1; // 单个线段的宽度
+                        //     float gapWidth = 0.05;    // 线段之间的间隔
+                        //     float pattern = step(segmentWidth, frac(perimeterPosition / (segmentWidth + gapWidth)));
+
+                        //     alpha *= isEdge * (1.0 - pattern); // 应用分段效果
+                        // }
+
                         color = half4(lerp(_OutlineColor.rgb, color.rgb, lerpFac), lerp(_OutlineColor.a * color.a, color.a, lerpFac));
                         color.a *= alpha;
                     #endif
