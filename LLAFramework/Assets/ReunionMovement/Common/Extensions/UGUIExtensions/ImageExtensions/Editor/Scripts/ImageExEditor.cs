@@ -176,7 +176,7 @@ namespace GameLogic.UI.ImageExtensions.Editor
             Color outlineColor = spOutlineColor.colorValue;
 
             Rect r = EditorGUILayout.GetControlRect(true,
-                     EditorGUIUtility.singleLineHeight * 2 + EditorGUIUtility.standardVerticalSpacing);
+                     EditorGUIUtility.singleLineHeight * 5 + EditorGUIUtility.standardVerticalSpacing);
             Rect line = r;
             line.height = EditorGUIUtility.singleLineHeight;
             float x = (line.width - 10f) / 2;

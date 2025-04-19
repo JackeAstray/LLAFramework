@@ -1,4 +1,8 @@
-﻿//根据屏幕宽高展uv
+﻿const float pi = 3.14159;
+const float pi2 = 6.28318; // 2 * pi
+const float pi3 = 9.42478; // 3 * pi
+
+//根据屏幕宽高展uv
 float2 screen_aspect_ratio(float2 uv, float ratio)
 {
     uv.x -= 0.5;
@@ -8,6 +12,11 @@ float2 screen_aspect_ratio(float2 uv, float ratio)
     uv.y *= ratio;
 
     return uv;
+}
+
+float mod(float a, float b)
+{
+    return a % b;
 }
 
 // 使用frac函数获取uv的小数部分
@@ -47,4 +56,10 @@ float2 UnCropUV(float2 uvRelativeToCropped, float4 cropRegion)
 float2 CropUV(float2 uvRelativeToUnCropped, float4 cropRegion)
 {
     return (uvRelativeToUnCropped - cropRegion.xy) / (cropRegion.zw - cropRegion.xy);
+}
+
+// 将值从输入范围 [inMin, inMax] 映射到输出范围 [outMin, outMax]
+float remap(float value, float2 inRange, float2 outRange)
+{
+    return outRange.x + (value - inRange.x) * (outRange.y - outRange.x) / (inRange.y - inRange.x);
 }

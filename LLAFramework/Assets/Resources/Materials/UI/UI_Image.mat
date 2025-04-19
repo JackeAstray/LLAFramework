@@ -21,7 +21,9 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: UI_Image
-  m_Shader: {fileID: 4800000, guid: a073f1a43047f3c4e9039e34418577f7, type: 3}
+  m_Shader: {fileID: 4800000, guid: 85dd9038894619544b2571e7663eee93, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -30,6 +32,7 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -93,6 +96,7 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _Blend: 0
+    - _BlobbyCrossTime: 0
     - _BumpScale: 1
     - _CircleFitRadius: 0
     - _CircleRadius: 0
@@ -114,11 +118,12 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _GradientAlphaLength: 0
-    - _GradientColorLength: 0
+    - _GradientAlphaLength: 2
+    - _GradientColorLength: 2
     - _GradientInterpolationType: 0
     - _GradientRotation: 0
     - _GradientType: 0
+    - _LineWidth: 2
     - _Metallic: 0
     - _NStarPolygonCornerRadius: 0
     - _NStarPolygonInset: 2
@@ -126,15 +131,21 @@ Material:
     - _OcclusionStrength: 1
     - _OutlineWidth: 0
     - _Parallax: 0.005
-    - _PentagonTipRadius: 0
-    - _PentagonTipSize: 0
+    - _PentagonTipRadius: 0.001
+    - _PentagonTipSize: 1
     - _PixelWorldScale: 1
     - _QueueOffset: 0
+    - _Radius: 10
     - _ReceiveShadows: 1
+    - _RemoveSegments: 1
+    - _Rotation: 0
+    - _SegmentCount: 8
+    - _SegmentSpacing: 0.05
     - _ShapeRotation: 0
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
+    - _SquircleTime: 1
     - _SrcBlend: 1
     - _Stencil: 0
     - _StencilComp: 8
@@ -162,7 +173,7 @@ Material:
     - _GradientAlpha5: {r: 0, g: 0, b: 0, a: 0}
     - _GradientAlpha6: {r: 0, g: 0, b: 0, a: 0}
     - _GradientAlpha7: {r: 0, g: 0, b: 0, a: 0}
-    - _GradientColor0: {r: 0, g: 0, b: 0, a: 0}
+    - _GradientColor0: {r: 1, g: 1, b: 1, a: 0}
     - _GradientColor1: {r: 1, g: 1, b: 1, a: 1}
     - _GradientColor2: {r: 0, g: 0, b: 0, a: 0}
     - _GradientColor3: {r: 0, g: 0, b: 0, a: 0}
@@ -170,9 +181,9 @@ Material:
     - _GradientColor5: {r: 0, g: 0, b: 0, a: 0}
     - _GradientColor6: {r: 0, g: 0, b: 0, a: 0}
     - _GradientColor7: {r: 0, g: 0, b: 0, a: 0}
-    - _HexagonCornerRadius: {r: 0, g: 0, b: 0, a: 0}
-    - _HexagonTipRadius: {r: 0, g: 0, b: 0, a: 0}
-    - _HexagonTipSize: {r: 0, g: 0, b: 0, a: 0}
+    - _HexagonCornerRadius: {r: 1, g: 1, b: 1, a: 1}
+    - _HexagonTipRadius: {r: 1, g: 1, b: 0, a: 0}
+    - _HexagonTipSize: {r: 1, g: 1, b: 0, a: 0}
     - _NStarPolygonOffset: {r: 0, g: 0, b: 0, a: 0}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _PentagonCornerRadius: {r: 0, g: 0, b: 0, a: 0}

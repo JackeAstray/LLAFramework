@@ -60,7 +60,6 @@ Shader "ReunionMovement/UI/Procedural Image"
         
         _OutlineWidth ("Outline Width", float) = 0
         _OutlineColor ("Outline Color", Color) = (0, 0, 0, 1)
-        _OutlineAsSegments ("Outline As Segments", int) = 0 // 分段开关
 
         _StencilComp ("Stencil Comparison", Float) = 8
         _Stencil ("Stencil ID", Float) = 0
@@ -108,6 +107,7 @@ Shader "ReunionMovement/UI/Procedural Image"
             #include "UnityCG.cginc"
             #include "UnityUI.cginc"
             #include "../../Base/2D_SDF.cginc"
+            #include "../../Base/Common.cginc"
             
             #pragma multi_compile_local _ UNITY_UI_CLIP_RECT
             #pragma multi_compile_local _ UNITY_UI_ALPHACLIP
@@ -154,13 +154,12 @@ Shader "ReunionMovement/UI/Procedural Image"
             half _StrokeWidth;
             half _OutlineWidth;
             half4 _OutlineColor;
-            int _OutlineAsSegments; // 分段变量
             half _FalloffDistance;
             half _ShapeRotation;
             half _ConstrainRotation;
             half _FlipHorizontal;
             half _FlipVertical;
-            
+
             #if RECTANGLE
                 float4 _RectangleCornerRadius;
             #endif
@@ -586,7 +585,29 @@ Shader "ReunionMovement/UI/Procedural Image"
                   cos(rotation) * (uv.y - mid.y) - sin(rotation) * (uv.x - mid.x) + mid.y
                 );
             }
-            
+
+            float getCircleSegment(float2 uv, float start, float end, float radius, float width, float blur)
+            {
+                end += step(end, start); // 处理跨越 0° 的情况
+                float distanceO = length(uv);
+
+                float angle = atan2(uv.y, uv.x) * 0.5 * 0.31830988618; // 将角度归一化到 [0, 1]
+                angle = frac(angle);
+                float circle;
+                circle = smoothstep(width + blur, width - blur, distanceO);
+                circle -= smoothstep(radius + blur, radius - blur, distanceO);
+
+                // 添加分段
+                float segment = smoothstep(end + blur * 0.5, end - blur * 0.5, angle);
+                segment -= smoothstep(start + blur * 0.5, start - blur * 0.5, angle);
+
+                float s = step(1.0, end);
+                segment += s * smoothstep(frac(end) + blur * 0.5, frac(end) - blur * 0.5, angle);
+                circle = circle * segment;
+
+                return circle;
+            }
+                        
             //顶点着色器
             v2f vert(appdata_t v)
             {
@@ -704,26 +725,6 @@ Shader "ReunionMovement/UI/Procedural Image"
                     #if OUTLINED
                         float alpha = sampleSdf(sdfData, pixelScale);
                         float lerpFac = sampleSdf(sdfData + _OutlineWidth, pixelScale);
-
-                        // // 分段逻辑
-                        // if (_OutlineAsSegments >= 0)
-                        // {
-                        //     // 计算片元在轮廓上的位置
-                        //     float distanceToEdge = abs(sdfData); // 距离轮廓的距离
-                        //     float edgeThreshold = 0.5 * pixelScale; // 轮廓的阈值
-                        //     float isEdge = step(edgeThreshold, distanceToEdge) * step(distanceToEdge, edgeThreshold + _OutlineWidth);
-
-                        //     // 计算线段模式
-                        //     float perimeterPosition = atan2(IN.shapeData.y - 0.5, IN.shapeData.x - 0.5) / (2.0 * UNITY_PI);
-                        //     perimeterPosition = frac(perimeterPosition + 1.0); // 将范围限制在 [0, 1]
-
-                        //     float segmentWidth = 0.1; // 单个线段的宽度
-                        //     float gapWidth = 0.05;    // 线段之间的间隔
-                        //     float pattern = step(segmentWidth, frac(perimeterPosition / (segmentWidth + gapWidth)));
-
-                        //     alpha *= isEdge * (1.0 - pattern); // 应用分段效果
-                        // }
-
                         color = half4(lerp(_OutlineColor.rgb, color.rgb, lerpFac), lerp(_OutlineColor.a * color.a, color.a, lerpFac));
                         color.a *= alpha;
                     #endif

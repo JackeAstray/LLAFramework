@@ -26,19 +26,10 @@ namespace GameLogic.UI.ImageExtensions.Editor
             UnityEditor.EditorUtility.SetDirty(g);
         }
 
-        [MenuItem("GameObject/UI/ImageEx Basic")]
-        public static void AddImageExBasicObject()
-        {
-            GameObject g = new GameObject { name = "ImageExBasic" };
-            Transform parent = GetParentTransform();
-            g.transform.SetParent(parent, false);
-            g.AddComponent<ImageExBasic>();
-            Selection.activeGameObject = g;
-
-            Undo.RegisterCreatedObjectUndo(g, "ImageEx Basic Created");
-            UnityEditor.EditorUtility.SetDirty(g);
-        }
-
+        /// <summary>
+        /// 获取当前选中的物体的父物体
+        /// </summary>
+        /// <returns></returns>
         private static Transform GetParentTransform()
         {
             Transform parent;
@@ -57,6 +48,10 @@ namespace GameLogic.UI.ImageExtensions.Editor
             return parent;
         }
 
+        /// <summary>
+        /// 获取当前场景的画布
+        /// </summary>
+        /// <returns></returns>
         private static Canvas GetCanvas()
         {
             StageHandle handle = StageUtility.GetCurrentStageHandle();
@@ -69,51 +64,20 @@ namespace GameLogic.UI.ImageExtensions.Editor
             return c;
         }
 
-        [MenuItem("CONTEXT/Image/Replace with ImageEx")]
+        [MenuItem("CONTEXT/Image/替换为ImageEx")]
         public static void ReplaceWithImageEx(MenuCommand command)
         {
-            if (command.context is ImageEx) return;
-            if (command.context is ImageExBasic)
-            {
-                // Convert ImageExBasic to ImageEx
-                ImageExBasic img = (ImageExBasic)command.context;
-                GameObject obj = img.gameObject;
-                Object.DestroyImmediate(img);
-                obj.AddComponent<ImageEx>();
-                UnityEditor.EditorUtility.SetDirty(obj);
-            }
-            else
-            {
-                Image img = (Image)command.context;
-                GameObject obj = img.gameObject;
-                Object.DestroyImmediate(img);
-                obj.AddComponent<ImageEx>();
-                UnityEditor.EditorUtility.SetDirty(obj);
-            }
-
-        }
-
-        [MenuItem("CONTEXT/Image/Replace with ImageEx Basic")]
-        public static void ReplaceWithImageExBasic(MenuCommand command)
-        {
-            if (command.context is ImageExBasic) return;
             if (command.context is ImageEx)
             {
-                // Convert ImageEx to ImageExBasic
-                ImageEx img = (ImageEx)command.context;
-                GameObject obj = img.gameObject;
-                Object.DestroyImmediate(img);
-                obj.AddComponent<ImageExBasic>();
-                UnityEditor.EditorUtility.SetDirty(obj);
+                return;
             }
-            else
-            {
-                Image img = (Image)command.context;
-                GameObject obj = img.gameObject;
-                Object.DestroyImmediate(img);
-                obj.AddComponent<ImageExBasic>();
-                UnityEditor.EditorUtility.SetDirty(obj);
-            }
+
+            Image img = (Image)command.context;
+            GameObject obj = img.gameObject;
+            Object.DestroyImmediate(img);
+            obj.AddComponent<ImageEx>();
+            UnityEditor.EditorUtility.SetDirty(obj);
+
         }
 
         internal static void AddAdditionalShaderChannelsToCanvas(Canvas c)
@@ -175,7 +139,6 @@ namespace GameLogic.UI.ImageExtensions.Editor
         internal static string FindImageExtensionsRootDirectory()
         {
             string path = "Assets/Resources/UI";
-            //AssetDatabase.GetAssetPath(Selection.activeObject);
 
             if (string.IsNullOrEmpty(path))
             {

@@ -57,7 +57,6 @@ namespace GameLogic.UI.ImageExtensions
         private static readonly int constrainedRotation_Sp = Shader.PropertyToID("_ConstrainRotation");
         private static readonly int flipHorizontal_Sp = Shader.PropertyToID("_FlipHorizontal");
         private static readonly int flipVertical_Sp = Shader.PropertyToID("_FlipVertical");
-
         #endregion
 
         #region 公共属性
