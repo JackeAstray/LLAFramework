@@ -23,8 +23,12 @@ namespace GameLogic.UI.ImageExtensions
         [SerializeField] private MaterialMode materialMode;
 
         [SerializeField] private float strokeWidth;
+
         [SerializeField] private float outlineWidth;
         [SerializeField] private Color outlineColor = Color.black;
+        [SerializeField] private float customTime;
+        [SerializeField] private int enableDashedOutline;
+
         [SerializeField] private float falloffDistance = 0.5f;
         [SerializeField] private bool constrainRotation = true;
         [SerializeField] private float shapeRotation;
@@ -50,8 +54,12 @@ namespace GameLogic.UI.ImageExtensions
         private static readonly int pixelWorldScale_Sp = Shader.PropertyToID("_PixelWorldScale");
         private static readonly int drawShape_Sp = Shader.PropertyToID("_DrawShape");
         private static readonly int strokeWidth_Sp = Shader.PropertyToID("_StrokeWidth");
+
         private static readonly int outlineWidth_Sp = Shader.PropertyToID("_OutlineWidth");
         private static readonly int outlineColor_Sp = Shader.PropertyToID("_OutlineColor");
+        private static readonly int enableDashedOutline_Sp = Shader.PropertyToID("_EnableDashedOutline");
+        private static readonly int customTime_Sp = Shader.PropertyToID("_CustomTime");
+
         private static readonly int falloffDistance_Sp = Shader.PropertyToID("_FalloffDistance");
         private static readonly int shapeRotation_Sp = Shader.PropertyToID("_ShapeRotation");
         private static readonly int constrainedRotation_Sp = Shader.PropertyToID("_ConstrainRotation");
@@ -134,6 +142,34 @@ namespace GameLogic.UI.ImageExtensions
                     m_Material.SetColor(outlineColor_Sp, outlineColor);
                 }
 
+                base.SetMaterialDirty();
+            }
+        }
+
+        public int EnableDashedOutline
+        {
+            get => enableDashedOutline;
+            set
+            {
+                enableDashedOutline = value;
+                if (m_Material == material)
+                {
+                    m_Material.SetInt(enableDashedOutline_Sp, enableDashedOutline);
+                }
+                base.SetMaterialDirty();
+            }
+        }
+
+        public float CustomTime
+        {
+            get => customTime;
+            set
+            {
+                customTime = value;
+                if (m_Material == material)
+                {
+                    m_Material.SetFloat(customTime_Sp, customTime);
+                }
                 base.SetMaterialDirty();
             }
         }
@@ -700,6 +736,9 @@ namespace GameLogic.UI.ImageExtensions
             if (DrawShape != DrawShape.None)
             {
                 mat.SetFloat(outlineWidth_Sp, outlineWidth);
+                mat.SetInt(enableDashedOutline_Sp, enableDashedOutline);
+                mat.SetFloat(customTime_Sp, customTime);
+
                 mat.SetFloat(strokeWidth_Sp, strokeWidth);
 
                 mat.SetColor(outlineColor_Sp, OutlineColor);
@@ -844,8 +883,12 @@ namespace GameLogic.UI.ImageExtensions
 
             strokeWidth = mat.GetFloat(strokeWidth_Sp);
             falloffDistance = mat.GetFloat(falloffDistance_Sp);
+
             outlineWidth = mat.GetFloat(outlineWidth_Sp);
             outlineColor = mat.GetColor(outlineColor_Sp);
+            enableDashedOutline = mat.GetInt(enableDashedOutline_Sp);
+            customTime = mat.GetFloat(customTime_Sp);
+
             flipHorizontal = mat.GetInt(flipHorizontal_Sp) == 1;
             flipVertical = mat.GetInt(flipVertical_Sp) == 1;
             constrainRotation = mat.GetInt(constrainedRotation_Sp) == 1;

@@ -60,6 +60,8 @@ Shader "ReunionMovement/UI/Procedural Image"
         
         _OutlineWidth ("Outline Width", float) = 0
         _OutlineColor ("Outline Color", Color) = (0, 0, 0, 1)
+        _EnableDashedOutline ("Enable Dashed Outline", int) = 0 // 添加虚线开关
+        _CustomTime ("Custom Time", Float) = 0
 
         _StencilComp ("Stencil Comparison", Float) = 8
         _Stencil ("Stencil ID", Float) = 0
@@ -152,8 +154,12 @@ Shader "ReunionMovement/UI/Procedural Image"
             float4 _ClipRect;
             half _PixelWorldScale;
             half _StrokeWidth;
+            
             half _OutlineWidth;
             half4 _OutlineColor;
+            int _EnableDashedOutline;
+            float _CustomTime;
+
             half _FalloffDistance;
             half _ShapeRotation;
             half _ConstrainRotation;
@@ -725,7 +731,53 @@ Shader "ReunionMovement/UI/Procedural Image"
                     #if OUTLINED
                         float alpha = sampleSdf(sdfData, pixelScale);
                         float lerpFac = sampleSdf(sdfData + _OutlineWidth, pixelScale);
-                        color = half4(lerp(_OutlineColor.rgb, color.rgb, lerpFac), lerp(_OutlineColor.a * color.a, color.a, lerpFac));
+                        // color = half4(lerp(_OutlineColor.rgb, color.rgb, lerpFac), lerp(_OutlineColor.a * color.a, color.a, lerpFac));
+                        // color.a *= alpha;
+                        
+                        if (_EnableDashedOutline == 1)
+                        {
+                            #if CIRCLE
+                                // 虚线效果
+                                float2 center = float2(IN.shapeData.z * 0.5, IN.shapeData.w * 0.5); // 图形中心
+                                float angle = atan2(IN.shapeData.y - center.y, IN.shapeData.x - center.x); // 当前点的角度
+                                float normalizedAngle = (angle + 3.1415926) / (2.0 * 3.1415926); // 归一化到 [0, 1]
+                                float dash = step(0.5, frac(normalizedAngle * 10.0 + _CustomTime)); // 基于角度生成虚线
+                                float col = dash; // 虚线颜色
+                                color = half4(lerp(_OutlineColor.rgb * col, color.rgb, lerpFac), lerp(_OutlineColor.a * col, color.a, lerpFac));
+                            #elif TRIANGLE
+                                // 三角形的虚线效果
+                                float2 center = float2(IN.shapeData.z * 0.5, IN.shapeData.w * 0.5); // 图形中心
+                                float angle = atan2(IN.shapeData.y - center.y, IN.shapeData.x - center.x); // 当前点的角度
+                                float normalizedAngle = (angle + 3.1415926) / (1.0 * 3.1415926); // 归一化到 [0, 1]
+                                float dash = step(0.5, frac(normalizedAngle * 10.0 + _CustomTime)); // 基于角度生成虚线
+                                float col = dash; // 虚线颜色
+                                color = half4(lerp(_OutlineColor.rgb * col, color.rgb, lerpFac), lerp(_OutlineColor.a * col, color.a, lerpFac));
+                            #elif RECTANGLE
+                                // 改进的虚线效果，确保每条边的虚线方向正确
+                                float2 uv = IN.shapeData.xy / float2(IN.shapeData.z, IN.shapeData.w); // 归一化 UV 坐标
+                                float4 radius = _RectangleCornerRadius / float4(IN.shapeData.z, IN.shapeData.w, IN.shapeData.z, IN.shapeData.w); // 归一化圆角半径
+
+                                // 计算每条边的虚线模式
+                                float dashX = step(0.5, frac((uv.x * IN.shapeData.z) * 0.1 + _CustomTime)); // 水平方向虚线
+                                float dashY = step(0.5, frac((uv.y * IN.shapeData.w) * 0.1 + _CustomTime)); // 垂直方向虚线
+
+                                // 检查是否在圆角区域
+                                bool isCorner = (uv.x < radius.x && uv.y < radius.x) || // 左下角
+                                                (uv.x > 1.0 - radius.y && uv.y < radius.y) || // 右下角
+                                                (uv.x > 1.0 - radius.z && uv.y > 1.0 - radius.z) || // 右上角
+                                                (uv.x < radius.w && uv.y > 1.0 - radius.w); // 左上角
+
+                                // 应用虚线效果，仅在非圆角区域
+                                float col = isCorner ? 1.0 : (uv.y < radius.x || uv.y > 1.0 - radius.z ? dashX : dashY); // 根据方向选择虚线模式
+                                color = half4(lerp(_OutlineColor.rgb * col, color.rgb, lerpFac), lerp(_OutlineColor.a * col, color.a, lerpFac));
+                            #endif
+                        }
+                        else
+                        {
+                            // 普通描边效果
+                            color = half4(lerp(_OutlineColor.rgb, color.rgb, lerpFac), lerp(_OutlineColor.a, color.a, lerpFac));
+                        }   
+    
                         color.a *= alpha;
                     #endif
                     
