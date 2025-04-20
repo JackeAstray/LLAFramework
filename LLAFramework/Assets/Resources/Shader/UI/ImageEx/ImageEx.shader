@@ -147,6 +147,8 @@ Shader "ReunionMovement/UI/Procedural Image"
                 UNITY_VERTEX_OUTPUT_STEREO
             };
             
+            int _DrawShape;
+
             sampler2D _MainTex; float4 _MainTex_ST;
             fixed4 _Color;
             fixed4 _TextureSize;
@@ -592,6 +594,7 @@ Shader "ReunionMovement/UI/Procedural Image"
                 );
             }
 
+            // 获取圆弧段
             float getCircleSegment(float2 uv, float start, float end, float radius, float width, float blur)
             {
                 end += step(end, start); // 处理跨越 0° 的情况
@@ -613,7 +616,58 @@ Shader "ReunionMovement/UI/Procedural Image"
 
                 return circle;
             }
-                        
+                    
+            // --------------------RECTANGLE Start---------------------
+            float generateDashedEffect(v2f IN, float time, float aspectRatio, int shapeType)
+            {
+                // 定义虚线的波长和占空比
+                float wavelength = 0.2; // 虚线的周期
+                float dashRatio = 0.5;  // 虚线的占空比
+
+                // // 限制时间偏移范围，避免过大偏移
+                // time = fmod(time, wavelength / 2);
+
+                float dashedEffect = 0.0;
+
+                if (shapeType == 1) // CIRCLE
+                {
+                    float2 center = float2(IN.shapeData.z * 0.5, IN.shapeData.w * 0.5); // 图形中心
+                    // 圆形虚线逻辑
+                    float angle = atan2(center.y - 0.5, center.x - 0.5); // 当前点的角度
+                    float normalizedAngle = (angle + pi) / (2.0 * pi); // 归一化到 [0, 1]
+                    dashedEffect = step(0.5, frac(normalizedAngle * 10.0 + time)); // 基于角度生成虚线
+                }
+                else if (shapeType == 2) // TRIANGLE
+                {
+                    float2 center = float2(IN.shapeData.z * 0.5, IN.shapeData.w * 0.5); // 图形中心
+                    // 三角形虚线逻辑
+                    float edge = sdTriangleIsosceles(center - float2(0.5, 0.5), float2(0.5, 0.5));
+                    dashedEffect = generateDashedPattern(edge + time, wavelength, dashRatio);
+                }
+                else if (shapeType == 3) // RECTANGLE
+                {
+                    float2 uv = IN.shapeData.xy / float2(IN.shapeData.z, IN.shapeData.w); // 归一化 UV 坐标
+                    time = fmod(time, wavelength / 2);
+
+                    // 矩形虚线逻辑
+                    float dashedTop = generateDashedPattern(uv.x + time, wavelength, dashRatio);
+                    float dashedBottom = generateDashedPattern(uv.x - time, wavelength, dashRatio);
+                    float dashedLeft = generateDashedPattern(uv.y + time, wavelength, dashRatio);
+                    float dashedRight = generateDashedPattern(uv.y - time, wavelength, dashRatio);
+
+                    float edgeTop = getEdge(1.0 - uv.y, 0.02, 1.0);
+                    float edgeBottom = getEdge(uv.y, 0.02, 1.0);
+                    float edgeLeft = getEdge(uv.x, 0.02, aspectRatio);
+                    float edgeRight = getEdge(1.0 - uv.x, 0.02, aspectRatio);
+
+                    dashedEffect = edgeTop * dashedTop +
+                                   edgeBottom * dashedBottom +
+                                   edgeLeft * dashedLeft +
+                                   edgeRight * dashedRight;
+                }
+                return saturate(dashedEffect);
+            }
+            // --------------------RECTANGLE End---------------------
             //顶点着色器
             v2f vert(appdata_t v)
             {
@@ -736,41 +790,40 @@ Shader "ReunionMovement/UI/Procedural Image"
                         
                         if (_EnableDashedOutline == 1)
                         {
-                            #if CIRCLE
-                                // 虚线效果
-                                float2 center = float2(IN.shapeData.z * 0.5, IN.shapeData.w * 0.5); // 图形中心
-                                float angle = atan2(IN.shapeData.y - center.y, IN.shapeData.x - center.x); // 当前点的角度
-                                float normalizedAngle = (angle + 3.1415926) / (2.0 * 3.1415926); // 归一化到 [0, 1]
-                                float dash = step(0.5, frac(normalizedAngle * 10.0 + _CustomTime)); // 基于角度生成虚线
-                                float col = dash; // 虚线颜色
-                                color = half4(lerp(_OutlineColor.rgb * col, color.rgb, lerpFac), lerp(_OutlineColor.a * col, color.a, lerpFac));
-                            #elif TRIANGLE
-                                // 三角形的虚线效果
-                                float2 center = float2(IN.shapeData.z * 0.5, IN.shapeData.w * 0.5); // 图形中心
-                                float angle = atan2(IN.shapeData.y - center.y, IN.shapeData.x - center.x); // 当前点的角度
-                                float normalizedAngle = (angle + 3.1415926) / (1.0 * 3.1415926); // 归一化到 [0, 1]
-                                float dash = step(0.5, frac(normalizedAngle * 10.0 + _CustomTime)); // 基于角度生成虚线
-                                float col = dash; // 虚线颜色
-                                color = half4(lerp(_OutlineColor.rgb * col, color.rgb, lerpFac), lerp(_OutlineColor.a * col, color.a, lerpFac));
-                            #elif RECTANGLE
-                                // 改进的虚线效果，确保每条边的虚线方向正确
-                                float2 uv = IN.shapeData.xy / float2(IN.shapeData.z, IN.shapeData.w); // 归一化 UV 坐标
-                                float4 radius = _RectangleCornerRadius / float4(IN.shapeData.z, IN.shapeData.w, IN.shapeData.z, IN.shapeData.w); // 归一化圆角半径
+                            float dashedEffect = generateDashedEffect(IN,
+                                                                      _CustomTime, 
+                                                                      IN.shapeData.z / IN.shapeData.w,
+                                                                      _DrawShape); // 传递图形类型
+                            color = half4(lerp(color.rgb, _OutlineColor.rgb, dashedEffect), lerp(_OutlineColor.a, color.a, dashedEffect));
+                            // #if CIRCLE
+                            //     // // 虚线效果
+                            //     // float2 center = float2(IN.shapeData.z * 0.5, IN.shapeData.w * 0.5); // 图形中心
+                            //     // float angle = atan2(IN.shapeData.y - center.y, IN.shapeData.x - center.x); // 当前点的角度
+                            //     // float normalizedAngle = (angle + 3.1415926) / (2.0 * 3.1415926); // 归一化到 [0, 1]
+                            //     // float dash = step(0.5, frac(normalizedAngle * 10.0 + _CustomTime)); // 基于角度生成虚线
+                            //     // float col = dash; // 虚线颜色
+                            //     // color = half4(lerp(_OutlineColor.rgb * col, color.rgb, lerpFac), lerp(_OutlineColor.a * col, color.a, lerpFac));
 
-                                // 计算每条边的虚线模式
-                                float dashX = step(0.5, frac((uv.x * IN.shapeData.z) * 0.1 + _CustomTime)); // 水平方向虚线
-                                float dashY = step(0.5, frac((uv.y * IN.shapeData.w) * 0.1 + _CustomTime)); // 垂直方向虚线
+                            // #elif TRIANGLE
+                            //     // 三角形的虚线效果
+                            //     float2 center = float2(IN.shapeData.z * 0.5, IN.shapeData.w * 0.5); // 图形中心
+                            //     float angle = atan2(IN.shapeData.y - center.y, IN.shapeData.x - center.x); // 当前点的角度
+                            //     float normalizedAngle = (angle + 3.1415926) / (1.0 * 3.1415926); // 归一化到 [0, 1]
+                            //     float dash = step(0.5, frac(normalizedAngle * 10.0 + _CustomTime)); // 基于角度生成虚线
+                            //     float col = dash; // 虚线颜色
+                            //     color = half4(lerp(_OutlineColor.rgb * col, color.rgb, lerpFac), lerp(_OutlineColor.a * col, color.a, lerpFac));
+                            // #elif RECTANGLE
 
-                                // 检查是否在圆角区域
-                                bool isCorner = (uv.x < radius.x && uv.y < radius.x) || // 左下角
-                                                (uv.x > 1.0 - radius.y && uv.y < radius.y) || // 右下角
-                                                (uv.x > 1.0 - radius.z && uv.y > 1.0 - radius.z) || // 右上角
-                                                (uv.x < radius.w && uv.y > 1.0 - radius.w); // 左上角
+                            //     float2 uv = IN.shapeData.xy / float2(IN.shapeData.z, IN.shapeData.w); // 归一化 UV 坐标
+                            //     float4 radius = _RectangleCornerRadius / float4(IN.shapeData.z, IN.shapeData.w, IN.shapeData.z, IN.shapeData.w); // 归一化圆角半径
+                            //     float aspectRatio = IN.shapeData.z / IN.shapeData.w; // 宽高比
 
-                                // 应用虚线效果，仅在非圆角区域
-                                float col = isCorner ? 1.0 : (uv.y < radius.x || uv.y > 1.0 - radius.z ? dashX : dashY); // 根据方向选择虚线模式
-                                color = half4(lerp(_OutlineColor.rgb * col, color.rgb, lerpFac), lerp(_OutlineColor.a * col, color.a, lerpFac));
-                            #endif
+                            //     // 应用改进的虚线效果
+                            //     float dashedEffect = rectangleDashedEffect(uv, radius, _CustomTime, aspectRatio);
+
+                            //     // 将虚线效果应用到颜色
+                            //     color = half4(lerp(color.rgb, _OutlineColor.rgb, dashedEffect), lerp(_OutlineColor.a, color.a, dashedEffect));
+                            // #endif
                         }
                         else
                         {

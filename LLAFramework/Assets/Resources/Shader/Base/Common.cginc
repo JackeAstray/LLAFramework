@@ -63,3 +63,40 @@ float remap(float value, float2 inRange, float2 outRange)
 {
     return outRange.x + (value - inRange.x) * (outRange.y - outRange.x) / (inRange.y - inRange.x);
 }
+
+// 计算边缘的辅助函数
+float getEdge(float dir, float edgeStart, float scale)
+{
+    return step(dir * scale, edgeStart);
+}
+
+// 生成虚线的辅助函数
+float makeDashed(float inVal, float edgeStart)
+{
+    return step(inVal, edgeStart) + step((1.0 - inVal), edgeStart);
+}
+
+// 生成虚线图案
+float generateDashedPattern(float x, float l, float r)
+{
+    // 将 x 限制在 [0, l] 范围内
+    x = fmod(x, l);
+
+    // 计算虚线的各个阶段
+    float a = l * r / 2.0; // 实线开始
+    float b = l - a; // 空白开始
+
+    // 根据 x 的位置计算值
+    if (x < a)
+    {
+        return 1.0; // 实线部分
+    }
+    else if (x < b)
+    {
+        return 0.0; // 空白部分
+    }
+    else
+    {
+        return 1.0; // 实线部分
+    }
+}

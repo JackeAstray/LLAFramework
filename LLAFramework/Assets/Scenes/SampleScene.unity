@@ -196,7 +196,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -341.5, y: 0}
-  m_SizeDelta: {x: 683, y: 768}
+  m_SizeDelta: {x: 700, y: 900}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8212976
 MonoBehaviour:
@@ -1388,7 +1388,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 900}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &343153310
 MonoBehaviour:
@@ -1397,7 +1397,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 343153308}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
   m_Name: 
@@ -1417,10 +1417,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 0
-    m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
+    m_Left: 10
+    m_Right: 10
+    m_Top: 10
+    m_Bottom: 10
   m_ChildAlignment: 1
   m_StartCorner: 0
   m_StartAxis: 0
@@ -4953,10 +4953,10 @@ MonoBehaviour:
   strokeWidth: 0
   outlineWidth: 5
   outlineColor: {r: 0, g: 0, b: 0, a: 1}
-  customTime: 9.53
+  customTime: 0
   enableDashedOutline: 1
   falloffDistance: 0.5
-  constrainRotation: 1
+  constrainRotation: 0
   shapeRotation: 0
   flipHorizontal: 0
   flipVertical: 0
@@ -4965,7 +4965,7 @@ MonoBehaviour:
     cornerRadius: {x: 0, y: 0, z: 0}
     uniformCornerRadius: 0
   rectangle:
-    cornerRadius: {x: 15, y: 15, z: 15, w: 15}
+    cornerRadius: {x: 0, y: 0, z: 0, w: 0}
     uniformCornerRadius: 0
   circle:
     radius: 0
@@ -6120,8 +6120,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 332077952}
   m_HandleRect: {fileID: 332077951}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.9142857
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
