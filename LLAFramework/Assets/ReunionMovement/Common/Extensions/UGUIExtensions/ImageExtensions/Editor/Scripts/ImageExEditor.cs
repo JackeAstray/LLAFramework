@@ -179,8 +179,15 @@ namespace GameLogic.UI.ImageExtensions.Editor
 
             float customTime = spCustomTime.floatValue;
 
-            Rect r = EditorGUILayout.GetControlRect(true,
-                     EditorGUIUtility.singleLineHeight * 5 + EditorGUIUtility.standardVerticalSpacing);
+            float h = 2;
+
+            if (spShape.enumValueIndex == (int)DrawShape.Circle || spShape.enumValueIndex == (int)DrawShape.Rectangle)
+            {
+                h = 3;
+            }
+
+            Rect r = EditorGUILayout.GetControlRect(true, EditorGUIUtility.singleLineHeight * h + EditorGUIUtility.standardVerticalSpacing);
+
             Rect line = r;
             line.height = EditorGUIUtility.singleLineHeight;
             float x = (line.width - 10f) / 2;
@@ -258,45 +265,46 @@ namespace GameLogic.UI.ImageExtensions.Editor
             }
 
             // ---------------------
-
-            line.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-            line.x = r.x;
-            line.width = labelWidth;
-
-            // 绘制标签
-            EditorGUI.LabelField(line, "是否开启虚线");
-
-            // 绘制复选框
-            line.x += labelWidth; // 添加间距以对齐复选框
-            line.width = fieldWidth - 5; // 调整宽度以适配复选框
-            EditorGUI.BeginChangeCheck();
+            if (spShape.enumValueIndex == (int)DrawShape.Circle || spShape.enumValueIndex == (int)DrawShape.Rectangle)
             {
-                EditorGUI.showMixedValue = spEnableDashedOutline.hasMultipleDifferentValues;
-                bool enableDashedOutline = EditorGUI.Toggle(line, spEnableDashedOutline.intValue != 0);
-                EditorGUI.showMixedValue = false;
+                line.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+                line.x = r.x;
+                line.width = labelWidth;
 
+                // 绘制标签
+                EditorGUI.LabelField(line, "是否开启虚线");
+
+                // 绘制复选框
+                line.x += labelWidth; // 添加间距以对齐复选框
+                line.width = fieldWidth - 5; // 调整宽度以适配复选框
+                EditorGUI.BeginChangeCheck();
+                {
+                    EditorGUI.showMixedValue = spEnableDashedOutline.hasMultipleDifferentValues;
+                    bool enableDashedOutline = EditorGUI.Toggle(line, spEnableDashedOutline.intValue != 0);
+                    EditorGUI.showMixedValue = false;
+
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        spEnableDashedOutline.intValue = enableDashedOutline ? 1 : 0;
+                    }
+                }
+                line.x += fieldWidth + 10;
+                line.width = labelWidth;
+                EditorGUI.LabelField(line, "自定义时间");
+                dragZone = line;
+                line.width = fieldWidth;
+                line.x += labelWidth;
+                EditorGUI.BeginChangeCheck();
+                {
+                    EditorGUI.showMixedValue = spCustomTime.hasMultipleDifferentValues;
+                    customTime = EditorGUILayoutExtended.FloatFieldExtended(line, spCustomTime.floatValue, dragZone);
+                    EditorGUI.showMixedValue = false;
+                }
                 if (EditorGUI.EndChangeCheck())
                 {
-                    spEnableDashedOutline.intValue = enableDashedOutline ? 1 : 0;
+                    spCustomTime.floatValue = customTime;
                 }
             }
-            line.x += fieldWidth + 10;
-            line.width = labelWidth;
-            EditorGUI.LabelField(line, "自定义时间");
-            dragZone = line;
-            line.width = fieldWidth;
-            line.x += labelWidth;
-            EditorGUI.BeginChangeCheck();
-            {
-                EditorGUI.showMixedValue = spCustomTime.hasMultipleDifferentValues;
-                customTime = EditorGUILayoutExtended.FloatFieldExtended(line, spCustomTime.floatValue, dragZone);
-                EditorGUI.showMixedValue = false;
-            }
-            if (EditorGUI.EndChangeCheck())
-            {
-                spCustomTime.floatValue = customTime;
-            }
-
             EditorGUILayout.Space();
 
             RotationGUI();

@@ -624,26 +624,31 @@ Shader "ReunionMovement/UI/Procedural Image"
                 float wavelength = 0.2; // 虚线的周期
                 float dashRatio = 0.5;  // 虚线的占空比
 
-                // // 限制时间偏移范围，避免过大偏移
-                // time = fmod(time, wavelength / 2);
-
                 float dashedEffect = 0.0;
 
                 if (shapeType == 1) // CIRCLE
                 {
+                    #if CIRCLE
                     // 计算图形中心
                     float2 center = float2(IN.shapeData.z * 0.5, IN.shapeData.w * 0.5);
                     // 当前点的角度
                     float angle = atan2(IN.shapeData.y - center.y, IN.shapeData.x - center.x); 
                     float normalizedAngle = (angle + 3.1415926) / (2.0 * 3.1415926); // 归一化到 [0, 1]
-                    dashedEffect = step(0.5, frac(normalizedAngle * 15.0 + _CustomTime)); // 基于角度生成虚线
-                }
-                else if (shapeType == 2) // TRIANGLE
-                {
-                    float2 center = float2(IN.shapeData.z * 0.5, IN.shapeData.w * 0.5); // 图形中心
-                    // 三角形虚线逻辑
-                    float edge = sdTriangleIsosceles(center - float2(0.5, 0.5), float2(0.5, 0.5));
-                    dashedEffect = generateDashedPattern(edge + time, wavelength, dashRatio);
+
+                    // 计算当前点到中心的距离
+                    float distance = length(float2(IN.shapeData.x - center.x, IN.shapeData.y - center.y));
+                    //float radius = min(IN.shapeData.z, IN.shapeData.w) * 0.5; // 圆的半径
+
+                    // 定义内外边界
+                    float innerRadius = _CircleRadius * 0.95; // 内边界半径（裁剪中间部分）
+                    float outerRadius = _CircleRadius;       // 外边界半径（边缘部分）
+                    float edgeMask = smoothstep(innerRadius, innerRadius + 0.01, distance) * 
+                                     (1.0 - smoothstep(outerRadius - 0.01, outerRadius, distance));
+
+                    // 基于角度生成虚线
+                    float dashPattern = step(0.5, frac(normalizedAngle * 15.0 + _CustomTime));
+                    dashedEffect = dashPattern * edgeMask; // 结合边缘遮罩
+                    #endif
                 }
                 else if (shapeType == 3) // RECTANGLE
                 {
@@ -792,10 +797,6 @@ Shader "ReunionMovement/UI/Procedural Image"
                             float dashedEffect = generateDashedEffect(IN, _CustomTime, IN.shapeData.z / IN.shapeData.w, _DrawShape); // 传递图形类型
 
                             if (_DrawShape == 1)
-                            {
-                                color = half4(lerp(_OutlineColor.rgb * dashedEffect, color.rgb, lerpFac), lerp(_OutlineColor.a * dashedEffect, color.a, lerpFac));
-                            }
-                            else if (_DrawShape == 2)
                             {
                                 color = half4(lerp(color.rgb, _OutlineColor.rgb, dashedEffect), lerp(_OutlineColor.a, color.a, dashedEffect));
                             }
