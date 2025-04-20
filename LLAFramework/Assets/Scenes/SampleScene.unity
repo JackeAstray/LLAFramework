@@ -3832,7 +3832,7 @@ MonoBehaviour:
   outlineWidth: 5
   outlineColor: {r: 0, g: 0, b: 0, a: 1}
   customTime: 0
-  enableDashedOutline: 1
+  enableDashedOutline: 0
   falloffDistance: 0.5
   constrainRotation: 1
   shapeRotation: 0
