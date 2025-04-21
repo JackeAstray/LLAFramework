@@ -8,37 +8,37 @@ float dot2(float2 v)
     return dot(v, v);
 }
 
-//用于进一步的图形处理，例如渲染或者着色
-float sampleSdf(float _sdf, float _offset)
+// 用于进一步的图形处理，例如渲染或者着色
+float sampleSdf(float sdf, float offset)
 {
-    float sdf = saturate(-_sdf * _offset);
-    return sdf;
+    float tempSdf = saturate(-sdf * offset);
+    return tempSdf;
 }
 
 // 用于计算一个2D的有向距离场（SDF）条纹样本的函数。
 // 这是一个在计算机图形学中常用的技术，用于创建复杂的2D和3D形状。
-float sampleSdfStrip(float _sdf, float _stripWidth, float _offset)
+float sampleSdfStrip(float sdf, float stripWidth, float offset)
 {
-    float l = (_stripWidth + 1.0 / _offset) / 2.0;
-    return saturate((l - distance(-_sdf, l)) * _offset);
+    float l = (stripWidth + 1.0 / offset) / 2.0;
+    return saturate((l - distance(-sdf, l)) * offset);
 }
 
-//（最大值）通常用于合并两个形状，结果是两个形状的并集
-float sdfUnion(float _a, float _b)
+// （最大值）通常用于合并两个形状，结果是两个形状的并集
+float sdfUnion(float a, float b)
 {
-    return max(_a, _b);
+    return max(a, b);
 }
 
-//（最小值）通常用于找到两个形状的交集
-float sdfIntersection(float _a, float _b)
+// （最小值）通常用于找到两个形状的交集
+float sdfIntersection(float a, float b)
 {
-    return min(_a, _b);
+    return min(a, b);
 }
 
 //（最大值）通常从一个形状中减去另一个形状，结果是两个形状的差集
-float sdfDifference(float _a, float _b)
+float sdfDifference(float a, float b)
 {
-    return max(_a, -_b);
+    return max(a, -b);
 }
 
 // 将一个范围内的值映射到另一个范围
@@ -47,27 +47,27 @@ float map(float value, float start1, float stop1, float start2, float stop2)
     return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));
 }
 
-//形状开始------------------------
-//圆形
-float circle(float2 _samplePosition, float _radius)
+// 形状开始------------------------
+// 圆形 （位置、半径）
+float sdCircle(float2 p, float r)
 {
-    return length(_samplePosition) - _radius;
+    return length(p) - r;
 }
 
-//矩形
-float rectanlge(float2 _samplePosition, float _width, float _height)
+// 矩形 （位置、宽、高）
+float rectanlge(float2 p, float w, float h)
 {
-    float2 d = abs(_samplePosition) - float2(_width, _height) / 2.0;
+    float2 d = abs(p) - float2(w, h) / 2.0;
     float sdf = min(max(d.x, d.y), 0.0) + length(max(d, 0.0));
     return sdf;
 }
 
-//菱形 Credit: https://www.shadertoy.com/view/XdXcRB | MIT License
+// 菱形
 float ndot(float2 a, float2 b)
 {
     return a.x * b.x - a.y * b.y;
 }
-
+// 菱形
 float sdRhombus(float2 p, float2 b)
 {
     float2 q = abs(p);
@@ -76,7 +76,7 @@ float sdRhombus(float2 p, float2 b)
     return d * sign(q.x * b.y + q.y * b.x - b.x * b.y);
 }
 
-//等边三角形 Credit: https://www.shadertoy.com/view/MldcD7 | MIT License
+//等边三角形
 float sdTriangleIsosceles(float2 p, float2 q)
 {
     p.x = abs(p.x);
@@ -87,7 +87,29 @@ float sdTriangleIsosceles(float2 p, float2 q)
     return -sqrt(d.x) * sign(d.y);
 }
 
-//N星形多边形 Credit: https://www.shadertoy.com/view/3tSGDy
+// 等边三角形（圆角）
+float sdTriangleIsoscelesRounded(float2 p, float2 q, float rounding)
+{
+    float W = 2.0 * q.x;
+    float H = q.y;
+
+    float r = W * H / (W + 2.0 * sqrt(0.25 * W * W + H * H));
+    float s = 1.0 - rounding / r;
+
+    float Wp = W * s;
+    float Hp = H * s;
+
+    float y_off = (H - Hp) - rounding;
+
+    if (rounding >= r)
+    {
+        return length(p - float2(0, H - r)) - r;
+    }
+
+    return sdTriangleIsosceles(p - float2(0, y_off), float2(0.5 * Wp, Hp)) - rounding;
+}
+
+// N星形多边形
 float sdNStarPolygon(in float2 p, in float r, in float n, in float m) // m=[2,n]
 {
     float an = 3.141593 / float(n);
@@ -101,7 +123,7 @@ float sdNStarPolygon(in float2 p, in float r, in float n, in float m) // m=[2,n]
     return length(p) * sign(p.x);
 }
 
-//心 Credit: https://www.shadertoy.com/view/3tyBzV
+// 心 (位置、比例)
 float sdHeart(float2 p, float scale)
 {
     p.x = abs(p.x) / scale;
@@ -162,15 +184,6 @@ float sdMoon(float2 p, float d, float ra, float rb)
     return max((length(p) - ra), -(length(p - float2(d, 0)) - rb));
 }
 
-// 胆囊
-float sdVesica(float2 p, float r, float d)
-{
-    p = abs(p);
-
-    float b = sqrt(r * r - d * d); // can delay this sqrt by rewriting the comparison
-    return ((p.y - b) * d > p.x * b) ? length(p - float2(0.0, b)) * sign(d) : length(p - float2(-d, 0.0)) - r;
-}
-
 // 水滴十字
 float sdBlobbyCross(float2 pos, float he)
 {
@@ -198,7 +211,7 @@ float sdBlobbyCross(float2 pos, float he)
     return length(z) * sign(z.y);
 }
 
-//方圆
+// 方圆形
 float sdSquircle(float2 p, float n)
 {
     p = abs(p);
@@ -229,7 +242,7 @@ float sdSquircle(float2 p, float n)
     return length(pa - ba * h) * sign(pa.x * ba.y - pa.y * ba.x);
 }
 
-//方圆
+// 方圆形
 float approx_sdSquircle(float2 p, float n)
 {
     p = abs(p);
@@ -241,18 +254,22 @@ float approx_sdSquircle(float2 p, float n)
     return (w - pow(w, a)) * rsqrt(pow(p.x, b) + pow(p.y, b));
 }
 
-//https://www.shadertoy.com/view/DtjXDG
-//https://www.shadertoy.com/view/7stcR4
+// 线
+float sdLine(float2 p, float2 a, float2 b)
+{
+    float2 pa = p - a, ba = b - a;
+    float h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+    return length(pa - ba * h);
+}
 
-//https://www.shadertoy.com/view/4ssyzj
-//https://www.shadertoy.com/view/wdlGWn
-//https://www.shadertoy.com/view/wdtcDn
-//https://www.shadertoy.com/view/ldVXRt
-//https://www.shadertoy.com/view/llXfRl
-//https://www.shadertoy.com/view/tscSz7
-//https://www.shadertoy.com/view/fdSBDD
-//https://www.shadertoy.com/view/fd3Szl
-//https://www.shadertoy.com/view/4dVXWy
-//https://www.shadertoy.com/view/Xd3cR8
-//形状结束------------------------
+// 角度重复（Angular Repetition）
+float2 opRepAng(float2 p, float theta, float offset)
+{
+    // 计算点的极角，并减去偏移量
+    float a = atan2(p.y, p.x) - offset;
+    // 将角度限制在 [-theta/2, theta/2] 范围内
+    a = fmod(a + 0.5 * theta, theta) - 0.5 * theta;
+    // 保持点的半径不变，重新计算新的坐标
+    return length(p) * float2(cos(a), sin(a));
+}
 #endif

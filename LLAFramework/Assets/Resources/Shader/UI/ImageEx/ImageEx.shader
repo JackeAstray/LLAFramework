@@ -60,7 +60,8 @@ Shader "ReunionMovement/UI/Procedural Image"
         
         _OutlineWidth ("Outline Width", float) = 0
         _OutlineColor ("Outline Color", Color) = (0, 0, 0, 1)
-        _EnableDashedOutline ("Enable Dashed Outline", int) = 0 // 添加虚线开关
+        // 虚线开关、自定义时间
+        _EnableDashedOutline ("Enable Dashed Outline", int) = 0 
         _CustomTime ("Custom Time", Float) = 0
 
         _StencilComp ("Stencil Comparison", Float) = 8
@@ -138,11 +139,6 @@ Shader "ReunionMovement/UI/Procedural Image"
                 float4 shapeData: TEXCOORD1;
                 float2 effectsUv: TEXCOORD2;
                 float4 worldPosition : TEXCOORD3;
-
-
-                /* //SOFTMASK_HANDLE_START
-                SOFTMASK_COORDS(4)
-                */ //SOFTMASK_HANDLE_END
                 
                 UNITY_VERTEX_OUTPUT_STEREO
             };
@@ -267,28 +263,27 @@ Shader "ReunionMovement/UI/Procedural Image"
             
             //矩形
             #if RECTANGLE
-                half rectangleScene(float4 _additionalData)
+                half rectangleScene(float4 additionalData)
                 {
-
-                    float2 _texcoord = _additionalData.xy;
-                    float2 _size = float2(_additionalData.z, _additionalData.w);
+                    float2 texcoord = additionalData.xy;
+                    float2 size = float2(additionalData.z, additionalData.w);
                     float4 radius = _RectangleCornerRadius;
-                    half4 c  = half4(_texcoord, _size - _texcoord);
+                    half4 c  = half4(texcoord, size - texcoord);
                     half rect = min(min(min(c.x, c.y), c.z), c.w);
 
                     bool4 cornerRects;
-                    cornerRects.x = _texcoord.x < radius.x && _texcoord.y < radius.x;
-                    cornerRects.y = _texcoord.x > _size.x - radius.y && _texcoord.y < radius.y;
-                    cornerRects.z = _texcoord.x > _size.x - radius.z && _texcoord.y > _size.y - radius.z;
-                    cornerRects.w = _texcoord.x < radius.w && _texcoord.y > _size.y - radius.w;
+                    cornerRects.x = texcoord.x < radius.x && texcoord.y < radius.x;
+                    cornerRects.y = texcoord.x > size.x - radius.y && texcoord.y < radius.y;
+                    cornerRects.z = texcoord.x > size.x - radius.z && texcoord.y > size.y - radius.z;
+                    cornerRects.w = texcoord.x < radius.w && texcoord.y > size.y - radius.w;
 
                     half cornerMask = any(cornerRects);
 
                     half4 cornerCircles;
-                    cornerCircles.x = radius.x - length(_texcoord - radius.xx);
-                    cornerCircles.y = radius.y - length(_texcoord - half2(_size.x - radius.y, radius.y));
-                    cornerCircles.z = radius.z - length(_texcoord - (half2(_size.x, _size.y) - radius.zz));
-                    cornerCircles.w = radius.w - length(_texcoord - half2(radius.w, _size.y - radius.w));
+                    cornerCircles.x = radius.x - length(texcoord - radius.xx);
+                    cornerCircles.y = radius.y - length(texcoord - half2(size.x - radius.y, radius.y));
+                    cornerCircles.z = radius.z - length(texcoord - (half2(size.x, size.y) - radius.zz));
+                    cornerCircles.w = radius.w - length(texcoord - half2(radius.w, size.y - radius.w));
 
                     cornerCircles = min(max(cornerCircles, 0) * cornerRects, rect);
                     half corners = max(max(max(cornerCircles.x, cornerCircles.y), cornerCircles.z), cornerCircles.w);
@@ -300,32 +295,32 @@ Shader "ReunionMovement/UI/Procedural Image"
             
             //圆
             #if CIRCLE
-                float circleScene(float4 _additionalData)
+                float circleScene(float4 additionalData)
                 {
-                    float2 _texcoord = _additionalData.xy;
-                    float2 _size = float2(_additionalData.z, _additionalData.w);
-                    float width = _size.x;
-                    float height = _size.y;
+                    float2 texcoord = additionalData.xy;
+                    float2 size = float2(additionalData.z, additionalData.w);
+                    float width = size.x;
+                    float height = size.y;
                     float radius = lerp(_CircleRadius, min(width, height) / 2.0, _CircleFitRadius);
-                    half sdf = circle(_texcoord - float2(width / 2.0, height / 2.0), radius);
+                    half sdf = sdCircle(texcoord - float2(width / 2.0, height / 2.0), radius);
                     return sdf;
                 }
             #endif
             
             //三角形
             #if TRIANGLE
-                half triangleScene(float4 _additionalData)
+                half triangleScene(float4 additionalData)
                 {
-                    float2 _texcoord = _additionalData.xy;
-                    float2 _size = float2(_additionalData.z, _additionalData.w);
-                    float width = _size.x;//_additionalData.z;
-                    float height = _size.y;//_additionalData.w;
+                    float2 texcoord = additionalData.xy;
+                    float2 size = float2(additionalData.z, additionalData.w);
+                    float width = size.x;
+                    float height = size.y;
                     
-                    half sdf = sdTriangleIsosceles(_texcoord - half2(width / 2.0, height), half2(width / 2.0, -height));
-                    //return sdf;
+                    half sdf = sdTriangleIsosceles(texcoord - half2(width / 2.0, height), half2(width / 2.0, -height));
                     
                     _TriangleCornerRadius = max(_TriangleCornerRadius, half3(0.001, 0.001, 0.001));
-                    // Left Corner
+
+                    // 左角
                     half halfWidth = width / 2.0;
                     half m = height / halfWidth;
                     half d = sqrt(1.0 + m * m);
@@ -333,33 +328,32 @@ Shader "ReunionMovement/UI/Procedural Image"
                     half k = -_TriangleCornerRadius.x * d + c;
                     half x = (_TriangleCornerRadius.x - k) / m;
                     half2 circlePivot = half2(x, _TriangleCornerRadius.x);
-                    half cornerCircle = circle(_texcoord - circlePivot, _TriangleCornerRadius.x);
-                    //sdf = sdfDifference(sdf, cornerCircle);
-                    //return sdf;
+                    half cornerCircle = sdCircle(texcoord - circlePivot, _TriangleCornerRadius.x);
+
                     x = (circlePivot.y + circlePivot.x / m - c) / (m + 1.0 / m);
                     half y = m * x + c;
-                    half fy = map(_texcoord.x, x, circlePivot.x, y, circlePivot.y);
-                    sdf = _texcoord.y < fy && _texcoord.x < circlePivot.x ? cornerCircle: sdf;
-                    //return sdf;
-                    // Right Corner
+                    half fy = map(texcoord.x, x, circlePivot.x, y, circlePivot.y);
+                    sdf = texcoord.y < fy && texcoord.x < circlePivot.x ? cornerCircle: sdf;
+
+                    // 右角
                     m = -m; c = 2.0 * height;
                     k = -_TriangleCornerRadius.y * d + c;
                     x = (_TriangleCornerRadius.y - k) / m;
                     circlePivot = half2(x, _TriangleCornerRadius.y);
-                    cornerCircle = circle(_texcoord - circlePivot, _TriangleCornerRadius.y);
+                    cornerCircle = sdCircle(texcoord - circlePivot, _TriangleCornerRadius.y);
                     x = (circlePivot.y + circlePivot.x / m - c) / (m + 1.0 / m); y = m * x + c;
-                    fy = map(_texcoord.x, circlePivot.x, x, circlePivot.y, y);
-                    sdf = _texcoord.x > circlePivot.x && _texcoord.y < fy ? cornerCircle: sdf;
+                    fy = map(texcoord.x, circlePivot.x, x, circlePivot.y, y);
+                    sdf = texcoord.x > circlePivot.x && texcoord.y < fy ? cornerCircle: sdf;
                     
-                    //Top Corner
+                    // 上角
                     k = -_TriangleCornerRadius.z * sqrt(1.0 + m * m) + c;
                     y = m * (width / 2.0) + k;
                     circlePivot = half2(halfWidth, y);
-                    cornerCircle = circle(_texcoord - circlePivot, _TriangleCornerRadius.z);
+                    cornerCircle = sdCircle(texcoord - circlePivot, _TriangleCornerRadius.z);
                     x = (circlePivot.y + circlePivot.x / m - c) / (m + 1.0 / m); y = m * x + c;
-                    fy = map(_texcoord.x, width - x, x, -1.0, 1.0);
+                    fy = map(texcoord.x, width - x, x, -1.0, 1.0);
                     fy = lerp(circlePivot.y, y, abs(fy));
-                    sdf = _texcoord.y > fy ? cornerCircle: sdf;
+                    sdf = texcoord.y > fy ? cornerCircle: sdf;
                     
                     return sdf;
                 }
@@ -367,21 +361,21 @@ Shader "ReunionMovement/UI/Procedural Image"
             
             //五边形
             #if PENTAGON
-                half pentagonScene(float4 _additionalData)
+                half pentagonScene(float4 additionalData)
                 {
                     
-                    float2 _texcoord = _additionalData.xy;
-                    float2 _size = float2(_additionalData.z, _additionalData.w);
-                    float width = _size.x;
-                    float height = _size.y;
+                    float2 texcoord = additionalData.xy;
+                    float2 size = float2(additionalData.z, additionalData.w);
+                    float width = size.x;
+                    float height = size.y;
                     
-                    // solid pentagon
-                    half baseRect = rectanlge(_texcoord - half2(width / 2.0, height / 2.0), width, height);
+                    // 实心五边形
+                    half baseRect = rectanlge(texcoord - half2(width / 2.0, height / 2.0), width, height);
                     half scale = height / _PentagonTipSize;
-                    half rhombus = sdRhombus(_texcoord - float2(width / 2, _PentagonTipSize * scale), float2(width / 2, _PentagonTipSize) * scale);
+                    half rhombus = sdRhombus(texcoord - float2(width / 2, _PentagonTipSize * scale), float2(width / 2, _PentagonTipSize) * scale);
                     half sdfPentagon = sdfDifference(baseRect, sdfDifference(baseRect, rhombus));
                     
-                    // Bottom rounded corner
+                    // 底部圆角
                     _PentagonTipRadius = max(_PentagonTipRadius, 0.001);
                     float halfWidth = width / 2;
                     float m = -_PentagonTipSize / halfWidth;
@@ -390,35 +384,35 @@ Shader "ReunionMovement/UI/Procedural Image"
                     float k = _PentagonTipRadius * d + _PentagonTipSize;
                     
                     half2 circlePivot = half2(halfWidth, m * halfWidth + k);
-                    half cornerCircle = circle(_texcoord - circlePivot, _PentagonTipRadius);
+                    half cornerCircle = sdCircle(texcoord - circlePivot, _PentagonTipRadius);
                     half x = (circlePivot.y + circlePivot.x / m - c) / (m + 1 / m);
                     half y = m * x + c;
-                    half fy = map(_texcoord.x, x, width - x, -1, 1);
+                    half fy = map(texcoord.x, x, width - x, -1, 1);
                     fy = lerp(_PentagonTipRadius, y, abs(fy));
-                    sdfPentagon = _texcoord.y < fy ? cornerCircle: sdfPentagon;
+                    sdfPentagon = texcoord.y < fy ? cornerCircle: sdfPentagon;
                     
-                    // Mid Left rounded corner
+                    // 左中圆角
                     k = _PentagonCornerRadius.w * d + _PentagonTipSize;
                     circlePivot = half2(_PentagonCornerRadius.w, m * _PentagonCornerRadius.w + k);
-                    cornerCircle = circle(_texcoord - circlePivot, _PentagonCornerRadius.w);
+                    cornerCircle = sdCircle(texcoord - circlePivot, _PentagonCornerRadius.w);
                     x = (circlePivot.y + circlePivot.x / m - c) / (m + 1 / m); y = m * x + c;
-                    fy = map(_texcoord.x, x, circlePivot.x, y, circlePivot.y);
-                    sdfPentagon = _texcoord.y > fy && _texcoord.y < circlePivot.y ? cornerCircle: sdfPentagon;
+                    fy = map(texcoord.x, x, circlePivot.x, y, circlePivot.y);
+                    sdfPentagon = texcoord.y > fy && texcoord.y < circlePivot.y ? cornerCircle: sdfPentagon;
                     
-                    // Mid Right rounded corner
+                    // 右中圆角
                     m = -m; k = _PentagonCornerRadius.z * d - _PentagonTipSize;
                     circlePivot = half2(width - _PentagonCornerRadius.z, m * (width - _PentagonCornerRadius.z) + k);
-                    cornerCircle = circle(_texcoord - circlePivot, _PentagonCornerRadius.z);
+                    cornerCircle = sdCircle(texcoord - circlePivot, _PentagonCornerRadius.z);
                     x = (circlePivot.y + circlePivot.x / m - c) / (m + 1 / m); y = m * x + c;
-                    fy = map(_texcoord.x, circlePivot.x, x, circlePivot.y, y);
-                    sdfPentagon = _texcoord.y > fy && _texcoord.y < circlePivot.y ? cornerCircle: sdfPentagon;
+                    fy = map(texcoord.x, circlePivot.x, x, circlePivot.y, y);
+                    sdfPentagon = texcoord.y > fy && texcoord.y < circlePivot.y ? cornerCircle: sdfPentagon;
                     
-                    // Top rounded corners
-                    cornerCircle = circle(_texcoord - half2(_PentagonCornerRadius.x, height - _PentagonCornerRadius.x), _PentagonCornerRadius.x);
-                    bool mask = _texcoord.x < _PentagonCornerRadius.x && _texcoord.y > height - _PentagonCornerRadius.x;
+                    // 顶部圆角
+                    cornerCircle = sdCircle(texcoord - half2(_PentagonCornerRadius.x, height - _PentagonCornerRadius.x), _PentagonCornerRadius.x);
+                    bool mask = texcoord.x < _PentagonCornerRadius.x && texcoord.y > height - _PentagonCornerRadius.x;
                     sdfPentagon = mask ? cornerCircle: sdfPentagon;
-                    cornerCircle = circle(_texcoord - half2(width - _PentagonCornerRadius.y, height - _PentagonCornerRadius.y), _PentagonCornerRadius.y);
-                    mask = _texcoord.x > width - _PentagonCornerRadius.y && _texcoord.y > height - _PentagonCornerRadius.y;
+                    cornerCircle = sdCircle(texcoord - half2(width - _PentagonCornerRadius.y, height - _PentagonCornerRadius.y), _PentagonCornerRadius.y);
+                    mask = texcoord.x > width - _PentagonCornerRadius.y && texcoord.y > height - _PentagonCornerRadius.y;
                     sdfPentagon = mask ? cornerCircle: sdfPentagon;
                     
                     return sdfPentagon;
@@ -427,18 +421,18 @@ Shader "ReunionMovement/UI/Procedural Image"
             
             //六边形
             #if HEXAGON
-                half hexagonScene(float4 _additionalData)
+                half hexagonScene(float4 additionalData)
                 {
-                    float2 _texcoord = _additionalData.xy;
-                    float2 _size = float2(_additionalData.z, _additionalData.w);
-                    float width = _size.x;//_additionalData.z;
-                    float height = _size.y;//_additionalData.w;
+                    float2 texcoord = additionalData.xy;
+                    float2 size = float2(additionalData.z, additionalData.w);
+                    float width = size.x;//additionalData.z;
+                    float height = size.y;//additionalData.w;
                     
-                    half baseRect = rectanlge(_texcoord - half2(width / 2.0, height / 2.0), width, height);
+                    half baseRect = rectanlge(texcoord - half2(width / 2.0, height / 2.0), width, height);
                     half scale = width / _HexagonTipSize.x;
-                    half rhombus1 = sdRhombus(_texcoord - float2(_HexagonTipSize.x * scale, height / 2.0), float2(_HexagonTipSize.x, height / 2.0) * scale);
+                    half rhombus1 = sdRhombus(texcoord - float2(_HexagonTipSize.x * scale, height / 2.0), float2(_HexagonTipSize.x, height / 2.0) * scale);
                     scale = width / _HexagonTipSize.y;
-                    half rhombus2 = sdRhombus(_texcoord - float2(width - _HexagonTipSize.y * scale, height / 2.0), float2(_HexagonTipSize.y, height / 2.0) * scale);
+                    half rhombus2 = sdRhombus(texcoord - float2(width - _HexagonTipSize.y * scale, height / 2.0), float2(_HexagonTipSize.y, height / 2.0) * scale);
                     half sdfHexagon = sdfDifference(sdfDifference(baseRect, -rhombus1), -rhombus2);
 
                     //Left Rounded Corners
@@ -449,28 +443,28 @@ Shader "ReunionMovement/UI/Procedural Image"
                     float k = _HexagonTipRadius.x * d + c;
                     //middle
                     half2 circlePivot = half2((halfHeight - k) / m, halfHeight);
-                    half cornerCircle = circle(_texcoord - circlePivot, _HexagonTipRadius.x);
+                    half cornerCircle = sdCircle(texcoord - circlePivot, _HexagonTipRadius.x);
                     half x = (circlePivot.y + circlePivot.x / m - c) / (m + 1.0 / m);
                     half y = m * x + c;
-                    half fy = map(_texcoord.x, x, circlePivot.x, y, circlePivot.y);
-                    sdfHexagon = _texcoord.y > fy && _texcoord.y < height - fy ? cornerCircle: sdfHexagon;
+                    half fy = map(texcoord.x, x, circlePivot.x, y, circlePivot.y);
+                    sdfHexagon = texcoord.y > fy && texcoord.y < height - fy ? cornerCircle: sdfHexagon;
                     //return sdfHexagon;
                     //bottom
                     k = _HexagonCornerRadius.x * d + c;
                     circlePivot = half2((_HexagonCornerRadius.x - k) / m, _HexagonCornerRadius.x);
-                    cornerCircle = circle(_texcoord - circlePivot, _HexagonCornerRadius.x);
+                    cornerCircle = sdCircle(texcoord - circlePivot, _HexagonCornerRadius.x);
                     x = (circlePivot.y + circlePivot.x / m - c) / (m + 1.0 / m); y = m * x + c;
-                    fy = map(_texcoord.x, x, circlePivot.x, y, circlePivot.y);
-                    sdfHexagon = _texcoord.y < fy && _texcoord.x < circlePivot.x ? cornerCircle: sdfHexagon;
+                    fy = map(texcoord.x, x, circlePivot.x, y, circlePivot.y);
+                    sdfHexagon = texcoord.y < fy && texcoord.x < circlePivot.x ? cornerCircle: sdfHexagon;
 
                     //return sdfHexagon;
                     //top
                     k = _HexagonCornerRadius.w * d + c;
                     circlePivot = half2((_HexagonCornerRadius.w - k) / m, height - _HexagonCornerRadius.w);
-                    cornerCircle = circle(_texcoord - circlePivot, _HexagonCornerRadius.w);
+                    cornerCircle = sdCircle(texcoord - circlePivot, _HexagonCornerRadius.w);
                     x = (_HexagonCornerRadius.w + circlePivot.x / m - c) / (m + 1.0 / m); y = m * x + c;
-                    fy = map(_texcoord.x, x, circlePivot.x, height - y, circlePivot.y);
-                    sdfHexagon = _texcoord.y > fy && _texcoord.x < circlePivot.x ? cornerCircle: sdfHexagon;
+                    fy = map(texcoord.x, x, circlePivot.x, height - y, circlePivot.y);
+                    sdfHexagon = texcoord.y > fy && texcoord.x < circlePivot.x ? cornerCircle: sdfHexagon;
                     //return sdfHexagon;
                     //Right Rounded Corners
                     m = halfHeight / _HexagonTipSize.y;
@@ -480,26 +474,26 @@ Shader "ReunionMovement/UI/Procedural Image"
                     
                     //middle
                     circlePivot = half2((halfHeight - k) / m, halfHeight);
-                    cornerCircle = circle(_texcoord - circlePivot, _HexagonTipRadius.y);
+                    cornerCircle = sdCircle(texcoord - circlePivot, _HexagonTipRadius.y);
                     x = (circlePivot.y + circlePivot.x / m - c) / (m + 1.0 / m); y = m * x + c;
-                    fy = map(_texcoord.x, circlePivot.x, x, circlePivot.y, y);
-                    sdfHexagon = _texcoord.y > fy && _texcoord.y < height - fy ? cornerCircle: sdfHexagon;
+                    fy = map(texcoord.x, circlePivot.x, x, circlePivot.y, y);
+                    sdfHexagon = texcoord.y > fy && texcoord.y < height - fy ? cornerCircle: sdfHexagon;
                     //return sdfHexagon;
                     //bottom
                     k = _HexagonCornerRadius.y * d + c;
                     circlePivot = half2((_HexagonCornerRadius.y - k) / m, _HexagonCornerRadius.y);
-                    cornerCircle = circle(_texcoord - circlePivot, _HexagonCornerRadius.y);
+                    cornerCircle = sdCircle(texcoord - circlePivot, _HexagonCornerRadius.y);
                     x = (circlePivot.y + circlePivot.x / m - c) / (m + 1.0 / m); y = m * x + c;
-                    fy = map(_texcoord.x, circlePivot.x, x, circlePivot.y, y);
-                    sdfHexagon = _texcoord.y < fy && _texcoord.x > circlePivot.x ? cornerCircle: sdfHexagon;
+                    fy = map(texcoord.x, circlePivot.x, x, circlePivot.y, y);
+                    sdfHexagon = texcoord.y < fy && texcoord.x > circlePivot.x ? cornerCircle: sdfHexagon;
                     //return sdfHexagon;
                     //top
                     k = _HexagonCornerRadius.z * d + c;
                     circlePivot = half2((_HexagonCornerRadius.z - k) / m, height - _HexagonCornerRadius.z);
-                    cornerCircle = circle(_texcoord - circlePivot, _HexagonCornerRadius.z);
+                    cornerCircle = sdCircle(texcoord - circlePivot, _HexagonCornerRadius.z);
                     x = (_HexagonCornerRadius.z + circlePivot.x / m - c) / (m + 1.0 / m); y = m * x + c;
-                    fy = map(_texcoord.x, circlePivot.x, x, circlePivot.y, height - y);
-                    sdfHexagon = _texcoord.y > fy && _texcoord.x > circlePivot.x ? cornerCircle: sdfHexagon;
+                    fy = map(texcoord.x, circlePivot.x, x, circlePivot.y, height - y);
+                    sdfHexagon = texcoord.y > fy && texcoord.x > circlePivot.x ? cornerCircle: sdfHexagon;
                     
                     return sdfHexagon;
                 }
@@ -508,27 +502,27 @@ Shader "ReunionMovement/UI/Procedural Image"
             
             //N星形多边形
             #if NSTAR_POLYGON
-                half nStarPolygonScene(float4 _additionalData)
+                half nStarPolygonScene(float4 additionalData)
                 {
-                    float2 _texcoord = _additionalData.xy;
-                    float width = _additionalData.z;
-                    float height = _additionalData.w;
+                    float2 texcoord = additionalData.xy;
+                    float width = additionalData.z;
+                    float height = additionalData.w;
                     float size = height / 2 - _NStarPolygonCornerRadius;
-                    half str = sdNStarPolygon(_texcoord - half2(width / 2, height / 2) - _NStarPolygonOffset, size, _NStarPolygonSideCount, _NStarPolygonInset) - _NStarPolygonCornerRadius;
+                    half str = sdNStarPolygon(texcoord - half2(width / 2, height / 2) - _NStarPolygonOffset, size, _NStarPolygonSideCount, _NStarPolygonInset) - _NStarPolygonCornerRadius;
                     return str;
                 }
             #endif
             
             //心形
             #if HEART
-                half heartScene(float4 _additionalData)
+                half heartScene(float4 additionalData)
                 {
                     //得到纹理坐标
-                    float2 texcoord = _additionalData.xy;
+                    float2 texcoord = additionalData.xy;
                     //得到宽
-                    float width = _additionalData.z;
+                    float width = additionalData.z;
                     //得到高
-                    float height = _additionalData.w;
+                    float height = additionalData.w;
 
                     float radius = min(width, height) * 0.8;
 
@@ -540,16 +534,16 @@ Shader "ReunionMovement/UI/Procedural Image"
 
             //水滴十字
             #if BLOBBYCROSS
-                half blobbyCrossScene(float4 _additionalData)
+                half blobbyCrossScene(float4 additionalData)
                 {
                      //得到纹理坐标
-                    float2 texcoord = _additionalData.xy;
+                    float2 texcoord = additionalData.xy;
                     //得到宽
-                    float width = _additionalData.z;
+                    float width = additionalData.z;
                     //得到高
-                    float height = _additionalData.w;
+                    float height = additionalData.w;
 
-                    float2 p = (2.0 * texcoord - _additionalData.zw) / width;
+                    float2 p = (2.0 * texcoord - additionalData.zw) / width;
                     p *= 2.0;
 
                     float time = _BlobbyCrossTime;
@@ -567,13 +561,13 @@ Shader "ReunionMovement/UI/Procedural Image"
 
             //方圆
             #if SQUIRCLE
-                half squircleScene(float4 _additionalData)
+                half squircleScene(float4 additionalData)
                 {
-                    float2 texcoord = _additionalData.xy;
-                    float width = _additionalData.z;
-                    float height = _additionalData.w;
+                    float2 texcoord = additionalData.xy;
+                    float width = additionalData.z;
+                    float height = additionalData.w;
 
-                    float2 p = (2.0 * texcoord - _additionalData.zw) / width;
+                    float2 p = (2.0 * texcoord - additionalData.zw) / width;
                     p *= 1.25;
 
                     // 增加归一化处理，确保中心区域平滑
@@ -585,14 +579,24 @@ Shader "ReunionMovement/UI/Procedural Image"
                 }
             #endif
 
-            //旋转uv
-            float2 rotateUV(float2 uv, float rotation, float2 mid)
+            //N三角形圆角
+            #if NTriangleRounded
+            half dynamicPolygonScene(float4 additionalData)
             {
-                return float2(
-                  cos(rotation) * (uv.x - mid.x) + sin(rotation) * (uv.y - mid.y) + mid.x,
-                  cos(rotation) * (uv.y - mid.y) - sin(rotation) * (uv.x - mid.x) + mid.y
-                );
+                float2 texcoord = additionalData.xy;
+                float width = additionalData.z;
+                float height = additionalData.w;
+        
+                float2 p = (2.0 * texcoord - additionalData.zw) / width;
+                p *= 1.1;
+        
+                float time = _CustomTime;
+                float rounding = 0.1 - 0.1 * cos(radians(360.0) * time);
+                float n = floor(3.0 + fmod(1.0 * time, 15.0));
+        
+                return sdDynamicPolygon(p, n, rounding) * 80.0;
             }
+            #endif
 
             // 获取圆弧段
             float getCircleSegment(float2 uv, float start, float end, float radius, float width, float blur)
@@ -755,7 +759,7 @@ Shader "ReunionMovement/UI/Procedural Image"
                     color *= finalCol;
                 #endif
                 
-                #if RECTANGLE || CIRCLE || PENTAGON || TRIANGLE || HEXAGON || NSTAR_POLYGON || HEART || BLOBBYCROSS || SQUIRCLE
+                #if RECTANGLE || CIRCLE || PENTAGON || TRIANGLE || HEXAGON || NSTAR_POLYGON || HEART || BLOBBYCROSS || SQUIRCLE || NTriangleRounded
                     float sdfData = 0;
                     float pixelScale = clamp(1.0/_FalloffDistance, 1.0/2048.0, 2048.0);
                     #if RECTANGLE
@@ -776,6 +780,8 @@ Shader "ReunionMovement/UI/Procedural Image"
                         sdfData = blobbyCrossScene(IN.shapeData);
                     #elif SQUIRCLE
                         sdfData = squircleScene(IN.shapeData);
+                    #elif NTriangleRounded
+                        sdfData = dynamicPolygonScene(IN.shapeData);
                     #endif
                 
                     #if !OUTLINED && !STROKE && !OUTLINED_STROKE
@@ -837,7 +843,6 @@ Shader "ReunionMovement/UI/Procedural Image"
                 return fixed4(color);
             }
             ENDCG
-            
         }
     }
     CustomEditor "GameLogic.UI.ImageExtensions.Editor.ImageShaderGUI"

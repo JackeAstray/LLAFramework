@@ -13,10 +13,19 @@ float2 screen_aspect_ratio(float2 uv, float ratio)
 
     return uv;
 }
-
+// 取模运算
 float mod(float a, float b)
 {
     return a % b;
+}
+
+// 旋转uv
+float2 rotateUV(float2 uv, float rotation, float2 mid)
+{
+    return float2(
+        cos(rotation) * (uv.x - mid.x) + sin(rotation) * (uv.y - mid.y) + mid.x,
+        cos(rotation) * (uv.y - mid.y) - sin(rotation) * (uv.x - mid.x) + mid.y
+    );
 }
 
 // 使用frac函数获取uv的小数部分
