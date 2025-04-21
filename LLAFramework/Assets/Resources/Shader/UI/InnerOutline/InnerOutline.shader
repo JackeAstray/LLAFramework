@@ -1,4 +1,4 @@
-Shader "Custom/InnerOutline"
+Shader "ReunionMovement/InnerOutline"
 {
     Properties
     {

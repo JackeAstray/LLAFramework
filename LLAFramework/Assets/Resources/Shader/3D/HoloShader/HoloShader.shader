@@ -1,4 +1,4 @@
-﻿Shader "HoloShader"
+﻿Shader "ReunionMovement/HoloShader"
 {
 	Properties
 	{
