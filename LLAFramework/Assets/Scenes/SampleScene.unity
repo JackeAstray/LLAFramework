@@ -4126,12 +4126,12 @@ MonoBehaviour:
   imageType: 0
   materialMode: 0
   strokeWidth: 0
-  outlineWidth: 3
+  outlineWidth: 2.5
   outlineColor: {r: 0, g: 0, b: 0, a: 1}
   customTime: 0
   enableDashedOutline: 0
   falloffDistance: 0
-  constrainRotation: 1
+  constrainRotation: 0
   shapeRotation: 0
   flipHorizontal: 0
   flipVertical: 0
@@ -4167,8 +4167,8 @@ MonoBehaviour:
   squircle:
     squircleTime: 2.25
   nTriangleRounded:
-    nTriangleRoundedTime: 0
-    nTriangleRoundedNumber: 2
+    nTriangleRoundedTime: 5
+    nTriangleRoundedNumber: 3
   gradientEffect:
     enabled: 0
     gradientType: 1

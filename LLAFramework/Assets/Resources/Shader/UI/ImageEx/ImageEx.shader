@@ -605,7 +605,7 @@ Shader "ReunionMovement/UI/Procedural Image"
                 float n = floor(3.0 + fmod(1.0 * number, 15.0));
 
                 // 应用角度重复
-                p = opRepAng(p, radians(360.0) / n, radians(90.0));
+                p = opRepAng(p, radians(360.0) / n, radians(30));
 
                 // 计算三角形的内切圆半径和边长
                 float r = 1.0;
