@@ -87,25 +87,20 @@ float sdTriangleIsosceles(float2 p, float2 q)
     return -sqrt(d.x) * sign(d.y);
 }
 
-// 等边三角形（圆角）
-float sdTriangleIsoscelesRounded(float2 p, float2 q, float rounding)
+// 引入圆角等边三角形 SDF 与角度重复函数
+float sdTriangleIsoscelesRounded(in float2 p, in float2 q, float rounding)
 {
     float W = 2.0 * q.x;
     float H = q.y;
-
     float r = W * H / (W + 2.0 * sqrt(0.25 * W * W + H * H));
     float s = 1.0 - rounding / r;
-
     float Wp = W * s;
     float Hp = H * s;
-
     float y_off = (H - Hp) - rounding;
-
     if (rounding >= r)
     {
         return length(p - float2(0, H - r)) - r;
     }
-
     return sdTriangleIsosceles(p - float2(0, y_off), float2(0.5 * Wp, Hp)) - rounding;
 }
 
@@ -262,14 +257,15 @@ float sdLine(float2 p, float2 a, float2 b)
     return length(pa - ba * h);
 }
 
-// 角度重复（Angular Repetition）
+float mod(float x, float y)
+{
+    return x - y * floor(x / y);
+}
+
 float2 opRepAng(float2 p, float theta, float offset)
 {
-    // 计算点的极角，并减去偏移量
     float a = atan2(p.y, p.x) - offset;
-    // 将角度限制在 [-theta/2, theta/2] 范围内
-    a = fmod(a + 0.5 * theta, theta) - 0.5 * theta;
-    // 保持点的半径不变，重新计算新的坐标
+    a = mod(a + 0.5 * theta, theta) - 0.5 * theta;
     return length(p) * float2(cos(a), sin(a));
 }
 #endif

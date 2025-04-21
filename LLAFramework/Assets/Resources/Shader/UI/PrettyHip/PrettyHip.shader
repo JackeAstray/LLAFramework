@@ -55,7 +55,7 @@ Shader "ReunionMovement/PrettyHip"
                 return o;
             }
 
-            fixed4 frag (v2f i) : SV_Target
+            fixed4 frag (v2f IN) : SV_Target
             {
                 float aspect = 1.0;
 
@@ -64,7 +64,7 @@ Shader "ReunionMovement/PrettyHip"
                 #endif
 
                 // 将UV坐标中心移到(0.5, 0.5)
-                float2 uv = i.uv;
+                float2 uv = IN.uv;
                 uv -= 0.5;
                 // 调整UV坐标
                 uv.y *= aspect;

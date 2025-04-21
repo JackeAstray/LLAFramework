@@ -76,6 +76,9 @@ Shader "ReunionMovement/UI/Procedural Image"
 
         _SquircleTime ("Squircle Time", Float) = 1
 
+        _NTriangleRoundedTime ("NTriangle Rounded Time", Float) = 0
+        _NTriangleRoundedNumber ("NTriangle Rounded Number", Float) = 0
+        
         [Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip ("Use Alpha Clip", Float) = 0
     }
     
@@ -115,7 +118,7 @@ Shader "ReunionMovement/UI/Procedural Image"
             #pragma multi_compile_local _ UNITY_UI_CLIP_RECT
             #pragma multi_compile_local _ UNITY_UI_ALPHACLIP
             
-            #pragma multi_compile_local _ CIRCLE TRIANGLE RECTANGLE PENTAGON HEXAGON NSTAR_POLYGON HEART BLOBBYCROSS SQUIRCLE
+            #pragma multi_compile_local _ CIRCLE TRIANGLE RECTANGLE PENTAGON HEXAGON NSTAR_POLYGON HEART BLOBBYCROSS SQUIRCLE NTRIANGLE_ROUNDED
             
             #pragma multi_compile_local _ STROKE OUTLINED OUTLINED_STROKE
             #pragma multi_compile_local _ GRADIENT_LINEAR GRADIENT_RADIAL GRADIENT_CORNER
@@ -236,6 +239,11 @@ Shader "ReunionMovement/UI/Procedural Image"
             
             #if SQUIRCLE
                 float _SquircleTime;
+            #endif
+
+            #if NTRIANGLE_ROUNDED
+                float _NTriangleRoundedTime;
+                float _NTriangleRoundedNumber;
             #endif
             
             //渐变
@@ -559,7 +567,7 @@ Shader "ReunionMovement/UI/Procedural Image"
                 }
             #endif
 
-            //方圆
+            //方圆形 菱形
             #if SQUIRCLE
                 half squircleScene(float4 additionalData)
                 {
@@ -568,7 +576,6 @@ Shader "ReunionMovement/UI/Procedural Image"
                     float height = additionalData.w;
 
                     float2 p = (2.0 * texcoord - additionalData.zw) / width;
-                    p *= 1.25;
 
                     // 增加归一化处理，确保中心区域平滑
                     float n = 3.0 + 2.5 * sin(6.283185 * _SquircleTime / 3.0);
@@ -580,47 +587,39 @@ Shader "ReunionMovement/UI/Procedural Image"
             #endif
 
             //N三角形圆角
-            #if NTriangleRounded
-            half dynamicPolygonScene(float4 additionalData)
+            #if NTRIANGLE_ROUNDED
+
+            half nTriangleRoundedScene(float4 additionalData)
             {
                 float2 texcoord = additionalData.xy;
                 float width = additionalData.z;
                 float height = additionalData.w;
-        
-                float2 p = (2.0 * texcoord - additionalData.zw) / width;
-                p *= 1.1;
-        
-                float time = _CustomTime;
+
+
+                float2 p = (2.0 * texcoord - float2(width,height)) / max(width,height);
+
+                // 动态时间控制
+                float time = _NTriangleRoundedTime;
+                float number = _NTriangleRoundedNumber;
                 float rounding = 0.1 - 0.1 * cos(radians(360.0) * time);
-                float n = floor(3.0 + fmod(1.0 * time, 15.0));
-        
-                return sdDynamicPolygon(p, n, rounding) * 80.0;
+                float n = floor(3.0 + fmod(1.0 * number, 15.0));
+
+                // 应用角度重复
+                p = opRepAng(p, radians(360.0) / n, radians(90.0));
+
+                // 计算三角形的内切圆半径和边长
+                float r = 1.0;
+                float r_in = r * cos(radians(180.0) / n);
+                float side_length = 2.0 * r_in * tan(radians(180.0) / n);
+
+                // 计算带圆角的等腰三角形的 SDF
+                float d = sdTriangleIsoscelesRounded(p.yx, float2(0.5 * side_length, r_in), rounding);
+
+                // 返回 SDF 值，放大以适配像素空间
+                return d * 80.0;
             }
             #endif
 
-            // 获取圆弧段
-            float getCircleSegment(float2 uv, float start, float end, float radius, float width, float blur)
-            {
-                end += step(end, start); // 处理跨越 0° 的情况
-                float distanceO = length(uv);
-
-                float angle = atan2(uv.y, uv.x) * 0.5 * 0.31830988618; // 将角度归一化到 [0, 1]
-                angle = frac(angle);
-                float circle;
-                circle = smoothstep(width + blur, width - blur, distanceO);
-                circle -= smoothstep(radius + blur, radius - blur, distanceO);
-
-                // 添加分段
-                float segment = smoothstep(end + blur * 0.5, end - blur * 0.5, angle);
-                segment -= smoothstep(start + blur * 0.5, start - blur * 0.5, angle);
-
-                float s = step(1.0, end);
-                segment += s * smoothstep(frac(end) + blur * 0.5, frac(end) - blur * 0.5, angle);
-                circle = circle * segment;
-
-                return circle;
-            }
-                    
             // --------------------RECTANGLE Start---------------------
             float generateDashedEffect(v2f IN, float time, float aspectRatio, int shapeType)
             {
@@ -759,7 +758,7 @@ Shader "ReunionMovement/UI/Procedural Image"
                     color *= finalCol;
                 #endif
                 
-                #if RECTANGLE || CIRCLE || PENTAGON || TRIANGLE || HEXAGON || NSTAR_POLYGON || HEART || BLOBBYCROSS || SQUIRCLE || NTriangleRounded
+                #if RECTANGLE || CIRCLE || PENTAGON || TRIANGLE || HEXAGON || NSTAR_POLYGON || HEART || BLOBBYCROSS || SQUIRCLE || NTRIANGLE_ROUNDED
                     float sdfData = 0;
                     float pixelScale = clamp(1.0/_FalloffDistance, 1.0/2048.0, 2048.0);
                     #if RECTANGLE
@@ -780,8 +779,8 @@ Shader "ReunionMovement/UI/Procedural Image"
                         sdfData = blobbyCrossScene(IN.shapeData);
                     #elif SQUIRCLE
                         sdfData = squircleScene(IN.shapeData);
-                    #elif NTriangleRounded
-                        sdfData = dynamicPolygonScene(IN.shapeData);
+                    #elif NTRIANGLE_ROUNDED
+                        sdfData = nTriangleRoundedScene(IN.shapeData);
                     #endif
                 
                     #if !OUTLINED && !STROKE && !OUTLINED_STROKE

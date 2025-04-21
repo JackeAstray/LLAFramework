@@ -24,5 +24,4 @@ namespace GameLogic.UI.ImageExtensions.Editor
             EditorGUI.EndProperty();
         }
     }
-
 }

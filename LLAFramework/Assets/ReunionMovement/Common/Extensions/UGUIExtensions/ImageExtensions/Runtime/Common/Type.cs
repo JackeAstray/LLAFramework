@@ -7,16 +7,17 @@ namespace GameLogic.UI.ImageExtensions
     //绘制形状
     public enum DrawShape
     {
-        None = 0,       //无
-        Circle,         //圆
-        Triangle,       //三角形
-        Rectangle,      //矩形
-        Pentagon,       //五边形
-        Hexagon,        //六边形
-        NStarPolygon,   //N星多边形
-        Heart,          //心形
-        BlobbyCross,    //滴状十字
-        Squircle,       //方圆形
+        None = 0,           //无
+        Circle,             //圆
+        Triangle,           //三角形
+        Rectangle,          //矩形
+        Pentagon,           //五边形
+        Hexagon,            //六边形
+        NStarPolygon,       //N星多边形
+        Heart,              //心形
+        BlobbyCross,        //滴状十字
+        Squircle,           //方圆形 菱形
+        NTriangleRounded,   //N三角形圆角
     }
 
     //渐变类型

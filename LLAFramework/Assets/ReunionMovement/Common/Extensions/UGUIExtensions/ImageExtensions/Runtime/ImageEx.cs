@@ -45,6 +45,7 @@ namespace GameLogic.UI.ImageExtensions
         [SerializeField] private HeartImg heart = new HeartImg();
         [SerializeField] private BlobbyCrossImg blobbyCross = new BlobbyCrossImg();
         [SerializeField] private SquircleImg squircle = new SquircleImg();
+        [SerializeField] private NTriangleRoundedImg nTriangleRounded = new NTriangleRoundedImg();
 
         [SerializeField] private GradientEffect gradientEffect = new GradientEffect();
         #endregion
@@ -468,6 +469,16 @@ namespace GameLogic.UI.ImageExtensions
             }
         }
 
+        public NTriangleRoundedImg NTriangleRounded
+        {
+            get => nTriangleRounded;
+            set
+            {
+                nTriangleRounded = value;
+                SetMaterialDirty();
+            }
+        }
+
         public GradientEffect GradientEffect
         {
             get => gradientEffect;
@@ -553,6 +564,7 @@ namespace GameLogic.UI.ImageExtensions
             heart.OnValidate();
             blobbyCross.OnValidate();
             squircle.OnValidate();
+            nTriangleRounded.OnValidate();
 
             gradientEffect.OnValidate();
 
@@ -574,6 +586,7 @@ namespace GameLogic.UI.ImageExtensions
             heart.Init(m_Material, material, rectTransform);
             blobbyCross.Init(m_Material, material, rectTransform);
             squircle.Init(m_Material, material, rectTransform);
+            nTriangleRounded.Init(m_Material, material, rectTransform);
             gradientEffect.Init(m_Material, material, rectTransform);
         }
 
@@ -646,6 +659,7 @@ namespace GameLogic.UI.ImageExtensions
                 heart.onComponentSettingsChanged += OnComponentSettingsChanged;
                 blobbyCross.onComponentSettingsChanged += OnComponentSettingsChanged;
                 squircle.onComponentSettingsChanged += OnComponentSettingsChanged;
+                nTriangleRounded.onComponentSettingsChanged += OnComponentSettingsChanged;
                 gradientEffect.onComponentSettingsChanged += OnComponentSettingsChanged;
             }
             else
@@ -659,6 +673,7 @@ namespace GameLogic.UI.ImageExtensions
                 heart.onComponentSettingsChanged -= OnComponentSettingsChanged;
                 blobbyCross.onComponentSettingsChanged -= OnComponentSettingsChanged;
                 squircle.onComponentSettingsChanged -= OnComponentSettingsChanged;
+                nTriangleRounded.onComponentSettingsChanged -= OnComponentSettingsChanged;
                 gradientEffect.onComponentSettingsChanged -= OnComponentSettingsChanged;
             }
         }
@@ -781,6 +796,7 @@ namespace GameLogic.UI.ImageExtensions
             heart.ModifyMaterial(ref mat);
             blobbyCross.ModifyMaterial(ref mat);
             squircle.ModifyMaterial(ref mat);
+            nTriangleRounded.ModifyMaterial(ref mat);
 
             gradientEffect.ModifyMaterial(ref mat);
 
@@ -797,6 +813,7 @@ namespace GameLogic.UI.ImageExtensions
                     mat.DisableKeyword("HEART");
                     mat.DisableKeyword("BLOBBYCROSS");
                     mat.DisableKeyword("SQUIRCLE");
+                    mat.DisableKeyword("NTRIANGLE_ROUNDED");
                     break;
                 case DrawShape.Circle:
                     mat.EnableKeyword("CIRCLE");
@@ -824,6 +841,9 @@ namespace GameLogic.UI.ImageExtensions
                     break;
                 case DrawShape.Squircle:
                     mat.EnableKeyword("SQUIRCLE");
+                    break;
+                case DrawShape.NTriangleRounded:
+                    mat.EnableKeyword("NTRIANGLE_ROUNDED");
                     break;
 
                 default:
@@ -858,6 +878,7 @@ namespace GameLogic.UI.ImageExtensions
             mat.DisableKeyword("HEART");
             mat.DisableKeyword("BLOBBYCROSS");
             mat.DisableKeyword("SQUIRCLE");
+            mat.DisableKeyword("NTRIANGLE_ROUNDED");
 
             mat.DisableKeyword("STROKE");
             mat.DisableKeyword("OUTLINED");
@@ -903,6 +924,7 @@ namespace GameLogic.UI.ImageExtensions
             heart.InitValuesFromMaterial(ref mat);
             blobbyCross.InitValuesFromMaterial(ref mat);
             squircle.InitValuesFromMaterial(ref mat);
+            nTriangleRounded.InitValuesFromMaterial(ref mat);
 
             //GradientEffect
             gradientEffect.InitValuesFromMaterial(ref mat);
