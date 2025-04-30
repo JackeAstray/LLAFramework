@@ -24,6 +24,7 @@ namespace GameLogic
 
         //缓存从Resource中加载的资源
         private Dictionary<string, Object> resourceTable = new Dictionary<string, Object>();
+        private Dictionary<string, int> resourceRefCount = new Dictionary<string, int>();
 
         public IEnumerator Init()
         {
@@ -51,18 +52,23 @@ namespace GameLogic
         {
             if (resourceTable.TryGetValue(assetPath, out var asset))
             {
+                // 增加引用计数
+                IncrementRefCount(assetPath);
                 return asset as T;
             }
 
             var assets = Resources.Load<T>(assetPath);
-            if (assets is null)
+            if (assets == null)
             {
                 Log.Error($"资源没有找到,路径为:{assetPath}");
                 return null;
             }
-            if (isCache && assets is null)
+
+            if (isCache)
             {
-                resourceTable.Add(assetPath, assets);
+                resourceTable[assetPath] = assets;
+                // 增加引用计数
+                IncrementRefCount(assetPath);
             }
             return assets;
         }
@@ -76,16 +82,25 @@ namespace GameLogic
         /// <returns></returns>
         public async Task<T> LoadAsync<T>(string assetPath, bool isCache = true, UnityAction callback = null) where T : UnityEngine.Object
         {
+            if (resourceTable.TryGetValue(assetPath, out var cachedAsset))
+            {
+                // 增加引用计数
+                IncrementRefCount(assetPath);
+                return cachedAsset as T;
+            }
+
             var assets = await ResourcesExtensions.LoadAsync<T>(assetPath, callback);
-            if (assets is null)
+            if (assets == null)
             {
                 Log.Error($"资源没有找到,路径为:{assetPath}");
                 return null;
             }
 
-            if (isCache && assets is null)
+            if (isCache)
             {
-                resourceTable.Add(assetPath, assets);
+                resourceTable[assetPath] = assets;
+                // 增加引用计数
+                IncrementRefCount(assetPath);
             }
             return assets;
         }
@@ -124,8 +139,16 @@ namespace GameLogic
         public T InstantiateAsset<T>(string path) where T : Object
         {
             var obj = Load<T>(path);
+            if (obj != null)
+            {
+                IncrementRefCount(path); // 增加引用计数
+            }
+
             var go = GameObject.Instantiate<T>(obj);
-            if (go == null) Log.Error(string.Format("实例化 {0} 失败!", obj));
+            if (go == null)
+            {
+                Log.Error($"实例化 {path} 失败!");
+            }
             return go;
         }
 
@@ -135,7 +158,9 @@ namespace GameLogic
         /// <param name="path"></param>
         public void DeleteAssetCache(string path)
         {
-            if (resourceTable.ContainsKey(path))
+            // 减少引用计数
+            DecrementRefCount(path);
+            if (resourceTable.ContainsKey(path) && (!resourceRefCount.ContainsKey(path) || resourceRefCount[path] <= 0))
             {
                 resourceTable.Remove(path);
             }
@@ -146,18 +171,73 @@ namespace GameLogic
         /// </summary>
         public void ClearAssetsCache()
         {
-            foreach (KeyValuePair<string, Object> item in resourceTable)
+            foreach (var item in resourceTable.Keys)
             {
-                if (item.Value is Object obj)
+                // 减少引用计数
+                DecrementRefCount(item);
+            }
+
+            foreach (var item in resourceTable)
+            {
+                if (!resourceRefCount.ContainsKey(item.Key) || resourceRefCount[item.Key] <= 0)
                 {
 #if UNITY_EDITOR
-                    Object.DestroyImmediate(obj, true);
+                    Object.DestroyImmediate(item.Value, true);
 #else
-                    Object.Destroy(obj);
+                    Object.Destroy(item.Value);
 #endif
                 }
             }
             resourceTable.Clear();
+            resourceRefCount.Clear();
+        }
+
+        /// <summary>
+        /// 增加引用计数
+        /// </summary>
+        /// <param name="path"></param>
+        public void IncrementRefCount(string path)
+        {
+            if (resourceRefCount.ContainsKey(path))
+            {
+                resourceRefCount[path]++;
+            }
+            else
+            {
+                resourceRefCount[path] = 1;
+            }
+        }
+
+        /// <summary>
+        /// 减少引用计数
+        /// </summary>
+        /// <param name="path"></param>
+        public void DecrementRefCount(string path)
+        {
+            if (resourceRefCount.ContainsKey(path))
+            {
+                resourceRefCount[path]--;
+                if (resourceRefCount[path] <= 0)
+                {
+                    resourceRefCount.Remove(path);
+                    DeleteAssetCache(path);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 销毁资源
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="obj"></param>
+        public void DestroyAsset(string path, Object obj)
+        {
+            if (obj != null)
+            {
+                GameObject.Destroy(obj);
+                // 减少引用计数
+                DecrementRefCount(path);
+            }
         }
 
         /// <summary>

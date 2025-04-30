@@ -1,14 +1,46 @@
-﻿using GameLogic.Base;
-using System;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace GameLogic
 {
-    public class TaskMgr : SingletonMgr<TaskMgr>
+    /// <summary>
+    /// 任务模块
+    /// </summary>
+    public class TaskModule : CustommModuleInitialize
     {
+        #region 实例与初始化
+        public static TaskModule Instance = new TaskModule();
+        public bool IsInited { get; private set; }
+        private double initProgress = 0;
+        public double InitProgress { get { return initProgress; } }
+        #endregion
+
+        #region 初始化
+        public IEnumerator Init()
+        {
+            initProgress = 0;
+
+            // 初始化逻辑（如果有需要）
+            yield return null;
+
+            initProgress = 100;
+            IsInited = true;
+            Log.Debug("TaskModule 初始化完成");
+        }
+
+        public void ClearData()
+        {
+            Log.Debug("TaskModule 清除数据");
+        }
+        #endregion
+
+        #region 任务管理
         /// <summary>
         /// 开始任务
         /// </summary>
@@ -93,15 +125,23 @@ namespace GameLogic
             switch (ex)
             {
                 case OperationCanceledException:
-                    Debug.Log("任务被取消");
+                    Log.Debug("任务被取消");
                     break;
                 case TimeoutException timeoutEx:
-                    Debug.Log($"任务超时: {timeoutEx.Message}");
+                    Log.Debug($"任务超时: {timeoutEx.Message}");
                     break;
                 default:
-                    Debug.Log($"任务异常: {ex.Message}");
+                    Log.Debug($"任务异常: {ex.Message}");
                     break;
             }
         }
+        #endregion
+
+        #region 更新
+        public void UpdateTime(float elapseSeconds, float realElapseSeconds)
+        {
+            // 如果需要定时任务管理，可以在这里实现
+        }
+        #endregion
     }
 }

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.InputSystem.LowLevel;
 
 namespace GameLogic
 {
@@ -33,9 +32,7 @@ namespace GameLogic
                 this.onStart = onStart;
                 this.onUpdate = onUpdate;
                 this.onStop = onStop;
-
                 this.priority = priority;
-
                 this.timeout = timeout;
                 this.elapsedTime = 0f;
             }

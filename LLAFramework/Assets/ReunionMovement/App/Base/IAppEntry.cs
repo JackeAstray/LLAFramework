@@ -18,7 +18,7 @@ namespace GameLogic.Base
         /// <returns></returns>
         IEnumerator OnBeforeInit();
         /// <summary>
-        /// 初始化
+        /// 游戏启动
         /// </summary>
         /// <returns></returns>
         IEnumerator OnGameStart();

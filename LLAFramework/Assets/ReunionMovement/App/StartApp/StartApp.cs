@@ -12,6 +12,8 @@ namespace GameLogic
         {
             var modules = base.CreateModules();
 
+            modules.Add(StateMachineModule.Instance);
+            modules.Add(TaskModule.Instance);
             modules.Add(TerminalModule.Instance);
             modules.Add(ResourcesModule.Instance);
             modules.Add(JsonDatabaseModule.Instance);
@@ -50,28 +52,19 @@ namespace GameLogic
         }
 
         /// <summary>
-        /// 在初始化模块之后，协同路由
+        /// 游戏启动
         /// </summary>
         /// <returns></returns>
         public override IEnumerator OnGameStart()
         {
             Log.Debug("StartGame初始化后");
-
             yield return null;
-
-            //TerminalModule.Instance.terminalRequest.RegisterCommands();
             StartCoroutine(StartGame());
         }
 
         public IEnumerator StartGame()
         {
-            //SoundModule.Instance.PlayMusic(110010);
-
             UIModule.Instance.OpenWindow("StartAppUIPlane");
-
-            //SoundModule.Instance.PlaySound(120012, PoolType.Voice);
-            //SoundModule.Instance.PlaySound(120019, PoolType.EffectSound);
-
             yield return new WaitForSeconds(0f);
         }
 

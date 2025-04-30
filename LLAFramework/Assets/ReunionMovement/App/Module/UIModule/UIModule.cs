@@ -18,7 +18,6 @@ namespace GameLogic
         private Dictionary<string, UILoadState> uiStateCache = new Dictionary<string, UILoadState>();
         #endregion
         //----------------------------------
-
         public static Action<UIController> onInitEvent;
         public static Action<UIController> onOpenEvent;
         public static Action<UIController> onCloseEvent;
