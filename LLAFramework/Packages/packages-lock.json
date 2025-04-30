@@ -1,5 +1,13 @@
 {
   "dependencies": {
+    "com.coffee.ui-effect": {
+      "version": "file:UIEffectSrc",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.ugui": "1.0.0"
+      }
+    },
     "com.unity.2d.animation": {
       "version": "9.1.1",
       "depth": 1,
