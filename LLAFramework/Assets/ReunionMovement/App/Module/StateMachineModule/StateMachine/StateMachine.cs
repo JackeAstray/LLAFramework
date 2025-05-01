@@ -95,9 +95,17 @@ namespace GameLogic
             {
                 return;
             }
+
             globalUpdate?.Invoke();
+
+            if (currentState == null)
+            {
+                return;
+            }
+
             currentState?.onUpdate?.Invoke();
             currentState.elapsedTime += Time.deltaTime;
+
             if (currentState.elapsedTime >= currentState.timeout)
             {
                 HandleStateTimeout();

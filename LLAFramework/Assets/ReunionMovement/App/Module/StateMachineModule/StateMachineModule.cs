@@ -33,6 +33,8 @@ namespace GameLogic
             stateMachine.AddState("Idle", OnIdleStart, OnIdleUpdate, OnIdleStop);
             stateMachine.AddState("Running", OnRunningStart, OnRunningUpdate, OnRunningStop);
 
+            ChangeState("Idle");
+
             initProgress = 100;
             IsInited = true;
             Log.Debug("StateModule 初始化完成");
@@ -59,6 +61,12 @@ namespace GameLogic
         /// </summary>
         public void UpdateTime(float elapseSeconds, float realElapseSeconds)
         {
+            if (!IsInited)
+            {
+                Log.Warning("StateMachineModule 未初始化");
+                return;
+            }
+
             stateMachine.Update();
         }
 
@@ -70,7 +78,7 @@ namespace GameLogic
 
         private void OnIdleUpdate()
         {
-            Log.Debug("更新 Idle 状态");
+            //Log.Debug("更新 Idle 状态");
         }
 
         private void OnIdleStop()
@@ -85,7 +93,7 @@ namespace GameLogic
 
         private void OnRunningUpdate()
         {
-            Log.Debug("更新 Running 状态");
+            //Log.Debug("更新 Running 状态");
         }
 
         private void OnRunningStop()
