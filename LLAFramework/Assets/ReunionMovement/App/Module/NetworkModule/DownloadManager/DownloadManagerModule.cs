@@ -64,7 +64,7 @@ namespace LLAFramework.Download
         }
 
         #region 下载图片
-        public void DownloadImage(string url, Action<Texture2D> onComplete, string suffix = ".png")
+        public void DownloadImage(string url, Action<float> onProgress, Action<Texture2D> onComplete, string suffix = ".png")
         {
             if (imageCache.TryGetValue(url, out Texture2D cachedTexture))
             {
@@ -81,6 +81,7 @@ namespace LLAFramework.Download
             else
             {
                 HttpModule.GetTexture(url)
+                    .OnDownloadProgress(onProgress)
                     .OnSuccess(response =>
                     {
                         if (response.Texture != null)
