@@ -23,6 +23,7 @@ namespace LLAFramework
         [SerializeField] private bool isHttpModule;
         [SerializeField] private bool isDownloadManagerModule;
         [SerializeField] private bool isMessageModule;
+        [SerializeField] private bool isInputSystemModule;
 
         protected override IList<CustommModuleInitialize> CreateModules()
         {
@@ -102,6 +103,12 @@ namespace LLAFramework
             {
                 modules.Add(MessageModule.Instance);
             }
+
+            if (isInputSystemModule)
+            {
+                modules.Add(InputSystemModule.Instance);
+            }
+
             return modules;
         }
 

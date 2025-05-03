@@ -8,10 +8,12 @@ namespace LLAFramework
 {
     public class JsonDatabaseModule : CustommModuleInitialize
     {
+        #region 实例与初始化
         public static JsonDatabaseModule Instance = new JsonDatabaseModule();
         public bool IsInited { get; private set; }
         private double initProgress = 0;
         public double InitProgress { get { return initProgress; } }
+        #endregion
 
         // GameConfig 配置表
         Dictionary<int, GameConfig> gameconfigs = new Dictionary<int, GameConfig>();
