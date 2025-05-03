@@ -7,33 +7,33 @@ namespace LLAFramework
     /// <summary>
     /// Log帮助
     /// </summary>
-    public class GameLogicLogHelper : GameLogicLog.ILogHelper
+    public class LLAFrameworkLogHelper : LLAFrameworkLog.ILogHelper
     {
         /// <summary>
         /// 记录日志。
         /// </summary>
         /// <param name="level">日志等级。</param>
         /// <param name="message">日志内容。</param>
-        public void Log(GameLogicLogLevel level, object message)
+        public void Log(LLAFrameworkLogLevel level, object message)
         {
             switch (level)
             {
-                case GameLogicLogLevel.Debug:
+                case LLAFrameworkLogLevel.Debug:
                     string msg = string.Format("<color=#80FF00>{0}</color>", message);
                     Debug.Log(msg);
                     break;
 
-                case GameLogicLogLevel.Info:
+                case LLAFrameworkLogLevel.Info:
                     msg = string.Format("<color=#80FF00>{0}</color>", message);
                     Debug.Log(msg);
                     break;
 
-                case GameLogicLogLevel.Warning:
+                case LLAFrameworkLogLevel.Warning:
                     msg = string.Format("<color=#FFCC00>{0}</color>", message);
                     Debug.LogWarning(msg);
                     break;
 
-                case GameLogicLogLevel.Error:
+                case LLAFrameworkLogLevel.Error:
                     msg = string.Format("<color=#FF0040>{0}</color>", message);
                     Debug.LogError(msg);
                     break;

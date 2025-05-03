@@ -568,7 +568,7 @@ namespace LLAFramework
 
         public virtual UIController CreateUIController(GameObject uiObj, string uiTemplateName)
         {
-            UIController uiBase = uiObj.AddComponent(System.Type.GetType("GameLogic.UI." + uiTemplateName + ", Assembly-CSharp")) as UIController;
+            UIController uiBase = uiObj.AddComponent(System.Type.GetType("LLAFramework.UI." + uiTemplateName + ", Assembly-CSharp")) as UIController;
             return uiBase;
         }
 

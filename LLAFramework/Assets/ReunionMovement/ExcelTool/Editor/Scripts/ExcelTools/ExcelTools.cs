@@ -225,7 +225,7 @@ using UnityEngine;
 using UnityEngine.Scripting;
 using SQLite.Attributes;
 
-namespace GameLogic
+namespace LLAFramework
 {
     [Serializable]
     [UnityEngine.Scripting.Preserve]
@@ -323,7 +323,7 @@ using UnityEngine;
 using UnityEngine.Scripting;
 using SQLite.Attributes;
 
-namespace GameLogic
+namespace LLAFramework
 {
     [Serializable]
     public class {_0_}DTO
@@ -452,7 +452,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Scripting;
 
-namespace GameLogic
+namespace LLAFramework
 {
     [CreateAssetMenu(fileName = ""{_0_}Container"", menuName = ""ScriptableObjects/{_1_}Container"", order = {_2_})]
     public class {_3_}Container : ScriptableObject
@@ -507,9 +507,9 @@ namespace GameLogic
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using GameLogic.Base;
+using LLAFramework.Base;
 
-namespace GameLogic.Sqlite
+namespace LLAFramework.Sqlite
 {
     public class SqliteMgr : SingletonMgr<SqliteMgr>
     {
@@ -602,7 +602,7 @@ namespace GameLogic.Sqlite
             scriptBuilder.AppendLine("using System.Linq;");
             scriptBuilder.AppendLine("using LitJson;");
             scriptBuilder.AppendLine();
-            scriptBuilder.AppendLine("namespace GameLogic");
+            scriptBuilder.AppendLine("namespace LLAFramework");
             scriptBuilder.AppendLine("{");
             scriptBuilder.AppendLine("    public class JsonDatabaseModule : CustommModuleInitialize");
             scriptBuilder.AppendLine("    {");
@@ -959,27 +959,27 @@ namespace GameLogic.Sqlite
                 string assetPath = scriptableOutPutPath + tableName + "Container.asset";
 
                 // 动态获取容器类类型
-                Type containerType = Type.GetType($"GameLogic.{tableName}Container, Assembly-CSharp");
+                Type containerType = Type.GetType($"LLAFramework.{tableName}Container, Assembly-CSharp");
                 if (containerType == null)
                 {
-                    Log.Error($"无法获取类型：GameLogic.{tableName}Container, Assembly-CSharp");
+                    Log.Error($"无法获取类型：LLAFramework.{tableName}Container, Assembly-CSharp");
                     continue;
                 }
 
                 // 动态创建容器实例
                 ScriptableObject asset = ScriptableObject.CreateInstance(containerType);
 
-                Type configType = Type.GetType($"GameLogic.{tableName}, Assembly-CSharp");
+                Type configType = Type.GetType($"LLAFramework.{tableName}, Assembly-CSharp");
                 if (configType == null)
                 {
-                    Log.Error($"无法获取类型：GameLogic.{tableName}, Assembly-CSharp");
+                    Log.Error($"无法获取类型：LLAFramework.{tableName}, Assembly-CSharp");
                     continue;
                 }
                 // 动态获取 DTO 类类型
-                Type configTypeDTO = Type.GetType($"GameLogic.{tableName}DTO, Assembly-CSharp");
+                Type configTypeDTO = Type.GetType($"LLAFramework.{tableName}DTO, Assembly-CSharp");
                 if (configTypeDTO == null)
                 {
-                    Log.Error($"无法获取类型：GameLogic.{tableName}DTO, Assembly-CSharp");
+                    Log.Error($"无法获取类型：LLAFramework.{tableName}DTO, Assembly-CSharp");
                     continue;
                 }
 
@@ -1137,11 +1137,11 @@ namespace GameLogic.Sqlite
                     return;
                 }
 
-                Type tableType = Type.GetType($"GameLogic.{tableName}, Assembly-CSharp");
+                Type tableType = Type.GetType($"LLAFramework.{tableName}, Assembly-CSharp");
 
                 if (tableType == null)
                 {
-                    throw new Exception($"类型 GameLogic.{tableName} 不存在，请检查类定义！");
+                    throw new Exception($"类型 LLAFramework.{tableName} 不存在，请检查类定义！");
                 }
 
                 // 使用反射调用 CreateTable<T>() 方法

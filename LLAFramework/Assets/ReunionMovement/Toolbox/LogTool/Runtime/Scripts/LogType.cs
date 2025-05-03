@@ -7,7 +7,7 @@ namespace LLAFramework
     /// <summary>
     /// 日志等级。
     /// </summary>
-    public enum GameLogicLogLevel : byte
+    public enum LLAFrameworkLogLevel : byte
     {
         /// <summary>
         /// 调试。

@@ -7,9 +7,9 @@ namespace LLAFramework
     /// <summary>
     /// 日志工具
     /// </summary>
-    public static partial class GameLogicLog
+    public static partial class LLAFrameworkLog
     {
-        private static ILogHelper s_LogHelper = new GameLogicLogHelper();
+        private static ILogHelper s_LogHelper = new LLAFrameworkLogHelper();
 
         /// <summary>
         /// 设置游戏框架日志辅助器。
@@ -31,7 +31,7 @@ namespace LLAFramework
                 return;
             }
 
-            s_LogHelper.Log(GameLogicLogLevel.Debug, message);
+            s_LogHelper.Log(LLAFrameworkLogLevel.Debug, message);
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace LLAFramework
                 return;
             }
 
-            s_LogHelper.Log(GameLogicLogLevel.Info, message);
+            s_LogHelper.Log(LLAFrameworkLogLevel.Info, message);
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace LLAFramework
                 return;
             }
 
-            s_LogHelper.Log(GameLogicLogLevel.Warning, message);
+            s_LogHelper.Log(LLAFrameworkLogLevel.Warning, message);
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace LLAFramework
                 return;
             }
 
-            s_LogHelper.Log(GameLogicLogLevel.Error, message);
+            s_LogHelper.Log(LLAFrameworkLogLevel.Error, message);
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace LLAFramework
                 return;
             }
 
-            s_LogHelper.Log(GameLogicLogLevel.Fatal, message);
+            s_LogHelper.Log(LLAFrameworkLogLevel.Fatal, message);
         }
     }
 }

@@ -844,5 +844,5 @@ Shader "ReunionMovement/UI/Procedural Image"
             ENDCG
         }
     }
-    CustomEditor "GameLogic.UI.ImageExtensions.Editor.ImageShaderGUI"
+    CustomEditor "LLAFramework.UI.ImageExtensions.Editor.ImageShaderGUI"
 }

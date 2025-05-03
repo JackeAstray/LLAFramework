@@ -214,7 +214,7 @@ namespace LLAFramework.EditorTools
         public void BindingSpriptRoot()
         {
             scriptName = className + "UIPlane";
-            var type = Type.GetType("GameLogic.UI." + scriptName + ", Assembly-CSharp");
+            var type = Type.GetType("LLAFramework.UI." + scriptName + ", Assembly-CSharp");
             SetUIObj();
             BindScript(uiObj, type);
         }
@@ -225,7 +225,7 @@ namespace LLAFramework.EditorTools
         public void BindingSpriptToTarget()
         {
             scriptName = className + "UIPlane";
-            var type = Type.GetType("GameLogic.UI." + scriptName + ", Assembly-CSharp");
+            var type = Type.GetType("LLAFramework.UI." + scriptName + ", Assembly-CSharp");
             SetUIObj();
             GameObject @object = uiObj.transform.Find(targetName).gameObject;
             BindScript(@object, type);
@@ -322,7 +322,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace GameLogic.UI
+namespace LLAFramework.UI
 {
     public class {_0_} : UIController
     {

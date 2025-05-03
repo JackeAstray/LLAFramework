@@ -20,7 +20,7 @@ namespace LLAFramework
         [Conditional("ENABLE_DEBUG_AND_ABOVE_LOG")]
         public static void Debug(object message)
         {
-            GameLogicLog.Debug(message);
+            LLAFrameworkLog.Debug(message);
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace LLAFramework
         [Conditional("ENABLE_INFO_AND_ABOVE_LOG")]
         public static void Info(object message)
         {
-            GameLogicLog.Info(message);
+            LLAFrameworkLog.Info(message);
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace LLAFramework
         [Conditional("ENABLE_WARNING_AND_ABOVE_LOG")]
         public static void Warning(object message)
         {
-            GameLogicLog.Warning(message);
+            LLAFrameworkLog.Warning(message);
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace LLAFramework
         [Conditional("ENABLE_ERROR_AND_ABOVE_LOG")]
         public static void Error(object message)
         {
-            GameLogicLog.Error(message);
+            LLAFrameworkLog.Error(message);
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace LLAFramework
         [Conditional("ENABLE_FATAL_AND_ABOVE_LOG")]
         public static void Fatal(object message)
         {
-            GameLogicLog.Fatal(message);
+            LLAFrameworkLog.Fatal(message);
         }
     }
 }

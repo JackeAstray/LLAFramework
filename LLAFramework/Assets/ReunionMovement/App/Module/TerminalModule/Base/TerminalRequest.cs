@@ -134,7 +134,7 @@ namespace LLAFramework
             {
 
                 Log.Debug(type);
-                if (type.ToString() == "GameLogic.TerminalModule")
+                if (type.ToString() == "LLAFramework.TerminalModule")
                 {
                     Log.Debug(type);
                 }
