@@ -1,8 +1,8 @@
 
-using GameLogic.Base;
+using LLAFramework.Base;
 using UnityEngine;
 
-namespace GameLogic.Example
+namespace LLAFramework.Example
 {
     // 创建一个继承自 Observed 的类
     public class Player : Observed

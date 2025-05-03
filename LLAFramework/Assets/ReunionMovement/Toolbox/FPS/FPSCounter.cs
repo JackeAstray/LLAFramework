@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// FPS计数器工具

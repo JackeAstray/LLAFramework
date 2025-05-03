@@ -8,7 +8,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 长按按钮

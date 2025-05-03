@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace GameLogic.UI.ImageExtensions.Editor
+namespace LLAFramework.UI.ImageExtensions.Editor
 {
     public class ImageShaderGUI : ShaderGUI
     {

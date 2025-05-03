@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
-using GameLogic;
+using LLAFramework;
 
 [CreateAssetMenu(fileName = "ColorPalette", menuName = "创建调色板", order = 0)]
 public class ColorPalette : ScriptableObject

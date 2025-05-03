@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
-using GameLogic.Base;
+using LLAFramework.Base;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 分辨率管理

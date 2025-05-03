@@ -1,12 +1,15 @@
-using GameLogic;
-using GameLogic.Download;
+using LLAFramework;
+using LLAFramework.Download;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GameLogic
+namespace LLAFramework
 {
+    /// <summary>
+    /// 提示、警告、错误等消息的显示模块
+    /// </summary>
     public class MessageModule : CustommModuleInitialize
     {
         #region 实例与初始化

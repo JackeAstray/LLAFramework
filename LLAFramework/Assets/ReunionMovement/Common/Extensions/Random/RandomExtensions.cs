@@ -1,7 +1,7 @@
 using UnityEngine;
 using Random = System.Random;
 
-namespace GameLogic
+namespace LLAFramework
 {
     public static class RandomExtensions
     {

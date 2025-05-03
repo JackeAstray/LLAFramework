@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static UnityEditor.Progress;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 抽卡系统

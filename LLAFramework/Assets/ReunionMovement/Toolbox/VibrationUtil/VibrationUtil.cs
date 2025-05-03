@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using UnityEngine.iOS;
 #endif
 
-namespace GameLogic
+namespace LLAFramework
 {
 
     public enum HapticTypes

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Scripting;
 
-namespace GameLogic
+namespace LLAFramework
 {
     [CreateAssetMenu(fileName = "LanguagesContainer", menuName = "ScriptableObjects/LanguagesContainer", order = 0)]
     public class LanguagesContainer : ScriptableObject

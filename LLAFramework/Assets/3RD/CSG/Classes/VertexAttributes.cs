@@ -1,4 +1,4 @@
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// Mesh attributes bitmask.

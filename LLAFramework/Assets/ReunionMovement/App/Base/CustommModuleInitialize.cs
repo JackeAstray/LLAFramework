@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 自定义模块初始化

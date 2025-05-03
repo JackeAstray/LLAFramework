@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GameLogic
+namespace LLAFramework
 {
     [AttributeUsage(AttributeTargets.Method)]
     public class RegisterCommandAttribute : Attribute

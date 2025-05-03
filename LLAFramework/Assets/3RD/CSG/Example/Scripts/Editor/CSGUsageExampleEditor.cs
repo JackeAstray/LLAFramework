@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using GameLogic.Example;
+using LLAFramework.Example;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 这是一个简单的编辑器辅助脚本，用于快速测试/原型制作！

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace GameLogic.Http.Service
+namespace LLAFramework.Http.Service
 {
     /// <summary>
     /// 服务

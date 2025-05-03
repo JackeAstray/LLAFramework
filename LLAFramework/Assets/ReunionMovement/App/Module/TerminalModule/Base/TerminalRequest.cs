@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
-namespace GameLogic
+namespace LLAFramework
 {
     #region 命令相关结构
     /// <summary>

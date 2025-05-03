@@ -8,7 +8,7 @@ using UnityEngine.InputSystem.EnhancedTouch;
 using InputSystemTouch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 using InputSystemTouchPhase = UnityEngine.InputSystem.TouchPhase;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 摄像机围绕物体旋转

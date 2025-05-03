@@ -3,13 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
-using GameLogic.Download;
-using GameLogic.Http;
-using GameLogic.Http.Service;
+using LLAFramework.Download;
+using LLAFramework.Http;
+using LLAFramework.Http.Service;
 using System;
 using SqlCipher4Unity3D;
 
-namespace GameLogic.Sqlite
+namespace LLAFramework.Sqlite
 {
     public class DataService
     {

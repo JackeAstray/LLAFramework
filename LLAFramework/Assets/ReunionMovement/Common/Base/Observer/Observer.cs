@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GameLogic.Base
+namespace LLAFramework.Base
 {
     /// <summary>
     /// 观察者

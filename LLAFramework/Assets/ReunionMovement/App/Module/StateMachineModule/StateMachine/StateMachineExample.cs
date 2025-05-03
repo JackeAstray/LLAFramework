@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Playables;
 
-namespace GameLogic.Example
+namespace LLAFramework.Example
 {
     public enum PlayerStateTest
     {

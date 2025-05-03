@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 
-namespace GameLogic.UI.ImageExtensions
+namespace LLAFramework.UI.ImageExtensions
 {
     [CustomPropertyDrawer(typeof(NTriangleRoundedImg))]
     public class NTriangleRoundedPropertyDrawer : PropertyDrawer

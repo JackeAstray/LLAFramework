@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace GameLogic
+namespace LLAFramework
 {
     public static class Assembly
     {

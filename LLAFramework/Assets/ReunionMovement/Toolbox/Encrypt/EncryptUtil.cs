@@ -6,9 +6,9 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using UnityEngine;
-using GameLogic;
+using LLAFramework;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 加密解密

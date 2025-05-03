@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// 包含与<see cref=“Timer”/>相关的扩展方法.
 /// </summary>
-namespace GameLogic
+namespace LLAFramework
 {
     public static class TimerExtensions
     {

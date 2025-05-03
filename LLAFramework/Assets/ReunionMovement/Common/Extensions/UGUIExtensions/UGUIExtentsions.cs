@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine.UI;
 using UnityEngine;
 
-namespace GameLogic
+namespace LLAFramework
 {
     public static class UGUIExtentsions
     {

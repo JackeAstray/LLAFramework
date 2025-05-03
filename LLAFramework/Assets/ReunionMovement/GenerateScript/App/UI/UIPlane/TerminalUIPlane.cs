@@ -7,7 +7,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace GameLogic.UI
+namespace LLAFramework.UI
 {
     public class TerminalUIPlane : UIController
     {

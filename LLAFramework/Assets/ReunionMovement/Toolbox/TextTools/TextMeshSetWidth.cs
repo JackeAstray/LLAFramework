@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace GameLogic
+namespace LLAFramework
 {
     public class TextMeshSetWidth : MonoBehaviour
     {

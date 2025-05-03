@@ -1,34 +1,107 @@
-using GameLogic.Download;
-using GameLogic.Http;
+using LLAFramework.Download;
+using LLAFramework.Http;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GameLogic
+namespace LLAFramework
 {
     public class StartApp : AppGame
     {
+        [SerializeField] private bool isStateMachineModule;
+        [SerializeField] private bool isTaskModule;
+        [SerializeField] private bool isTerminalModule;
+        [SerializeField] private bool isResourcesModule;
+        [SerializeField] private bool isJsonDatabaseModule;
+        [SerializeField] private bool isEventModule;
+        [SerializeField] private bool isLanguagesModule;
+        [SerializeField] private bool isSoundPoolModule;
+        [SerializeField] private bool isSoundModule;
+        [SerializeField] private bool isUIModule;
+        [SerializeField] private bool isSceneModule;
+        [SerializeField] private bool isColorPaletteModule;
+        [SerializeField] private bool isHttpModule;
+        [SerializeField] private bool isDownloadManagerModule;
+        [SerializeField] private bool isMessageModule;
+
         protected override IList<CustommModuleInitialize> CreateModules()
         {
             var modules = base.CreateModules();
 
-            modules.Add(StateMachineModule.Instance);
-            modules.Add(TaskModule.Instance);
-            modules.Add(TerminalModule.Instance);
-            modules.Add(ResourcesModule.Instance);
-            modules.Add(JsonDatabaseModule.Instance);
-            modules.Add(EventModule.Instance);
-            modules.Add(LanguagesModule.Instance);
-            modules.Add(SoundPoolModule.Instance);
-            modules.Add(SoundModule.Instance);
-            modules.Add(UIModule.Instance);
-            modules.Add(SceneModule.Instance);
-            modules.Add(ColorPaletteModule.Instance);
-            modules.Add(HttpModule.Instance);
-            modules.Add(DownloadImageModule.Instance);
-            modules.Add(DownloadFileModule.Instance);
-            modules.Add(MessageModule.Instance);
+            if (isStateMachineModule)
+            {
+                modules.Add(StateMachineModule.Instance);
+            }
 
+            if (isTaskModule)
+            {
+                modules.Add(TaskModule.Instance);
+            }
+
+            if (isTerminalModule)
+            {
+                modules.Add(TerminalModule.Instance);
+            }
+
+            if (isResourcesModule)
+            {
+                modules.Add(ResourcesModule.Instance);
+            }
+
+            if (isJsonDatabaseModule)
+            {
+                modules.Add(JsonDatabaseModule.Instance);
+            }
+
+            if (isEventModule)
+            {
+                modules.Add(EventModule.Instance);
+            }
+
+            if (isLanguagesModule)
+            {
+                modules.Add(LanguagesModule.Instance);
+            }
+
+            if (isSoundPoolModule)
+            {
+                modules.Add(SoundPoolModule.Instance);
+            }
+
+            if (isSoundModule)
+            {
+                modules.Add(SoundModule.Instance);
+            }
+
+            if (isUIModule)
+            {
+                modules.Add(UIModule.Instance);
+            }
+
+            if (isSceneModule)
+            {
+                modules.Add(SceneModule.Instance);
+            }
+
+            if (isColorPaletteModule)
+            {
+                modules.Add(ColorPaletteModule.Instance);
+            }
+
+            if (isHttpModule)
+            {
+                modules.Add(HttpModule.Instance);
+            }
+
+            if (isDownloadManagerModule)
+            {
+                modules.Add(DownloadManagerModule.Instance);
+            }
+
+            if (isMessageModule)
+            {
+                modules.Add(MessageModule.Instance);
+            }
             return modules;
         }
 

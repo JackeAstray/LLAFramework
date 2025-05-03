@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace GameLogic.UI.ImageExtensions
+namespace LLAFramework.UI.ImageExtensions
 {
     public interface UIImgComponent
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace GameLogic.EditorTools
+namespace LLAFramework.EditorTools
 {
     public class ColliderGizmoScriptingDefineSymbols
     {

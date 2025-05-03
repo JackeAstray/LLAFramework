@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using Object = UnityEngine.Object;
 
-namespace GameLogic
+namespace LLAFramework
 {
     public class Timer
     {

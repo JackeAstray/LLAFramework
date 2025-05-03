@@ -3,7 +3,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace GameLogic.EditorTools
+namespace LLAFramework.EditorTools
 {
     /// <summary>
     /// 切割图片非透明区域工具

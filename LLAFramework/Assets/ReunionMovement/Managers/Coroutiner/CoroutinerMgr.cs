@@ -1,11 +1,11 @@
-﻿using GameLogic.Base;
+﻿using LLAFramework.Base;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 协程对象池

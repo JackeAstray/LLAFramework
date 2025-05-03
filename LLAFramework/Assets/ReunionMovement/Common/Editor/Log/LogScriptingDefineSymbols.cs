@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace GameLogic.EditorTools
+namespace LLAFramework.EditorTools
 {
     /// <summary>
     /// 日志脚本宏定义

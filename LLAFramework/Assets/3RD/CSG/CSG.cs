@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// CSG操作的基类。包含用于减法、交集和并集操作的游戏对象级方法。传递给这些函数的游戏对象将不会被修改。

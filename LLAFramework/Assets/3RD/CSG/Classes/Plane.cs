@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 平面 （不包含位置）

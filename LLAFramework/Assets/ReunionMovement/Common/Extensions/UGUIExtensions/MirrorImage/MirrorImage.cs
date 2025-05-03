@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Sprites;
 using UnityEngine.UI;
 
-namespace GameLogic.UI.ImageExtensions
+namespace LLAFramework.UI.ImageExtensions
 {
     /// <summary>
     /// 镜像图像

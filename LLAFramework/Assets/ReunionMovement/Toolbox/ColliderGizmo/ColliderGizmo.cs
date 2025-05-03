@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 碰撞器绘制
@@ -504,7 +504,7 @@ namespace GameLogic
 
 #if UNITY_EDITOR
 
-namespace GameLogic.Internal
+namespace LLAFramework.Internal
 {
     [CustomEditor(typeof(ColliderGizmo)), CanEditMultipleObjects]
     public class ColliderGizmoEditor : Editor

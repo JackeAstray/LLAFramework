@@ -1,9 +1,9 @@
-using GameLogic.Base;
+using LLAFramework.Base;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 事件管理器

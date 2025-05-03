@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GameLogic.Base
+namespace LLAFramework.Base
 {
     /// <summary>
     /// 单例模式管理器

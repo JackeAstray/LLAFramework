@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 文本符号换行

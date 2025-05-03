@@ -10,9 +10,9 @@ using UnityEditor;
 using UnityEngine;
 using System.Linq;
 using System.Reflection;
-using GameLogic.Sqlite;
+using LLAFramework.Sqlite;
 
-namespace GameLogic.EditorTools
+namespace LLAFramework.EditorTools
 {
     /// <summary>
     /// Excel工具类

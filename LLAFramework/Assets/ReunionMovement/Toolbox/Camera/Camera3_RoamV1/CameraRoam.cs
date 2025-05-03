@@ -2,7 +2,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 摄像机漫游

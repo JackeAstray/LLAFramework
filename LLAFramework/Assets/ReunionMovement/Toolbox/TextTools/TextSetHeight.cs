@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 设置文本框高度

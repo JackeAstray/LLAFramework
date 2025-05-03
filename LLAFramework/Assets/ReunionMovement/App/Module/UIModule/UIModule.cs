@@ -5,7 +5,7 @@ using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace GameLogic
+namespace LLAFramework
 {
     public class UIModule : CustommModuleInitialize
     {

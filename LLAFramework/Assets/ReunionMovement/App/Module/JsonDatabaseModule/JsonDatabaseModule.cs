@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Linq;
 using LitJson;
 
-namespace GameLogic
+namespace LLAFramework
 {
     public class JsonDatabaseModule : CustommModuleInitialize
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-namespace GameLogic
+namespace LLAFramework
 {
     public class UIText_TMP : LanguageObserver
     {

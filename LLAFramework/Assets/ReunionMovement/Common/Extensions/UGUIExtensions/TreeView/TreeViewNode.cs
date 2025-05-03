@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 树节点

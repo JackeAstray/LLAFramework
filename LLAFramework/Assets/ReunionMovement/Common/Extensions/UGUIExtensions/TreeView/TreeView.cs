@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using static UnityEditor.PlayerSettings;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 树形视图

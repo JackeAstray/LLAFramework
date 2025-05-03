@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 保存单个顶点的信息，并提供在多个顶点之间求平均值的方法

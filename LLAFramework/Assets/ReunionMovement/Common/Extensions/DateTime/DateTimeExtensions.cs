@@ -5,7 +5,7 @@ using System.Globalization;
 using Unity.VisualScripting;
 using UnityEngine;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 时间扩展

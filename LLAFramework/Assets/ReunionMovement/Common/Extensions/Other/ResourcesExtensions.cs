@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 资源扩展

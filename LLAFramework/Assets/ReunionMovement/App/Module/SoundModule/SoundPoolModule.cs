@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static GameLogic.SoundPoolModule;
+using static LLAFramework.SoundPoolModule;
 
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 对象池

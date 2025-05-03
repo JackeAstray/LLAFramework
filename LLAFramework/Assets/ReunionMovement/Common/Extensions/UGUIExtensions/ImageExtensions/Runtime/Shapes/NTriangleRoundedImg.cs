@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace GameLogic.UI.ImageExtensions
+namespace LLAFramework.UI.ImageExtensions
 {
     [Serializable]
     public class NTriangleRoundedImg : UIImgComponent

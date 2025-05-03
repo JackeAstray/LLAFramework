@@ -12,7 +12,7 @@ using System.Linq;
 using System.Globalization;
 using UnityEngine.Networking;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 引擎扩展

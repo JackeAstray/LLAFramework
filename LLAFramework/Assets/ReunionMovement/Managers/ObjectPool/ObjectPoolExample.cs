@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace GameLogic.Example
+namespace LLAFramework.Example
 {
     public class ObjectPoolExample : MonoBehaviour
     {

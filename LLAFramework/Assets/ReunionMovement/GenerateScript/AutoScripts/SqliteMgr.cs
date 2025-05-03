@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using GameLogic.Base;
+using LLAFramework.Base;
 
-namespace GameLogic.Sqlite
+namespace LLAFramework.Sqlite
 {
     public class SqliteMgr : SingletonMgr<SqliteMgr>
     {

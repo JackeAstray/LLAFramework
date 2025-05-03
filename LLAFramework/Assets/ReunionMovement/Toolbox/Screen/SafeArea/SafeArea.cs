@@ -1,11 +1,11 @@
-using GameLogic.Base;
+using LLAFramework.Base;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 安全区管理

@@ -7,7 +7,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 #endif
 
-namespace GameLogic.UI.ImageExtensions
+namespace LLAFramework.UI.ImageExtensions
 {
     [AddComponentMenu("UI/ReunionMovement/ImageEx")]
     public class ImageEx : Image

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameLogic.Base
+namespace LLAFramework.Base
 {
     /// <summary>
     /// 引用接口。

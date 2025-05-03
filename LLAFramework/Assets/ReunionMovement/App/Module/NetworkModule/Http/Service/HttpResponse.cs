@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace GameLogic.Http.Service
+namespace LLAFramework.Http.Service
 {
     /// <summary>
     /// 响应

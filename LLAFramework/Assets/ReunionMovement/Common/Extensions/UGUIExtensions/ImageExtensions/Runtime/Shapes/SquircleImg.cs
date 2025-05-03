@@ -1,10 +1,10 @@
-using GameLogic.UI.ImageExtensions;
+using LLAFramework.UI.ImageExtensions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GameLogic.UI.ImageExtensions
+namespace LLAFramework.UI.ImageExtensions
 {
     [Serializable]
     public class SquircleImg : UIImgComponent

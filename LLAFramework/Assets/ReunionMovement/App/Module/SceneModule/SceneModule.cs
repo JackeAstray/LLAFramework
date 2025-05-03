@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 场景模块

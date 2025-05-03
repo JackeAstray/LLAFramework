@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
-namespace GameLogic.AnimationUI
+namespace LLAFramework.AnimationUI
 {
     /// <summary>
     /// UI波纹动画

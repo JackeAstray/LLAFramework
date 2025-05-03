@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Scripting;
 using SQLite.Attributes;
 
-namespace GameLogic
+namespace LLAFramework
 {
     [Serializable]
     public class GameConfigDTO

@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static GameLogic.SoundPoolModule;
+using static LLAFramework.SoundPoolModule;
 
-namespace GameLogic
+namespace LLAFramework
 {
     public class SoundObj : MonoBehaviour
     {

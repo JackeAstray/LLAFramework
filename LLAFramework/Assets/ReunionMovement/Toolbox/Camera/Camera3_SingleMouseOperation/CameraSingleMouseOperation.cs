@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 相机单鼠标操作

@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace GameLogic
+namespace LLAFramework
 {
     //双击按钮
     public class DoubleClickButton : Button

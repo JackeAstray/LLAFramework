@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
-using static GameLogic.SoundPoolModule;
+using static LLAFramework.SoundPoolModule;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 声音模块

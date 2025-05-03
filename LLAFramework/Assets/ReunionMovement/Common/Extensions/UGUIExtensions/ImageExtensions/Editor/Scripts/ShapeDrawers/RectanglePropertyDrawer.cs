@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace GameLogic.UI.ImageExtensions.Editor
+namespace LLAFramework.UI.ImageExtensions.Editor
 {
     [CustomPropertyDrawer(typeof(RectangleImg))]
     public class RectanglePropertyDrawer : PropertyDrawer

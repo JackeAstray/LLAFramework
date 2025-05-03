@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.Networking;
 
-namespace GameLogic.Http.Service.Unity
+namespace LLAFramework.Http.Service.Unity
 {
 	public class UnityHttpRequest : IHttpRequest, IUpdateProgress
 	{

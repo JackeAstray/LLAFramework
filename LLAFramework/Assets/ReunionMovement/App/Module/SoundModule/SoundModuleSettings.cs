@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 声音管理器设置

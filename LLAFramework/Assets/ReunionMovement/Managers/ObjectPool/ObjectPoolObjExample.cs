@@ -1,9 +1,9 @@
-using GameLogic;
+using LLAFramework;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GameLogic.Example
+namespace LLAFramework.Example
 {
     public class ObjectPoolObjExample : MonoBehaviour
     {

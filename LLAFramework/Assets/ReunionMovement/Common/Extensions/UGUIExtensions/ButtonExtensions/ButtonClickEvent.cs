@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine.Events;
 
-namespace GameLogic
+namespace LLAFramework
 {
     public class ButtonClickEvent : UnityEvent
     {

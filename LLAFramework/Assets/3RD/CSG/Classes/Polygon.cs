@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 表示具有任意数量顶点的多边形面

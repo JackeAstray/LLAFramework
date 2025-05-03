@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 屏幕Log工具

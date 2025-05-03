@@ -10,7 +10,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace GameLogic.EditorTools
+namespace LLAFramework.EditorTools
 {
     public class CreateUIPlane : EditorWindow
     {

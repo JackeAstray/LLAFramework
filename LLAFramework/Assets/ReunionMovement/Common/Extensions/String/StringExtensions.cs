@@ -12,7 +12,7 @@ using LitJson;
 using System.IO.Compression;
 using System.IO;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 字符串扩展方法

@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Object = System.Object;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 游戏对象扩展

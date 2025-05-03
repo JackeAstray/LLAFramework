@@ -6,7 +6,7 @@ using System.Text;
 using UnityEngine;
 
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 算法工具类

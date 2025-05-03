@@ -1,13 +1,13 @@
-using GameLogic;
-using GameLogic.Http.Service.Unity;
-using GameLogic.Http.Service;
+using LLAFramework;
+using LLAFramework.Http.Service.Unity;
+using LLAFramework.Http.Service;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.Networking;
 
-namespace GameLogic.Http
+namespace LLAFramework.Http
 {
     public class HttpModule : CustommModuleInitialize
     {
@@ -103,79 +103,79 @@ namespace GameLogic.Http
 
         #region 静态请求
 
-        /// <see cref="GameLogic.Http.Service.IHttpService.Get"/>
+        /// <see cref="LLAFramework.Http.Service.IHttpService.Get"/>
         public static IHttpRequest Get(string uri)
         {
             return Instance.service.Get(uri);
         }
 
-        /// <see cref="GameLogic.Http.Service.IHttpService.GetTexture"/>
+        /// <see cref="LLAFramework.Http.Service.IHttpService.GetTexture"/>
         public static IHttpRequest GetTexture(string uri)
         {
             return Instance.service.GetTexture(uri);
         }
 
-        /// <see cref="GameLogic.Http.Service.IHttpService.Post(string, string)"/>
+        /// <see cref="LLAFramework.Http.Service.IHttpService.Post(string, string)"/>
         public static IHttpRequest Post(string uri, string postData)
         {
             return Instance.service.Post(uri, postData);
         }
 
-        /// <see cref="GameLogic.Http.Service.IHttpService.Post(string, WWWForm)"/>
+        /// <see cref="LLAFramework.Http.Service.IHttpService.Post(string, WWWForm)"/>
         public static IHttpRequest Post(string uri, WWWForm formData)
         {
             return Instance.service.Post(uri, formData);
         }
 
-        /// <see cref="GameLogic.Http.Service.IHttpService.Post(string, Dictionary&lt;string, string&gt;)"/>
+        /// <see cref="LLAFramework.Http.Service.IHttpService.Post(string, Dictionary&lt;string, string&gt;)"/>
         public static IHttpRequest Post(string uri, Dictionary<string, string> formData)
         {
             return Instance.service.Post(uri, formData);
         }
 
-        /// <see cref="GameLogic.Http.Service.IHttpService.Post(string, List&lt;IMultipartFormSection&gt;)"/>
+        /// <see cref="LLAFramework.Http.Service.IHttpService.Post(string, List&lt;IMultipartFormSection&gt;)"/>
         public static IHttpRequest Post(string uri, List<IMultipartFormSection> multipartForm)
         {
             return Instance.service.Post(uri, multipartForm);
         }
 
-        /// <see cref="GameLogic.Http.Service.IHttpService.Post(string, byte[], string)"/>
+        /// <see cref="LLAFramework.Http.Service.IHttpService.Post(string, byte[], string)"/>
         public static IHttpRequest Post(string uri, byte[] bytes, string contentType)
         {
             return Instance.service.Post(uri, bytes, contentType);
         }
 
-        /// <see cref="GameLogic.Http.Service.IHttpService.PostJson"/>
+        /// <see cref="LLAFramework.Http.Service.IHttpService.PostJson"/>
         public static IHttpRequest PostJson(string uri, string json)
         {
             return Instance.service.PostJson(uri, json);
         }
 
-        /// <see cref="GameLogic.Http.Service.IHttpService.PostJson{T}(string, T)"/>
+        /// <see cref="LLAFramework.Http.Service.IHttpService.PostJson{T}(string, T)"/>
         public static IHttpRequest PostJson<T>(string uri, T payload) where T : class
         {
             return Instance.service.PostJson(uri, payload);
         }
 
-        /// <see cref="GameLogic.Http.Service.IHttpService.Put(string, byte[])"/>
+        /// <see cref="LLAFramework.Http.Service.IHttpService.Put(string, byte[])"/>
         public static IHttpRequest Put(string uri, byte[] bodyData)
         {
             return Instance.service.Put(uri, bodyData);
         }
 
-        /// <see cref="GameLogic.Http.Service.IHttpService.Put(string, string)"/>
+        /// <see cref="LLAFramework.Http.Service.IHttpService.Put(string, string)"/>
         public static IHttpRequest Put(string uri, string bodyData)
         {
             return Instance.service.Put(uri, bodyData);
         }
 
-        /// <see cref="GameLogic.Http.Service.IHttpService.Delete"/>
+        /// <see cref="LLAFramework.Http.Service.IHttpService.Delete"/>
         public static IHttpRequest Delete(string uri)
         {
             return Instance.service.Delete(uri);
         }
 
-        /// <see cref="GameLogic.Http.Service.IHttpService.Head"/>
+        /// <see cref="LLAFramework.Http.Service.IHttpService.Head"/>
         public static IHttpRequest Head(string uri)
         {
             return Instance.service.Head(uri);

@@ -1,8 +1,8 @@
-using GameLogic.Http.Service;
-using GameLogic.Http;
+using LLAFramework.Http.Service;
+using LLAFramework.Http;
 using UnityEngine;
 
-namespace GameLogic.Example
+namespace LLAFramework.Example
 {
     public class HttpExample : MonoBehaviour
     {

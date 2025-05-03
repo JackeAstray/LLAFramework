@@ -1,4 +1,4 @@
-using GameLogic.AnimationUI;
+using LLAFramework.AnimationUI;
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-namespace GameLogic.EditorTools
+namespace LLAFramework.EditorTools
 {
     public class SmallFunctions : EditorWindow
     {

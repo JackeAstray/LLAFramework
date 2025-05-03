@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 
-namespace GameLogic.Http
+namespace LLAFramework.Http
 {
     /// <summary>
     /// http的实用程序类

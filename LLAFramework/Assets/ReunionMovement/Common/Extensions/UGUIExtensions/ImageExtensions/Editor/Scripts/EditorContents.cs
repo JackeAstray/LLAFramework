@@ -2,7 +2,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace GameLogic.UI.ImageExtensions.Editor
+namespace LLAFramework.UI.ImageExtensions.Editor
 {
     [InitializeOnLoad]
     internal static class EditorContents

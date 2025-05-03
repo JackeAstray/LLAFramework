@@ -1,10 +1,10 @@
-using GameLogic;
-using GameLogic.Base;
+using LLAFramework;
+using LLAFramework.Base;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GameLogic
+namespace LLAFramework
 {
     public class ScortData
     {

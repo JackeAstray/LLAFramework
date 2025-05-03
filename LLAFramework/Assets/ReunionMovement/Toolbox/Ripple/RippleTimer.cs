@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace GameLogic.AnimationUI
+namespace LLAFramework.AnimationUI
 {
     /// <summary>
     /// UI波纹动画 - 速率

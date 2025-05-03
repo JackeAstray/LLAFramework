@@ -1,10 +1,10 @@
-using GameLogic.UI;
+using LLAFramework.UI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace GameLogic
+namespace LLAFramework
 {
     public class TerminalModule : CustommModuleInitialize
     {

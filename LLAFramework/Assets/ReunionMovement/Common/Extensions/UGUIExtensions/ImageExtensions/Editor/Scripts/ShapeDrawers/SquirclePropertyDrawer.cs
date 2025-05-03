@@ -1,10 +1,10 @@
-using GameLogic.UI.ImageExtensions;
+using LLAFramework.UI.ImageExtensions;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace GameLogic.UI.ImageExtensions.Editor
+namespace LLAFramework.UI.ImageExtensions.Editor
 {
     [CustomPropertyDrawer(typeof(SquircleImg))]
     public class SquirclePropertyDrawer : PropertyDrawer

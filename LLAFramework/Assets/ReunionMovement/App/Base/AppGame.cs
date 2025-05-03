@@ -1,10 +1,10 @@
-using GameLogic.Base;
+using LLAFramework.Base;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GameLogic
+namespace LLAFramework
 {
     public abstract class AppGame : SingletonMgr<AppGame>, IAppEntry
     {

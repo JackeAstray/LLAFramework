@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GameLogic.Http.Service
+namespace LLAFramework.Http.Service
 {
     /// <summary>
     /// 请求

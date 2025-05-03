@@ -9,7 +9,7 @@ using UnityEngine.InputSystem.EnhancedTouch;
 using InputSystemTouch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 using InputSystemTouchPhase = UnityEngine.InputSystem.TouchPhase;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 摄影机视野跟随

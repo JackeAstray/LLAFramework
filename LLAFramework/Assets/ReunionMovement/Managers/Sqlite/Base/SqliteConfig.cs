@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace GameLogic.Sqlite
+namespace LLAFramework.Sqlite
 {
     public static class SqliteConfig
     {

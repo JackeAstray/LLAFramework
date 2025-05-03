@@ -8,7 +8,7 @@ using UnityEngine.Events;
 using UnityEngine.U2D;
 using Object = UnityEngine.Object;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 资源管理器

@@ -1,10 +1,10 @@
-﻿using GameLogic.Base;
+﻿using LLAFramework.Base;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 对象池管理器

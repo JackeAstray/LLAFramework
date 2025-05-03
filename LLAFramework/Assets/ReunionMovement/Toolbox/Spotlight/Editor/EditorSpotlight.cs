@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
 
-namespace GameLogic.EditorTools
+namespace LLAFramework.EditorTools
 {
     /// <summary>
     /// 焦点工具

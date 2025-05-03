@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
-namespace GameLogic.UI.ImageExtensions.Editor
+namespace LLAFramework.UI.ImageExtensions.Editor
 {
     public static class EditorUtility
     {

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Scripting;
 
-namespace GameLogic
+namespace LLAFramework
 {
     [CreateAssetMenu(fileName = "QuestionConfigContainer", menuName = "ScriptableObjects/QuestionConfigContainer", order = 0)]
     public class QuestionConfigContainer : ScriptableObject

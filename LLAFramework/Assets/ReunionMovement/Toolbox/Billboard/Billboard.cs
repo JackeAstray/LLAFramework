@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static GameLogic.Billboard;
+using static LLAFramework.Billboard;
 
-namespace GameLogic
+namespace LLAFramework
 {
     /// <summary>
     /// 广告牌
