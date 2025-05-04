@@ -8,15 +8,15 @@ namespace LLAFramework
 {
     public class JsonDatabaseModule : CustommModuleInitialize
     {
-        #region 实例与初始化
         public static JsonDatabaseModule Instance = new JsonDatabaseModule();
         public bool IsInited { get; private set; }
         private double initProgress = 0;
         public double InitProgress { get { return initProgress; } }
-        #endregion
 
         // GameConfig 配置表
         Dictionary<int, GameConfig> gameconfigs = new Dictionary<int, GameConfig>();
+        // InputSystemConfig 配置表
+        Dictionary<int, InputSystemConfig> inputsystemconfigs = new Dictionary<int, InputSystemConfig>();
         // ItemConfig 配置表
         Dictionary<int, ItemConfig> itemconfigs = new Dictionary<int, ItemConfig>();
         // Languages 配置表
@@ -28,6 +28,7 @@ namespace LLAFramework
 
         string filePath = AppConfig.DatabasePath;
         string gameconfig_FileName = "GameConfig.json";
+        string inputsystemconfig_FileName = "InputSystemConfig.json";
         string itemconfig_FileName = "ItemConfig.json";
         string languages_FileName = "Languages.json";
         string questionconfig_FileName = "QuestionConfig.json";
@@ -46,6 +47,7 @@ namespace LLAFramework
         public void ClearData()
         {
             gameconfigs.Clear();
+            inputsystemconfigs.Clear();
             itemconfigs.Clear();
             languagess.Clear();
             questionconfigs.Clear();
@@ -56,6 +58,7 @@ namespace LLAFramework
         void InitConfig()
         {
             LoadGameConfig();
+            LoadInputSystemConfig();
             LoadItemConfig();
             LoadLanguages();
             LoadQuestionConfig();
@@ -86,6 +89,28 @@ namespace LLAFramework
             foreach (var tempData in configs)
             {
                 gameconfigs.Add(tempData.Id, tempData);
+            }
+        }
+
+        public void LoadInputSystemConfig()
+        {
+            List<InputSystemConfig> configs = new List<InputSystemConfig>();
+            string fullPath;
+            bool exists = PathUtils.GetFullPath(filePath + inputsystemconfig_FileName, out fullPath);
+            if (exists)
+            {
+                string content = PathUtils.ReadFile(filePath, inputsystemconfig_FileName);
+                configs = JsonMapper.ToObject<List<InputSystemConfig>>(content);
+            }
+            else
+            {
+                TextAsset json = ResourcesModule.Instance.Load<TextAsset>("AutoDatabase/InputSystemConfig");
+                PathUtils.WriteFile(json.text, filePath, inputsystemconfig_FileName);
+                configs = JsonMapper.ToObject<List<InputSystemConfig>>(json.text);
+            }
+            foreach (var tempData in configs)
+            {
+                inputsystemconfigs.Add(tempData.Id, tempData);
             }
         }
 
@@ -185,6 +210,11 @@ namespace LLAFramework
             return gameconfigs;
         }
 
+        public Dictionary<int, InputSystemConfig> GetInputSystemConfig()
+        {
+            return inputsystemconfigs;
+        }
+
         public Dictionary<int, ItemConfig> GetItemConfig()
         {
             return itemconfigs;
@@ -213,6 +243,13 @@ namespace LLAFramework
             List<GameConfig> tempList = gameconfigs.Values.ToList();
             string jsonStr = JsonMapper.ToJson(tempList, true);
             PathUtils.WriteFile(jsonStr, filePath, gameconfig_FileName);
+        }
+
+        public void SaveInputSystemConfig()
+        {
+            List<InputSystemConfig> tempList = inputsystemconfigs.Values.ToList();
+            string jsonStr = JsonMapper.ToJson(tempList, true);
+            PathUtils.WriteFile(jsonStr, filePath, inputsystemconfig_FileName);
         }
 
         public void SaveItemConfig()
@@ -249,6 +286,15 @@ namespace LLAFramework
         public GameConfig GetGameConfigByNumber(int number)
         {
             if (gameconfigs.TryGetValue(number, out var value))
+            {
+                return value;
+            }
+            return null;
+        }
+
+        public InputSystemConfig GetInputSystemConfigByNumber(int number)
+        {
+            if (inputsystemconfigs.TryGetValue(number, out var value))
             {
                 return value;
             }

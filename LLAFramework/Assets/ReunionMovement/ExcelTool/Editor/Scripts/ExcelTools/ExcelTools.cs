@@ -24,7 +24,7 @@ namespace LLAFramework.EditorTools
         static readonly string scriptOutPutPath = "Assets/ReunionMovement/GenerateScript/AutoScripts/";             // 脚本输出路径
         static readonly string dataOutPutPath = "Assets/Resources/AutoDatabase/";            // 数据表输出路径
         static readonly string scriptableOutPutPath = "Assets/Resources/ScriptableObjects/"; // 脚本对象输出路径
-        static readonly string jsonMgrOutPutPath = "Assets/ReunionMovement/App/Module/DatabaseModule/JsonDatabaseModule.cs"; // 脚本对象输出路径
+        static readonly string jsonMgrOutPutPath = "Assets/ReunionMovement/App/Module/JsonDatabaseModule/JsonDatabaseModule.cs"; // 脚本对象输出路径
 
         static int tableRows_Max = 3;                                           // 最大行数
         static int tableRows_1 = 0;                                             // 第一行中文名称
@@ -544,16 +544,24 @@ namespace LLAFramework.Sqlite
                 var dataName = sheet.itemClassName;
 
                 methodsBuilder.AppendLine($@"
-        // 查询所有{dataName}
-        public IEnumerable<{dataName}> GetAll{dataName}()
+        // 查询所有{dataName}，支持排序,
+        // orderBy 指定排序的字段名称。isAscending 指定排序方式，true 为升序，false 为降序。
+        public IEnumerable<{dataName}> GetAll{dataName}(string orderBy = null, bool isAscending = true)
         {{
-            return dataService.Query<{dataName}>();
+            string query = string.IsNullOrEmpty(orderBy) ? null : $""ORDER BY {{orderBy}} {{(isAscending ? ""ASC"" : ""DESC"")}}"";
+            return dataService.Query<{dataName}>(query);
         }}
 
-        // 根据条件查询{dataName}
-        public IEnumerable<{dataName}> Get{dataName}ByCondition(string condition, params object[] args)
+        // 根据条件查询{dataName}，支持排序
+        // orderBy 指定排序的字段名称。isAscending 指定排序方式，true 为升序，false 为降序。
+        public IEnumerable<{dataName}> Get{dataName}ByCondition(string condition, string orderBy = null, bool isAscending = true, params object[] args)
         {{
-            return dataService.Query<{dataName}>(condition, args);
+            string query = condition;
+            if (!string.IsNullOrEmpty(orderBy))
+            {{
+                query += $"" ORDER BY {{orderBy}} {{(isAscending ? ""ASC"" : ""DESC"")}}"";
+            }}
+            return dataService.Query<{dataName}>(query, args);
         }}
 
         // 插入{dataName}

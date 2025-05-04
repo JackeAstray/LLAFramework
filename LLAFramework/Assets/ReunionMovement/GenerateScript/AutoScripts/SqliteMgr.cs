@@ -1,4 +1,4 @@
-//此脚本为工具生成，请勿手动创建 2025-04-09 08:53:31.486 <ExcelTo>
+//此脚本为工具生成，请勿手动创建 2025-05-04 13:53:01.735 <ExcelTo>
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,7 +16,7 @@ namespace LLAFramework.Sqlite
             dataService = new DataService(dbName, password);
         }
 
-
+        
         // 查询所有GameConfig
         public IEnumerable<GameConfig> GetAllGameConfig()
         {
@@ -47,6 +47,86 @@ namespace LLAFramework.Sqlite
             dataService.Delete(obj);
         }
 
+        // 执行命令GameConfig
+        public void ExecuteGameConfig(string str)
+        {
+            dataService.Execute(str);
+        }
+        
+
+        // 查询所有InputSystemConfig
+        public IEnumerable<InputSystemConfig> GetAllInputSystemConfig()
+        {
+            return dataService.Query<InputSystemConfig>();
+        }
+
+        // 根据条件查询InputSystemConfig
+        public IEnumerable<InputSystemConfig> GetInputSystemConfigByCondition(string condition, params object[] args)
+        {
+            return dataService.Query<InputSystemConfig>(condition, args);
+        }
+
+        // 插入InputSystemConfig
+        public void InsertInputSystemConfig(InputSystemConfig obj)
+        {
+            dataService.Insert(obj);
+        }
+
+        // 更新InputSystemConfig
+        public void UpdateInputSystemConfig(InputSystemConfig obj)
+        {
+            dataService.Update(obj);
+        }
+
+        // 删除InputSystemConfig
+        public void DeleteInputSystemConfig(InputSystemConfig obj)
+        {
+            dataService.Delete(obj);
+        }
+
+        // 执行命令InputSystemConfig
+        public void ExecuteInputSystemConfig(string str)
+        {
+            dataService.Execute(str);
+        }
+        
+
+        // 查询所有ItemConfig
+        public IEnumerable<ItemConfig> GetAllItemConfig()
+        {
+            return dataService.Query<ItemConfig>();
+        }
+
+        // 根据条件查询ItemConfig
+        public IEnumerable<ItemConfig> GetItemConfigByCondition(string condition, params object[] args)
+        {
+            return dataService.Query<ItemConfig>(condition, args);
+        }
+
+        // 插入ItemConfig
+        public void InsertItemConfig(ItemConfig obj)
+        {
+            dataService.Insert(obj);
+        }
+
+        // 更新ItemConfig
+        public void UpdateItemConfig(ItemConfig obj)
+        {
+            dataService.Update(obj);
+        }
+
+        // 删除ItemConfig
+        public void DeleteItemConfig(ItemConfig obj)
+        {
+            dataService.Delete(obj);
+        }
+
+        // 执行命令ItemConfig
+        public void ExecuteItemConfig(string str)
+        {
+            dataService.Execute(str);
+        }
+        
 
         // 查询所有Languages
         public IEnumerable<Languages> GetAllLanguages()
@@ -78,6 +158,12 @@ namespace LLAFramework.Sqlite
             dataService.Delete(obj);
         }
 
+        // 执行命令Languages
+        public void ExecuteLanguages(string str)
+        {
+            dataService.Execute(str);
+        }
+        
 
         // 查询所有QuestionConfig
         public IEnumerable<QuestionConfig> GetAllQuestionConfig()
@@ -109,6 +195,12 @@ namespace LLAFramework.Sqlite
             dataService.Delete(obj);
         }
 
+        // 执行命令QuestionConfig
+        public void ExecuteQuestionConfig(string str)
+        {
+            dataService.Execute(str);
+        }
+        
 
         // 查询所有SoundConfig
         public IEnumerable<SoundConfig> GetAllSoundConfig()
@@ -140,6 +232,12 @@ namespace LLAFramework.Sqlite
             dataService.Delete(obj);
         }
 
+        // 执行命令SoundConfig
+        public void ExecuteSoundConfig(string str)
+        {
+            dataService.Execute(str);
+        }
+        
 
         //  销毁
         public void OnDestroy()

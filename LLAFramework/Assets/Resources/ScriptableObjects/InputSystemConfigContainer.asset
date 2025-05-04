@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 240d72fc7308f1b47a218d1144d117b3, type: 3}
+  m_Name: InputSystemConfigContainer
+  m_EditorClassIdentifier: 
+  configs:
+  - Id: 1
+    Number: 100001
+    Name: 100014
+    ActionName: Move
+    BindingPath: <Keyboard>/w
+    Interactions: Press(behavior=PressOnly)
+    Processors: 
+    Groups: Default
+  - Id: 2
+    Number: 100002
+    Name: 100015
+    ActionName: Move
+    BindingPath: <Keyboard>/s
+    Interactions: Press(behavior=PressOnly)
+    Processors: 
+    Groups: Default
+  - Id: 3
+    Number: 100003
+    Name: 100016
+    ActionName: Move
+    BindingPath: <Keyboard>/a
+    Interactions: Press(behavior=PressOnly)
+    Processors: 
+    Groups: Default
+  - Id: 4
+    Number: 100004
+    Name: 100017
+    ActionName: Move
+    BindingPath: <Keyboard>/d
+    Interactions: Press(behavior=PressOnly)
+    Processors: 
+    Groups: Default
+  - Id: 5
+    Number: 100005
+    Name: 100018
+    ActionName: Return
+    BindingPath: <Keyboard>/escape
+    Interactions: Press(behavior=PressOnly)
+    Processors: 
+    Groups: Default
+  - Id: 6
+    Number: 100006
+    Name: 100019
+    ActionName: Confirm
+    BindingPath: <Keyboard>/enter
+    Interactions: Press(behavior=PressOnly)
+    Processors: 
+    Groups: Default
+  - Id: 7
+    Number: 100007
+    Name: 100020
+    ActionName: Select
+    BindingPath: <Keyboard>/space
+    Interactions: Press(behavior=PressOnly)
+    Processors: 
+    Groups: Default
+  - Id: 8
+    Number: 100008
+    Name: 100021
+    ActionName: Switch
+    BindingPath: <Keyboard>/tab
+    Interactions: Press(behavior=PressOnly)
+    Processors: 
+    Groups: Default
+  - Id: 9
+    Number: 100009
+    Name: 100022
+    ActionName: OpenConsole
+    BindingPath: <Keyboard>/backquote
+    Interactions: Hold(duration=3)
+    Processors: 
+    Groups: Default

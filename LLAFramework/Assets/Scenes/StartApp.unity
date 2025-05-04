@@ -184,7 +184,7 @@ MonoBehaviour:
   isHttpModule: 1
   isDownloadManagerModule: 1
   isMessageModule: 1
-  moduleNames: []
+  isInputSystemModule: 1
 --- !u!114 &1027886792
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -169,3 +169,111 @@ MonoBehaviour:
     PT: Null
     JP: Null
     KR: Null
+  - Id: 14
+    Number: 100014
+    ZH: "\u4E0A"
+    EN: Up
+    RU: Null
+    FR: Null
+    DE: Null
+    ES: Null
+    IT: Null
+    PT: Null
+    JP: Null
+    KR: Null
+  - Id: 15
+    Number: 100015
+    ZH: "\u4E0B"
+    EN: Down
+    RU: Null
+    FR: Null
+    DE: Null
+    ES: Null
+    IT: Null
+    PT: Null
+    JP: Null
+    KR: Null
+  - Id: 16
+    Number: 100016
+    ZH: "\u5DE6"
+    EN: Left
+    RU: Null
+    FR: Null
+    DE: Null
+    ES: Null
+    IT: Null
+    PT: Null
+    JP: Null
+    KR: Null
+  - Id: 17
+    Number: 100017
+    ZH: "\u53F3"
+    EN: Right
+    RU: Null
+    FR: Null
+    DE: Null
+    ES: Null
+    IT: Null
+    PT: Null
+    JP: Null
+    KR: Null
+  - Id: 18
+    Number: 100018
+    ZH: "\u8FD4\u56DE"
+    EN: Return
+    RU: Null
+    FR: Null
+    DE: Null
+    ES: Null
+    IT: Null
+    PT: Null
+    JP: Null
+    KR: Null
+  - Id: 19
+    Number: 100019
+    ZH: "\u786E\u8BA4"
+    EN: Confirm
+    RU: Null
+    FR: Null
+    DE: Null
+    ES: Null
+    IT: Null
+    PT: Null
+    JP: Null
+    KR: Null
+  - Id: 20
+    Number: 100020
+    ZH: "\u9009\u62E9"
+    EN: Select
+    RU: Null
+    FR: Null
+    DE: Null
+    ES: Null
+    IT: Null
+    PT: Null
+    JP: Null
+    KR: Null
+  - Id: 21
+    Number: 100021
+    ZH: "\u5207\u6362"
+    EN: Switch
+    RU: Null
+    FR: Null
+    DE: Null
+    ES: Null
+    IT: Null
+    PT: Null
+    JP: Null
+    KR: Null
+  - Id: 22
+    Number: 100022
+    ZH: "\u6253\u5F00\u63A7\u5236\u53F0"
+    EN: Open Console
+    RU: Null
+    FR: Null
+    DE: Null
+    ES: Null
+    IT: Null
+    PT: Null
+    JP: Null
+    KR: Null

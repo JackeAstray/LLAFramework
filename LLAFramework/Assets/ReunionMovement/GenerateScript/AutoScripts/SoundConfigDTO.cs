@@ -1,4 +1,4 @@
-//此脚本为工具生成，请勿手动创建 2025-04-08 17:12:01.328 <ExcelTo>
+//此脚本为工具生成，请勿手动创建 2025-05-04 13:52:11.289 <ExcelTo>
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ namespace LLAFramework
     [Serializable]
     public class SoundConfigDTO
     {
-
+        
         public int Id;    //索引
         public int Number;    //编号
         public string Path;    //路径
@@ -39,11 +39,11 @@ namespace LLAFramework
         {
             return new SoundConfig
             {
-                Id = this.Id,
-                Number = this.Number,
-                Path = this.Path,
-                Name = this.Name,
-                Type = this.Type,
+                Id       = this.Id,
+                Number   = this.Number,
+                Path     = this.Path,
+                Name     = this.Name,
+                Type     = this.Type,
                 Detailed = this.Detailed,
 
             };
@@ -56,11 +56,11 @@ namespace LLAFramework
         {
             return new SoundConfigDTO
             {
-                Id = entity.Id,
-                Number = entity.Number,
-                Path = entity.Path,
-                Name = entity.Name,
-                Type = entity.Type,
+                Id       = entity.Id,
+                Number   = entity.Number,
+                Path     = entity.Path,
+                Name     = entity.Name,
+                Type     = entity.Type,
                 Detailed = entity.Detailed,
 
             };
