@@ -38,7 +38,6 @@ Unity版本：2022.3.28fc1<br>
 
 ![inspector](https://github.com/JackeAstray/EditorTools/blob/main/Screenshot/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202023-09-11%20130523.png)
 
-
 <summary>3 日志系统</summary>
 <br>
   
@@ -53,8 +52,6 @@ Log.Warning("Hello Word");
 Log.Error("Hello Word");
 Log.Fatal("Hello Word");
 ```
-
-
 <summary>4 打开指定路径文件夹</summary>
 <br>
 该功能用于打开Unity的一些路径<br>
@@ -62,28 +59,14 @@ Log.Fatal("Hello Word");
   
 ![inspector](https://github.com/JackeAstray/EditorTools/blob/main/Screenshot/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202023-09-11%20130517.png)
 
-
-<summary>5 生成脚本工具</summary>
-<br>
-生成脚本工具使用说明<br>
-1、输入要生成类的名称<br>
-2、选择要生成的模板<br>
-3、点击创建脚本即可<br>
-【ReunionMovement\Editor\Resources\Txt】该路径用于存放模板<br>
-<br>
-  
-![inspector](https://github.com/JackeAstray/EditorTools/blob/main/Screenshot/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202023-09-11%20130428.png)
-
-
-<summary>6 编译器模式碰撞器绘制</summary>
+<summary>5 编译器模式碰撞器绘制</summary>
 <br>
 启用PHYSICS宏（一般只用这个），后在编辑器视图可以看见碰撞器范围<br>
 <br>
 
 ![inspector](https://github.com/JackeAstray/EditorTools/blob/main/Screenshot/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202023-09-11%20130511.png)
 
-
-<summary>7 UI工具</summary>
+<summary>6 UI工具</summary>
 <br>
 UI工具使用说明<br>
 1、输入要生成类的名称<br>
@@ -92,26 +75,26 @@ UI工具使用说明<br>
 3、点击绑定脚本（将创建的UI脚本绑定到UI上）<br>
 4、将当前场景中的UI导出为预制体（该项在编辑完UI后，点击一次就可以将UI导出到指定路径，替换掉老的UI）<br>
 <br>
-  
+
 ![inspector](https://github.com/JackeAstray/EditorTools/blob/main/Screenshot/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202023-09-11%20130414.png)
 
-
-<summary>8 小功能</summary>
+<summary>7 小功能</summary>
 <br>
 包含的功能有给场景添加屏幕日志、给场景添加FPS、给场景选中的对象添加多语言用脚本、场景切换、修改版本号<br>
 <br>
 
 ![inspector](https://github.com/JackeAstray/EditorTools/blob/main/Screenshot/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202023-09-11%20130336.png)
 
-
-<summary>9 焦点工具</summary>
+<summary>8 焦点工具</summary>
 <br>
 查找资源并将该资源设为焦点 快捷键Control + L<br>
 <br>
-  
+
 ![inspector](https://github.com/JackeAstray/EditorTools/blob/main/Screenshot/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202023-09-11%20130454.png)
 
-
 ## ImageEx：<a name="ImageEx"></a>
+ImageEx是一个Image扩展工具。可以轻松的编辑Image样式，而无需美术绘制图片。<br>
+<br>
+
 ![inspector](https://github.com/JackeAstray/LLAFramework/blob/main/Screenshot/ImageEx/ImageEx-Inspector.png)
 ![inspector](https://github.com/JackeAstray/LLAFramework/blob/main/Screenshot/ImageEx/ImageEx-Example.png)
