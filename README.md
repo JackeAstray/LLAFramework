@@ -4,34 +4,36 @@ Unity版本：2022.3.28fc1<br>
 
 - [功能](#Function)
 - [ImageEx](#ImageEx)
-- [摄像机例子](#Camera-Example)
 
 ## 功能：<a name="Function"></a>
 
 <summary>1 游戏框架</summary>
 <br>
 其中包含了以下模块<br>
-
-- 数据模块<br>
 - 事件模块<br>
+- 输入模块<br>
+- 数据模块<br>
 - 多语言模块<br>
 - 消息模块<br>
 - 网络模块<br>
 - 资源模块<br>
 - 场景模块<br>
 - 声音模块<br>
+- 状态模块<br>
+- 任务模块<br>
 - 终端模块<br>
 - UI模块<br>
 <br>
 
-  
 <summary>2 Excel导出</summary>
+目前支持通过表格生成类，也可以通过表格生成Json、Sqlite、xml、lua、ScriptableObject<br>
 <br>
 在指定的表格中的数据可以保存为以下格式文件<br>
 - .cs<br>
 - .xml<br>
 - .json<br>
 - .lua<br>
+- .db<br>
 <br>
 
 ![inspector](https://github.com/JackeAstray/EditorTools/blob/main/Screenshot/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202023-09-11%20130523.png)
@@ -113,9 +115,3 @@ UI工具使用说明<br>
 ## ImageEx：<a name="ImageEx"></a>
 ![inspector](https://github.com/JackeAstray/LLAFramework/blob/main/Screenshot/ImageEx/ImageEx-Inspector.png)
 ![inspector](https://github.com/JackeAstray/LLAFramework/blob/main/Screenshot/ImageEx/ImageEx-Example.png)
-
-## Camera-Example：<a name="Camera-Example"></a>
-
-<video width="320" height="240" controls> 
-  <source src="https://github.com/JackeAstray/LLAFramework/blob/main/Screenshot/%E6%91%84%E5%83%8F%E6%9C%BA/Camera-Example.mp4" type="video/mp4"> 
-</video> 
