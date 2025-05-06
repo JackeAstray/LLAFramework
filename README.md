@@ -115,4 +115,7 @@ UI工具使用说明<br>
 ![inspector](https://github.com/JackeAstray/LLAFramework/blob/main/Screenshot/ImageEx/ImageEx-Example.png)
 
 ## Camera-Example：<a name="Camera-Example"></a>
-![inspector](https://github.com/JackeAstray/LLAFramework/blob/main/Screenshot/%E6%91%84%E5%83%8F%E6%9C%BA/Camera-Example.mp4)
+
+<video width="320" height="240" controls> 
+  <source src="https://github.com/JackeAstray/LLAFramework/blob/main/Screenshot/%E6%91%84%E5%83%8F%E6%9C%BA/Camera-Example.mp4" type="video/mp4"> 
+</video> 
