@@ -144,7 +144,7 @@ namespace LLAFramework
         }
 
         /// <summary>
-        /// 输入触发时的回调
+        /// 延时触发调用
         /// </summary>
         private void OnInputPerformed(InputAction.CallbackContext context)
         {
@@ -180,7 +180,7 @@ namespace LLAFramework
         }
 
         /// <summary>
-        /// 输入开始时的回调
+        /// 按下-立即调用
         /// </summary>
         private void OnInputStarted(InputAction.CallbackContext context)
         {
@@ -207,6 +207,35 @@ namespace LLAFramework
                             UIModule.Instance.CloseWindow("TerminalUIPlane");
                         }
                     }
+                    break;
+                case "Arrow":
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// 抬起-立即调用
+        /// </summary>
+        private void OnInputCanceled(InputAction.CallbackContext context)
+        {
+            // 获取触发输入的控制器
+            var control = context.control;
+
+            switch (context.action.name)
+            {
+                case "Move":
+                    break;
+                case "Return":
+                    break;
+                case "Confirm":
+                    break;
+                case "Select":
+                    break;
+                case "Switch":
+                    break;
+                case "OpenConsole":
                     break;
                 case "Arrow":
                     break;
@@ -244,15 +273,6 @@ namespace LLAFramework
             // 应用新的绑定路径
             inputAction.ApplyBindingOverride(bindingIndex, newBindingPath);
             Log.Debug($"动作 {actionName} 的绑定已更新为 {newBindingPath}");
-        }
-
-        /// <summary>
-        /// 输入取消时的回调
-        /// </summary>
-        private void OnInputCanceled(InputAction.CallbackContext context)
-        {
-            // 获取触发输入的控制器
-            var control = context.control;
         }
         #endregion
     }
