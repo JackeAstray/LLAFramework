@@ -42,36 +42,7 @@ namespace LLAFramework
         /// <param name="realElapseSeconds">真实流逝时间，以秒为单位。</param>
         public void UpdateTime(float elapseSeconds, float realElapseSeconds)
         {
-            if (keyboard == null)
-            {
-                return;
-            }
 
-            if (keyboard[Key.Backquote].wasPressedThisFrame)
-            {
-                if (UIModule.Instance != null)
-                {
-                    if (!UIModule.Instance.IsOpen("TerminalUIPlane"))
-                    {
-                        UIModule.Instance.OpenWindow("TerminalUIPlane");
-                    }
-                    else
-                    {
-                        UIModule.Instance.CloseWindow("TerminalUIPlane");
-                    }
-                }
-            }
-
-            if (keyboard[Key.Escape].wasPressedThisFrame)
-            {
-                if (UIModule.Instance != null)
-                {
-                    if (UIModule.Instance.IsOpen("TerminalUIPlane"))
-                    {
-                        UIModule.Instance.CloseWindow("TerminalUIPlane");
-                    }
-                }
-            }
         }
 
         #region 例子

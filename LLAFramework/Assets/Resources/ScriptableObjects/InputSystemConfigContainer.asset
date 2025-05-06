@@ -18,7 +18,7 @@ MonoBehaviour:
     Name: 100014
     ActionName: Move
     BindingPath: <Keyboard>/w
-    Interactions: Press(behavior=PressOnly)
+    Interactions: Press(behavior=0)
     Processors: 
     Groups: Default
   - Id: 2
@@ -26,7 +26,7 @@ MonoBehaviour:
     Name: 100015
     ActionName: Move
     BindingPath: <Keyboard>/s
-    Interactions: Press(behavior=PressOnly)
+    Interactions: 
     Processors: 
     Groups: Default
   - Id: 3
@@ -34,7 +34,7 @@ MonoBehaviour:
     Name: 100016
     ActionName: Move
     BindingPath: <Keyboard>/a
-    Interactions: Press(behavior=PressOnly)
+    Interactions: 
     Processors: 
     Groups: Default
   - Id: 4
@@ -42,7 +42,7 @@ MonoBehaviour:
     Name: 100017
     ActionName: Move
     BindingPath: <Keyboard>/d
-    Interactions: Press(behavior=PressOnly)
+    Interactions: 
     Processors: 
     Groups: Default
   - Id: 5
@@ -50,7 +50,7 @@ MonoBehaviour:
     Name: 100018
     ActionName: Return
     BindingPath: <Keyboard>/escape
-    Interactions: Press(behavior=PressOnly)
+    Interactions: Press(behavior=0)
     Processors: 
     Groups: Default
   - Id: 6
@@ -58,7 +58,7 @@ MonoBehaviour:
     Name: 100019
     ActionName: Confirm
     BindingPath: <Keyboard>/enter
-    Interactions: Press(behavior=PressOnly)
+    Interactions: Press(behavior=0)
     Processors: 
     Groups: Default
   - Id: 7
@@ -66,7 +66,7 @@ MonoBehaviour:
     Name: 100020
     ActionName: Select
     BindingPath: <Keyboard>/space
-    Interactions: Press(behavior=PressOnly)
+    Interactions: Press(behavior=0)
     Processors: 
     Groups: Default
   - Id: 8
@@ -74,7 +74,7 @@ MonoBehaviour:
     Name: 100021
     ActionName: Switch
     BindingPath: <Keyboard>/tab
-    Interactions: Press(behavior=PressOnly)
+    Interactions: Press(behavior=0)
     Processors: 
     Groups: Default
   - Id: 9
@@ -83,5 +83,37 @@ MonoBehaviour:
     ActionName: OpenConsole
     BindingPath: <Keyboard>/backquote
     Interactions: Hold(duration=3)
+    Processors: 
+    Groups: Default
+  - Id: 10
+    Number: 100010
+    Name: 100014
+    ActionName: Arrow
+    BindingPath: <Keyboard>/upArrow
+    Interactions: Press(behavior=0)
+    Processors: 
+    Groups: Default
+  - Id: 11
+    Number: 100011
+    Name: 100015
+    ActionName: Arrow
+    BindingPath: <Keyboard>/downArrow
+    Interactions: 
+    Processors: 
+    Groups: Default
+  - Id: 12
+    Number: 100012
+    Name: 100016
+    ActionName: Arrow
+    BindingPath: <Keyboard>/leftArrow
+    Interactions: 
+    Processors: 
+    Groups: Default
+  - Id: 13
+    Number: 100013
+    Name: 100017
+    ActionName: Arrow
+    BindingPath: <Keyboard>/rightArrow
+    Interactions: 
     Processors: 
     Groups: Default
