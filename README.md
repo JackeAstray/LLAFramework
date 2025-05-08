@@ -4,6 +4,7 @@ Unity版本：2022.3.28fc1<br>
 
 - [功能](#Function)
 - [ImageEx](#ImageEx)
+- [感谢](#感谢)
 
 ## 功能：<a name="Function"></a>
 
@@ -98,3 +99,10 @@ ImageEx是一个Image扩展工具。可以轻松的编辑Image样式，而无需
 
 ![inspector](https://github.com/JackeAstray/LLAFramework/blob/main/Screenshot/ImageEx/ImageEx-Inspector.png)
 ![inspector](https://github.com/JackeAstray/LLAFramework/blob/main/Screenshot/ImageEx/ImageEx-Example.png)
+
+
+## 感谢：<a name="感谢"></a>
+感谢以下的开源项目对我的帮助。<br>
+https://github.com/netpyoung/SqlCipher4Unity3D<br>
+https://github.com/snikit/CSG---3d-boolean-operations-Unity-<br>
+https://github.com/mob-sakai/UIEffect<br>
