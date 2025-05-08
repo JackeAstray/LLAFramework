@@ -106,3 +106,5 @@ ImageEx是一个Image扩展工具。可以轻松的编辑Image样式，而无需
 https://github.com/netpyoung/SqlCipher4Unity3D<br>
 https://github.com/snikit/CSG---3d-boolean-operations-Unity-<br>
 https://github.com/mob-sakai/UIEffect<br>
+也感谢shadertoy上的广大作者们的贡献<br>
+https://www.shadertoy.com/<br>
