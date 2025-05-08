@@ -685,7 +685,7 @@ namespace LLAFramework.Sqlite
                 scriptBuilder.AppendLine("            }");
                 scriptBuilder.AppendLine("            foreach (var tempData in configs)");
                 scriptBuilder.AppendLine("            {");
-                scriptBuilder.AppendLine($"                {sheet.itemClassName.ToLower()}s.Add(tempData.Id, tempData);");
+                scriptBuilder.AppendLine($"                {sheet.itemClassName.ToLower()}s.Add(tempData.Number, tempData);");
                 scriptBuilder.AppendLine("            }");
                 scriptBuilder.AppendLine("        }");
                 scriptBuilder.AppendLine();

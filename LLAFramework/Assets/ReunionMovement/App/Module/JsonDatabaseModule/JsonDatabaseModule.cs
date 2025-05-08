@@ -88,7 +88,7 @@ namespace LLAFramework
             }
             foreach (var tempData in configs)
             {
-                gameconfigs.Add(tempData.Id, tempData);
+                gameconfigs.Add(tempData.Number, tempData);
             }
         }
 
@@ -110,7 +110,7 @@ namespace LLAFramework
             }
             foreach (var tempData in configs)
             {
-                inputsystemconfigs.Add(tempData.Id, tempData);
+                inputsystemconfigs.Add(tempData.Number, tempData);
             }
         }
 
@@ -132,7 +132,7 @@ namespace LLAFramework
             }
             foreach (var tempData in configs)
             {
-                itemconfigs.Add(tempData.Id, tempData);
+                itemconfigs.Add(tempData.Number, tempData);
             }
         }
 
@@ -154,7 +154,7 @@ namespace LLAFramework
             }
             foreach (var tempData in configs)
             {
-                languagess.Add(tempData.Id, tempData);
+                languagess.Add(tempData.Number, tempData);
             }
         }
 
@@ -176,7 +176,7 @@ namespace LLAFramework
             }
             foreach (var tempData in configs)
             {
-                questionconfigs.Add(tempData.Id, tempData);
+                questionconfigs.Add(tempData.Number, tempData);
             }
         }
 
@@ -198,7 +198,7 @@ namespace LLAFramework
             }
             foreach (var tempData in configs)
             {
-                soundconfigs.Add(tempData.Id, tempData);
+                soundconfigs.Add(tempData.Number, tempData);
             }
         }
 
