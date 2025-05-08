@@ -1,4 +1,3 @@
-//Signed Distance Function 2D
 #ifndef SDF_2D
 #define SDF_2D
 
@@ -6,6 +5,12 @@
 float dot2(float2 v)
 {
     return dot(v, v);
+}
+
+// 模
+float mod(float x, float y)
+{
+    return x - y * floor(x / y);
 }
 
 // 用于进一步的图形处理，例如渲染或者着色
@@ -47,7 +52,7 @@ float map(float value, float start1, float stop1, float start2, float stop2)
     return start2 + (stop2 - start2) * ((value - start1) / (stop1 - start1));
 }
 
-// 形状开始------------------------
+
 // 圆形 （位置、半径）
 float sdCircle(float2 p, float r)
 {
@@ -62,7 +67,7 @@ float rectanlge(float2 p, float w, float h)
     return sdf;
 }
 
-// 菱形
+// 用于计算两个二维向量的“伪点积”
 float ndot(float2 a, float2 b)
 {
     return a.x * b.x - a.y * b.y;
@@ -237,29 +242,12 @@ float sdSquircle(float2 p, float n)
     return length(pa - ba * h) * sign(pa.x * ba.y - pa.y * ba.x);
 }
 
-// 方圆形
-float approx_sdSquircle(float2 p, float n)
-{
-    p = abs(p);
-    if (p.y > p.x)
-        p = p.yx;
-    float w = pow(p.x, n) + pow(p.y, n);
-    float b = 2.0 * n - 2.0;
-    float a = 1.0 - 1.0 / n;
-    return (w - pow(w, a)) * rsqrt(pow(p.x, b) + pow(p.y, b));
-}
-
 // 线
 float sdLine(float2 p, float2 a, float2 b)
 {
     float2 pa = p - a, ba = b - a;
     float h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
     return length(pa - ba * h);
-}
-
-float mod(float x, float y)
-{
-    return x - y * floor(x / y);
 }
 
 float2 opRepAng(float2 p, float theta, float offset)

@@ -5,8 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 
 namespace LLAFramework
 {
@@ -29,90 +32,248 @@ namespace LLAFramework
         {
             initProgress = 0;
 
-            InitializeDefaultBindings();
+            InitializeDefaultBindings(JsonDatabaseModule.Instance.GetInputSystemConfig().Values.ToList());
 
             yield return null;
             initProgress = 100;
             IsInited = true;
+
+            // 注册输入监听
+            RegisterInputListeners();
+
             Log.Debug("InputSystemModule 初始化完成");
         }
 
         public void ClearData()
         {
+            UnregisterInputListeners();
             Log.Debug("InputSystemModule 清除数据");
         }
 
         public void UpdateTime(float elapseSeconds, float realElapseSeconds)
         {
-            // 如果处于按键绑定模式，监听键盘输入
-            if (isRebinding)
-            {
-                ListenForRebind();
-            }
+
         }
 
-        private void InitializeDefaultBindings()
+        /// <summary>
+        /// 初始化默认按键绑定
+        /// </summary>
+        /// <param name="configs"></param>
+        private void InitializeDefaultBindings(List<InputSystemConfig> configs)
         {
-            // 示例：添加默认按键绑定
-            var moveAction = new InputAction("Move", InputActionType.Value, "<Keyboard>/w");
-            moveAction.AddBinding("<Keyboard>/a");
-            moveAction.AddBinding("<Keyboard>/s");
-            moveAction.AddBinding("<Keyboard>/d");
-            moveAction.Enable();
-
-            var jumpAction = new InputAction("Jump", InputActionType.Button, "<Keyboard>/space");
-            jumpAction.Enable();
-
-            inputActions["Move"] = moveAction;
-            inputActions["Jump"] = jumpAction;
-
-            Log.Debug("默认按键绑定已初始化");
-        }
-
-        public void RebindAction(string actionName, string newBinding)
-        {
-            if (inputActions.TryGetValue(actionName, out var action))
+            if (configs == null || configs.Count == 0)
             {
-                action.ApplyBindingOverride(newBinding);
-                Log.Debug($"Action {actionName} 绑定已更新为 {newBinding}");
+                Log.Warning("未提供任何按键绑定配置");
+                return;
             }
-            else
-            {
-                Log.Warning($"未找到名为 {actionName} 的按键绑定");
-            }
-        }
 
-        private void ListenForRebind()
-        {
-            // 捕获任意按键输入
-            if (Keyboard.current.anyKey.wasPressedThisFrame)
+            foreach (var config in configs)
             {
-                foreach (var key in Keyboard.current.allKeys)
+                if (string.IsNullOrEmpty(config.ActionName) || string.IsNullOrEmpty(config.BindingPath))
                 {
-                    if (key.wasPressedThisFrame)
-                    {
-                        ApplyRebind(key.path);
-                        break;
-                    }
+                    Log.Warning($"配置无效: Index={config.Number}, ActionName={config.ActionName}, BindingPath={config.BindingPath}");
+                    continue;
                 }
+
+                // 验证 BindingPath 格式
+                if (!IsValidBindingPath(config.BindingPath))
+                {
+                    Log.Warning($"无效的绑定路径: {config.BindingPath}");
+                    continue;
+                }
+
+                if (!inputActions.TryGetValue(config.ActionName, out var inputAction))
+                {
+                    //config.Interactions, config.Processors, config.Groups
+                    inputAction = new InputAction(config.ActionName, InputActionType.Button);
+                    inputActions[config.ActionName] = inputAction;
+                }
+
+                var binding = inputAction.AddBinding(config.BindingPath);
+
+                if (!string.IsNullOrEmpty(config.Interactions))
+                {
+                    binding.WithInteractions(config.Interactions);
+                }
+
+                if (!string.IsNullOrEmpty(config.Processors))
+                {
+                    binding.WithProcessors(config.Processors);
+                }
+
+                if (!string.IsNullOrEmpty(config.Groups))
+                {
+                    binding.WithGroup(config.Groups);
+                }
+
+                inputAction.Enable();
             }
         }
 
-        private void ApplyRebind(string newBinding)
+        private bool IsValidBindingPath(string bindingPath)
         {
-            if (inputActions.TryGetValue(actionToRebind, out var action))
+            // 检查路径是否包含无效的修饰符
+            return !bindingPath.Contains("[Default]");
+        }
+
+        #region 监听
+        /// <summary>
+        /// 注册输入监听
+        /// </summary>
+        public void RegisterInputListeners()
+        {
+            foreach (var action in inputActions.Values)
             {
-                action.ApplyBindingOverride(newBinding);
-                Log.Debug($"Action {actionToRebind} 绑定已更新为 {newBinding}");
+                action.performed += OnInputPerformed;
+                action.started += OnInputStarted;
+                action.canceled += OnInputCanceled;
             }
-            else
+        }
+
+        /// <summary>
+        /// 移除输入监听
+        /// </summary>
+        public void UnregisterInputListeners()
+        {
+            foreach (var action in inputActions.Values)
             {
-                Log.Warning($"未找到名为 {actionToRebind} 的按键绑定");
+                action.performed -= OnInputPerformed;
+                action.started -= OnInputStarted;
+                action.canceled -= OnInputCanceled;
+            }
+        }
+
+        /// <summary>
+        /// 延时触发调用
+        /// </summary>
+        private void OnInputPerformed(InputAction.CallbackContext context)
+        {
+            // 获取触发输入的控制器
+            var control = context.control;
+
+            switch (context.action.name)
+            {
+                case "Move":
+                    break;
+                case "Return":
+                    break;
+                case "Confirm":
+                    break;
+                case "Select":
+                    break;
+                case "Switch":
+                    break;
+                case "OpenConsole":
+                    if (UIModule.Instance != null)
+                    {
+                        if (!UIModule.Instance.IsOpen("TerminalUIPlane"))
+                        {
+                            UIModule.Instance.OpenWindow("TerminalUIPlane");
+                        }
+                    }
+                    break;
+                case "Arrow":
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// 按下-立即调用
+        /// </summary>
+        private void OnInputStarted(InputAction.CallbackContext context)
+        {
+            // 获取触发输入的控制器
+            var control = context.control;
+
+            switch (context.action.name)
+            {
+                case "Move":
+                    break;
+                case "Return":
+                    break;
+                case "Confirm":
+                    break;
+                case "Select":
+                    break;
+                case "Switch":
+                    break;
+                case "OpenConsole":
+                    if (UIModule.Instance != null)
+                    {
+                        if (UIModule.Instance.IsOpen("TerminalUIPlane"))
+                        {
+                            UIModule.Instance.CloseWindow("TerminalUIPlane");
+                        }
+                    }
+                    break;
+                case "Arrow":
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// 抬起-立即调用
+        /// </summary>
+        private void OnInputCanceled(InputAction.CallbackContext context)
+        {
+            // 获取触发输入的控制器
+            var control = context.control;
+
+            switch (context.action.name)
+            {
+                case "Move":
+                    break;
+                case "Return":
+                    break;
+                case "Confirm":
+                    break;
+                case "Select":
+                    break;
+                case "Switch":
+                    break;
+                case "OpenConsole":
+                    break;
+                case "Arrow":
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// 重新绑定按键
+        /// </summary>
+        /// <param name="actionName">动作名称，例如 "Move"</param>
+        /// <param name="newBindingPath">新的按键绑定路径，例如 "<Keyboard>/upArrow"</param>
+        public void RebindAction(string actionName, string oldBindingPath, string newBindingPath)
+        {
+            if (string.IsNullOrEmpty(actionName) || string.IsNullOrEmpty(newBindingPath))
+            {
+                Log.Warning("动作名称或绑定路径不能为空");
+                return;
             }
 
-            // 退出绑定模式
-            isRebinding = false;
-            actionToRebind = null;
+            if (!inputActions.TryGetValue(actionName, out var inputAction))
+            {
+                Log.Warning($"未找到动作: {actionName}");
+                return;
+            }
+
+            var bindingIndex = inputAction.GetBindingIndex(oldBindingPath);
+            if (bindingIndex == -1)
+            {
+                Log.Warning($"未找到动作 {actionName} 的绑定路径: {oldBindingPath}");
+                return;
+            }
+
+            // 应用新的绑定路径
+            inputAction.ApplyBindingOverride(bindingIndex, newBindingPath);
+            Log.Debug($"动作 {actionName} 的绑定已更新为 {newBindingPath}");
         }
+        #endregion
     }
 }

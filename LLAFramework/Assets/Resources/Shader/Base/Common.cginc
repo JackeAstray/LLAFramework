@@ -3,7 +3,7 @@ const float pi2 = 6.28318; // 2 * pi
 const float pi3 = 9.42478; // 3 * pi
 
 //根据屏幕宽高展uv
-float2 screen_aspect_ratio(float2 uv, float ratio)
+float2 screenAspectRatio(float2 uv, float ratio)
 {
     uv.x -= 0.5;
     uv.x *= ((_ScreenParams.x) / (_ScreenParams.y)) * ratio;
@@ -51,13 +51,13 @@ inline float noise(uint2 n)
 }
 
 // 从裁剪区域的相对UV转换到全局UV。
-float2 UnCropUV(float2 uvRelativeToCropped, float4 cropRegion)
+float2 unCropUV(float2 uvRelativeToCropped, float4 cropRegion)
 {
     return lerp(cropRegion.xy, cropRegion.zw, uvRelativeToCropped);
 }
 
 // 从全局UV转换到裁剪区域的相对 UV。
-float2 CropUV(float2 uvRelativeToUnCropped, float4 cropRegion)
+float2 cropUV(float2 uvRelativeToUnCropped, float4 cropRegion)
 {
     return (uvRelativeToUnCropped - cropRegion.xy) / (cropRegion.zw - cropRegion.xy);
 }

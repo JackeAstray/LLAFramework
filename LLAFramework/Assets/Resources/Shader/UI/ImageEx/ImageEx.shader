@@ -6,63 +6,68 @@ Shader "ReunionMovement/UI/Procedural Image"
         _Color ("Tint", Color) = (1, 1, 1, 1)
         _TextureSize ("Texture Size", Vector) = (1, 1, 1, 1)
         
-        _DrawShape ("Draw Shape", int) = 2
+        _DrawShape ("绘制形状", int) = 2
         
-        _StrokeWidth ("Stroke Width", float) = 0
-        _FalloffDistance ("Falloff Distance", float) = 0.5
-        _PixelWorldScale ("Pixel world scale", Range(0.01, 5)) = 1
-        _ShapeRotation ("shape Rotation", float) = 0
-        _ConstrainRotation("Constrained Rotation", int) = 0
-        _FlipHorizontal ("Flip Horizontal", int) = 0
-        _FlipVertical ("Flip Vertical", int) = 0
+        _StrokeWidth ("线条宽度", float) = 0
+        _FalloffDistance ("衰减距离", float) = 0.5
+        _PixelWorldScale ("像素与世界单位之间的缩放比例", Range(0.01, 5)) = 1
+        _ShapeRotation ("形状旋转", float) = 0
+        _ConstrainRotation("约束旋转", int) = 0
+        _FlipHorizontal ("水平翻转", int) = 0
+        _FlipVertical ("垂直翻转", int) = 0
         
-        _RectangleCornerRadius ("Rectangle Corner Radius", Vector) = (0, 0, 0, 0)
-        _CircleRadius ("Circle Radius", float) = 0
-        _CircleFitRadius ("Fit Circle Radius", float) = 0
-        _PentagonCornerRadius ("Pentagon Corner Radius", Vector) = (0, 0, 0, 0)
-        _PentagonTipRadius ("Pentagon Triangle Radius", float) = 0
-        _PentagonTipSize ("Pentagon Triangle Size", float) = 0
-        _TriangleCornerRadius ("Triangle Radius", Vector) = (0, 0, 0, 0)
-        _HexagonTipSize ("Hexagon Tip Size", Vector) = (0, 0, 0, 0)
-        _HexagonTipRadius ("Hexagon Tip Radius", Vector) = (0, 0, 0, 0)
-        _HexagonCornerRadius ("Hexagon Corner Radius", Vector) = (0, 0, 0, 0)
-        _NStarPolygonSideCount ("NStar Polygon Side Count", float) = 3
-        _NStarPolygonInset ("Nstar Polygon Inset", float) = 2
-        _NStarPolygonCornerRadius ("Nstar Polygon Corner Radius", float) = 0
-        _NStarPolygonOffset ("Nstar Polygon Offset", Vector) = (0, 0, 0, 0)
+        _RectangleCornerRadius ("矩形四个角的圆角半径", Vector) = (0, 0, 0, 0)
+        _CircleRadius ("圆半径", float) = 0
+        _CircleFitRadius ("拟合圆半径", float) = 0
+        _PentagonCornerRadius ("定义五边形的四个角的圆角半径", Vector) = (0, 0, 0, 0)
+        _PentagonTipRadius ("五边形顶部尖角的圆角半径", float) = 0
+        _PentagonTipSize ("五边形顶部尖角的大小", float) = 0
+        _TriangleCornerRadius ("三角形三个角的圆角半径", Vector) = (0, 0, 0, 0)
+        _HexagonTipSize ("六边形顶部尖角的大小", Vector) = (0, 0, 0, 0)
+        _HexagonTipRadius ("六边形顶部尖角的圆角半径", Vector) = (0, 0, 0, 0)
+        _HexagonCornerRadius ("六边形六个角的圆角半径", Vector) = (0, 0, 0, 0)
+        _NStarPolygonSideCount ("星形多边形的边数", float) = 3
+        _NStarPolygonInset ("星形多边形的内凹程度", float) = 2
+        _NStarPolygonCornerRadius ("星形多边形角的圆角半径", float) = 0
+        _NStarPolygonOffset ("星形多边形的偏移量", Vector) = (0, 0, 0, 0)
 
-        _EnableGradient ("Enable GradientEffect", int) = 0
-        _GradientType ("GradientEffect Type", int) = 0
-        _GradientInterpolationType ("GradientEffect Interpolation Type", int) = 0
-        _GradientRotation ("_GradientRotation", float) = 0
-        _GradientColor0 ("GradientColor0", Vector) = (0, 0, 0, 0)
-        _GradientColor1 ("GradientColor1", Vector) = (1, 1, 1, 1)
-        _GradientColor2 ("GradientColor2", Vector) = (0, 0, 0, 0)
-        _GradientColor3 ("GradientColor3", Vector) = (0, 0, 0, 0)
-        _GradientColor4 ("GradientColor4", Vector) = (0, 0, 0, 0)
-        _GradientColor5 ("GradientColor5", Vector) = (0, 0, 0, 0)
-        _GradientColor6 ("GradientColor6", Vector) = (0, 0, 0, 0)
-        _GradientColor7 ("GradientColor7", Vector) = (0, 0, 0, 0)
-        _GradientColorLength ("GradientColorLength", int) = 0
-        _GradientAlpha0 ("GradientAlpha0", Vector) = (1, 0, 0, 0)
-        _GradientAlpha1 ("GradientAlpha1", Vector) = (1, 1, 0, 0)
-        _GradientAlpha2 ("GradientAlpha2", Vector) = (0, 0, 0, 0)
-        _GradientAlpha3 ("GradientAlpha3", Vector) = (0, 0, 0, 0)
-        _GradientAlpha4 ("GradientAlpha4", Vector) = (0, 0, 0, 0)
-        _GradientAlpha5 ("GradientAlpha5", Vector) = (0, 0, 0, 0)
-        _GradientAlpha6 ("GradientAlpha6", Vector) = (0, 0, 0, 0)
-        _GradientAlpha7 ("GradientAlpha7", Vector) = (0, 0, 0, 0)
-        _GradientAlphaLength ("GradientAlphaLength", int) = 0
-        _CornerGradientColor0 ("CornerGradientColor0", Color) = (1, 0, 0, 1)
-        _CornerGradientColor1 ("CornerGradientColor1", Color) = (0, 1, 0, 1)
-        _CornerGradientColor2 ("CornerGradientColor2", Color) = (0, 0, 1, 1)
-        _CornerGradientColor3 ("CornerGradientColor3", Color) = (0, 0, 0, 1)
+        _EnableGradient ("启用渐变效果", int) = 0
+        _GradientType ("渐变的类型", int) = 0
+        _GradientInterpolationType ("渐变的插值方式", int) = 0
+        _GradientRotation ("渐变旋转", float) = 0
+        _GradientColor0 ("渐变颜色 0", Vector) = (0, 0, 0, 0)
+        _GradientColor1 ("渐变颜色 1", Vector) = (1, 1, 1, 1)
+        _GradientColor2 ("渐变颜色 2", Vector) = (0, 0, 0, 0)
+        _GradientColor3 ("渐变颜色 3", Vector) = (0, 0, 0, 0)
+        _GradientColor4 ("渐变颜色 4", Vector) = (0, 0, 0, 0)
+        _GradientColor5 ("渐变颜色 5", Vector) = (0, 0, 0, 0)
+        _GradientColor6 ("渐变颜色 6", Vector) = (0, 0, 0, 0)
+        _GradientColor7 ("渐变颜色 7", Vector) = (0, 0, 0, 0)
+        _GradientColorLength ("渐变颜色的数量", int) = 0
+        _GradientAlpha0 ("渐变透明度 0", Vector) = (1, 0, 0, 0)
+        _GradientAlpha1 ("渐变透明度 1", Vector) = (1, 1, 0, 0)
+        _GradientAlpha2 ("渐变透明度 2", Vector) = (0, 0, 0, 0)
+        _GradientAlpha3 ("渐变透明度 3", Vector) = (0, 0, 0, 0)
+        _GradientAlpha4 ("渐变透明度 4", Vector) = (0, 0, 0, 0)
+        _GradientAlpha5 ("渐变透明度 5", Vector) = (0, 0, 0, 0)
+        _GradientAlpha6 ("渐变透明度 6", Vector) = (0, 0, 0, 0)
+        _GradientAlpha7 ("渐变透明度 7", Vector) = (0, 0, 0, 0)
+        _GradientAlphaLength ("渐变透明度的数量", int) = 0
+        _CornerGradientColor0 ("角0渐变效果", Color) = (1, 0, 0, 1)
+        _CornerGradientColor1 ("角1渐变效果", Color) = (0, 1, 0, 1)
+        _CornerGradientColor2 ("角2渐变效果", Color) = (0, 0, 1, 1)
+        _CornerGradientColor3 ("角3渐变效果", Color) = (0, 0, 0, 1)
         
-        _OutlineWidth ("Outline Width", float) = 0
-        _OutlineColor ("Outline Color", Color) = (0, 0, 0, 1)
+        _OutlineWidth ("轮廓宽", float) = 0
+        _OutlineColor ("轮廓颜色", Color) = (0, 0, 0, 1)
         // 虚线开关、自定义时间
-        _EnableDashedOutline ("Enable Dashed Outline", int) = 0 
-        _CustomTime ("Custom Time", Float) = 0
+        _EnableDashedOutline ("启用虚线轮廓", int) = 0 
+        _CustomTime ("自定义时间", Float) = 0
+
+        _BlobbyCrossTime ("水滴十字形状的动态时间参数", Float) = 0
+        _SquircleTime ("方圆形形状的动态时间参数", Float) = 1
+        _NTriangleRoundedTime ("N三角形圆角形状的动态时间参数", Float) = 0
+        _NTriangleRoundedNumber ("N三角形圆角形状的边数", Float) = 0
 
         _StencilComp ("Stencil Comparison", Float) = 8
         _Stencil ("Stencil ID", Float) = 0
@@ -71,13 +76,6 @@ Shader "ReunionMovement/UI/Procedural Image"
         _StencilReadMask ("Stencil Read Mask", Float) = 255
         
         _ColorMask ("Color Mask", Float) = 15
-        
-        _BlobbyCrossTime ("Blobby Cross Time", Float) = 0
-
-        _SquircleTime ("Squircle Time", Float) = 1
-
-        _NTriangleRoundedTime ("NTriangle Rounded Time", Float) = 0
-        _NTriangleRoundedNumber ("NTriangle Rounded Number", Float) = 0
         
         [Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip ("Use Alpha Clip", Float) = 0
     }
