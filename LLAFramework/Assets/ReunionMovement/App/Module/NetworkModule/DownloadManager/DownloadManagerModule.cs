@@ -3,7 +3,9 @@ using LLAFramework.Http.Service;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
+using System.Security.Policy;
 using UnityEngine;
 
 namespace LLAFramework.Download
@@ -46,6 +48,7 @@ namespace LLAFramework.Download
             {"application/zip",".zip"},
             {"application/7z",".7z"},
         };
+
         #endregion
 
         public IEnumerator Init()
@@ -64,7 +67,7 @@ namespace LLAFramework.Download
         }
 
         #region 下载图片
-        public void DownloadImage(string url, Action<float> onProgress, Action<Texture2D> onComplete, string suffix = ".png")
+        public void DownloadImage_Web(string url, Action<float> onProgress, Action<Texture2D> onComplete, string suffix = ".png")
         {
             if (imageCache.TryGetValue(url, out Texture2D cachedTexture))
             {
@@ -98,7 +101,7 @@ namespace LLAFramework.Download
         #endregion
 
         #region 下载文件
-        public void DownloadFile(string url, Action<float> onProgress, Action<HttpResponse> onComplete)
+        public void DownloadFile_Web(string url, Action<float> onProgress, Action<HttpResponse> onComplete)
         {
             string fileName = PathUtils.GetFileName(url);
             string localPath = Path.Combine(PathUtils.GetLocalPath(DownloadType.PersistentFile), fileName);
@@ -111,13 +114,56 @@ namespace LLAFramework.Download
         }
         #endregion
 
+        #region 多文件下载
+        public async void DownloadFiles(List<string> url, string savePath, string uiPlane, string set, Action action = null)
+        {
+            UnityFileDownloader ufd = new UnityFileDownloader(savePath, false, 3, true, false, true, url);
+
+            ufd.OnDownloadSuccess += (string uri) =>
+            {
+                Log.Debug("OnDownloadSuccess = " + ufd.Progress);
+                UIModule.Instance.SetWindow("StartAppUIPlane", "SetProgress", ufd.Progress);
+            };
+
+            ufd.OnDownloadChunkedSucces += (string uri) =>
+            {
+                Log.Debug("Progress for " + uri + " is " + ufd.GetProgress(uri));
+            };
+
+            ufd.OnDownloadsSuccess += () =>
+            {
+                Log.Debug("已下载所有文件。");
+                action?.Invoke();
+            };
+
+            ufd.OnDownloadError += (string uri, int errorCode, string errorMsg) =>
+            {
+                Log.Error($"错误代码={errorCode}, EM={errorMsg}, URU={uri}");
+            };
+
+            await ufd.Download();
+        }
+        #endregion
+
         #region 工具方法
+        /// <summary>
+        /// 获取本地文件路径
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="suffix"></param>
+        /// <returns></returns>
         private string GetLocalFilePath(string url, string suffix)
         {
             string urlHash = StringExtensions.CreateMD5(url);
             return $"{PathUtils.GetLocalPath(DownloadType.PersistentFile)}/{urlHash}{suffix}";
         }
 
+        /// <summary>
+        /// 尝试从本地加载图片
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="texture"></param>
+        /// <returns></returns>
         private bool TryLoadFromLocal(string filePath, out Texture2D texture)
         {
             texture = null;
@@ -137,6 +183,11 @@ namespace LLAFramework.Download
             }
         }
 
+        /// <summary>
+        /// 保存图片到本地
+        /// </summary>
+        /// <param name="texture"></param>
+        /// <param name="filePath"></param>
         private void SaveToLocal(Texture2D texture, string filePath)
         {
             try
