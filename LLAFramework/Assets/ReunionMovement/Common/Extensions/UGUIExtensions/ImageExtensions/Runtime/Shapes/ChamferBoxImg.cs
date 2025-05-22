@@ -44,7 +44,7 @@ namespace LLAFramework.UI.ImageExtensions
             get => chamferBoxRadius;
             set
             {
-                chamferBoxRadius = Mathf.Max(value, 0);
+                chamferBoxRadius = Mathf.Clamp(value, 0f, 1f);
                 if (shouldModifySharedMat)
                 {
                     sharedMat.SetFloat(chamferBoxRadius_Sp, chamferBoxRadius);
