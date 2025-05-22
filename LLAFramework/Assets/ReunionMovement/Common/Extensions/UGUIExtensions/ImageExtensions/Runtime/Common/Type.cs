@@ -13,6 +13,7 @@ namespace LLAFramework.UI.ImageExtensions
         Rectangle,          //矩形
         Pentagon,           //五边形
         Hexagon,            //六边形
+        ChamferBox,         //倒角长方形
         NStarPolygon,       //N星多边形
         Heart,              //心形
         BlobbyCross,        //滴状十字

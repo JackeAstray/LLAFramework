@@ -14,7 +14,7 @@ namespace LLAFramework.UI.ImageExtensions.Editor
     public class ImageExEditor : ImageEditor
     {
         private SerializedProperty spSprite;
-        private SerializedProperty spCircle, spTriangle, spRectangle, spPentagon, spHexagon, spNStarPolygon, spHeart, spBlobbyCross, spSquircle, spNTriangleRounded;
+        private SerializedProperty spCircle, spTriangle, spRectangle, spPentagon, spHexagon, spChamferBox, spNStarPolygon, spHeart, spBlobbyCross, spSquircle, spNTriangleRounded;
         private SerializedProperty spPreserveAspect;
         private SerializedProperty spFillMethod, spFillOrigin, spFillAmount, spFillClockwise;
         private SerializedProperty spAlphaThreshold;
@@ -68,6 +68,7 @@ namespace LLAFramework.UI.ImageExtensions.Editor
             spTriangle = serializedObject.FindProperty("triangle");
             spPentagon = serializedObject.FindProperty("pentagon");
             spHexagon = serializedObject.FindProperty("hexagon");
+            spChamferBox = serializedObject.FindProperty("chamferBox");
             spNStarPolygon = serializedObject.FindProperty("nStarPolygon");
             spHeart = serializedObject.FindProperty("heart");
             spBlobbyCross = serializedObject.FindProperty("blobbyCross");
@@ -111,6 +112,9 @@ namespace LLAFramework.UI.ImageExtensions.Editor
                             break;
                         case DrawShape.Hexagon:
                             EditorGUILayout.PropertyField(spHexagon);
+                            break;
+                        case DrawShape.ChamferBox:
+                            EditorGUILayout.PropertyField(spChamferBox);
                             break;
                         case DrawShape.NStarPolygon:
                             EditorGUILayout.PropertyField(spNStarPolygon);

@@ -67,6 +67,24 @@ float rectanlge(float2 p, float w, float h)
     return sdf;
 }
 
+// 倒角长方形
+float sdChamferBox(float2 p, float2 b, float chamfer)
+{
+    p = abs(p) - b;
+
+    p = (p.y > p.x) ? p.yx : p.xy;
+    p.y += chamfer;
+    
+    const float k = 1.0 - sqrt(2.0);
+    if (p.y < 0.0 && p.y + p.x * k < 0.0)
+        return p.x;
+    
+    if (p.x < p.y)
+        return (p.x + p.y) * sqrt(0.5);
+    
+    return length(p);
+}
+
 // 用于计算两个二维向量的“伪点积”
 float ndot(float2 a, float2 b)
 {

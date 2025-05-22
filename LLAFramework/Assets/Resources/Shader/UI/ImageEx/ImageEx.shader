@@ -26,6 +26,8 @@ Shader "ReunionMovement/UI/Procedural Image"
         _HexagonTipSize ("六边形顶部尖角的大小", Vector) = (0, 0, 0, 0)
         _HexagonTipRadius ("六边形顶部尖角的圆角半径", Vector) = (0, 0, 0, 0)
         _HexagonCornerRadius ("六边形六个角的圆角半径", Vector) = (0, 0, 0, 0)
+        _ChamferBoxSize ("倒角盒子尺寸", Vector) = (0.8, 0.4, 0, 0)
+        _ChamferBoxRadius ("倒角半径", Float) = 0.15
         _NStarPolygonSideCount ("星形多边形的边数", float) = 3
         _NStarPolygonInset ("星形多边形的内凹程度", float) = 2
         _NStarPolygonCornerRadius ("星形多边形角的圆角半径", float) = 0
@@ -116,7 +118,7 @@ Shader "ReunionMovement/UI/Procedural Image"
             #pragma multi_compile_local _ UNITY_UI_CLIP_RECT
             #pragma multi_compile_local _ UNITY_UI_ALPHACLIP
             
-            #pragma multi_compile_local _ CIRCLE TRIANGLE RECTANGLE PENTAGON HEXAGON NSTAR_POLYGON HEART BLOBBYCROSS SQUIRCLE NTRIANGLE_ROUNDED
+            #pragma multi_compile_local _ CIRCLE TRIANGLE RECTANGLE PENTAGON HEXAGON CHAMFERBOX NSTAR_POLYGON HEART BLOBBYCROSS SQUIRCLE NTRIANGLE_ROUNDED
             
             #pragma multi_compile_local _ STROKE OUTLINED OUTLINED_STROKE
             #pragma multi_compile_local _ GRADIENT_LINEAR GRADIENT_RADIAL GRADIENT_CORNER
@@ -189,7 +191,12 @@ Shader "ReunionMovement/UI/Procedural Image"
                 half2 _HexagonTipRadius;
                 half4 _HexagonCornerRadius;
             #endif
-            
+
+            #if CHAMFERBOX
+                float2 _ChamferBoxSize;
+                float _ChamferBoxRadius;
+            #endif
+
             #if NSTAR_POLYGON
                 float _NStarPolygonSideCount;
                 float _NStarPolygonCornerRadius;
@@ -503,7 +510,31 @@ Shader "ReunionMovement/UI/Procedural Image"
                     
                     return sdfHexagon;
                 }
-                
+            #endif
+
+            #if CHAMFERBOX
+                half chamferBoxScene(float4 additionalData)
+                {
+                    float2 texcoord = additionalData.xy;
+                    float2 size = float2(additionalData.z, additionalData.w);
+
+                    // 归一化到中心
+                    float2 p = (2.0 * texcoord - size) / size.y;
+
+                    // 动态倒角半径（可选：可加动画/时间参数）
+                    float chamfer = _ChamferBoxRadius;
+
+                    // box参数
+                    float2 box = _ChamferBoxSize;
+
+                    // 防御性检查，防止倒角过大
+                    chamfer = min(chamfer, min(box.x, box.y));
+
+                    float d = sdChamferBox(p, box, chamfer);
+
+                    // 放大SDF以适配像素空间
+                    return d * 80.0;
+                }
             #endif
             
             //N星形多边形
@@ -756,7 +787,7 @@ Shader "ReunionMovement/UI/Procedural Image"
                     color *= finalCol;
                 #endif
                 
-                #if RECTANGLE || CIRCLE || PENTAGON || TRIANGLE || HEXAGON || NSTAR_POLYGON || HEART || BLOBBYCROSS || SQUIRCLE || NTRIANGLE_ROUNDED
+                #if RECTANGLE || CIRCLE || PENTAGON || TRIANGLE || HEXAGON || CHAMFERBOX || NSTAR_POLYGON || HEART || BLOBBYCROSS || SQUIRCLE || NTRIANGLE_ROUNDED
                     float sdfData = 0;
                     float pixelScale = clamp(1.0/_FalloffDistance, 1.0/2048.0, 2048.0);
                     #if RECTANGLE
@@ -769,6 +800,8 @@ Shader "ReunionMovement/UI/Procedural Image"
                         sdfData = triangleScene(IN.shapeData);
                     #elif HEXAGON
                         sdfData = hexagonScene(IN.shapeData);
+                    #elif CHAMFERBOX
+                        sdfData = chamferBoxScene(IN.shapeData);
                     #elif NSTAR_POLYGON
                         sdfData = nStarPolygonScene(IN.shapeData);
                     #elif HEART

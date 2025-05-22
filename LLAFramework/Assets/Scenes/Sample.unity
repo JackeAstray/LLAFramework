@@ -491,6 +491,9 @@ MonoBehaviour:
     uniformTipSize: 0
     tipRadius: {x: 1, y: 1}
     uniformTipRadius: 0
+  chamferBox:
+    chamferBoxSize: {x: 1, y: 1}
+    chamferBoxRadius: 0
   nStarPolygon:
     sideCount: 3
     inset: 2
@@ -928,6 +931,9 @@ MonoBehaviour:
     uniformTipSize: 0
     tipRadius: {x: 20, y: 20}
     uniformTipRadius: 0
+  chamferBox:
+    chamferBoxSize: {x: 1, y: 1}
+    chamferBoxRadius: 0
   nStarPolygon:
     sideCount: 10
     inset: 5
@@ -1089,6 +1095,9 @@ MonoBehaviour:
     uniformTipSize: 0
     tipRadius: {x: 1, y: 1}
     uniformTipRadius: 0
+  chamferBox:
+    chamferBoxSize: {x: 1, y: 1}
+    chamferBoxRadius: 0
   nStarPolygon:
     sideCount: 3
     inset: 2
@@ -1427,6 +1436,7 @@ RectTransform:
   - {fileID: 1955089481}
   - {fileID: 1465246635}
   - {fileID: 1508623358}
+  - {fileID: 699268649}
   - {fileID: 1763652234}
   - {fileID: 286070422}
   - {fileID: 1000883211}
@@ -1448,7 +1458,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.00006662037}
+  m_AnchoredPosition: {x: 0, y: 0.00000024504277}
   m_SizeDelta: {x: 0, y: 900}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &343153310
@@ -2023,6 +2033,9 @@ MonoBehaviour:
     uniformTipSize: 0
     tipRadius: {x: 1, y: 1}
     uniformTipRadius: 0
+  chamferBox:
+    chamferBoxSize: {x: 1, y: 1}
+    chamferBoxRadius: 0
   nStarPolygon:
     sideCount: 3
     inset: 2
@@ -2469,6 +2482,9 @@ MonoBehaviour:
     uniformTipSize: 0
     tipRadius: {x: 1, y: 1}
     uniformTipRadius: 0
+  chamferBox:
+    chamferBoxSize: {x: 1, y: 1}
+    chamferBoxRadius: 0
   nStarPolygon:
     sideCount: 3
     inset: 2
@@ -2713,6 +2729,170 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &699268648
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 699268649}
+  - component: {fileID: 699268651}
+  - component: {fileID: 699268650}
+  m_Layer: 0
+  m_Name: ChamferBox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &699268649
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 699268648}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 343153309}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &699268650
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 699268648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4041ee2aabac59f4589e76bac1cb0e81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 0.5803922, b: 0, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+  drawShape: 6
+  imageType: 0
+  materialMode: 0
+  strokeWidth: 0
+  outlineWidth: 5
+  outlineColor: {r: 0, g: 0, b: 0, a: 1}
+  customTime: 0
+  enableDashedOutline: 0
+  falloffDistance: 0.5
+  constrainRotation: 1
+  shapeRotation: 0
+  flipHorizontal: 0
+  flipVertical: 0
+  alphaThreshold: 0
+  triangle:
+    cornerRadius: {x: 0, y: 0, z: 0}
+    uniformCornerRadius: 0
+  rectangle:
+    cornerRadius: {x: 0, y: 0, z: 0, w: 0}
+    uniformCornerRadius: 0
+  circle:
+    radius: 0
+    fitRadius: 0
+  pentagon:
+    cornerRadius: {x: 0, y: 0, z: 0, w: 0}
+    uniformCornerRadius: 0
+    tipRadius: 20
+    tipSize: 35
+  hexagon:
+    cornerRadius: {x: 1, y: 1, z: 1, w: 1}
+    uniformCornerRadius: 0
+    tipSize: {x: 40, y: 40}
+    uniformTipSize: 0
+    tipRadius: {x: 1, y: 1}
+    uniformTipRadius: 0
+  chamferBox:
+    chamferBoxSize: {x: 1, y: 1}
+    chamferBoxRadius: 0.3
+  nStarPolygon:
+    sideCount: 3
+    inset: 2
+    cornerRadius: 0
+    offset: {x: 0, y: 0}
+  blobbyCross:
+    blobbyCrossTime: 0
+  squircle:
+    squircleTime: 0
+  nTriangleRounded:
+    nTriangleRoundedTime: 0
+    nTriangleRoundedNumber: 0
+  gradientEffect:
+    enabled: 0
+    gradientType: 1
+    gradient:
+      serializedVersion: 2
+      key0: {r: 1, g: 1, b: 1, a: 1}
+      key1: {r: 1, g: 1, b: 1, a: 1}
+      key2: {r: 0, g: 0, b: 0, a: 0}
+      key3: {r: 0, g: 0, b: 0, a: 0}
+      key4: {r: 0, g: 0, b: 0, a: 0}
+      key5: {r: 0, g: 0, b: 0, a: 0}
+      key6: {r: 0, g: 0, b: 0, a: 0}
+      key7: {r: 0, g: 0, b: 0, a: 0}
+      ctime0: 0
+      ctime1: 65535
+      ctime2: 0
+      ctime3: 0
+      ctime4: 0
+      ctime5: 0
+      ctime6: 0
+      ctime7: 0
+      atime0: 0
+      atime1: 65535
+      atime2: 0
+      atime3: 0
+      atime4: 0
+      atime5: 0
+      atime6: 0
+      atime7: 0
+      m_Mode: 0
+      m_ColorSpace: -1
+      m_NumColorKeys: 2
+      m_NumAlphaKeys: 2
+    cornerGradientColors:
+    - {r: 1, g: 0.5424528, b: 0.5424528, a: 1}
+    - {r: 0.5235849, g: 1, b: 0.99455184, a: 1}
+    - {r: 0.40799117, g: 1, b: 0.4009434, a: 1}
+    - {r: 1, g: 0.495283, b: 0.83967817, a: 1}
+    rotation: 0
+--- !u!222 &699268651
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 699268648}
+  m_CullTransparentMesh: 1
 --- !u!1 &752388119
 GameObject:
   m_ObjectHideFlags: 0
@@ -3278,6 +3458,9 @@ MonoBehaviour:
     uniformTipSize: 0
     tipRadius: {x: 1, y: 1}
     uniformTipRadius: 0
+  chamferBox:
+    chamferBoxSize: {x: 1, y: 1}
+    chamferBoxRadius: 0
   nStarPolygon:
     sideCount: 3
     inset: 2
@@ -3536,6 +3719,9 @@ MonoBehaviour:
     uniformTipSize: 0
     tipRadius: {x: 20, y: 20}
     uniformTipRadius: 0
+  chamferBox:
+    chamferBoxSize: {x: 1, y: 1}
+    chamferBoxRadius: 0
   nStarPolygon:
     sideCount: 10
     inset: 5
@@ -4106,7 +4292,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
-  drawShape: 1
+  drawShape: 5
   imageType: 0
   materialMode: 0
   strokeWidth: 0
@@ -4141,6 +4327,9 @@ MonoBehaviour:
     uniformTipSize: 0
     tipRadius: {x: 1, y: 1}
     uniformTipRadius: 0
+  chamferBox:
+    chamferBoxSize: {x: 1, y: 1}
+    chamferBoxRadius: 0
   nStarPolygon:
     sideCount: 3
     inset: 2
@@ -4572,6 +4761,9 @@ MonoBehaviour:
     uniformTipSize: 0
     tipRadius: {x: 20, y: 20}
     uniformTipRadius: 0
+  chamferBox:
+    chamferBoxSize: {x: 1, y: 1}
+    chamferBoxRadius: 0
   nStarPolygon:
     sideCount: 10
     inset: 5
@@ -4733,6 +4925,9 @@ MonoBehaviour:
     uniformTipSize: 0
     tipRadius: {x: 1, y: 1}
     uniformTipRadius: 0
+  chamferBox:
+    chamferBoxSize: {x: 1, y: 1}
+    chamferBoxRadius: 0
   nStarPolygon:
     sideCount: 3
     inset: 2
@@ -5045,6 +5240,9 @@ MonoBehaviour:
     uniformTipSize: 0
     tipRadius: {x: 1, y: 1}
     uniformTipRadius: 0
+  chamferBox:
+    chamferBoxSize: {x: 1, y: 1}
+    chamferBoxRadius: 0
   nStarPolygon:
     sideCount: 3
     inset: 2
@@ -5404,6 +5602,9 @@ MonoBehaviour:
     uniformTipSize: 0
     tipRadius: {x: 20, y: 20}
     uniformTipRadius: 0
+  chamferBox:
+    chamferBoxSize: {x: 1, y: 1}
+    chamferBoxRadius: 0
   nStarPolygon:
     sideCount: 10
     inset: 5
@@ -5684,6 +5885,9 @@ MonoBehaviour:
     uniformTipSize: 0
     tipRadius: {x: 1, y: 1}
     uniformTipRadius: 0
+  chamferBox:
+    chamferBoxSize: {x: 1, y: 1}
+    chamferBoxRadius: 0
   nStarPolygon:
     sideCount: 3
     inset: 2
@@ -6230,6 +6434,9 @@ MonoBehaviour:
     uniformTipSize: 0
     tipRadius: {x: 1, y: 1}
     uniformTipRadius: 0
+  chamferBox:
+    chamferBoxSize: {x: 1, y: 1}
+    chamferBoxRadius: 0
   nStarPolygon:
     sideCount: 3
     inset: 2
@@ -6391,6 +6598,9 @@ MonoBehaviour:
     uniformTipSize: 0
     tipRadius: {x: 1, y: 1}
     uniformTipRadius: 0
+  chamferBox:
+    chamferBoxSize: {x: 1, y: 1}
+    chamferBoxRadius: 0
   nStarPolygon:
     sideCount: 3
     inset: 2
@@ -6728,6 +6938,9 @@ MonoBehaviour:
     uniformTipSize: 0
     tipRadius: {x: 20, y: 20}
     uniformTipRadius: 0
+  chamferBox:
+    chamferBoxSize: {x: 1, y: 1}
+    chamferBoxRadius: 0
   nStarPolygon:
     sideCount: 10
     inset: 5
@@ -6870,7 +7083,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 332077951}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.99973893
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
