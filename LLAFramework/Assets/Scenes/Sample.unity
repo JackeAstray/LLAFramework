@@ -4292,7 +4292,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
-  drawShape: 5
+  drawShape: 1
   imageType: 0
   materialMode: 0
   strokeWidth: 0
@@ -4774,8 +4774,8 @@ MonoBehaviour:
   squircle:
     squircleTime: 2.25
   nTriangleRounded:
-    nTriangleRoundedTime: 5
-    nTriangleRoundedNumber: 6
+    nTriangleRoundedTime: 0
+    nTriangleRoundedNumber: 3
   gradientEffect:
     enabled: 0
     gradientType: 1
