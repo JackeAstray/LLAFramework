@@ -10,26 +10,26 @@ namespace LLAFramework.UI.ImageExtensions.Editor
         {
             EditorGUI.BeginProperty(position, label, property);
             {
-                SerializedProperty RectRadius = property.FindPropertyRelative("cornerRadius");
-                SerializedProperty uniform = property.FindPropertyRelative("uniformCornerRadius");
-                SerializedProperty triSize = property.FindPropertyRelative("tipSize");
-                SerializedProperty triRadius = property.FindPropertyRelative("tipRadius");
+                SerializedProperty cornerRadius = property.FindPropertyRelative("cornerRadius");
+                SerializedProperty uniformCornerRadius = property.FindPropertyRelative("uniformCornerRadius");
+                SerializedProperty tipSize = property.FindPropertyRelative("tipSize");
+                SerializedProperty tipRadius = property.FindPropertyRelative("tipRadius");
 
-                Vector4 radiusVectorValue = RectRadius.vector4Value;
+                Vector4 radiusVectorValue = cornerRadius.vector4Value;
                 float radiusFloatValue = radiusVectorValue.x;
-                bool boolVal = uniform.boolValue;
+                bool boolVal = uniformCornerRadius.boolValue;
 
                 float[] zw = new[] { radiusVectorValue.w, radiusVectorValue.z };
                 float[] xy = new[] { radiusVectorValue.x, radiusVectorValue.y };
 
                 Rect line = position;
                 line.height = EditorGUIUtility.singleLineHeight;
-                EditorUtility.CornerRadiusModeGUI(line, ref uniform, new[] { "自由", "统一" });
+                EditorUtility.CornerRadiusModeGUI(line, ref uniformCornerRadius, new[] { "自由", "统一" });
                 line.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
 
                 EditorGUI.BeginChangeCheck();
                 {
-                    EditorGUI.showMixedValue = RectRadius.hasMultipleDifferentValues;
+                    EditorGUI.showMixedValue = cornerRadius.hasMultipleDifferentValues;
                     if (boolVal)
                     {
                         radiusFloatValue = EditorGUI.FloatField(line, "均匀半径", radiusFloatValue);
@@ -48,13 +48,13 @@ namespace LLAFramework.UI.ImageExtensions.Editor
                 }
                 if (EditorGUI.EndChangeCheck())
                 {
-                    RectRadius.vector4Value = boolVal ? new Vector4(radiusFloatValue, radiusFloatValue, radiusFloatValue, radiusFloatValue) : new Vector4(xy[0], xy[1], zw[1], zw[0]);
+                    cornerRadius.vector4Value = boolVal ? new Vector4(radiusFloatValue, radiusFloatValue, radiusFloatValue, radiusFloatValue) : new Vector4(xy[0], xy[1], zw[1], zw[0]);
                 }
 
                 line.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-                EditorGUI.PropertyField(line, triSize, new GUIContent("尖端大小"));//Tip size
+                EditorGUI.PropertyField(line, tipSize, new GUIContent("尖端大小"));//Tip size
                 line.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-                EditorGUI.PropertyField(line, triRadius, new GUIContent("尖端半径"));//Tip Radius
+                EditorGUI.PropertyField(line, tipRadius, new GUIContent("尖端半径"));//Tip Radius
             }
             EditorGUI.EndProperty();
         }

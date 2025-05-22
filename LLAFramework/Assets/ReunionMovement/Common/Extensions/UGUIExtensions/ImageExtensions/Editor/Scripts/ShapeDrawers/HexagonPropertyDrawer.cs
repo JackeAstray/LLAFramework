@@ -12,7 +12,7 @@ namespace LLAFramework.UI.ImageExtensions.Editor
             {
                 SerializedProperty cornerRadius = property.FindPropertyRelative("cornerRadius");
                 SerializedProperty uniformCornerRadius = property.FindPropertyRelative("uniformCornerRadius");
-                SerializedProperty triSizes = property.FindPropertyRelative("tipSize");
+                SerializedProperty tipSize = property.FindPropertyRelative("tipSize");
                 SerializedProperty uniformTipSize = property.FindPropertyRelative("uniformTipSize");
                 SerializedProperty tipRadius = property.FindPropertyRelative("tipRadius");
                 SerializedProperty uniformTipRadius = property.FindPropertyRelative("uniformTipRadius");
@@ -22,7 +22,7 @@ namespace LLAFramework.UI.ImageExtensions.Editor
                 bool rectBoolVal = uniformCornerRadius.boolValue;
                 float[] zw = new[] { radiusVectorValue.w, radiusVectorValue.z };
                 float[] xy = new[] { radiusVectorValue.x, radiusVectorValue.y };
-                Vector2 triSizesVectorValue = triSizes.vector2Value;
+                Vector2 triSizesVectorValue = tipSize.vector2Value;
                 float triSizesFloatValue = triSizesVectorValue.x;
                 Vector2 triRadiusVectorValue = tipRadius.vector2Value;
                 float triRadiusFloatValue = triRadiusVectorValue.x;
@@ -60,7 +60,7 @@ namespace LLAFramework.UI.ImageExtensions.Editor
                 line.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
                 EditorGUI.BeginChangeCheck();
                 {
-                    EditorGUI.showMixedValue = triSizes.hasMultipleDifferentValues;
+                    EditorGUI.showMixedValue = tipSize.hasMultipleDifferentValues;
                     if (uniformTipSize.boolValue)
                     {
                         triSizesFloatValue = EditorGUI.FloatField(line, "统一大小", triSizesFloatValue);
@@ -74,7 +74,7 @@ namespace LLAFramework.UI.ImageExtensions.Editor
                 }
                 if (EditorGUI.EndChangeCheck())
                 {
-                    triSizes.vector2Value = uniformTipSize.boolValue
+                    tipSize.vector2Value = uniformTipSize.boolValue
                         ? new Vector2(triSizesFloatValue, triSizesFloatValue)
                         : triSizesVectorValue;
                 }

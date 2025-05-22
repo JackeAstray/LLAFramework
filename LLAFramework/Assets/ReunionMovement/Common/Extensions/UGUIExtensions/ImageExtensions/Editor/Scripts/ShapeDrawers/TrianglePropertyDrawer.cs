@@ -10,33 +10,33 @@ namespace LLAFramework.UI.ImageExtensions.Editor
         {
             EditorGUI.BeginProperty(position, label, property);
             {
-                Rect LabelRect = new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
-                Rect RadiusVectorRect = new Rect(position.x,
+                Rect labelRect = new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
+                Rect radiusVectorRect = new Rect(position.x,
                     position.y + EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing,
                     position.width, EditorGUIUtility.singleLineHeight);
 
-                SerializedProperty uniform = property.FindPropertyRelative("uniformCornerRadius");
-                SerializedProperty radius = property.FindPropertyRelative("cornerRadius");
+                SerializedProperty uniformCornerRadius = property.FindPropertyRelative("uniformCornerRadius");
+                SerializedProperty cornerRadius = property.FindPropertyRelative("cornerRadius");
 
-                EditorUtility.CornerRadiusModeGUI(LabelRect, ref uniform, new[] { "自由", "统一" });
+                EditorUtility.CornerRadiusModeGUI(labelRect, ref uniformCornerRadius, new[] { "自由", "统一" });
 
-                float floatVal = radius.vector3Value.x;
-                Vector3 vectorValue = radius.vector3Value;
+                float floatVal = cornerRadius.vector3Value.x;
+                Vector3 vectorValue = cornerRadius.vector3Value;
 
                 EditorGUI.BeginChangeCheck();
                 {
-                    if (uniform.boolValue)
+                    if (uniformCornerRadius.boolValue)
                     {
-                        floatVal = EditorGUI.FloatField(RadiusVectorRect, "均匀半径", floatVal);
+                        floatVal = EditorGUI.FloatField(radiusVectorRect, "均匀半径", floatVal);
                     }
                     else
                     {
-                        vectorValue = EditorGUI.Vector3Field(RadiusVectorRect, string.Empty, vectorValue);
+                        vectorValue = EditorGUI.Vector3Field(radiusVectorRect, string.Empty, vectorValue);
                     }
                 }
                 if (EditorGUI.EndChangeCheck())
                 {
-                    radius.vector3Value = uniform.boolValue ? new Vector3(floatVal, floatVal, floatVal) : vectorValue;
+                    cornerRadius.vector3Value = uniformCornerRadius.boolValue ? new Vector3(floatVal, floatVal, floatVal) : vectorValue;
                 }
             }
             EditorGUI.EndProperty();

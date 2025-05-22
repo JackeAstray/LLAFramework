@@ -9,12 +9,11 @@ namespace LLAFramework.UI.ImageExtensions.Editor
     {
         private static readonly Type editorGUIType = typeof(EditorGUI);
 
-        private static readonly Type RecycledTextEditorType =
-            System.Reflection.Assembly.GetAssembly(editorGUIType).GetType("UnityEditor.EditorGUI+RecycledTextEditor");
+        private static readonly Type recycledTextEditorType = System.Reflection.Assembly.GetAssembly(editorGUIType).GetType("UnityEditor.EditorGUI+RecycledTextEditor");
 
         private static readonly Type[] argumentTypes =
         {
-            RecycledTextEditorType, typeof(Rect), typeof(Rect), typeof(int), typeof(float), typeof(string),
+            recycledTextEditorType, typeof(Rect), typeof(Rect), typeof(int), typeof(float), typeof(string),
             typeof(GUIStyle), typeof(bool)
         };
 
@@ -38,7 +37,7 @@ namespace LLAFramework.UI.ImageExtensions.Editor
             params GUILayoutOption[] _options)
         {
             Rect totalRect = EditorGUILayout.GetControlRect(_options);
-            
+
             Rect labelRect = new Rect(totalRect.x, totalRect.y, _labelwidth, totalRect.height);
             Rect inputRect = new Rect(totalRect.x + _labelwidth,
                                       totalRect.y,
@@ -48,6 +47,5 @@ namespace LLAFramework.UI.ImageExtensions.Editor
             EditorGUI.LabelField(labelRect, _content);
             return FloatFieldExtended(inputRect, _value, labelRect);
         }
-
     }
 }

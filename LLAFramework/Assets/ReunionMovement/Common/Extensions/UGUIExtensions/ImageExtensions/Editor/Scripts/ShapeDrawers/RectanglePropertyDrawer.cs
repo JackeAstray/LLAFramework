@@ -10,35 +10,35 @@ namespace LLAFramework.UI.ImageExtensions.Editor
         {
             EditorGUI.BeginProperty(position, label, property);
             {
-                Rect LabelRect = new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
-                Rect RadiusVectorRect = new Rect(position.x,
+                Rect labelRect = new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
+                Rect radiusVectorRect = new Rect(position.x,
                     position.y + EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing,
                     position.width, EditorGUIUtility.singleLineHeight);
 
-                SerializedProperty uniform = property.FindPropertyRelative("uniformCornerRadius");
-                SerializedProperty radius = property.FindPropertyRelative("cornerRadius");
+                SerializedProperty uniformCornerRadius = property.FindPropertyRelative("uniformCornerRadius");
+                SerializedProperty cornerRadius = property.FindPropertyRelative("cornerRadius");
 
-                EditorUtility.CornerRadiusModeGUI(LabelRect, ref uniform, new[] { "自由", "统一" });
+                EditorUtility.CornerRadiusModeGUI(labelRect, ref uniformCornerRadius, new[] { "自由", "统一" });
 
-                float floatVal = radius.vector4Value.x;
-                Vector4 vectorValue = radius.vector4Value;
+                float floatVal = cornerRadius.vector4Value.x;
+                Vector4 vectorValue = cornerRadius.vector4Value;
                 float[] zw = new[] { vectorValue.w, vectorValue.z };
                 float[] xy = new[] { vectorValue.x, vectorValue.y };
 
                 EditorGUI.BeginChangeCheck();
                 {
-                    EditorGUI.showMixedValue = radius.hasMultipleDifferentValues;
-                    if (uniform.boolValue)
+                    EditorGUI.showMixedValue = cornerRadius.hasMultipleDifferentValues;
+                    if (uniformCornerRadius.boolValue)
                     {
-                        floatVal = EditorGUI.FloatField(RadiusVectorRect, "均匀半径", floatVal);
+                        floatVal = EditorGUI.FloatField(radiusVectorRect, "均匀半径", floatVal);
                     }
                     else
                     {
-                        EditorGUI.MultiFloatField(RadiusVectorRect, new[] {
+                        EditorGUI.MultiFloatField(radiusVectorRect, new[] {
                             new GUIContent("W"), new GUIContent("Z")}, zw);
-                        RadiusVectorRect.y +=
+                        radiusVectorRect.y +=
                             EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
-                        EditorGUI.MultiFloatField(RadiusVectorRect, new[] {
+                        EditorGUI.MultiFloatField(radiusVectorRect, new[] {
                             new GUIContent("X "), new GUIContent("Y")}, xy);
 
                     }
@@ -46,7 +46,7 @@ namespace LLAFramework.UI.ImageExtensions.Editor
                 }
                 if (EditorGUI.EndChangeCheck())
                 {
-                    radius.vector4Value = uniform.boolValue
+                    cornerRadius.vector4Value = uniformCornerRadius.boolValue
                         ? new Vector4(floatVal, floatVal, floatVal, floatVal)
                         : new Vector4(xy[0], xy[1], zw[1], zw[0]);
                 }

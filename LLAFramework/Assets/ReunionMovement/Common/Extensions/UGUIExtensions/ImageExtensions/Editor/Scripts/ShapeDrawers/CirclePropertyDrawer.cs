@@ -15,24 +15,22 @@ namespace LLAFramework.UI.ImageExtensions.Editor
                     position.y + EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing,
                     position.width - EditorGUIUtility.labelWidth, EditorGUIUtility.singleLineHeight);
 
-                SerializedProperty spFitCircleRadius = property.FindPropertyRelative("fitRadius");
-                bool FitCirlce = spFitCircleRadius.boolValue;
-                EditorGUI.BeginDisabledGroup(FitCirlce);
+                SerializedProperty fitRadius = property.FindPropertyRelative("fitRadius");
+                bool fitCirlce = fitRadius.boolValue;
+                EditorGUI.BeginDisabledGroup(fitCirlce);
                 {
-                    EditorGUI.PropertyField(radiusRect, property.FindPropertyRelative("radius"),
-                        new GUIContent("半径"));
+                    EditorGUI.PropertyField(radiusRect, property.FindPropertyRelative("radius"), new GUIContent("半径"));
                 }
                 EditorGUI.EndDisabledGroup();
 
-
                 EditorGUI.BeginChangeCheck();
-                EditorGUI.showMixedValue = spFitCircleRadius.hasMultipleDifferentValues;
+                EditorGUI.showMixedValue = fitRadius.hasMultipleDifferentValues;
                 {
                     EditorGUILayout.BeginHorizontal();
                     {
                         GUILayout.Space(EditorGUIUtility.labelWidth);
 
-                        FitCirlce = GUI.Toolbar(toolBarRect, FitCirlce ? 1 : 0, new[] { "自由", "拟合" }) == 1;
+                        fitCirlce = GUI.Toolbar(toolBarRect, fitCirlce ? 1 : 0, new[] { "自由", "拟合" }) == 1;
                     }
                     EditorGUILayout.EndHorizontal();
                 }
@@ -40,7 +38,7 @@ namespace LLAFramework.UI.ImageExtensions.Editor
 
                 if (EditorGUI.EndChangeCheck())
                 {
-                    spFitCircleRadius.boolValue = FitCirlce;
+                    fitRadius.boolValue = fitCirlce;
                 }
 
             }
