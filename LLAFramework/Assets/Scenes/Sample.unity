@@ -4991,7 +4991,7 @@ MonoBehaviour:
   imageType: 0
   materialMode: 0
   strokeWidth: 0
-  outlineWidth: 2.5
+  outlineWidth: 5
   outlineColor: {r: 0, g: 0, b: 0, a: 1}
   customTime: 0
   enableDashedOutline: 0
@@ -5037,7 +5037,7 @@ MonoBehaviour:
   squircle:
     squircleTime: 2.25
   nTriangleRounded:
-    nTriangleRoundedTime: 0
+    nTriangleRoundedTime: 0.25
     nTriangleRoundedNumber: 3
   gradientEffect:
     enabled: 0
