@@ -42,6 +42,7 @@ namespace LLAFramework.UI.ImageExtensions
         [SerializeField] private PentagonImg pentagon = new PentagonImg();
         [SerializeField] private HexagonImg hexagon = new HexagonImg();
         [SerializeField] private ChamferBoxImg chamferBox = new ChamferBoxImg();
+        [SerializeField] private ParallelogramImg parallelogram = new ParallelogramImg();
         [SerializeField] private NStarPolygonImg nStarPolygon = new NStarPolygonImg();
         [SerializeField] private HeartImg heart = new HeartImg();
         [SerializeField] private BlobbyCrossImg blobbyCross = new BlobbyCrossImg();
@@ -440,6 +441,16 @@ namespace LLAFramework.UI.ImageExtensions
             }
         }
 
+        public ParallelogramImg Parallelogram
+        {
+            get => parallelogram;
+            set
+            {
+                parallelogram = value;
+                SetMaterialDirty();
+            }
+        }
+
         public NStarPolygonImg NStarPolygon
         {
             get => nStarPolygon;
@@ -572,6 +583,7 @@ namespace LLAFramework.UI.ImageExtensions
             pentagon.OnValidate();
             hexagon.OnValidate();
             chamferBox.OnValidate();
+            parallelogram.OnValidate();
             nStarPolygon.OnValidate();
             heart.OnValidate();
             blobbyCross.OnValidate();
@@ -595,6 +607,7 @@ namespace LLAFramework.UI.ImageExtensions
             pentagon.Init(m_Material, material, rectTransform);
             hexagon.Init(m_Material, material, rectTransform);
             chamferBox.Init(m_Material, material, rectTransform);
+            parallelogram.Init(m_Material, material, rectTransform);
             nStarPolygon.Init(m_Material, material, rectTransform);
             heart.Init(m_Material, material, rectTransform);
             blobbyCross.Init(m_Material, material, rectTransform);
@@ -669,6 +682,7 @@ namespace LLAFramework.UI.ImageExtensions
                 pentagon.onComponentSettingsChanged += OnComponentSettingsChanged;
                 hexagon.onComponentSettingsChanged += OnComponentSettingsChanged;
                 chamferBox.onComponentSettingsChanged += OnComponentSettingsChanged;
+                parallelogram.onComponentSettingsChanged += OnComponentSettingsChanged;
                 nStarPolygon.onComponentSettingsChanged += OnComponentSettingsChanged;
                 heart.onComponentSettingsChanged += OnComponentSettingsChanged;
                 blobbyCross.onComponentSettingsChanged += OnComponentSettingsChanged;
@@ -684,6 +698,7 @@ namespace LLAFramework.UI.ImageExtensions
                 pentagon.onComponentSettingsChanged -= OnComponentSettingsChanged;
                 hexagon.onComponentSettingsChanged -= OnComponentSettingsChanged;
                 chamferBox.onComponentSettingsChanged -= OnComponentSettingsChanged;
+                parallelogram.onComponentSettingsChanged -= OnComponentSettingsChanged;
                 nStarPolygon.onComponentSettingsChanged -= OnComponentSettingsChanged;
                 heart.onComponentSettingsChanged -= OnComponentSettingsChanged;
                 blobbyCross.onComponentSettingsChanged -= OnComponentSettingsChanged;
@@ -808,6 +823,7 @@ namespace LLAFramework.UI.ImageExtensions
             pentagon.ModifyMaterial(ref mat);
             hexagon.ModifyMaterial(ref mat);
             chamferBox.ModifyMaterial(ref mat);
+            parallelogram.ModifyMaterial(ref mat);
             nStarPolygon.ModifyMaterial(ref mat);
             heart.ModifyMaterial(ref mat);
             blobbyCross.ModifyMaterial(ref mat);
@@ -826,6 +842,7 @@ namespace LLAFramework.UI.ImageExtensions
                     mat.DisableKeyword("PENTAGON");
                     mat.DisableKeyword("HEXAGON");
                     mat.DisableKeyword("CHAMFERBOX");
+                    mat.DisableKeyword("PARALLELOGRAM");
                     mat.DisableKeyword("NSTAR_POLYGON");
                     mat.DisableKeyword("HEART");
                     mat.DisableKeyword("BLOBBYCROSS");
@@ -852,6 +869,9 @@ namespace LLAFramework.UI.ImageExtensions
                     break;
                 case DrawShape.ChamferBox:
                     mat.EnableKeyword("CHAMFERBOX");
+                    break;
+                case DrawShape.Parallelogram:
+                    mat.EnableKeyword("PARALLELOGRAM");
                     break;
                 case DrawShape.Heart:
                     mat.EnableKeyword("HEART");
@@ -895,6 +915,7 @@ namespace LLAFramework.UI.ImageExtensions
             mat.DisableKeyword("PENTAGON");
             mat.DisableKeyword("HEXAGON");
             mat.DisableKeyword("CHAMFERBOX");
+            mat.DisableKeyword("PARALLELOGRAM");
             mat.DisableKeyword("NSTAR_POLYGON");
             mat.DisableKeyword("HEART");
             mat.DisableKeyword("BLOBBYCROSS");
@@ -942,6 +963,7 @@ namespace LLAFramework.UI.ImageExtensions
             pentagon.InitValuesFromMaterial(ref mat);
             hexagon.InitValuesFromMaterial(ref mat);
             chamferBox.InitValuesFromMaterial(ref mat);
+            parallelogram.InitValuesFromMaterial(ref mat);
             nStarPolygon.InitValuesFromMaterial(ref mat);
             heart.InitValuesFromMaterial(ref mat);
             blobbyCross.InitValuesFromMaterial(ref mat);

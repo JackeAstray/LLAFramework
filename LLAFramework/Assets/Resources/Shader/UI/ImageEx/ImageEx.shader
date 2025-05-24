@@ -28,6 +28,7 @@ Shader "ReunionMovement/UI/Procedural Image"
         _HexagonCornerRadius ("六边形六个角的圆角半径", Vector) = (0, 0, 0, 0)
         _ChamferBoxSize ("倒角盒子尺寸", Vector) = (0.8, 0.4, 0, 0)
         _ChamferBoxRadius ("倒角半径", Float) = 0.15
+        _ParallelogramValue ("平行四边形值", Float) = 0
         _NStarPolygonSideCount ("星形多边形的边数", float) = 3
         _NStarPolygonInset ("星形多边形的内凹程度", float) = 2
         _NStarPolygonCornerRadius ("星形多边形角的圆角半径", float) = 0
@@ -64,7 +65,7 @@ Shader "ReunionMovement/UI/Procedural Image"
         _OutlineColor ("轮廓颜色", Color) = (0, 0, 0, 1)
         // 虚线开关、自定义时间
         _EnableDashedOutline ("启用虚线轮廓", int) = 0 
-        _CustomTime ("自定义时间", Float) = 0
+        _CustomTime ("自定义时间值", Float) = 0
 
         _BlobbyCrossTime ("水滴十字形状的动态时间参数", Float) = 0
         _SquircleTime ("方圆形形状的动态时间参数", Float) = 1
@@ -118,7 +119,7 @@ Shader "ReunionMovement/UI/Procedural Image"
             #pragma multi_compile_local _ UNITY_UI_CLIP_RECT
             #pragma multi_compile_local _ UNITY_UI_ALPHACLIP
             
-            #pragma multi_compile_local _ CIRCLE TRIANGLE RECTANGLE PENTAGON HEXAGON CHAMFERBOX NSTAR_POLYGON HEART BLOBBYCROSS SQUIRCLE NTRIANGLE_ROUNDED
+            #pragma multi_compile_local _ CIRCLE TRIANGLE RECTANGLE PENTAGON HEXAGON CHAMFERBOX PARALLELOGRAM NSTAR_POLYGON HEART BLOBBYCROSS SQUIRCLE NTRIANGLE_ROUNDED
             
             #pragma multi_compile_local _ STROKE OUTLINED OUTLINED_STROKE
             #pragma multi_compile_local _ GRADIENT_LINEAR GRADIENT_RADIAL GRADIENT_CORNER
@@ -195,6 +196,10 @@ Shader "ReunionMovement/UI/Procedural Image"
             #if CHAMFERBOX
                 float2 _ChamferBoxSize;
                 float _ChamferBoxRadius;
+            #endif
+
+            #if PARALLELOGRAM
+                float _ParallelogramValue; 
             #endif
 
             #if NSTAR_POLYGON
@@ -383,7 +388,7 @@ Shader "ReunionMovement/UI/Procedural Image"
                     float height = size.y;
                     
                     // 实心五边形
-                    half baseRect = rectanlge(texcoord - half2(width / 2.0, height / 2.0), width, height);
+                    half baseRect = sdRectanlge(texcoord - half2(width / 2.0, height / 2.0), width, height);
                     half scale = height / _PentagonTipSize;
                     half rhombus = sdRhombus(texcoord - float2(width / 2, _PentagonTipSize * scale), float2(width / 2, _PentagonTipSize) * scale);
                     half sdfPentagon = sdfDifference(baseRect, sdfDifference(baseRect, rhombus));
@@ -438,10 +443,10 @@ Shader "ReunionMovement/UI/Procedural Image"
                 {
                     float2 texcoord = additionalData.xy;
                     float2 size = float2(additionalData.z, additionalData.w);
-                    float width = size.x;//additionalData.z;
-                    float height = size.y;//additionalData.w;
+                    float width = size.x;
+                    float height = size.y;
                     
-                    half baseRect = rectanlge(texcoord - half2(width / 2.0, height / 2.0), width, height);
+                    half baseRect = sdRectanlge(texcoord - half2(width / 2.0, height / 2.0), width, height);
                     half scale = width / _HexagonTipSize.x;
                     half rhombus1 = sdRhombus(texcoord - float2(_HexagonTipSize.x * scale, height / 2.0), float2(_HexagonTipSize.x, height / 2.0) * scale);
                     scale = width / _HexagonTipSize.y;
@@ -537,6 +542,29 @@ Shader "ReunionMovement/UI/Procedural Image"
                 }
             #endif
             
+            #if PARALLELOGRAM
+                half parallelogramScene(float4 additionalData)
+                {
+                    float2 texcoord = additionalData.xy;
+                    float2 size = float2(additionalData.z, additionalData.w);
+
+                    // 归一化到中心
+                    float2 p = (2.0 * texcoord - size) / size.y;
+
+                    // 动态斜率（可用时间或参数控制，这里用常量）
+                    float sk = 0.5 * sin(_ParallelogramValue);
+
+                    // 宽高参数（可根据UI参数调整）
+                    float wi = (size.x / size.y) * 0.58;
+                    float he = 1;
+
+                    float d = sdParallelogram(p, wi, he, sk);
+
+                    // 放大SDF以适配像素空间
+                    return d * 80.0;
+                }
+            #endif
+
             //N星形多边形
             #if NSTAR_POLYGON
                 half nStarPolygonScene(float4 additionalData)
@@ -787,7 +815,7 @@ Shader "ReunionMovement/UI/Procedural Image"
                     color *= finalCol;
                 #endif
                 
-                #if RECTANGLE || CIRCLE || PENTAGON || TRIANGLE || HEXAGON || CHAMFERBOX || NSTAR_POLYGON || HEART || BLOBBYCROSS || SQUIRCLE || NTRIANGLE_ROUNDED
+                #if RECTANGLE || CIRCLE || PENTAGON || TRIANGLE || HEXAGON || CHAMFERBOX || PARALLELOGRAM || NSTAR_POLYGON || HEART || BLOBBYCROSS || SQUIRCLE || NTRIANGLE_ROUNDED
                     float sdfData = 0;
                     float pixelScale = clamp(1.0/_FalloffDistance, 1.0/2048.0, 2048.0);
                     #if RECTANGLE
@@ -802,6 +830,8 @@ Shader "ReunionMovement/UI/Procedural Image"
                         sdfData = hexagonScene(IN.shapeData);
                     #elif CHAMFERBOX
                         sdfData = chamferBoxScene(IN.shapeData);
+                    #elif PARALLELOGRAM
+                        sdfData = parallelogramScene(IN.shapeData);
                     #elif NSTAR_POLYGON
                         sdfData = nStarPolygonScene(IN.shapeData);
                     #elif HEART
