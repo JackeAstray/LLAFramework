@@ -18,7 +18,7 @@ namespace LLAFramework.UI.ImageExtensions.Editor
                 Rect line = position;
                 line.height = EditorGUIUtility.singleLineHeight;
 
-                EditorGUI.Slider(line, squircleTime, 1f, 3f, "SquircleTime");
+                EditorGUI.Slider(line, squircleTime, 1f, 1.5f, "SquircleTime");
                 line.y += EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
             }
             EditorGUI.EndProperty();

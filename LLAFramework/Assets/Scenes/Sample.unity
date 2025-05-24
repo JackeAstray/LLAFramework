@@ -7150,7 +7150,7 @@ MonoBehaviour:
   blobbyCross:
     blobbyCrossTime: 8
   squircle:
-    squircleTime: 2.25
+    squircleTime: 1.1
   nTriangleRounded:
     nTriangleRoundedTime: 0
     nTriangleRoundedNumber: 0

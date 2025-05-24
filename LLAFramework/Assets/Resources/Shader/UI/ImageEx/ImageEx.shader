@@ -635,7 +635,7 @@ Shader "ReunionMovement/UI/Procedural Image"
                     float2 p = (2.0 * texcoord - additionalData.zw) / width;
 
                     // 增加归一化处理，确保中心区域平滑
-                    float n = 3.0 + 2.5 * sin(6.283185 * _SquircleTime / 3.0);
+                    float n = 3.0 + 3 * sin(9.8 * _SquircleTime / 2.0);
                     float d = sdSquircle(p, n);
                     d = d * 80;
 
