@@ -183,12 +183,55 @@ namespace LLAFramework
         }
 
         /// <summary>
-        /// 设置目标点
+        /// 设置目标
         /// </summary>
         /// <param name="target"></param>
-        public void SetTargetPos(Transform target)
+        public void SetTarget(Transform target)
         {
             targetPos = target;
+        }
+
+        /// <summary>
+        /// 设置目标位置
+        /// </summary>
+        /// <param name="pos"></param>
+        public void SetTargetPos(Vector3 pos, float duration = 0.5f)
+        {
+            targetPos.localPosition = pos;
+            //targetPos.DOLocalMove(pos, duration).OnComplete(() =>
+            //{
+            //    targetPos.localPosition = pos;
+            //});
+        }
+
+        /// <summary>
+        /// 设置摄像机视角
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        public void SetCameraView(float x, float y)
+        {
+            rotX = x;
+            rotY = y;
+            Quaternion addRot = Quaternion.Euler(0f, rotX, 0f);
+            destRot = addRot * Quaternion.Euler(rotY, 0f, 0f);
+
+            // 平滑旋转
+            //csmoCamera.transform.DORotateQuaternion(destRot, 0.5f).OnUpdate(UpdatePosition);
+
+            csmoCamera.transform.localEulerAngles = destRot.eulerAngles;
+
+            UpdatePosition();
+        }
+
+        /// <summary>
+        /// 设置摄像机远近
+        /// </summary>
+        /// <param name="value"></param>
+        public void SetCameraZoom(float value, float duration = 0.5f)
+        {
+            distance = value;
+            //DOTween.To(() => distance, x => distance = x, value, duration).OnUpdate(UpdatePosition);
         }
 
         /// <summary>
