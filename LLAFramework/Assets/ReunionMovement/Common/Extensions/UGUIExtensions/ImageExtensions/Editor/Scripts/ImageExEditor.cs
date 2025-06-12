@@ -215,8 +215,7 @@ namespace LLAFramework.UI.ImageExtensions.Editor
             EditorGUI.BeginChangeCheck();
             {
                 EditorGUI.showMixedValue = spStrokeWidth.hasMultipleDifferentValues;
-                strokeWidth =
-                    EditorGUILayoutExtended.FloatFieldExtended(line, spStrokeWidth.floatValue, dragZone);
+                strokeWidth = EditorGUI.FloatField(line, spStrokeWidth.floatValue);
                 EditorGUI.showMixedValue = false;
             }
             if (EditorGUI.EndChangeCheck())
@@ -233,10 +232,10 @@ namespace LLAFramework.UI.ImageExtensions.Editor
             EditorGUI.BeginChangeCheck();
             {
                 EditorGUI.showMixedValue = spFalloffDistance.hasMultipleDifferentValues;
-                falloff =
-                    EditorGUILayoutExtended.FloatFieldExtended(line, spFalloffDistance.floatValue, dragZone);
+                falloff = EditorGUI.FloatField(line, spFalloffDistance.floatValue);
                 EditorGUI.showMixedValue = false;
             }
+
             if (EditorGUI.EndChangeCheck())
             {
                 spFalloffDistance.floatValue = falloff;
@@ -251,8 +250,7 @@ namespace LLAFramework.UI.ImageExtensions.Editor
             EditorGUI.BeginChangeCheck();
             {
                 EditorGUI.showMixedValue = spOutlineWidth.hasMultipleDifferentValues;
-                outlineWidth =
-                    EditorGUILayoutExtended.FloatFieldExtended(line, spOutlineWidth.floatValue, dragZone);
+                outlineWidth = EditorGUI.FloatField(line, spOutlineWidth.floatValue);
                 EditorGUI.showMixedValue = false;
             }
             if (EditorGUI.EndChangeCheck())
@@ -309,7 +307,7 @@ namespace LLAFramework.UI.ImageExtensions.Editor
                 EditorGUI.BeginChangeCheck();
                 {
                     EditorGUI.showMixedValue = spCustomTime.hasMultipleDifferentValues;
-                    customTime = EditorGUILayoutExtended.FloatFieldExtended(line, spCustomTime.floatValue, dragZone);
+                    customTime = EditorGUI.FloatField(line, spCustomTime.floatValue);
                     EditorGUI.showMixedValue = false;
                 }
                 if (EditorGUI.EndChangeCheck())
@@ -368,7 +366,7 @@ namespace LLAFramework.UI.ImageExtensions.Editor
                 EditorGUI.BeginChangeCheck();
                 {
                     EditorGUI.showMixedValue = spShapeRotation.hasMultipleDifferentValues;
-                    rotationValue = EditorGUILayoutExtended.FloatFieldExtended(line, spShapeRotation.floatValue, dragZone);
+                    rotationValue = EditorGUI.FloatField(line, spShapeRotation.floatValue);
                     EditorGUI.showMixedValue = false;
                 }
                 if (EditorGUI.EndChangeCheck())

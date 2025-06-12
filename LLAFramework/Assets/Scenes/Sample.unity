@@ -4637,7 +4637,7 @@ MonoBehaviour:
   customTime: 0
   enableDashedOutline: 1
   falloffDistance: 0.5
-  constrainRotation: 1
+  constrainRotation: 0
   shapeRotation: 0
   flipHorizontal: 0
   flipVertical: 0
