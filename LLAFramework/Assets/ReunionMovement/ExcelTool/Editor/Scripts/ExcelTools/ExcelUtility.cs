@@ -38,7 +38,7 @@ namespace LLAFramework.EditorTools
             string className = Path.GetFileNameWithoutExtension(path);
 
             //检查类名是否有问题
-            if (!Tools.CheckClassName(className))
+            if (!FileTool.CheckClassName(className))
             {
                 string msg = string.Format("Excel文件“{0}”无效，因为xlsx文件的名称应为类名！", path);
                 Log.Error(msg);
@@ -110,7 +110,7 @@ namespace LLAFramework.EditorTools
         {
             var json = GetJson();
             //写入文件
-            await Tools.SaveFile(JsonPath, json);
+            await FileTool.SaveFile(JsonPath, json);
         }
 
         /// <summary>

@@ -7,19 +7,31 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace LLAFramework.EditorTools
+namespace LLAFramework
 {
     /// <summary>
-    /// 编辑器工具类
+    /// 文件工具类
     /// </summary>
-    public static class Tools
+    public static class FileTool
     {
+        /// <summary>
+        /// 保存文件
+        /// </summary>
+        /// <param name="fullpath"></param>
+        /// <param name="content"></param>
+        /// <returns></returns>
         public static async Task SaveFile(string fullpath, string content)
         {
             byte[] buffer = Encoding.UTF8.GetBytes(content);
             await SaveFileAsync(fullpath, buffer);
         }
 
+        /// <summary>
+        /// 异步保存文件
+        /// </summary>
+        /// <param name="fullpath"></param>
+        /// <param name="content"></param>
+        /// <returns></returns>
         public static async Task<int> SaveFileAsync(string fullpath, byte[] content)
         {
             try
@@ -69,6 +81,11 @@ namespace LLAFramework.EditorTools
             }
         }
 
+        /// <summary>
+        /// 检查类名是否合法
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
         public static bool CheckClassName(string str)
         {
             if (string.IsNullOrEmpty(str) || !char.IsUpper(str[0]))
@@ -87,6 +104,11 @@ namespace LLAFramework.EditorTools
             return true;
         }
 
+        /// <summary>
+        /// 检查字段名是否合法
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public static bool CheckFieldName(string name)
         {
             if (string.IsNullOrEmpty(name) || (!char.IsLetter(name[0]) && name[0] != '_'))
@@ -105,6 +127,11 @@ namespace LLAFramework.EditorTools
             return true;
         }
 
+        /// <summary>
+        /// 将字符串的首字母大写
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
         public static string CapitalFirstChar(string str)
         {
             return char.ToUpper(str[0]) + str.Substring(1);

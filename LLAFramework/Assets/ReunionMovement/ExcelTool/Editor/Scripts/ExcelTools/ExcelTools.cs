@@ -127,7 +127,7 @@ namespace LLAFramework.EditorTools
                 //设置类名
                 sheet.itemClassName = tableName;
 
-                if (!Tools.CheckClassName(sheet.itemClassName))
+                if (!FileTool.CheckClassName(sheet.itemClassName))
                 {
                     EditorUtility.ClearProgressBar();
                     string msg = string.Format("工作表名称“{0}”无效，因为该工作表的名称应为类名!", sheet.itemClassName);
@@ -154,7 +154,7 @@ namespace LLAFramework.EditorTools
                     {
                         break;
                     }
-                    if (!Tools.CheckFieldName(fieldNameStr))
+                    if (!FileTool.CheckFieldName(fieldNameStr))
                     {
                         EditorUtility.ClearProgressBar();
                         string msg = string.Format("无法分析“{0}”，因为字段名“{1}”无效!", path, fieldNameStr);
@@ -244,7 +244,7 @@ namespace LLAFramework
 ";
             var dataName = sheet.itemClassName;
             var str = GenerateDataScript(ScriptTemplate, dataName, sheet.fields);
-            await Tools.SaveFile(scriptOutPutPath + dataName + ".cs", str);
+            await FileTool.SaveFile(scriptOutPutPath + dataName + ".cs", str);
 
             AssetDatabase.Refresh();
         }
@@ -363,7 +363,7 @@ namespace LLAFramework
 ";
             var dataName = sheet.itemClassName;
             var str = GenerateDataScriptDTO(ScriptTemplate, dataName, sheet.fields);
-            await Tools.SaveFile(scriptOutPutPath + dataName + "DTO.cs", str);
+            await FileTool.SaveFile(scriptOutPutPath + dataName + "DTO.cs", str);
 
             AssetDatabase.Refresh();
         }
@@ -463,7 +463,7 @@ namespace LLAFramework
 ";
             var dataName = sheet.itemClassName;
             var str = GenerateDataScript_ScriptableObjectList(ScriptTemplate, dataName, sheet.fields, order);
-            await Tools.SaveFile(scriptOutPutPath + dataName + "Container.cs", str);
+            await FileTool.SaveFile(scriptOutPutPath + dataName + "Container.cs", str);
 
             AssetDatabase.Refresh();
         }
@@ -592,7 +592,7 @@ namespace LLAFramework.Sqlite
 
             var str = ScriptTemplate.Replace("{_METHODS_}", methodsBuilder.ToString());
             str = str.Replace("{_CREATE_TIME_}", DateTime.UtcNow.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff"));
-            await Tools.SaveFile(scriptOutPutPath + "SqliteMgr.cs", str);
+            await FileTool.SaveFile(scriptOutPutPath + "SqliteMgr.cs", str);
 
             AssetDatabase.Refresh();
         }

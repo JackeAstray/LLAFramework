@@ -373,7 +373,7 @@ namespace LLAFramework.UI
             str = str.Replace("{_0_}", name);
 
             var dataName = scriptOutPutPath + name + ".cs";
-            await Tools.SaveFile(dataName, str);
+            await FileTool.SaveFile(dataName, str);
 
             AssetDatabase.Refresh();
         }
