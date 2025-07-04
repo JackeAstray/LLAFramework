@@ -6,6 +6,9 @@ using UnityEngine.InputSystem;
 
 namespace LLAFramework
 {
+    /// <summary>
+    /// 终端模块
+    /// </summary>
     public class TerminalModule : CustommModuleInitialize
     {
         #region 实例与初始化

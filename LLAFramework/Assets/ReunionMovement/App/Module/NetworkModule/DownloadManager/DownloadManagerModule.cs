@@ -10,6 +10,9 @@ using UnityEngine;
 
 namespace LLAFramework.Download
 {
+    /// <summary>
+    /// 下载管理模块
+    /// </summary>
     public class DownloadManagerModule : CustommModuleInitialize
     {
         #region 实例与初始化

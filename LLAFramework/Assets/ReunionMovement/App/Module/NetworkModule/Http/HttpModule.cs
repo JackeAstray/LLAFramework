@@ -9,6 +9,9 @@ using UnityEngine.Networking;
 
 namespace LLAFramework.Http
 {
+    /// <summary>
+    /// Http模块
+    /// </summary>
     public class HttpModule : CustommModuleInitialize
     {
         #region 实例与初始化

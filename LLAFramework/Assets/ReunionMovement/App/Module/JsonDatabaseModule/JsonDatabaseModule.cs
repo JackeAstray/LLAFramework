@@ -6,6 +6,9 @@ using LitJson;
 
 namespace LLAFramework
 {
+    /// <summary>
+    /// Json数据模块
+    /// </summary>
     public class JsonDatabaseModule : CustommModuleInitialize
     {
         public static JsonDatabaseModule Instance = new JsonDatabaseModule();

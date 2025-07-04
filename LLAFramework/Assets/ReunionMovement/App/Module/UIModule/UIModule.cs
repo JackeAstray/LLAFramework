@@ -7,6 +7,9 @@ using UnityEngine.EventSystems;
 
 namespace LLAFramework
 {
+    /// <summary>
+    /// UI模块
+    /// </summary>
     public class UIModule : CustommModuleInitialize
     {
         #region 实例与初始化

@@ -13,6 +13,9 @@ using UnityEngine.InputSystem.Controls;
 
 namespace LLAFramework
 {
+    /// <summary>
+    /// 输入系统模块 (该模块为创建阶段)
+    /// </summary>
     public class InputSystemModule : CustommModuleInitialize
     {
         #region 实例与初始化
