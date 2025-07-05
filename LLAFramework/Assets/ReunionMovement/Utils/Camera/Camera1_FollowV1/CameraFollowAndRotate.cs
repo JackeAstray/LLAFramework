@@ -44,16 +44,9 @@ namespace LLAFramework
 
         private Vector2 lastTouchPos0;
         private Vector2 lastTouchPos1;
-#if USE_INPUT_SYSTEM
-        private float _startMultiTouchRadius;
-        private float _startMultiTouchDistance;
-        private float _radius;
-#else
+
         protected const string MOUSEX = "Mouse X";
         protected const string MOUSEY = "Mouse Y";
-        private UnityEngine.Touch oldTouch1; //上次触摸点1
-        private UnityEngine.Touch oldTouch2; //上次触摸点2
-#endif
 
 
         public bool isEnable = true;
@@ -67,7 +60,7 @@ namespace LLAFramework
         {
             OrbitCamera(0, -0);
             UpdatePosition();
-            
+
             if (hideCursor)
             {
                 HideCursor();
@@ -257,7 +250,7 @@ namespace LLAFramework
                     OrbitCamera(horz, -vert);
                 }
             }
-            else 
+            else
             {
                 HandleMultiTouch();
             }
@@ -333,15 +326,9 @@ namespace LLAFramework
             //第二点刚接触屏幕，只做记录，不做处理
             if (newTouch2.phase == UnityEngine.TouchPhase.Began)
             {
-                oldTouch1 = newTouch1;
-                oldTouch2 = newTouch2;
+                lastTouchPos0 = newTouch1.position;
+                lastTouchPos1 = newTouch2.position;
                 return;
-            }
-
-            if (newTouch2.phase == UnityEngine.TouchPhase.Began)
-            {
-                oldTouch1 = newTouch1;
-                oldTouch2 = newTouch2;
             }
             else if (newTouch1.phase == UnityEngine.TouchPhase.Moved ||
                      newTouch2.phase == UnityEngine.TouchPhase.Moved)
@@ -388,7 +375,7 @@ namespace LLAFramework
 #endif
             UpdatePosition();
         }
-#endregion
+        #endregion
 
         #region 距离
         public float GetDistance()

@@ -81,9 +81,6 @@ namespace LLAFramework
         Mouse mouse;
         Touchscreen touchscreen;
         Keyboard keyboard;
-#else
-        private UnityEngine.Touch oldTouch1;
-        private UnityEngine.Touch oldTouch2;
 #endif
 
         void Start()
@@ -290,7 +287,7 @@ namespace LLAFramework
             Gizmos.matrix = resetMatrix;
         }
 #endif
-#endregion
+        #endregion
 
         /// <summary>
         /// 获取视图输入
@@ -429,15 +426,9 @@ namespace LLAFramework
             //第二点刚接触屏幕，只做记录，不做处理
             if (newTouch2.phase == UnityEngine.TouchPhase.Began)
             {
-                oldTouch1 = newTouch1;
-                oldTouch2 = newTouch2;
+                lastTouchPos0 = newTouch1.position;
+                lastTouchPos1 = newTouch2.position;
                 return;
-            }
-
-            if (newTouch2.phase == UnityEngine.TouchPhase.Began)
-            {
-                oldTouch1 = newTouch1;
-                oldTouch2 = newTouch2;
             }
             else if (newTouch1.phase == UnityEngine.TouchPhase.Moved ||
                      newTouch2.phase == UnityEngine.TouchPhase.Moved)
