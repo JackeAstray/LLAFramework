@@ -12,10 +12,10 @@ namespace LLAFramework
     /// </summary>
     public static class RectTransformExtensions
     {
-        private static Vector2 pivotTopRight = new Vector2(1, 1);
-        private static Vector2 pivotTop = new Vector2(0.5f, 1);
-        private static Vector2 pivotCenter = new Vector2(0.5f, 0.5f);
-        private static Vector2 AnchorPos = new Vector2(0, 0);
+        //private static Vector2 pivotTopRight = new Vector2(1, 1);
+        //private static Vector2 pivotTop = new Vector2(0.5f, 1);
+        //private static Vector2 pivotCenter = new Vector2(0.5f, 0.5f);
+        //private static Vector2 AnchorPos = new Vector2(0, 0);
 
         public static void SetAnchoredPositionX(this RectTransform rectTransform, float x)
         {
@@ -83,76 +83,76 @@ namespace LLAFramework
         public static void SetPivotX(this RectTransform rectTransform, float x)
         {
             var pivot = rectTransform.pivot;
+            pivot.x = x;
+            rectTransform.pivot = pivot;
+        }
+
+        public static void SetPivotY(this RectTransform rectTransform, float y)
+        {
+            var pivot = rectTransform.pivot;
+            pivot.y = y;
+            rectTransform.pivot = pivot;
         }
 
         /// <summary>
         /// 设置锚点
         /// </summary>
         /// <param name="rect"></param>
-        /// <param name="Type"></param>
-        public static void SetAnchor(this RectTransform rect, AnchorType Type)
+        /// <param name="type"></param>
+        public static void SetAnchor(this RectTransform rect, AnchorType type)
         {
             if (rect == null)
                 return;
             var size = rect.sizeDelta;
             //left,right对应x,top,bottom对应Y
-            switch (Type)
+            switch (type)
             {
                 case AnchorType.TopRight:
-                    rect.pivot = pivotCenter;
-                    rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Right, 0, size.x);
-                    rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 0, size.y);
-                    rect.anchoredPosition = new Vector2(-size.x * .5f, -size.y * .5f);
+                    rect.pivot = new Vector2(1, 1);
+                    rect.anchorMin = new Vector2(1, 1);
+                    rect.anchorMax = new Vector2(1, 1);
+                    rect.anchoredPosition = Vector2.zero;
                     break;
                 case AnchorType.TopLeft:
-                    rect.pivot = pivotCenter;
-                    rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0, size.x);
-                    rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 0, size.y);
-                    rect.anchoredPosition = new Vector2(size.x * .5f, -size.y * .5f);
+                    rect.pivot = new Vector2(0.5f, 1);
+                    rect.anchorMin = new Vector2(0, 1);
+                    rect.anchorMax = new Vector2(0, 1);
+                    rect.anchoredPosition = Vector2.zero;
                     break;
                 case AnchorType.Stretch:
-                    rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0, 0);
-                    rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 0, 0);
-                    rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Right, 0, 0);
-                    rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, 0, 0);
+                    rect.pivot = new Vector2(0.5f, 0.5f);
                     rect.anchorMin = Vector2.zero;
                     rect.anchorMax = Vector2.one;
+                    rect.anchoredPosition = Vector2.zero;
+                    rect.sizeDelta = Vector2.zero;
                     break;
                 case AnchorType.StretchTop:
-                    rect.pivot = pivotTop;
-                    rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0, 0);
-                    rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 0, 0);
-                    rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Right, 0, 0);
-                    rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, 0, 0);
+                    rect.pivot = new Vector2(0.5f, 1);
                     rect.anchorMin = new Vector2(0, 1);
-                    rect.anchorMax = Vector2.one;
+                    rect.anchorMax = new Vector2(1, 1);
+                    rect.anchoredPosition = Vector2.zero;
+                    rect.sizeDelta = new Vector2(0, rect.sizeDelta.y);
                     break;
                 case AnchorType.StretchBottom:
-                    rect.pivot = pivotTop;
-                    rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0, 0);
-                    rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 0, 0);
-                    rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Right, 0, 0);
-                    rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, 0, 0);
-                    rect.anchorMin = Vector2.zero;
+                    rect.pivot = new Vector2(0.5f, 0);
+                    rect.anchorMin = new Vector2(0, 0);
                     rect.anchorMax = new Vector2(1, 0);
+                    rect.anchoredPosition = Vector2.zero;
+                    rect.sizeDelta = new Vector2(0, rect.sizeDelta.y);
                     break;
                 case AnchorType.StretchLeft:
-                    rect.pivot = pivotCenter;
-                    rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0, 0);
-                    rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 0, 0);
-                    rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Right, 0, 0);
-                    rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, 0, 0);
-                    rect.anchorMin = Vector2.zero;
+                    rect.pivot = new Vector2(0, 0.5f);
+                    rect.anchorMin = new Vector2(0, 0);
                     rect.anchorMax = new Vector2(0, 1);
+                    rect.anchoredPosition = Vector2.zero;
+                    rect.sizeDelta = new Vector2(rect.sizeDelta.x, 0);
                     break;
                 case AnchorType.StretchRight:
-                    rect.pivot = pivotCenter;
-                    rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0, 0);
-                    rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, 0, 0);
-                    rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Right, 0, 0);
-                    rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, 0, 0);
+                    rect.pivot = new Vector2(1, 0.5f);
                     rect.anchorMin = new Vector2(1, 0);
-                    rect.anchorMax = Vector2.one;
+                    rect.anchorMax = new Vector2(1, 1);
+                    rect.anchoredPosition = Vector2.zero;
+                    rect.sizeDelta = new Vector2(rect.sizeDelta.x, 0);
                     break;
                 default:
                     Debug.Log("未知的锚点类型");

@@ -119,7 +119,7 @@ public static class VectorExtensions
     /// 计算一个点在指定轴上的最近点
     /// </summary>
     /// <param name="axisDirection">轴的方向</param>
-    /// <param name="point">要计算的点</param>
+    /// <param name="point">要计算的空间点</param>
     /// <returns>点在轴上的最近点</returns>
     public static Vector3 NearestPointOnAxis(this Vector3 axisDirection, Vector3 point)
     {
@@ -136,9 +136,9 @@ public static class VectorExtensions
     /// <summary>
     /// 计算一个点在给定直线上的最近点
     /// </summary>
-    /// <param name="lineDirection">直线的方向</param>
-    /// <param name="point">要计算的点</param>
-    /// <param name="pointOnLine">直线上的一个点</param>
+    /// <param name="lineDirection">直线的方向向量</param>
+    /// <param name="point">要计算的空间点</param>
+    /// <param name="pointOnLine">用于唯一确定直线的位置，是直线上的一个已知点</param>
     /// <returns>点在直线上的最近点</returns>
     public static Vector3 NearestPointOnLine(this Vector3 lineDirection, Vector3 point, Vector3 pointOnLine)
     {
