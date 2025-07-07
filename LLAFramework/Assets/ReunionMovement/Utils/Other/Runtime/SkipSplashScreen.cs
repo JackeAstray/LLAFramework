@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-#if !UNITY_600_0_OR_NEWER
+#if !UNITY_6000_0_OR_NEWER
 public class SkipSplashScreen
 {
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSplashScreen)]
